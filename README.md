@@ -15,6 +15,10 @@ A free, fan-made reference site for ARC Raiders.
 - **Quests:** all 107 trader quests with objectives, trader, location, required items and rewards. Search by any of those, filter by trader, and see how much of each required item your tracker already covers.
 - **Quest planning:** quests stay hidden until the quest before them is done, can be sorted by how close your tracker is to covering them, set tracker goals from their required items, and be exported as a to-do list or a progress link. Items an active quest needs get a warning in the recycling lookup.
 - **Reference:** enemies (health, weak points, drops), trader stock and prices, workshop upgrade costs, the skill tree, and a blueprint tracker.
+- **Search everything:** one box at the top finds items, quests, enemies, blueprints, weapons and trader stock and jumps to the right tab.
+- **Keep or recycle:** in the Tools tab, sorts items by what your active quests, projects and goals need.
+- **Sharing:** share material and quest progress as an image, and copy a loadout as a link.
+- **Extras:** a dot on the Updates tab when there is something new, an offline indicator, and a Feedback button.
 - **Tools tab:** raid checklist, project helper with wiki presets (Expedition stages, Trophy Display and past projects) that compare what a project needs with your tracker and side-by-side item compare, weapon compare and a loadout builder that checks carried weight against your augment. Backups can be copied as a short transfer code, and the browser keeps automatic snapshots.
 - **Backup:** export and import your tracker, goals, stars, projects and checklist as text.
 - **Offline:** after one visit the site keeps working without a connection.

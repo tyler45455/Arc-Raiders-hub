@@ -138,6 +138,7 @@ input::placeholder { color: var(--muted); }
   appearance: none; border: 0; background: var(--surface); color: var(--muted);
   font: 600 13px var(--font-body); padding: 10px 14px; cursor: pointer;
 }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
 @media (max-width: 640px) { .searchbar { grid-template-columns: 1fr; } }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
@@ -298,6 +299,16 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .bar.done > i { background: var(--good); }
 .goalline { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
 .goalline input { width: 76px; padding: 4px 6px; font-size: 13px; }
+.qtools { display: grid; gap: 10px; margin: 12px 0; }
+.qcard { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-top: 10px; background: var(--surface); display: grid; gap: 8px; }
+.qcard .qh { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 10px; align-items: baseline; }
+.qcard .qh a { font-weight: 700; color: var(--fg); }
+.qcard .qmeta { color: var(--muted); font-size: 13px; }
+.qrow { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 13px; }
+.qrow .lbl { color: var(--muted); min-width: 64px; }
+.qstat { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.qstat.ok { color: var(--accent); }
+.presetbox { border: 1px dashed var(--line); border-radius: 8px; padding: 10px 12px; margin: 10px 0; display: grid; gap: 8px; }
 footer { border-top: 1px solid var(--line); padding-block: 18px 28px; color: var(--muted); font-size: 13px; }
 footer .wrap > * { margin: 4px 0; }
 code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surface2); padding: 1px 5px; border-radius: 4px; }
@@ -316,6 +327,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycling lookup</button>
       <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Material tracker<span class="count" id="trackerCount"></span></button>
       <button class="tab" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Weapons &amp; gear</button>
+      <button class="tab" role="tab" id="tab-quests" data-tab="quests" aria-selected="false">Quests</button>
       <button class="tab" role="tab" id="tab-tools" data-tab="tools" aria-selected="false">Tools</button>
       <button class="tab" role="tab" id="tab-maps" data-tab="maps" aria-selected="false">Maps</button>
       <button class="tab" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail 2.0</button>
@@ -480,6 +492,19 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <div id="gearOut"></div>
   </section>
 
+  <!-- QUESTS -->
+  <section class="panel" id="panel-quests" role="tabpanel" aria-labelledby="tab-quests" hidden>
+    <h2>Quests</h2>
+    <p class="muted">All 107 trader quests from the ARC Raiders Wiki with where they happen, what you hand in and what you get. Required items you already track show how many you have. The wiki&rsquo;s quest table has no prerequisite column, so open a quest&rsquo;s wiki page to see what unlocks it.</p>
+    <div class="qtools">
+      <input type="text" id="qQ" placeholder="Search quest, trader, location, required item or reward" aria-label="Search quests" autocomplete="off">
+      <div class="chips" id="qTraders" role="group" aria-label="Trader"></div>
+      <label><input type="checkbox" id="qReady"> Only quests where my tracker covers every tracked required item</label>
+    </div>
+    <div class="muted" id="qCount" role="status"></div>
+    <div id="qOut"></div>
+  </section>
+
   <!-- TOOLS -->
   <section class="panel" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools" hidden>
     <h2>Tools</h2>
@@ -498,7 +523,13 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 
     <div class="tool">
       <h3>Project helper</h3>
-      <p class="muted">Enter what a project, craft or upgrade needs and see how close your tracker is. The needs are not pre-filled, so check them against the game. Format: <code>200 Metal Parts, 50 Wires</code></p>
+      <p class="muted">Pick a project below to add its stages from the wiki, or type your own. Each saved stage shows how close your tracker is. Custom format: <code>200 Metal Parts, 50 Wires</code></p>
+      <div class="presetbox">
+        <label for="presetSel">Project presets (from the wiki)</label>
+        <select id="presetSel" aria-label="Project preset"></select>
+        <div class="muted" id="presetNote"></div>
+        <div class="chips" id="presetStages"></div>
+      </div>
       <div class="form-grid" style="grid-template-columns: 1fr 2fr auto;">
         <div><label for="pName">Project name</label><input type="text" id="pName" placeholder="Workbench upgrade"></div>
         <div><label for="pNeeds">Needs</label><input type="text" id="pNeeds" placeholder="200 Metal Parts, 50 Wires" list="matList"></div>
@@ -1325,6 +1356,86 @@ Integrated Binoculars|Common`;
     "Smoke Grenade": [null, "7.5 m", null],
     "Tagging Grenade": [null, "6 m", null]
   };
+  var QRAW = ["Picking Up The Pieces|Shani|Any|-|1× Rattler III; 80× Medium Ammo", "Clearer Skies|Shani|Any|3× ARC Alloy|Black (Hiker Color) Backpack; 1× Light Shield; 3× Sterilized Bandage", "Trash Into Treasure|Shani|Any|1× Battery; 6× Wires|1× Tactical Mk. 1; 3× Adrenaline Shot", "Off The Radar|Shani|Any|-|Black White (Origin Color) Outfit; 2× Defibrillator", "A Bad Feeling|Celeste|Any|-|5× Duct Tape; 5× Steel Spring; 10× Metal Parts", "Hatch Repairs|Shani|Any|-|1× Binoculars; 1× Raider Hatch Key", "The Right Tool|Tian Wen|Any|-|Cheer Emote; 1× Extended Light Mag I; 1× Stitcher II", "Down to Earth|Shani|Any|-|1× Combat Mk. 1; 1× Medium Shield", "A Better Use|Tian Wen|Dam Battlegrounds; Buried City; Spaceport; The Blue Gate|-|1× Extended Light Mag I; 1× Muzzle Brake II; 1× Stable Stock I", "The Trifecta|Shani|Any|2× Hornet Driver; 2× Snitch Scanner; 2× Wasp Driver|1× Dam Control Tower Key; Origin Outfit (Orange Camo Color); 1× Raider Hatch Key; 2× Defibrillator", "Greasing Her Palms|Celeste|Dam Battlegrounds; Buried City; Spaceport|-|1× Lure Grenade Blueprint; 3× Electrical Components; 3× Speaker Component", "Dormant Barons|Shani|Dam Battlegrounds; Spaceport; The Blue Gate|-|3× Door Blocker; 3× Li'l Smoke Grenade", "What We Left Behind|Tian Wen|Dam Battlegrounds; Buried City; Spaceport|-|1× Muzzle Brake II; 1× Stable Stock II; 1× Vertical Grip II", "Doctor's Orders|Lance|Any|1× Durable Cloth; 1× Great Mullein; 1× Syringe; 2× Antiseptic|1× Surge Shield Recharger; 3× Adrenaline Shot; 3× Sterilized Bandage", "Broken Monument|Tian Wen|Dam Battlegrounds|1× First Wave Compass; 1× First Wave Rations; 1× First Wave Tape|1× Arpeggio I; 1× Compensator II; 80× Medium Ammo", "Medical Merchandise|Lance|Dam Battlegrounds; Buried City; Spaceport|-|Backpack Charm (Banana); 3× Defibrillator; 3× Vita Shot", "Marked For Death|Tian Wen|Buried City|-|1× Angled Grip II; 1× Shotgun Choke II", "Straight Record|Celeste|Dam Battlegrounds|-|3× Advanced Mechanical Components; 5× Medium Gun Parts", "A Reveal in Ruins|Lance|Buried City|1× ESR Analyzer|1× Surge Shield Recharger; 1× Tactical Mk. 3 (Healing)", "Market Correction|Tian Wen|Buried City|-|1× Compensator I; 1× Extended Light Mag II; 1× Silencer II", "Keeping The Memory|Celeste|Dam Battlegrounds|-|5× Duct Tape; 5× Magnet; 5× Simple Gun Parts", "A Lay Of The Land|Shani|Spaceport|1× LiDAR Scanner|1× Dam Testing Annex Key; 2× Smoke Grenade; 3× Zipline", "Eyes On The Prize|Tian Wen|Buried City|3× Wires|1× Extended Medium Mag II; 1× Extended Shotgun Mag II", "Echoes Of Victory Ridge|Celeste|Dam Battlegrounds|1× Major Aiva's Patch|1× Music Box; 2× Processor; 6× Crude Explosives", "Eyes in the Sky|Shani|Dam Battlegrounds; Buried City; Spaceport|-|1× Vita Spray; 3× Tagging Grenade; 5× Yellow Light Stick", "Industrial Espionage|Tian Wen|Buried City|-|1× Burletta Blueprint; 3× Mechanical Components; 3× Simple Gun Parts", "A Balanced Harvest|Celeste|Dam Battlegrounds|-|3× Advanced Mechanical Components; 3× Medium Gun Parts; 10× Steel Spring", "Unexpected Initiative|Tian Wen|Buried City|1× Moisture Meter; 1× Nutrient Meter|1× Il Toro I; 1× Shotgun Choke II; 40× Shotgun Ammo", "Untended Garden|Celeste|Dam Battlegrounds|-|3× Advanced Mechanical Components; 3× Heavy Gun Parts; 5× Canister", "A Symbol of Unification|Celeste|Dam Battlegrounds|1× Raider Flag|Aviator Outfit (Dusted Cream Color); 3× Mod Components; 5× Duct Tape", "After Rain Comes|Celeste|Buried City|2× Battery; 5× Wires|3× Antiseptic; 5× Blue Light Stick; 5× Durable Cloth", "The Root of the Matter|Celeste|Buried City|1× Experimental Seed Sample|Backpack Charm (Succulent); 1000× Coins", "Celeste's Journals|Celeste|Dam Battlegrounds|2× Celeste's Journal|1× Exodus Modules; 1× Magnetic Accelerator; 3× Heavy Gun Parts", "The Major's Footlocker|Tian Wen|Dam Battlegrounds|1× Major Aiva's Mementos|1× Hullcracker Blueprint", "Water Troubles|Celeste|Dam Battlegrounds|-|3× Mechanical Components; 3× Simple Gun Parts; 3× Steel Spring", "Back on Top|Tian Wen|Dam Battlegrounds; Buried City; Spaceport; The Blue Gate|-|1× Renegade I; 1× Stable Stock III; 80× Medium Ammo", "Source Of The Contamination|Celeste|Dam Battlegrounds|-|1× Mod Components; 5× Duct Tape; 5× Steel Spring", "Our Presence up There|Shani|Dam Battlegrounds|-|1× Buried City Town Hall Key; 1× Raider Hatch Key; 3× Jolt Mine", "Switching The Supply|Celeste|Spaceport|-|Radio Renegade Outfit (Blue Color); 1× Spaceport Trench Tower Key; 3× Synthesized Fuel", "Lost In Transmission|Shani|Spaceport|-|1× Snap Hook", "A Warm Place To Rest|Apollo|Buried City|-|Radio Renegade Outfit (Goggles Variant); 1× Rosary; 3× Noisemaker; 5× Blue Light Stick", "Communication Hideout|Shani|Buried City|-|1× Anvil III; Aviator Outfit (Crimson Racer Color); 40× Heavy Ammo", "Prescriptions of the Past|Lance|Spaceport|-|1× Heavy Shield; 1× Tactical Mk. 3 (Healing); 3× Adrenaline Shot", "Into The Fray|Shani|Any|1× Leaper Pulse Unit|Backpack Charm (Burger Boy); Radio Renegade Outfit (Grey Color); 1× Vulcano III; 40× Shotgun Ammo", "Power Out|Celeste|Spaceport|-|Radio Renegade Outfit (Bag Variant); 5× Explosive Compound; 5× Oil; 5× Wires", "Paving The Way|Apollo|Dam Battlegrounds; Buried City; The Blue Gate|-|1× Advanced Electrical Components; 1× Raider Hatch Key; 3× Seeker Grenade", "Flickering Threat|Celeste|Dam Battlegrounds|-|Radio Renegade Outfit (Helmet Variant); 3× Advanced Mechanical Components; 5× Medium Gun Parts", "Deciphering The Data|Shani|Spaceport|-|3× Defibrillator; 3× Trailblazer", "Bees!|Celeste|The Blue Gate|-|1× Advanced Electrical Components; 3× Sensors", "Groundbreaking|Apollo|The Blue Gate|-|1× Power Rod; Warden Outfit (Tangerine Color)", "Dust on the Wires|Shani|Spaceport|1× Scout Patrol Note|Backpack Charm (Fax Machine)", "Espresso|Apollo|Any|1× Espresso Machine Parts|1× Coffee Pot; 3× Adrenaline Shot", "A Dead End|Shani|The Blue Gate|1× Dusty Film Reel|Patchwork (Warden Color); 2000× Coins", "Safe Passage|Apollo|Any|-|3× Barricade Kit; 3× Shrapnel Grenade; 5× Li'l Smoke Grenade", "Life Of A Pharmacist|Lance|Buried City|-|1× Defibrillator; 1× Surge Shield Recharger; 3× Sterilized Bandage", "Fragmented Logs|Shani|Stella Montis|1× Electrical Components|3× Showstopper; 3× Trailblazer", "Reduced to Rubble|Shani|The Blue Gate|-|1× Zipline; 3× Barricade Kit; 3× Door Blocker", "In My Image|Lance|Stella Montis|-|2× Looting Mk. 2; 5× Green Light Stick", "What Goes Around|Apollo|Any|-|Backpack Charm (Cans); 2× Noisemaker; 3× Blaze Grenade", "Tribute To Toledo|Celeste|Any|1× Power Rod|2× Advanced Mechanical Components; 3× Synthesized Fuel; 5× Magnet", "Furtive Meetings|Shani|Stella Montis|1× Secret Meeting Info|1× Aphelion; 5× Energy Clip", "With A Trace|Shani|The Blue Gate|-|1× Looting Mk. 2; 1× Medium Shield", "Cold Storage|Shani|Stella Montis|1× Old World Books|1× Raider Hatch Key; 3× Gas Mine", "Sparks Fly|Apollo|Any|-|1× Trigger 'Nade Blueprint; 2× Processor; 4× Crude Explosives", "Digging Up Dirt|Celeste|Buried City|-|2× Advanced Electrical Components; 2× Speaker Component", "Last Entry|Shani|Stella Montis|1× Official Shutdown Documentation; 1× Seed Vault Box Key|1× Yellow Light Stick Blueprint", "Worth Your Salt|Celeste|Spaceport|-|1× Vita Spray Blueprint", "A First Foothold|Apollo|The Blue Gate|-|3× Shrapnel Grenade; 3× Snap Blast Grenade; 3× Heavy Fuze Grenade", "A New Type Of Plant|Lance|Dam Battlegrounds|1× Possibly Toxic Plant|1× Vita Shot; 5× Antiseptic", "A Prime Specimen|Shani|The Blue Gate|2× ARC Powercell|1× Patrol Car Key; 3× Door Blocker", "A Rising Tide|Celeste|Buried City; Dam Battlegrounds|-|1× Anvil II; 1× Anvil Splitter; 1× Extended Barrel III; 40× Heavy Ammo", "A Toxic Trail|Shani|Dam Battlegrounds|-|1× Tactical Mk. 2; 3× Zipline; 3× Pulse Mine; 3× Gas Mine", "A Wrench in the Works|Celeste|Spaceport|-|Radio Renegade Outfit (Yellow); 5× Mechanical Components; 3× Mod Components", "Armored Transports|Tian Wen|The Blue Gate|1× Armored Patrol Key Card|Aviator Outfit (Blue Yellow); 3× Smoke Grenade; 3× Defibrillator", "Battening Down|Apollo|Riven Tides|-|1× Riven Tides Hotel Keycard No. 107; 3× Smoke Grenade Trap", "Boarding The Frigate|Celeste|Frigate|-|1× Breathtaking Snow Globe; 1× Medium Shield; 1× Osprey I", "Bombing Run|Shani|Any|1× Bombardier Cell|Finger Gun Single Shot Emote; 30× Raider Tokens", "Building A Library|Apollo|Buried City|1× Romance Book; 1× Detective Book; 1× Adventure Book|1× Explosive Mine; 1× Jolt Mine; 1× Heavy Fuze Grenade", "Celeste's Childhood Drawings|Lance|Riven Tides|-|Backpack Charm (Lance's Mixtape); 3× Sterilized Bandage", "Clamoring for Attention|Shani|The Blue Gate|3× Wires; 1× Battery|5× Lure Grenade; 5× Noisemaker; 3× Tagging Grenade", "Clean Hands|Nomadic Envoys|Pendola Pass|1× Equatorial Sundial|1× Sextant; 1× Shield Recharger; 1× Battered Paperback", "Collision Course|Tian Wen|Any|1× Comet Igniter|1× Canto I; 1× Extended Medium Mag III; 1× Muzzle Brake II", "Combat Recon|Shani|Buried City|-|Radio Renegade Outfit (Red); 5× Firecracker; 1× Fireworks Box", "Exploring Pendola Pass|Celeste|Pendola Pass|1× Wire|1× Breathtaking Snow Globe; 1× Medium Shield; 1× Osprey I", "Keeping an Eye Out|Celeste|The Blue Gate|-|5× Pulse Mine; 1× Flame Spray", "Line in the Sand|Celeste|Buried City|-|2× Exodus Modules; 2× Magnetic Accelerator; 2× Magnetron", "Mixed Signals|Shani|Any|1× Surveyor Vault|1× Photoelectric Cloak; 1× Raider Hatch Key", "Movie Night|Apollo|Any|1× Portable TV; 1× Stack Of Movie Tapes|3× Showstopper; 3× Smoke Grenade; 1× Fireworks Box", "On Deaf Ears|Lance|Stella Montis|-|Warden Outfit (Navy Blue); 3× Lure Grenade; 5× Noisemaker; 1× Shaker", "On The Map|Lance|Spaceport|-|3× Sterilized Bandage; 3× Surge Shield Recharger; 1× Tactical Mk. 3 (Healing)", "Out of the Shadows|Shani|Any|1× Rocketeer Driver|3× Surge Shield Recharger; 2× Wolfpack", "Outstanding Balance|Tian Wen|The Blue Gate|1× Dodger's Note|Aviator Outfit (Gothic Graffiti); 1× Extended Medium Mag III; 1× Silencer II", "Safe Harbor|Tian Wen|Riven Tides|1× Precision Gimbal|1× Surge Coil; 1× Heavy Gun Parts; 1× Horizontal Grip", "Settled in Full|Tian Wen|Any|1× Bastion Cell|30× Raider Tokens", "Shoring Up Defenses|Apollo|Riven Tides|1× ARC Alloy|3× Barricade Kit; 3× Lure Grenade Trap; 6× Seeker Grenade", "Sizing Things Up|Celeste|Pendola Pass|-|3× Adrenaline Shot; 1× Exodus Technical Handbook; 1× Bettina I; 60× Heavy Ammo", "Snap And Salvage|Tian Wen|Stella Montis|1× Flow Controller; 1× Magnetron|1× Burletta III; 1× Silencer II; 1× Extended Light Mag II; 100× Light Ammo", "Stable Housing|Tian Wen|Stella Montis|1× Project Heartwood Blueprints|5× Seeker Grenade; 5× Lure Grenade; 1× Snap Hook", "Taking Stock|Nomadic Envoys|Stella Montis; Spaceport; Dam Battlegrounds; Buried City|3× Industrial Battery|2× Jolt Mine; 1× Advanced Electrical Components", "Test Case|Apollo|Any|1× Fireball Burner; 1× Firefly Burner; 1× Hornet Driver|1× Fireworks Box Blueprint; 3× Seeker Grenade; 3× Blaze Grenade", "The Clean Dream|Apollo|Spaceport; The Blue Gate|-|2× Deadline; 3× Showstopper; 3× Heavy Fuze Grenade", "The League|Apollo|Dam Battlegrounds; Buried City|1× Deflated Football; 1× Bicycle Pump|Aviator Outfit (Faded Flush); 5× Tagging Grenade; 5× Firecracker", "The Stench Of Corruption|Shani|Spaceport|1× Flushing Terminal Key|Warden Outfit (Blue); 1× Air Freshener; 1× Dam Staff Room Key; 3× Noisemaker", "To The Skies|Apollo|Any|-|3× ARC Performance Steel; 3× ARC Thermo Lining; 3× ARC Synthetic Resin", "Turnabout|Celeste|Spaceport|-|2× Heavy Gun Parts; 2× Medium Gun Parts", "Waking the Grid|Shani|Spaceport|-|1× Tactical Mk. 3 (Revival); 3× Vita Shot; 5× Surge Shield Recharger", "With a View|Shani|Stella Montis|1× Rotary Encoder; 1× Ion Sputter|5× Steel Spring; 5× Wires; 1× Tactical Mk. 2"];
+  var PRESETS = [{"name": "Expedition 1", "ended": false, "note": "Stage 5 (Load Stage) asks for coin value of items, so it is not listed.", "stages": [{"n": "Foundation", "needs": [["Metal Parts", 150], ["Rubber Parts", 200], ["ARC Alloy", 80], ["Steel Spring", 15]]}, {"n": "Core Systems", "needs": [["Durable Cloth", 35], ["Wires", 30], ["Electrical Components", 30], ["Cooling Fan", 5]]}, {"n": "Framework", "needs": [["Light Bulb", 5], ["Battery", 30], ["Sensors", 20], ["Exodus Modules", 1]]}, {"n": "Outfitting", "needs": [["Humidifier", 5], ["Advanced Electrical Components", 5], ["Magnetic Accelerator", 3], ["Leaper Pulse Unit", 3]]}]}, {"name": "Expedition 2", "ended": false, "note": "Stage 5 (Load Stage) asks for coin value of items, so it is not listed.", "stages": [{"n": "Foundation", "needs": [["Metal Parts", 150], ["Plastic Parts", 200], ["ARC Alloy", 80], ["Steel Spring", 15]]}, {"n": "Core Systems", "needs": [["Durable Cloth", 35], ["Wires", 25], ["Electrical Components", 20], ["Cooling Coil", 4]]}, {"n": "Framework", "needs": [["Light Bulb", 4], ["Battery", 30], ["Shredder Gyro", 10], ["Exodus Modules", 1]]}, {"n": "Outfitting", "needs": [["Frequency Modulation Box", 5], ["Advanced Electrical Components", 5], ["Ion Sputter", 3], ["Leaper Pulse Unit", 3]]}]}, {"name": "Expedition 3", "ended": false, "note": "Stage 5 (Load Stage) asks for coin value of items, so it is not listed.", "stages": [{"n": "Foundation", "needs": [["Metal Parts", 150], ["Chemicals", 100], ["ARC Alloy", 80], ["Steel Spring", 15]]}, {"n": "Core Systems", "needs": [["Durable Cloth", 30], ["Wires", 25], ["Electrical Components", 20], ["Industrial Charger", 3]]}, {"n": "Framework", "needs": [["Coffee Pot", 1], ["Battery", 25], ["Firefly Burner", 5], ["Exodus Modules", 1]]}, {"n": "Outfitting", "needs": [["Broken Guidance System", 1], ["Advanced Electrical Components", 5], ["Breathtaking Snow Globe", 3], ["Bombardier Cell", 2]]}]}, {"name": "Expedition 4", "ended": false, "note": "Stage 5 (Load Stage) asks for coin value of items, so it is not listed.", "stages": [{"n": "Foundation", "needs": [["Metal Parts", 150], ["Chemicals", 100], ["ARC Alloy", 80], ["Canister", 15]]}, {"n": "Core Systems", "needs": [["Durable Cloth", 30], ["Oil", 25], ["Electrical Components", 20], ["Industrial Charger", 3]]}, {"n": "Framework", "needs": [["ARC Motion Core", 20], ["Speaker Component", 15], ["Turbine Compressor", 5], ["Exodus Modules", 2]]}, {"n": "Outfitting", "needs": [["Portable TV", 1], ["Advanced Electrical Components", 5], ["\"Sirena Dorata\" Ship Model", 2], ["Vaporizer Regulator", 3]]}]}, {"name": "Expedition 5", "ended": false, "note": "Stage 5 (Load Stage) asks for coin value of items, so it is not listed.", "stages": [{"n": "Foundation", "needs": [["Metal Parts", 150], ["Plastic Parts", 100], ["ARC Alloy", 80], ["Magnet", 15]]}, {"n": "Core Systems", "needs": [["Durable Cloth", 30], ["Duct Tape", 25], ["Mechanical Components", 20], ["Voltage Converter", 10]]}, {"n": "Framework", "needs": [["ARC Circuitry", 20], ["Speaker Component", 15], ["Bastion Cell", 5], ["Magnetic Accelerator", 3]]}, {"n": "Outfitting", "needs": [["Radio", 2], ["Advanced Mechanical Components", 5], ["Lance's Mixtape (5th Edition)", 3], ["Rocketeer Driver", 3]]}]}, {"name": "Trophy Display", "ended": false, "note": "Started January 27, 2026; the wiki lists no end date.", "stages": [{"n": "Roaming Threats", "needs": [["Rusted Bolts", 3], ["Pop Trigger", 15], ["Tick Pod", 15], ["Surveyor Vault", 5]]}, {"n": "Soaring Menaces", "needs": [["Spotter Relay", 10], ["Expired Respirator", 3], ["Wasp Driver", 20], ["Hornet Driver", 15]]}, {"n": "Ferocious Foes", "needs": [["ARC Performance Steel", 10], ["Shredder Gyro", 5], ["Leaper Pulse Unit", 10], ["Bastion Cell", 5]]}, {"n": "Dominant Dangers", "needs": [["ARC Synthetic Resin", 10], ["Magnetic Accelerator", 10], ["Rocketeer Driver", 8], ["Queen Reactor", 3]]}, {"n": "Imposing Behemoths", "needs": [["Exodus Modules", 5], ["Geiger Counter", 3], ["Bombardier Cell", 8], ["Matriarch Reactor", 3]]}]}, {"name": "Ascending The Mountain", "ended": true, "note": "Ended October 7, 2026 (temporary project).", "stages": [{"n": "Research High-Altitude Mechanics", "needs": [["Mechanical Components", 10], ["Pop Trigger", 6], ["Explosive Compound", 10], ["Headphones", 2]]}, {"n": "Begin Ignition Tests", "needs": [["Wires", 20], ["Voltage Converter", 8], ["Sentinel Firing Core", 2], ["Rocket Thruster", 1]]}, {"n": "Implement Landing Capabilities", "needs": [["Ruined Parachute", 2], ["Crash Mat", 10], ["Shredder Gyro", 5], ["Breathtaking Snow Globe", 3]]}, {"n": "Final Tweaks", "needs": [["Sensors", 30], ["Broken Guidance System", 3], ["Advanced Electrical Components", 15], ["Vaporizer Regulator", 3]]}]}, {"name": "Phantom Targets (Part 2)", "ended": true, "note": "Ended September 6, 2026. Part 1 and the final stage are damage tasks, so they are not listed.", "stages": [{"n": "Bring In Glitched Wasp Parts", "needs": [["Glitched ARC Power Converter", 10], ["Glitched ARC Transmitter", 10], ["Glitched ARC Phased Array", 10], ["Advanced ARC Powercell", 10]]}, {"n": "Final Tests on Glitched Wasp Parts", "needs": [["Glitched ARC Light Ring", 10], ["Glitched ARC Circuitry", 10], ["ARC Thermo Lining", 10], ["ARC Circuitry", 10]]}]}, {"name": "High-Gain Antenna", "ended": true, "note": "Ended April 27, 2026 (temporary project).", "stages": [{"n": "Sturdy Base", "needs": [["ARC Alloy", 50], ["ARC Flex Rubber", 10], ["ARC Performance Steel", 10], ["Advanced ARC Powercell", 15]]}, {"n": "Data Logger", "needs": [["ARC Coolant", 15], ["ARC Thermo Lining", 15], ["Vaporizer Regulator", 4], ["Assessor Matrix", 6]]}, {"n": "Parabolic Dish", "needs": [["Surveyor Vault", 10], ["ARC Synthetic Resin", 20], ["Vaporizer Regulator", 15], ["Assessor Matrix", 18]]}]}, {"name": "Avian Alarm", "ended": true, "note": "Ended May 2026. The wiki does not list stage 5, so only stages 1 to 4 are here.", "stages": [{"n": "Initial Flock Intake", "needs": [["Tick Pod", 7], ["Canister", 20], ["Moss", 12], ["\"Twilight Compass\" Ship Model", 5]]}, {"n": "Preliminary Signal Birds", "needs": [["Comet Igniter", 3], ["Fertilizer", 10], ["Rusted Tools", 8], ["\"Velocity\" Ship Model", 5]]}, {"n": "Secondary Validation Birds", "needs": [["Vaporizer Regulator", 1], ["Water Filter", 3], ["Agave", 8], ["\"Sirena Dorata\" Ship Model", 5]]}, {"n": "Heightened Alert Birds", "needs": [["Turbine Compressor", 2], ["Red Coral Jewelry", 3], ["Roots", 4], ["\"Leviathan's Crown\" Ship Model", 1]]}]}, {"name": "Weather Monitor System", "ended": true, "note": "Ended March 31, 2026 (temporary project).", "stages": [{"n": "Atmospheric Pressure", "needs": [["Plastic Parts", 25], ["Metal Parts", 15], ["ARC Alloy", 5], ["Oil", 3]]}, {"n": "Sunlight", "needs": [["Snitch Scanner", 1], ["Wires", 3], ["Sensors", 3], ["Comet Igniter", 1]]}, {"n": "Precipitation", "needs": [["ARC Powercell", 5], ["Canister", 5], ["Steel Spring", 5], ["Fine Wristwatch", 1]]}, {"n": "Humidity", "needs": [["Duct Tape", 10], ["Rusted Bolts", 3], ["Water Pump", 1], ["Wasp Driver", 3]]}, {"n": "Temperature", "needs": [["Camera Lens", 3], ["Damaged Heat Sink", 1], ["Firefly Burner", 1], ["Voltage Converter", 3]]}]}, {"name": "Flickering Flames", "ended": true, "note": "Ended January 13, 2026. Candleberries came from a separate event.", "stages": [{"n": "Candlelight", "needs": [["Empty Wine Bottle", 1], ["Plastic Parts", 25], ["Durable Cloth", 5], ["Candleberries", 20]]}, {"n": "Decorations", "needs": [["Candle Holder", 3], ["Light Bulb", 3], ["Industrial Battery", 1], ["Candleberries", 50]]}, {"n": "Presents", "needs": [["Snap Blast Grenade", 5], ["Duct Tape", 10], ["Film Reel", 1], ["Candleberries", 60]]}, {"n": "Beverages", "needs": [["Coffee Pot", 2], ["Fireball Burner", 10], ["Water Filter", 2], ["Candleberries", 60]]}, {"n": "Meals", "needs": [["Mushroom", 7], ["Frying Pan", 2], ["Music Album", 2], ["Candleberries", 70]]}]}];
+  var qTrader = "";
+  function qItems(txt) {
+    if (!txt || txt === "-") { return []; }
+    return txt.split("; ").map(function (p) {
+      var m = /^(\d+)×\s*(.+)$/.exec(p);
+      return m ? { n: m[2], q: parseInt(m[1], 10) } : { n: p, q: 1 };
+    });
+  }
+  var QUESTS = QRAW.map(function (l) {
+    var f = l.split("|");
+    return { name: f[0], trader: f[1], loc: f[2].split("; "), req: qItems(f[3]), rew: qItems(f[4]) };
+  });
+  function qWiki(n) { return "https://arcraiders.wiki/wiki/" + encodeURIComponent(n.replace(/ /g, "_")); }
+  function qChip(it, mats) {
+    var lab = (it.q > 1 ? "<b>" + it.q + "&times;</b> " : "") + esc(it.n);
+    if (mats && mats[it.n]) {
+      var have = tracker[it.n] || 0, ok = have >= it.q;
+      return '<span class="y' + (ok ? " hl" : "") + '">' + lab + ' <span class="muted">(' + have + "/" + it.q + (ok ? " &#10003;" : "") + ")</span></span>";
+    }
+    return '<span class="y">' + lab + "</span>";
+  }
+  function qStatus(q, mats) {
+    var t = q.req.filter(function (r) { return mats[r.n]; });
+    if (!t.length) { return { t: t, ok: true, txt: "" }; }
+    var n = t.filter(function (r) { return (tracker[r.n] || 0) >= r.q; }).length, ok = n === t.length;
+    return { t: t, ok: ok, txt: ok ? "Tracker covers all " + t.length + " tracked item" + (t.length > 1 ? "s" : "") : n + " of " + t.length + " tracked items covered" };
+  }
+  function renderQuests() {
+    var mats = {};
+    allMaterials().forEach(function (m) { mats[m] = true; });
+    var traders = [];
+    QUESTS.forEach(function (q) { if (traders.indexOf(q.trader) === -1) { traders.push(q.trader); } });
+    document.getElementById("qTraders").innerHTML = ['<button type="button" class="chip" data-action="qTrader" data-t="" aria-pressed="' + (qTrader === "") + '">All traders</button>'].concat(traders.map(function (t) {
+      return '<button type="button" class="chip" data-action="qTrader" data-t="' + esc(t) + '" aria-pressed="' + (qTrader === t) + '">' + esc(t) + "</button>";
+    })).join("");
+    var term = document.getElementById("qQ").value.trim().toLowerCase();
+    var readyOnly = document.getElementById("qReady").checked;
+    var list = QUESTS.filter(function (q) {
+      if (qTrader && q.trader !== qTrader) { return false; }
+      if (term) {
+        var hay = (q.name + " " + q.trader + " " + q.loc.join(" ") + " " + q.req.map(function (r) { return r.n; }).join(" ") + " " + q.rew.map(function (r) { return r.n; }).join(" ")).toLowerCase();
+        if (!nameMatch(hay, term)) { return false; }
+      }
+      if (readyOnly) { var st = qStatus(q, mats); if (!st.t.length || !st.ok) { return false; } }
+      return true;
+    });
+    document.getElementById("qCount").textContent = list.length + " of " + QUESTS.length + " quests";
+    document.getElementById("qOut").innerHTML = list.length ? list.map(function (q) {
+      var st = qStatus(q, mats);
+      return '<div class="qcard"><div class="qh"><a href="' + esc(qWiki(q.name)) + '" target="_blank" rel="noopener">' + esc(q.name) + '</a>' +
+        '<span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span></div>" +
+        '<div class="qrow"><span class="lbl">Hand in</span>' + (q.req.length ? q.req.map(function (r) { return qChip(r, mats); }).join("") : '<span class="muted">Nothing listed</span>') + "</div>" +
+        (st.txt ? '<div class="qstat' + (st.ok ? " ok" : "") + '">' + st.txt + "</div>" : "") +
+        '<div class="qrow"><span class="lbl">Rewards</span>' + q.rew.map(function (r) { return qChip(r, null); }).join("") + "</div>" +
+        '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(q.name)) + '">Report</a></div></div>';
+    }).join("") : '<div class="empty-line">No quests match.</div>';
+  }
+  var presetIdx = 0;
+  function renderPresets() {
+    var sel = document.getElementById("presetSel");
+    if (!sel.options.length) {
+      sel.innerHTML = PRESETS.map(function (p, i) { return '<option value="' + i + '">' + esc(p.name) + (p.ended ? " (ended)" : "") + "</option>"; }).join("");
+    }
+    var p = PRESETS[presetIdx];
+    document.getElementById("presetNote").textContent = p.note;
+    document.getElementById("presetStages").innerHTML = p.stages.map(function (st, i) {
+      return '<button type="button" class="chip" data-action="presetAdd" data-s="' + i + '">Add stage ' + (i + 1) + ": " + esc(st.n) + "</button>";
+    }).join("") + '<button type="button" class="chip" data-action="presetAdd" data-s="-1">Add all stages combined</button>';
+  }
+  function presetAdd(si) {
+    var p = PRESETS[presetIdx], tot = {};
+    (si < 0 ? p.stages : [p.stages[si]]).forEach(function (st) { st.needs.forEach(function (n) { tot[n[0]] = (tot[n[0]] || 0) + n[1]; }); });
+    var name = si < 0 ? p.name + " (all listed stages)" : p.name + ", stage " + (si + 1) + ": " + p.stages[si].n;
+    projects.push({ name: name, needs: Object.keys(tot).map(function (k) { return [k, tot[k]]; }) });
+    save("arcHubProjects", projects);
+    document.getElementById("projMsg").textContent = "Saved " + name + ".";
+    renderProjects();
+  }
   var gearCat = "weapons";
   var GEAR_CATS = [["weapons", "Weapons"], ["augments", "Augments"], ["shields", "Shields"], ["healing", "Healing"], ["utility", "Utility and gadgets"], ["grenades", "Grenades"], ["traps", "Traps and mines"]];
   var WK = ["name", "cls", "rarity", "ammo", "mode", "dmg", "rate", "range", "mag", "reload", "wt", "hs", "armor", "dur", "sell", "stab", "agi", "stealth", "slots", "note"];
@@ -1603,6 +1714,7 @@ Integrated Binoculars|Common`;
   }
   function renderTools() {
     renderChecklist();
+    renderPresets();
     renderProjects();
     renderCompare();
     document.getElementById("itemList").innerHTML = items.map(function (it) { return '<option value="' + esc(it.name) + '"></option>'; }).join("");
@@ -1655,7 +1767,7 @@ Integrated Binoculars|Common`;
   }
   function applyHash() {
     var r = readHash();
-    if (["recycle", "tracker", "gear", "tools", "maps", "frozen", "updates"].indexOf(r.tab) === -1) { return; }
+    if (["recycle", "tracker", "gear", "quests", "tools", "maps", "frozen", "updates"].indexOf(r.tab) === -1) { return; }
     showTab(r.tab, true);
     if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
     if (r.tab === "maps" && r.arg) {
@@ -1674,7 +1786,8 @@ Integrated Binoculars|Common`;
     recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Not sure if an item is worth recycling? Set a goal in the Material tracker (for example 200 Metal Parts). Any item that gives a material you still need will show a green &ldquo;Helps your goals&rdquo; line, and you can tick &ldquo;Only items that help my goals&rdquo; to hide the rest.",
     tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Use the + and &minus; buttons to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
     gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
-    tools: "<b>Tools.</b> Tick off the raid checklist, save a project with what it needs and watch your tracker fill the bars, or compare what two items recycle into. You can also star items and build a recycle cart in the lookup, and export a backup from the Material tracker tab.",
+    quests: "<b>Quests.</b> Search by quest, trader, location, required item or reward, or tap a trader to filter. Required items you already track in the Material tracker show how many you have, and a highlighted line means your tracker covers them all. Tap a quest name to open its wiki page, where prerequisites are listed.",
+    tools: "<b>Tools.</b> Tick off the raid checklist, pick a project preset (Expedition stages, Trophy Display and past projects) or type your own, and watch your tracker fill the bars, or compare what two items recycle into. You can also star items and build a recycle cart in the lookup, and export a backup from the Material tracker tab.",
     maps: "<b>Maps.</b> Pick a map to see its difficulty, unlock requirement, conditions and what changed there, plus the overview image. Copy the address bar to share a specific map.",
     frozen: "<b>Frozen Trail 2.0.</b> A quick summary of the latest update: the new map, enemies, weapons, gear and balance changes.",
     updates: "<b>Update history.</b> Every major update from launch to now, newest first, with the main highlights. Weekly store updates and small hotfixes are left out."
@@ -1710,11 +1823,12 @@ Integrated Binoculars|Common`;
   function showTab(name, quiet) {
     curTab = name;
     renderHint();
-    ["recycle", "tracker", "gear", "tools", "maps", "frozen", "updates"].forEach(function (t) {
+    ["recycle", "tracker", "gear", "quests", "tools", "maps", "frozen", "updates"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
     });
+    if (name === "quests") { renderQuests(); }
     if (!quiet) { writeHash(); }
   }
 
@@ -1793,6 +1907,10 @@ Integrated Binoculars|Common`;
         document.getElementById("pName").value = ""; document.getElementById("pNeeds").value = "";
         pm.textContent = "Saved " + pn + "."; renderProjects();
       }
+    } else if (a === "qTrader") {
+      qTrader = t.getAttribute("data-t") || ""; renderQuests();
+    } else if (a === "presetAdd") {
+      presetAdd(parseInt(t.getAttribute("data-s"), 10));
     } else if (a === "projDel") {
       projects.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubProjects", projects); renderProjects();
     } else if (a === "exportData") {
@@ -1873,6 +1991,9 @@ Integrated Binoculars|Common`;
   document.getElementById("goalOnly").addEventListener("change", renderResults);
   document.getElementById("favOnly").addEventListener("change", renderResults);
   document.getElementById("gearQ").addEventListener("input", renderGear);
+  document.getElementById("qQ").addEventListener("input", renderQuests);
+  document.getElementById("qReady").addEventListener("change", renderQuests);
+  document.getElementById("presetSel").addEventListener("change", function () { presetIdx = parseInt(this.value, 10) || 0; renderPresets(); });
   document.getElementById("gearSort").addEventListener("change", renderGear);
   document.getElementById("cmpA").addEventListener("input", renderCompare);
   document.getElementById("cmpB").addEventListener("input", renderCompare);
@@ -1923,6 +2044,7 @@ Integrated Binoculars|Common`;
   renderCart();
   renderTools();
   renderGear();
+  renderQuests();
   applyHash();
   try {
     if ("serviceWorker" in window.navigator && /^https?:$/.test(window.location.protocol)) { window.navigator.serviceWorker.register("sw.js"); }

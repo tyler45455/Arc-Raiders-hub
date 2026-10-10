@@ -12,7 +12,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Install as an app:** add the site to your phone's home screen. There is also a light/dark theme toggle.
 - **Weapons & gear:** stats for all 26 weapons plus augments, shields, healing, utility, grenades, traps and mines. Filter, sort weapons by damage, fire rate, range, weight or sell price, and open full stats for each.
 - **Lookup extras:** star items, build a recycle cart, typo-tolerant search, recent searches, and a note when an item is mentioned in an update.
-- **Quests:** all 107 trader quests with trader, location, required items and rewards. Search by any of those, filter by trader, and see how much of each required item your tracker already covers.
+- **Quests:** all 107 trader quests with objectives, trader, location, required items and rewards. Search by any of those, filter by trader, and see how much of each required item your tracker already covers.
 - **Tools tab:** raid checklist, project helper with wiki presets (Expedition stages, Trophy Display and past projects) that compare what a project needs with your tracker and side-by-side item compare.
 - **Backup:** export and import your tracker, goals, stars, projects and checklist as text.
 - **Offline:** after one visit the site keeps working without a connection.

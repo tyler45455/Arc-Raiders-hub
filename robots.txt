@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tyler45455.github.io/Arc-Raiders-hub/sitemap.xml

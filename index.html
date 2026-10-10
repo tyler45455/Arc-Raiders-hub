@@ -871,7 +871,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   <section class="panel" id="panel-maps" role="tabpanel" aria-labelledby="tab-maps" hidden>
     <h2>Maps</h2>
     <p class="muted">Pick a map to see its difficulty, unlock requirement, conditions and what changed there. Detailed layouts are on the wiki; each card links to that map's page.</p>
-    <div class="mapfind"><label for="mapFind" class="muted">Find a room on any map</label><input type="search" id="mapFind" placeholder="Try Seed Vault, Hydroponic Dome, Old Town..." autocomplete="off"><div class="mapfindres" id="mapFindRes" aria-live="polite"></div></div>
+    <div class="mapfind"><label for="mapFind" class="muted">Find a room on any map</label><input type="text" id="mapFind" placeholder="Try Seed Vault, Hydroponic Dome, Old Town..." autocomplete="off"><div class="mapfindres" id="mapFindRes" aria-live="polite"></div></div>
     <div class="chips" id="mapChips" role="group" aria-label="Maps"></div>
     <div class="mapcard" id="mapCard" aria-live="polite"></div>
     <div class="tablewrap"><table>
@@ -926,7 +926,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
         <tr><td>Reference: enemies, traders, workshop, skills, blueprints</td><td>October 10, 2026</td></tr>
         <tr><td>Project presets</td><td>October 10, 2026 (Sheltered Retreat not added yet)</td></tr>
         <tr><td>Trials (Season 6, Week 1)</td><td>October 10, 2026 (wiki page last edited October 8)</td></tr>
-        <tr><td>Maps and update history</td><td>October 9, 2026</td></tr>
+        <tr><td>Maps and update history</td><td>October 10, 2026 (detail maps and room names added from in-game screenshots; difficulty and unlock not re-checked)</td></tr>
       </tbody></table></div>
       <div class="muted">A weekly check compares the wiki with this site and opens an issue on GitHub when something has changed.</div>
     </details>
@@ -2210,6 +2210,7 @@ Integrated Binoculars|Common`;
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
   var DATA_CHANGES = [
+    ["Oct 10, 2026", "Added detailed, zoomable maps for 7 maps with a key, a room finder (115 named rooms) and personal pins, from in-game screenshots. Difficulty and unlock data were not re-checked."],
     ["Oct 10, 2026", "Added Trials (Season 6) to the Reference tab: how Trials work, the Week 1 challenges and removed challenges. Point values and season rewards are not on the wiki yet."],
     ["Oct 10, 2026", "Added Research Station levels 1 to 4 from the wiki Outpost page (a stub: crafting details are not published yet)."],
     ["Oct 10, 2026", "Added a Sheltered Retreat project preset from a community guide, because the wiki page would not load."],

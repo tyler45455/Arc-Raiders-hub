@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arc Raiders Hub - Recycling Lookup, Material Tracker and Frozen Trail 2.0 Updates</title>
+<meta name="description" content="Free ARC Raiders recycling lookup and material tracker. See what items recycle into, track your materials, and read every update through Frozen Trail 2.0.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0b1220">
+<!-- After you publish, add: <link rel="canonical" href="https://YOUR-SITE-URL/"> -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Arc Raiders Hub - Recycling Lookup and Material Tracker">
+<meta property="og:description" content="Search what ARC Raiders items recycle into, track your materials, and catch up on every update through Frozen Trail 2.0.">
+<meta property="og:site_name" content="Arc Raiders Hub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Arc Raiders Hub - Recycling Lookup and Material Tracker">
+<meta name="twitter:description" content="Search what ARC Raiders items recycle into, track your materials, and catch up on every update through Frozen Trail 2.0.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b1220'/%3E%3Cpath d='M32 10 L52 46 H12 Z' fill='none' stroke='%236ec6ff' stroke-width='5' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Arc Raiders Hub",
+  "description": "Free ARC Raiders recycling lookup, material tracker and update history through Frozen Trail 2.0.",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #121b2e;
+    --panel2: #182440;
+    --line: #25345a;
+    --text: #e6edf8;
+    --muted: #8fa0c0;
+    --ice: #6ec6ff;
+    --ice2: #3b9be0;
+    --good: #4ade80;
+    --bad: #f87171;
+    --common: #9aa5b8;
+    --uncommon: #4ade80;
+    --rare: #38bdf8;
+    --epic: #c084fc;
+    --legendary: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, #10305a 0%, #0b1220 70%);
+    border-bottom: 1px solid var(--line);
+    padding: 28px 20px 0;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 30px; letter-spacing: 0.5px; }
+  h1 span { color: var(--ice); }
+  .tagline { color: var(--muted); margin: 4px 0 18px; font-size: 14px; }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav button {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+  }
+  nav button:hover { color: var(--text); }
+  nav button.active { color: var(--ice); border-bottom-color: var(--ice); }
+  main { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  h2 { font-size: 22px; margin-bottom: 14px; color: var(--ice); }
+  h3 { font-size: 16px; margin-bottom: 8px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .muted { color: var(--muted); font-size: 13px; }
+  .notice {
+    background: #2a2410;
+    border: 1px solid #6b5a1a;
+    color: #f3dd8a;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #0b1220;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .r-Common { background: var(--common); }
+  .r-Uncommon { background: var(--uncommon); }
+  .r-Rare { background: var(--rare); }
+  .r-Epic { background: var(--epic); }
+  .r-Legendary { background: var(--legendary); }
+  .r-Unknown { background: #64748b; color: #fff; }
+  .tag { background: var(--panel2); border: 1px solid var(--line); color: var(--muted); }
+  input[type=text], input[type=number], select {
+    background: var(--panel2);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 15px;
+    width: 100%;
+  }
+  input:focus, select:focus { outline: 2px solid var(--ice2); }
+  button.btn {
+    background: var(--ice2);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  button.btn:hover { background: var(--ice); color: #0b1220; }
+  button.btn.ghost { background: var(--panel2); border: 1px solid var(--line); color: var(--text); }
+  button.btn.ghost:hover { border-color: var(--ice); }
+  button.btn.danger { background: #7f1d1d; }
+  button.btn.danger:hover { background: var(--bad); color: #0b1220; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; }
+  .chip {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    color: var(--ice);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .chip:hover { border-color: var(--ice); }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--ice2);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .row .name { font-weight: bold; }
+  .yield-list { color: var(--muted); font-size: 13px; margin-top: 3px; }
+  .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .section-label { margin: 20px 0 10px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Timeline */
+  .timeline { position: relative; margin-left: 12px; border-left: 2px solid var(--line); padding-left: 22px; }
+  .tl-item { position: relative; margin-bottom: 18px; }
+  .tl-item::before {
+    content: "";
+    position: absolute;
+    left: -30px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ice2);
+    border: 2px solid var(--bg);
+  }
+  .tl-item.latest::before { background: var(--good); box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.2); }
+  .tl-date { color: var(--ice); font-size: 12px; font-weight: bold; }
+  .tl-title { font-size: 17px; font-weight: bold; }
+  .tl-body { color: var(--muted); font-size: 14px; }
+  ul.clean { list-style: none; }
+  ul.clean li { padding: 4px 0 4px 16px; position: relative; font-size: 14px; }
+  ul.clean li::before { content: ""; position: absolute; left: 0; top: 12px; width: 6px; height: 6px; background: var(--ice); border-radius: 50%; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .inv-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .inv-card { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .inv-count { font-size: 30px; font-weight: bold; color: var(--ice); }
+  .inv-top { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+  .qty-btn { width: 34px; height: 34px; border-radius: 6px; border: none; font-size: 18px; font-weight: bold; cursor: pointer; color: #fff; }
+  .qty-btn.minus { background: #7f1d1d; }
+  .qty-btn.plus { background: #166534; }
+  .form-grid { display: grid; gap: 10px; grid-template-columns: 2fr 1fr 3fr auto; align-items: end; }
+  .form-grid label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  @media (max-width: 760px) { .form-grid { grid-template-columns: 1fr; } }
+  .empty { text-align: center; color: var(--muted); padding: 40px 10px; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>ARC RAIDERS <span>HUB</span></h1>
+    <p class="tagline">Recycling lookup, material tracker and update history - current through Frozen Trail 2.0 (October 8, 2026)</p>
+    <nav id="nav">
+      <button data-tab="updates" class="active">Updates</button>
+      <button data-tab="frozen">Frozen Trail 2.0</button>
+      <button data-tab="recycle">Recycling Lookup</button>
+      <button data-tab="tracker">Material Tracker <span id="trackerCount"></span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- UPDATES -->
+  <section id="page-updates" class="page active">
+    <h2>Update History</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <!-- FROZEN TRAIL -->
+  <section id="page-frozen" class="page">
+    <h2>Frozen Trail 2.0 - October 8, 2026</h2>
+    <p class="muted" style="margin-bottom:14px;">Described as the biggest update since launch. Highlights from the official patch notes and community write-ups.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>New Map and Conditions</h3>
+        <ul class="clean">
+          <li><b>Pendola Pass</b> - new frozen mountain map beyond the Rust Belt</li>
+          <li><b>Frigate</b> - major new ARC encounter and map condition</li>
+          <li><b>Redirection</b> - new map condition</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>New ARC</h3>
+        <ul class="clean">
+          <li>Bully</li>
+          <li>Skulker</li>
+          <li>Hydra</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>New Weapons</h3>
+        <ul class="clean">
+          <li>Bantam</li>
+          <li>Stiletto</li>
+          <li><b>Amplified Weapons</b> - upgraded versions of existing weapons</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>New Gear</h3>
+        <ul class="clean">
+          <li>Grappling Hook</li>
+          <li>Basic Camera and Advanced Camera</li>
+          <li>Tether Launcher</li>
+          <li>Yank Grenade</li>
+          <li>Mountaineer's Detector</li>
+          <li>Banjo and Harmonica</li>
+        </ul>
+        <p class="muted" style="margin-top:8px;">Per the wiki loot table, Basic Camera, Advanced Camera and Banjo cannot be recycled.</p>
+      </div>
+      <div class="card">
+        <h3>The Outpost</h3>
+        <ul class="clean">
+          <li>New Outpost settlement with a Research Bench</li>
+          <li>Lootable "Design" items unlock craftable Outpost furniture (about 100 designs)</li>
+          <li>Celeste now trades materials for furniture and the new gameplay items</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Progression</h3>
+        <ul class="clean">
+          <li>Skill Tree fully revamped (choose one branch, pick from three skills at branch ends)</li>
+          <li>Reward Pass replaces Raider Decks; Cred removed and replaced by Reward Points</li>
+          <li>Frozen Trail Pass: 60 levels, Free and Premium tracks</li>
+          <li>22 new quests</li>
+          <li>Max stash size +2 levels (328 max without Expedition bonuses)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Weapon Stencils</h3>
+        <ul class="clean">
+          <li>14 stencils total: 5 Premium Pass, 1 DLC, 8 found Topside</li>
+          <li>Learn them like blueprints, apply to compatible weapons</li>
+          <li>Applying needs Stencil Parts (found Topside)</li>
+          <li>Stenciled weapons can still be looted if you are downed</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Other Changes</h3>
+        <ul class="clean">
+          <li>New Scrambling move to sprint up steep slopes</li>
+          <li>Reworked Map Selection screen and new default gamepad mapping</li>
+          <li>Riven Tides loot value up about 15%</li>
+          <li>Drop loot to the ground directly from containers</li>
+          <li>Collector Set DLC available</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Balance Changes (selected)</h3>
+      <table>
+        <thead><tr><th>Item</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>Hullcracker</td><td>Explosive damage reworked: over 50% more to armor plates, about 30% less to fragile parts</td></tr>
+          <tr><td>Jupiter</td><td>Damage no longer hits ARC parts behind the target twice; stronger vs armor, slightly weaker vs weak spots</td></tr>
+          <tr><td>Anvil</td><td>Now Rare, Tech Mod slot removed, Splitter moved to the Amplified Anvil</td></tr>
+          <tr><td>Flame Spray</td><td>Longer range</td></tr>
+          <tr><td>Tian Wen</td><td>No longer sells Anvil and Hullcracker offers</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">Sources: official Embark Studios patch notes (arcraiders.com) plus community summaries. Details can change with hotfixes - check the official notes for the latest.</p>
+  </section>
+
+  <!-- RECYCLE -->
+  <section id="page-recycle" class="page">
+    <h2>Recycling Lookup</h2>
+    <div class="notice" id="dataNotice"></div>
+
+    <input type="text" id="searchBox" placeholder="Search an item (Alarm Clock) or a material (Metal Parts, Wires, ARC Alloy)...">
+    <div class="chips" id="chips"></div>
+    <div id="searchResults"></div>
+
+    <div class="card" style="margin-top:28px;">
+      <h3>Add or edit an item</h3>
+      <p class="muted" style="margin-bottom:12px;">Fill in items missing from the database. Saved in your browser. Enter an existing name to overwrite it. Recycles To format: <b>6 Plastic Parts, 1 Processor</b></p>
+      <div class="form-grid">
+        <div><label>Item name</label><input type="text" id="fName" placeholder="Rusted Gear"></div>
+        <div><label>Rarity</label>
+          <select id="fRarity">
+            <option>Common</option><option>Uncommon</option><option selected>Rare</option><option>Epic</option><option>Legendary</option>
+          </select>
+        </div>
+        <div><label>Recycles to</label><input type="text" id="fYields" placeholder="4 Metal Parts, 2 Mechanical Components"></div>
+        <button class="btn" data-action="saveItem">Save item</button>
+      </div>
+      <div id="formMsg" class="muted" style="margin-top:8px;"></div>
+      <div id="customList" style="margin-top:14px;"></div>
+    </div>
+  </section>
+
+  <!-- TRACKER -->
+  <section id="page-tracker" class="page">
+    <h2>Material Tracker</h2>
+    <p class="muted" style="margin-bottom:14px;">Add materials from the Recycling Lookup, or add them by hand below. Saved in your browser.</p>
+    <div class="card">
+      <div class="form-grid" style="grid-template-columns: 3fr 1fr auto;">
+        <div><label>Material</label><input type="text" id="tName" list="matList" placeholder="Metal Parts"></div>
+        <div><label>Amount</label><input type="number" id="tQty" value="1" min="1"></div>
+        <button class="btn" data-action="trackAdd">Add</button>
+      </div>
+      <datalist id="matList"></datalist>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div class="muted" id="trackerSummary"></div>
+      <button class="btn danger" data-action="trackReset">Reset all</button>
+    </div>
+    <div id="inventory"></div>
+  </section>
+
+</main>
+
+<footer>
+  Fan-made tool, not affiliated with Embark Studios. Data from the ARC Raiders Wiki (arcraiders.wiki) and official patch notes.<br>
+  Spotted a wrong number or missing item? <a id="footerReport" href="#" target="_blank" rel="noopener" style="color:#6ec6ff;">Report it here</a>.
+</footer>
+
+<script>
+  // ---- Report-a-wrong-number settings: edit these two lines before publishing ----
+  var REPORT_EMAIL = "tyler45455@gmail.com";   // where reports are sent (used if no issues URL below)
+  var REPORT_ISSUES_URL = "";                    // optional, e.g. "https://github.com/yourname/arc-raiders-hub/issues/new"
+
+  function buildReportUrl(itemName) {
+    var subject = itemName ? "Wrong number: " + itemName : "Arc Raiders Hub - data report";
+    var body = itemName
+      ? "Item: " + itemName + "\n\nWhat is wrong:\n\nWhat it should say (game version or screenshot helps):\n"
+      : "What is wrong:\n\nPage or item:\n\nCorrect info (game version or screenshot helps):\n";
+    if (REPORT_ISSUES_URL) {
+      return REPORT_ISSUES_URL + "?title=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    }
+    return "mailto:" + REPORT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  }
+
+  function reportLinkHtml(itemName) {
+    var url = buildReportUrl(itemName).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    return '<a class="btn ghost" style="text-decoration:none;display:inline-block;" href="' + url +
+      '" target="_blank" rel="noopener">Report wrong number</a>';
+  }
+
+  document.getElementById("footerReport").href = buildReportUrl("");
+</script>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- storage (falls back to memory if the browser blocks it) ----------
+  var mem = {};
+  var store = {
+    get: function (k, d) {
+      try {
+        var v = window.localStorage.getItem(k);
+        if (v !== null) { return JSON.parse(v); }
+      } catch (e) {}
+      return mem.hasOwnProperty(k) ? mem[k] : d;
+    },
+    set: function (k, v) {
+      mem[k] = v;
+      try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+    }
+  };
+
+  // ---------- update timeline ----------
+  var UPDATES = [
+    { date: "Oct 8, 2026", title: "Frozen Trail 2.0", ver: "2.0", latest: true,
+      body: "Pendola Pass map, Bully/Skulker/Hydra, Bantam and Stiletto, Amplified Weapons, the Outpost, revamped Skill Tree, Reward Pass (Cred removed), Weapon Stencils." },
+    { date: "Sep 8, 2026", title: "Live Update 1.45.0", ver: "1.45.0",
+      body: "Expedition 5 and the Ascending the Mountain project, Hornet Hunter set, Unreal Engine 5.7 upgrade, Cred retirement announced, Aphelion sway reduced." },
+    { date: "Jul 7, 2026", title: "Live Update 1.36.0", ver: "1.36.0",
+      body: "Expedition 4 (Zenith), Trials Season 5, THE FINALS crossover outfit, ARC Turbine loot values increased, store redesign, solo/duo/trio matchmaking split." },
+    { date: "Jun 16, 2026", title: "Forgotten Relics", ver: "1.33.0",
+      body: "Live update between Riven Tides and the July update." },
+    { date: "Apr 28, 2026", title: "Riven Tides", ver: "1.26.0",
+      body: "New coastal map, ARC Turbine boss, Beachcombing condition, weapon durability rework, Bettina buff, Expedition 3 and the Last Resort event." },
+    { date: "Mar 31, 2026", title: "Flashpoint", ver: "1.22.0",
+      body: "ARC Assessor endgame operation, Vaporizer flying enemy, Canto SMG and Dolabra energy shotgun, Surge Coil deployable, Shredders on all maps." },
+    { date: "Feb 24, 2026", title: "Shrouded Sky", ver: "1.17.0",
+      body: "Stella Montis map, Hurricane map condition, two new ARC enemies, a free Raider Deck and weapon balance changes." },
+    { date: "Feb 10, 2026", title: "Update 1.15.0", ver: "1.15.0",
+      body: "Cold Snap returns with frostbite and extra loot, Shared Watch community event (ran to Feb 24), Trailblazer nerf." },
+    { date: "Jan 27, 2026", title: "Headwinds", ver: "1.13.0",
+      body: "Start of the Escalation roadmap: matchmaking option for level 40+ and the Bird City minor condition." },
+    { date: "Dec 16, 2025", title: "Cold Snap", ver: "1.7.0",
+      body: "Snowfall map condition and a Goalie Raider Deck." },
+    { date: "Nov 13, 2025", title: "North Line", ver: "",
+      body: "First major content drop after launch." },
+    { date: "Oct 30, 2025", title: "Launch", ver: "",
+      body: "ARC Raiders releases on PC, PS5 and Xbox." }
+  ];
+
+  // ---------- recycling data ----------
+  // Verified against the ARC Raiders Wiki loot table. yields = null means "cannot be recycled".
+  // The wiki page only loaded partway (items starting A to Bl), so this is a partial list.
+  var BASE = [
+    ["Acoustic Guitar", "Legendary", "Quick Use", [["Metal Parts", 4], ["Wires", 6]]],
+    ["Adrenaline Shot", "Common", "Quick Use", [["Chemicals", 1], ["Plastic Parts", 1]]],
+    ["Advanced ARC Powercell", "Rare", "Topside Material", [["ARC Powercell", 2]]],
+    ["Advanced Camera", "Rare", "Quick Use", null],
+    ["Advanced Electrical Components", "Rare", "Refined Material", [["Electrical Components", 1], ["Wires", 1]]],
+    ["Advanced Mechanical Components", "Rare", "Refined Material", [["Mechanical Components", 1], ["Steel Spring", 1]]],
+    ["Agave", "Uncommon", "Nature", [["Assorted Seeds", 3]]],
+    ["Agave Juice", "Common", "Quick Use", null],
+    ["Air Freshener", "Uncommon", "Trinket", null],
+    ["Alarm Clock", "Rare", "Recyclable", [["Processor", 1], ["Plastic Parts", 6]]],
+    ["Alien Duck", "Uncommon", "Trinket", null],
+    ["Angled Grip I", "Common", "Mods", [["Plastic Parts", 6]]],
+    ["Angled Grip II", "Uncommon", "Mods", [["Duct Tape", 1], ["Mechanical Components", 1]]],
+    ["Angled Grip III", "Rare", "Mods", [["Mod Components", 1], ["Duct Tape", 2]]],
+    ["Antiseptic", "Rare", "Refined Material", [["Chemicals", 10]]],
+    ["Anvil Splitter", "Legendary", "Mods", [["Mod Components", 1], ["Processor", 1]]],
+    ["Apricot", "Uncommon", "Nature", [["Assorted Seeds", 3]]],
+    ["ARC Alloy", "Uncommon", "Topside Material", [["Metal Parts", 2]]],
+    ["ARC Circuitry", "Rare", "Topside Material", [["ARC Alloy", 2]]],
+    ["ARC Conductive Coupler", "Epic", "Topside Material", null],
+    ["ARC Coolant", "Rare", "Recyclable", [["Chemicals", 16]]],
+    ["ARC Flex Rubber", "Rare", "Recyclable", [["Rubber Parts", 16]]],
+    ["ARC Insulated Coupler", "Epic", "Topside Material", null],
+    ["ARC Motion Core", "Rare", "Topside Material", [["ARC Alloy", 2]]],
+    ["ARC Performance Steel", "Rare", "Recyclable", [["Metal Parts", 12]]],
+    ["ARC Plated Coupler", "Epic", "Topside Material", null],
+    ["ARC Powercell", "Common", "Topside Material", null],
+    ["ARC Synthetic Resin", "Rare", "Recyclable", [["Plastic Parts", 14]]],
+    ["ARC Thermo Lining", "Rare", "Recyclable", [["Fabric", 16]]],
+    ["Arcade Duck", "Epic", "Trinket", null],
+    ["Assessor Matrix", "Epic", "Recyclable", [["Advanced Mechanical Components", 1], ["Advanced ARC Powercell", 3]]],
+    ["Assorted Seeds", "Common", "Nature", null],
+    ["Bandage", "Common", "Quick Use", [["Fabric", 2]]],
+    ["Banjo", "Rare", "Quick Use", null],
+    ["Barricade Kit", "Uncommon", "Quick Use", [["Metal Parts", 4]]],
+    ["Basic Camera", "Uncommon", "Quick Use", null],
+    ["Bastion Cell", "Epic", "Recyclable", [["Advanced Mechanical Components", 1], ["ARC Alloy", 3]]],
+    ["Battered Paperback", "Common", "Research Item", null],
+    ["Battery", "Uncommon", "Topside Material", [["Metal Parts", 2]]],
+    ["Bicycle Pump", "Rare", "Recyclable", [["Metal Parts", 10], ["Canister", 4]]],
+    ["Binoculars", "Common", "Quick Use", [["Rubber Parts", 2], ["Plastic Parts", 4]]],
+    ["Blaze Grenade", "Rare", "Quick Use", [["Oil", 2], ["Metal Parts", 4]]],
+    ["Blaze Grenade Trap", "Rare", "Quick Use", null],
+    ["Bloated Tuna Can", "Common", "Trinket", null],
+    ["Blue Light Stick", "Common", "Quick Use", [["Chemicals", 1]]]
+  ];
+
+  var items = [];
+  var customItems = store.get("arcCustomItems", []);
+  var tracker = store.get("arcTracker", {});
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function buildItems() {
+    items = BASE.map(function (r) {
+      return { name: r[0], rarity: r[1], category: r[2], yields: r[3], custom: false };
+    });
+    customItems.forEach(function (c) {
+      var idx = -1;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].name.toLowerCase() === c.name.toLowerCase()) { idx = i; break; }
+      }
+      var entry = { name: c.name, rarity: c.rarity, category: "Custom", yields: c.yields, custom: true };
+      if (idx >= 0) { items[idx] = entry; } else { items.push(entry); }
+    });
+    items.sort(function (a, b) { return a.name.localeCompare(b.name); });
+  }
+
+  function allMaterials() {
+    var set = {};
+    items.forEach(function (it) {
+      if (it.yields) { it.yields.forEach(function (y) { set[y[0]] = true; }); }
+    });
+    Object.keys(tracker).forEach(function (k) { set[k] = true; });
+    return Object.keys(set).sort();
+  }
+
+  // ---------- tabs ----------
+  function showTab(name) {
+    var pages = document.querySelectorAll(".page");
+    for (var i = 0; i < pages.length; i++) { pages[i].classList.remove("active"); }
+    var btns = document.querySelectorAll("#nav button");
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].classList.toggle("active", btns[j].getAttribute("data-tab") === name);
+    }
+    document.getElementById("page-" + name).classList.add("active");
+  }
+
+  // ---------- render: timeline ----------
+  function renderTimeline() {
+    var html = "";
+    UPDATES.forEach(function (u) {
+      html += '<div class="tl-item' + (u.latest ? " latest" : "") + '">' +
+        '<div class="tl-date">' + esc(u.date) + (u.ver ? " &middot; v" + esc(u.ver) : "") + (u.latest ? " &middot; LATEST" : "") + "</div>" +
+        '<div class="tl-title">' + esc(u.title) + "</div>" +
+        '<div class="tl-body">' + esc(u.body) + "</div></div>";
+    });
+    document.getElementById("timeline").innerHTML = html;
+  }
+
+  // ---------- render: recycling ----------
+  function yieldText(yields) {
+    return yields.map(function (y) { return y[1] + "x " + y[0]; }).join(", ");
+  }
+
+  function itemRow(it) {
+    var right = "";
+    var body = "";
+    if (it.yields) {
+      body = "Recycles to: " + esc(yieldText(it.yields));
+      right = '<button class="btn" data-action="recycleAll" data-item="' + esc(it.name) + '">Recycle (add all)</button>';
+    } else {
+      body = "Cannot be recycled";
+    }
+    return '<div class="row"><div><span class="name">' + esc(it.name) + "</span>" +
+      '<span class="badge r-' + esc(it.rarity || "Unknown") + '">' + esc(it.rarity || "?") + "</span>" +
+      '<span class="badge tag">' + esc(it.category) + "</span>" +
+      '<div class="yield-list">' + body + "</div></div>" +
+      '<div class="btns">' + right + reportLinkHtml(it.name) + "</div></div>";
+  }
+
+  function sourceRow(it, material) {
+    var qty = 0;
+    it.yields.forEach(function (y) { if (y[0] === material) { qty = y[1]; } });
+    return '<div class="row"><div><span class="name">' + esc(it.name) + "</span>" +
+      '<span class="badge r-' + esc(it.rarity) + '">' + esc(it.rarity) + "</span>" +
+      '<div class="yield-list">Gives ' + qty + "x " + esc(material) + " &middot; full result: " + esc(yieldText(it.yields)) + "</div></div>" +
+      '<div class="btns"><button class="btn" data-action="recycleAll" data-item="' + esc(it.name) + '">Recycle (add all)</button>' + reportLinkHtml(it.name) + "</div></div>";
+  }
+
+  function renderSearch() {
+    var q = document.getElementById("searchBox").value.trim().toLowerCase();
+    var out = document.getElementById("searchResults");
+    if (!q) {
+      var list = items.filter(function (it) { return it.yields; });
+      var html = '<div class="section-label">All recyclable items in the database (' + list.length + ")</div>";
+      list.forEach(function (it) { html += itemRow(it); });
+      out.innerHTML = html;
+      return;
+    }
+
+    var nameMatches = items.filter(function (it) { return it.name.toLowerCase().indexOf(q) !== -1; });
+    var matMatches = {};
+    items.forEach(function (it) {
+      if (!it.yields) { return; }
+      it.yields.forEach(function (y) {
+        if (y[0].toLowerCase().indexOf(q) !== -1) {
+          if (!matMatches[y[0]]) { matMatches[y[0]] = []; }
+          matMatches[y[0]].push(it);
+        }
+      });
+    });
+
+    var html = "";
+    if (nameMatches.length) {
+      html += '<div class="section-label">Items matching "' + esc(q) + '" - what they recycle into</div>';
+      nameMatches.forEach(function (it) { html += itemRow(it); });
+    }
+    Object.keys(matMatches).sort().forEach(function (mat) {
+      html += '<div class="section-label">Items that recycle into ' + esc(mat) + " (" + matMatches[mat].length + ")</div>";
+      matMatches[mat].sort(function (a, b) { return a.name.localeCompare(b.name); }).forEach(function (it) {
+        html += sourceRow(it, mat);
+      });
+    });
+    if (!html) {
+      html = '<div class="empty">Nothing found for "' + esc(q) + '". Use the form below to add it.</div>';
+    }
+    out.innerHTML = html;
+  }
+
+  function renderChips() {
+    var popular = ["Metal Parts", "Plastic Parts", "Chemicals", "Rubber Parts", "Fabric", "Wires", "ARC Alloy", "Processor", "Canister", "Oil"];
+    var html = "";
+    popular.forEach(function (p) { html += '<span class="chip" data-action="chip" data-q="' + esc(p) + '">' + esc(p) + "</span>"; });
+    document.getElementById("chips").innerHTML = html;
+  }
+
+  function renderNotice() {
+    var recyclable = items.filter(function (i) { return i.yields; }).length;
+    document.getElementById("dataNotice").innerHTML =
+      "<b>Data coverage:</b> " + items.length + " items loaded (" + recyclable + " recyclable), taken from the ARC Raiders Wiki loot table (page last edited April 2026, before Frozen Trail). " +
+      "The wiki page only loaded for items starting A to Bl, so the list is incomplete. Quantities can also change in patches, so double-check in-game and use the form below to add or correct items.";
+  }
+
+  function renderCustom() {
+    var box = document.getElementById("customList");
+    if (!customItems.length) { box.innerHTML = ""; return; }
+    var html = '<div class="section-label">Your custom items</div>';
+    customItems.forEach(function (c) {
+      html += '<div class="row"><div><span class="name">' + esc(c.name) + "</span>" +
+        '<span class="badge r-' + esc(c.rarity) + '">' + esc(c.rarity) + "</span>" +
+        '<div class="yield-list">' + esc(yieldText(c.yields)) + "</div></div>" +
+        '<div class="btns"><button class="btn danger" data-action="deleteItem" data-item="' + esc(c.name) + '">Delete</button></div></div>';
+    });
+    box.innerHTML = html;
+  }
+
+  function parseYields(text) {
+    var parts = text.split(",");
+    var out = [];
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i].trim();
+      if (!p) { continue; }
+      var m = p.match(/^(\d+)\s*x?\s+(.+)$/i);
+      if (!m) { return null; }
+      out.push([m[2].trim(), parseInt(m[1], 10)]);
+    }
+    return out.length ? out : null;
+  }
+
+  function saveItem() {
+    var name = document.getElementById("fName").value.trim();
+    var rarity = document.getElementById("fRarity").value;
+    var ytxt = document.getElementById("fYields").value.trim();
+    var msg = document.getElementById("formMsg");
+    if (!name) { msg.textContent = "Enter an item name."; return; }
+    var y = parseYields(ytxt);
+    if (!y) { msg.textContent = 'Use the format "6 Plastic Parts, 1 Processor".'; return; }
+    customItems = customItems.filter(function (c) { return c.name.toLowerCase() !== name.toLowerCase(); });
+    customItems.push({ name: name, rarity: rarity, yields: y });
+    store.set("arcCustomItems", customItems);
+    document.getElementById("fName").value = "";
+    document.getElementById("fYields").value = "";
+    msg.textContent = "Saved " + name + ".";
+    refreshAll();
+  }
+
+  function deleteItem(name) {
+    customItems = customItems.filter(function (c) { return c.name !== name; });
+    store.set("arcCustomItems", customItems);
+    refreshAll();
+  }
+
+  // ---------- tracker ----------
+  function addMaterial(name, qty) {
+    tracker[name] = (tracker[name] || 0) + qty;
+    if (tracker[name] <= 0) { delete tracker[name]; }
+    store.set("arcTracker", tracker);
+    renderTracker();
+  }
+
+  function renderTracker() {
+    var keys = Object.keys(tracker).sort();
+    var total = 0;
+    keys.forEach(function (k) { total += tracker[k]; });
+    document.getElementById("trackerCount").textContent = keys.length ? "(" + keys.length + ")" : "";
+    document.getElementById("trackerSummary").textContent = keys.length ?
+      keys.length + " material types, " + total + " total" : "";
+    var box = document.getElementById("inventory");
+    if (!keys.length) {
+      box.innerHTML = '<div class="empty">Nothing tracked yet. Add materials above, or use "Recycle (add all)" in the Recycling Lookup.</div>';
+      return;
+    }
+    var html = '<div class="inv-grid">';
+    keys.forEach(function (k) {
+      html += '<div class="inv-card"><div class="name">' + esc(k) + "</div>" +
+        '<div class="inv-top"><div class="inv-count">' + tracker[k] + "</div>" +
+        '<div class="btns">' +
+        '<button class="qty-btn minus" data-action="dec" data-m="' + esc(k) + '">-</button>' +
+        '<button class="qty-btn plus" data-action="inc" data-m="' + esc(k) + '">+</button>' +
+        "</div></div></div>";
+    });
+    html += "</div>";
+    box.innerHTML = html;
+  }
+
+  function renderDatalist() {
+    var html = "";
+    allMaterials().forEach(function (m) { html += '<option value="' + esc(m) + '"></option>'; });
+    document.getElementById("matList").innerHTML = html;
+  }
+
+  function refreshAll() {
+    buildItems();
+    renderNotice();
+    renderSearch();
+    renderCustom();
+    renderDatalist();
+    renderTracker();
+  }
+
+  // ---------- events ----------
+  document.addEventListener("click", function (e) {
+    var t = e.target;
+    while (t && t !== document && !t.getAttribute("data-action") && !t.getAttribute("data-tab")) {
+      t = t.parentNode;
+    }
+    if (!t || t === document) { return; }
+
+    var tab = t.getAttribute("data-tab");
+    if (tab) { showTab(tab); return; }
+
+    var action = t.getAttribute("data-action");
+    if (action === "chip") {
+      document.getElementById("searchBox").value = t.getAttribute("data-q");
+      renderSearch();
+    } else if (action === "recycleAll") {
+      var nm = t.getAttribute("data-item");
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].name === nm && items[i].yields) {
+          items[i].yields.forEach(function (y) { addMaterial(y[0], y[1]); });
+          t.textContent = "Added";
+          break;
+        }
+      }
+    } else if (action === "saveItem") {
+      saveItem();
+    } else if (action === "deleteItem") {
+      deleteItem(t.getAttribute("data-item"));
+    } else if (action === "trackAdd") {
+      var name = document.getElementById("tName").value.trim();
+      var qty = parseInt(document.getElementById("tQty").value, 10);
+      if (name && qty > 0) {
+        addMaterial(name, qty);
+        document.getElementById("tName").value = "";
+        document.getElementById("tQty").value = 1;
+        renderDatalist();
+      }
+    } else if (action === "inc") {
+      addMaterial(t.getAttribute("data-m"), 1);
+    } else if (action === "dec") {
+      addMaterial(t.getAttribute("data-m"), -1);
+    } else if (action === "trackReset") {
+      if (window.confirm("Reset all tracked materials?")) {
+        tracker = {};
+        store.set("arcTracker", tracker);
+        renderTracker();
+      }
+    }
+  });
+
+  document.getElementById("searchBox").addEventListener("input", renderSearch);
+
+  // ---------- init ----------
+  renderTimeline();
+  renderChips();
+  refreshAll();
+})();
+</script>
+</body>
+</html>

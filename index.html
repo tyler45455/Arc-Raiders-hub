@@ -377,7 +377,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   <div class="wrap">
     <div>Fan-made, not affiliated with Embark Studios. ARC RAIDERS is a trademark of Embark Studios AB.</div>
     <div>Item data from the <a href="https://arcraiders.wiki" target="_blank" rel="noopener">ARC Raiders Wiki</a> (CC BY-SA 4.0), read October 9, 2026.</div>
-    <div>Wrong number or missing item? Use the Report button on any row, or email <span id="reportAddr">tyler45455@gmail.com</span>.</div>
+    <div>Wrong number or missing item? Use the Report button on any row to open a GitHub issue.<span id="reportAddr" hidden></span></div>
   </div>
 </footer>
 
@@ -1118,7 +1118,7 @@ Integrated Binoculars|Common`;
   });
 
   document.getElementById("searchBox").addEventListener("input", renderResults);
-  document.getElementById("reportAddr").textContent = REPORT_ISSUES_URL ? "(or open an issue on GitHub)" : REPORT_EMAIL;
+  document.getElementById("reportAddr").textContent = "";
 
   renderTimeline();
   refresh();

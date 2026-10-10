@@ -258,6 +258,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .changed { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
 .cart { border: 1px solid var(--accent); border-radius: 8px; padding: 12px 14px; margin: 12px 0; background: var(--surface); display: grid; gap: 8px; }
 @media (max-width: 600px) { .cartbtn { display: none !important; } }
+@media (max-width: 600px) { .row .acts { grid-column: 1 / -1; justify-content: flex-start; gap: 4px; } .row .acts .btn { padding: 6px 9px; font-size: 13px; min-height: 36px; } }
 .cart[hidden] { display: none !important; }
 .cart .lst { display: flex; flex-wrap: wrap; gap: 6px; }
 .cart .acts { display: flex; flex-wrap: wrap; gap: 6px; }

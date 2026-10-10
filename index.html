@@ -242,6 +242,7 @@ th { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; 
 
 [hidden] { display: none !important; }
 .toprow { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.topbtns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .toprow .btn { padding: 5px 10px; font-size: 12px; }
 .stamp { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin: -4px 0 14px; }
 .hint { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
@@ -266,7 +267,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 
 <header class="band">
   <div class="wrap">
-    <div class="toprow"><p class="eyebrow">Fan-made field reference</p><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button></div>
+    <div class="toprow"><p class="eyebrow">Fan-made field reference</p><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button></div></div>
     <h1>Arc Raiders <em>Hub</em></h1>
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
     <p class="stamp" id="dataStamp"></p>
@@ -282,15 +283,15 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 
 <main class="wrap">
 
+  <div class="note hint" id="hint" hidden>
+    <div id="hintText"></div>
+    <button class="btn ghost" type="button" data-action="hintClose">Got it</button>
+  </div>
+
   <!-- RECYCLING -->
   <section class="panel" id="panel-recycle" role="tabpanel" aria-labelledby="tab-recycle">
     <h2>Recycling lookup</h2>
     <p class="muted">Search an item to see what it breaks down into, or search a material to see every item that gives it, biggest yield first.</p>
-
-    <div class="note hint" id="hint">
-      <div><b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Not sure if an item is worth recycling? Set a goal in the Material tracker (for example 200 Metal Parts). Any item that gives a material you still need will show a green &ldquo;Helps your goals&rdquo; line, and you can tick &ldquo;Only items that help my goals&rdquo; to hide the rest.</div>
-      <button class="btn ghost" type="button" data-action="hintClose">Got it</button>
-    </div>
 
     <div class="searchbar">
       <input type="text" id="searchBox" placeholder="Try Garlic Press, Wires, ARC Alloy, Chemicals..." autocomplete="off" aria-label="Search items or materials">
@@ -1208,8 +1209,24 @@ Integrated Binoculars|Common`;
     return t;
   }
 
+  var HINTS = {
+    recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Not sure if an item is worth recycling? Set a goal in the Material tracker (for example 200 Metal Parts). Any item that gives a material you still need will show a green &ldquo;Helps your goals&rdquo; line, and you can tick &ldquo;Only items that help my goals&rdquo; to hide the rest.",
+    tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Use the + and &minus; buttons to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
+    maps: "<b>Maps.</b> Pick a map to see its difficulty, unlock requirement, conditions and what changed there, plus the overview image. Copy the address bar to share a specific map.",
+    frozen: "<b>Frozen Trail 2.0.</b> A quick summary of the latest update: the new map, enemies, weapons, gear and balance changes.",
+    updates: "<b>Update history.</b> Every major update from launch to now, newest first, with the main highlights. Weekly store updates and small hotfixes are left out."
+  };
+  function renderHint() {
+    document.getElementById("hintText").innerHTML = HINTS[curTab] || "";
+  }
+  function setHint(on) {
+    document.getElementById("hint").hidden = !on;
+    document.getElementById("helpBtn").setAttribute("aria-expanded", on ? "true" : "false");
+  }
+
   function showTab(name, quiet) {
     curTab = name;
+    renderHint();
     ["recycle", "tracker", "maps", "frozen", "updates"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
@@ -1260,7 +1277,10 @@ Integrated Binoculars|Common`;
       applyTheme(nxt);
     } else if (a === "hintClose") {
       save("arcHubHint", true);
-      document.getElementById("hint").hidden = true;
+      setHint(false);
+    } else if (a === "hintToggle") {
+      renderHint();
+      setHint(document.getElementById("hint").hidden);
     } else if (a === "copyLink") {
       writeHash();
       var btn = t, label = t.textContent;
@@ -1334,7 +1354,8 @@ Integrated Binoculars|Common`;
 
   document.getElementById("dataStamp").textContent = "Data checked against the wiki on " + DATA_UPDATED;
   document.getElementById("dataStamp2").textContent = "Last data check: " + DATA_UPDATED + ".";
-  document.getElementById("hint").hidden = !!load("arcHubHint", false);
+  renderHint();
+  setHint(!load("arcHubHint", false));
   applyTheme(load("arcHubTheme", "auto"));
   renderTimeline();
   renderMaps();

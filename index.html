@@ -1264,25 +1264,25 @@ Integrated Binoculars|Common`;
     "Blaze Grenade Trap", "Bloated Tuna Can", "Integrated Binoculars"];
 
   var MAPS = [
-    { name: "Dam Battlegrounds", diff: 2, len: "30 min", unlock: "None", wiki: "Dam_Battlegrounds",
+    { name: "Dam Battlegrounds", detail: true, diff: 2, len: "30 min", unlock: "None", wiki: "Dam_Battlegrounds",
       desc: "A silent power plant surrounded by polluted, waterlogged land and dense wildlife.",
       notes: ["The starter map, available from the beginning.", "Comets were removed from standard Dam Battlegrounds sessions in Riven Tides (1.26.0).", "Map update in Shrouded Sky (1.17.0)."] },
-    { name: "Buried City", diff: 3, len: "30 min", unlock: "8 rounds", wiki: "Buried_City",
+    { name: "Buried City", detail: true, diff: 3, len: "30 min", unlock: "8 rounds", wiki: "Buried_City",
       desc: "Narrow streets and empty plazas of a sand-covered ruin that was once a home for people.",
       notes: ["Hosts the permanent Bird City condition (more bird traps, ziplines and flying ARC) added in Headwinds (1.13.0), which cycles in and out weekly."] },
-    { name: "Spaceport", diff: 3, len: "30 min (40 min during Hidden Bunker)", unlock: "12 rounds", wiki: "Spaceport",
+    { name: "Spaceport", detail: true, diff: 3, len: "30 min (40 min during Hidden Bunker)", unlock: "12 rounds", wiki: "Spaceport",
       desc: "A former launch site where escape shuttles once departed for the heavens.",
       notes: ["Hidden Bunker is a major condition that extends the round to 40 minutes."] },
-    { name: "The Blue Gate", diff: 4, len: "30 min (40 min during Locked Gate)", unlock: "18 rounds", wiki: "The_Blue_Gate",
+    { name: "The Blue Gate", detail: true, diff: 4, len: "30 min (40 min during Locked Gate)", unlock: "18 rounds", wiki: "The_Blue_Gate",
       desc: "A former symbol of connection, now an entryway into dangerous mountains.",
       notes: ["Gained the Locked Gate condition in Cold Snap (1.7.0), which extends the round to 40 minutes.", "Tunnel out-of-bounds issues were fixed in Shrouded Sky (1.17.0)."] },
-    { name: "Riven Tides", diff: 5, len: "30 min", unlock: "20 rounds", wiki: "Riven_Tides",
+    { name: "Riven Tides", detail: true, diff: 5, len: "30 min", unlock: "20 rounds", wiki: "Riven_Tides",
       desc: "An abandoned coastal harbor resort with a history of grand plans and retreats.",
       notes: ["Added in Riven Tides (1.26.0) with the Beachcombing condition for finding buried treasure.", "Home of the ARC Turbine.", "Loot value raised by about 15% in Frozen Trail 2.0."] },
-    { name: "Stella Montis", diff: 4, len: "30 min", unlock: "24 rounds", wiki: "Stella_Montis",
+    { name: "Stella Montis", detail: true, diff: 4, len: "30 min", unlock: "24 rounds", wiki: "Stella_Montis",
       desc: "A remote research facility among snowy peaks, reportedly humanity's last preservation site.",
       notes: ["Added in North Line (1.2.0).", "The Aphelion blueprint drops here since Cold Snap (1.7.0)."] },
-    { name: "Pendola Pass", diff: 3, len: "30 min", unlock: "Not listed on the wiki", wiki: "Pendola_Pass",
+    { name: "Pendola Pass", detail: true, diff: 3, len: "30 min", unlock: "Not listed on the wiki", wiki: "Pendola_Pass",
       desc: "A mountaintop observatory that now draws orbital attention.",
       notes: ["Added in Frozen Trail 2.0 with the Frigate and Redirection conditions.", "The only map testing Dynamic Loot Zones, where zone loot values vary between raids."] },
     { name: "Practice Range", diff: 0, len: "2 hours", unlock: "4 rounds", wiki: "Practice_Range",
@@ -1299,7 +1299,7 @@ Integrated Binoculars|Common`;
     var m = MAPS[curMap];
     var dots = m.diff ? new Array(m.diff + 1).join("\u25CF") + new Array(6 - m.diff).join("\u25CB") : "n/a";
     var slug = m.wiki.toLowerCase().replace(/_/g, "-");
-    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3><p>" + esc(m.desc) + "</p>" +
+    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + (m.detail ? "-detail" : "") + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3><p>" + esc(m.desc) + "</p>" +
       '<div class="mapstats"><span>Difficulty <b class="dots">' + dots + "</b></span><span>Round <b>" + esc(m.len) + "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>" +
       '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
       '<p class="muted">' + esc(CONDITIONS) + "</p>" +

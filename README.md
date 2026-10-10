@@ -36,6 +36,10 @@ Optional images go in the `maps` folder; see [maps/README.md](maps/README.md) fo
 
 Open `index.html` in any browser. It is a single file with no dependencies apart from the Google Fonts stylesheet.
 
+## Privacy
+
+The site counts anonymous page views with [GoatCounter](https://www.goatcounter.com). It uses no cookies and does not track individual visitors.
+
 ## Credits and disclaimer
 
 Data: [ARC Raiders Wiki](https://arcraiders.wiki), CC BY-SA 4.0. This is an unofficial fan project and is not affiliated with or endorsed by Embark Studios. ARC Raiders and its artwork are the property of Embark Studios AB.

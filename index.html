@@ -223,6 +223,17 @@ details.card summary { cursor: pointer; font-weight: 600; }
 .tl-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
 .tl-body { color: var(--fg); max-width: 70ch; font-weight: 500; }
 .mapcard { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 16px; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 10px; }
+.mapimg { cursor: zoom-in; }
+.lightbox { position: fixed; inset: 0; z-index: 50; background: #04080e; display: flex; flex-direction: column; }
+.lightbox[hidden] { display: none !important; }
+.lb-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px; color: #e1e9f0; font-family: var(--font-display); font-weight: 700; font-size: 20px; text-transform: uppercase; letter-spacing: 0.02em; }
+.lb-bar span { display: block; font: 12px var(--font-mono); color: #8a9bab; text-transform: none; letter-spacing: 0; }
+.lb-bar .btn { background: transparent; color: #e1e9f0; border-color: #8a9bab; }
+.lb-scroll { flex: 1; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 0 8px 16px; -webkit-overflow-scrolling: touch; }
+.lb-scroll img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; cursor: zoom-in; border-radius: 4px; }
+.lb-scroll.zoomed { display: block; }
+.lb-scroll.zoomed img { max-width: none; max-height: none; width: 260%; cursor: zoom-out; }
+@media (min-width: 900px) { .lb-scroll.zoomed img { width: 160%; } }
 .mapimg { width: 100%; max-height: 520px; object-fit: contain; background: #070b17; border-radius: 6px; display: block; }
 .mapcard h3 { margin: 0; font-family: var(--font-display); font-size: 26px; text-transform: uppercase; letter-spacing: 0.02em; }
 .mapcard p { margin: 0; max-width: 70ch; }
@@ -430,6 +441,11 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   </section>
 
 </main>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged map" hidden>
+  <div class="lb-bar"><div><div id="lbName"></div><span>Tap the map to zoom in and out, drag to move around.</span></div><button class="btn" type="button" data-action="closeMap" id="lbClose">Close</button></div>
+  <div class="lb-scroll" id="lbScroll" data-action="closeMapBg"><img id="lbImg" alt="" data-action="zoomToggle"></div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -856,7 +872,7 @@ Integrated Binoculars|Common`;
     var m = MAPS[curMap];
     var dots = m.diff ? new Array(m.diff + 1).join("\u25CF") + new Array(6 - m.diff).join("\u25CB") : "n/a";
     var slug = m.wiki.toLowerCase().replace(/_/g, "-");
-    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map" loading="lazy" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3><p>" + esc(m.desc) + "</p>" +
+    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3><p>" + esc(m.desc) + "</p>" +
       '<div class="mapstats"><span>Difficulty <b class="dots">' + dots + "</b></span><span>Round <b>" + esc(m.len) + "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>" +
       '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
       '<p class="muted">' + esc(CONDITIONS) + "</p>" +
@@ -1224,6 +1240,26 @@ Integrated Binoculars|Common`;
     document.getElementById("helpBtn").setAttribute("aria-expanded", on ? "true" : "false");
   }
 
+  var lbReturn = null;
+  function lbOpen(src, name) {
+    lbReturn = document.activeElement;
+    var img = document.getElementById("lbImg");
+    img.src = src;
+    img.alt = name + " map, enlarged";
+    document.getElementById("lbName").textContent = name;
+    var sc = document.getElementById("lbScroll");
+    sc.classList.toggle("zoomed", window.innerWidth < 700);
+    sc.scrollLeft = 0; sc.scrollTop = 0;
+    document.getElementById("lightbox").hidden = false;
+    document.body.style.overflow = "hidden";
+    document.getElementById("lbClose").focus();
+  }
+  function lbClose() {
+    document.getElementById("lightbox").hidden = true;
+    document.body.style.overflow = "";
+    if (lbReturn && lbReturn.focus) { lbReturn.focus(); }
+  }
+
   function showTab(name, quiet) {
     curTab = name;
     renderHint();
@@ -1270,6 +1306,13 @@ Integrated Binoculars|Common`;
           break;
         }
       }
+    } else if (a === "zoomMap") {
+      lbOpen(t.getAttribute("data-src"), t.getAttribute("data-name"));
+    } else if (a === "zoomToggle") {
+      document.getElementById("lbScroll").classList.toggle("zoomed");
+    } else if (a === "closeMap" || a === "closeMapBg") {
+      if (a === "closeMapBg" && e.target !== t) { return; }
+      lbClose();
     } else if (a === "theme") {
       var cur = load("arcHubTheme", "auto");
       var nxt = cur === "auto" ? "light" : (cur === "light" ? "dark" : "auto");
@@ -1341,6 +1384,10 @@ Integrated Binoculars|Common`;
     renderResults();
   });
   document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !document.getElementById("lightbox").hidden) { lbClose(); return; }
+    if ((e.key === "Enter" || e.key === " ") && e.target && e.target.getAttribute && e.target.getAttribute("data-action") === "zoomMap") {
+      e.preventDefault(); lbOpen(e.target.getAttribute("data-src"), e.target.getAttribute("data-name")); return;
+    }
     if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) { return; }
     var tag = e.target && e.target.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") { return; }

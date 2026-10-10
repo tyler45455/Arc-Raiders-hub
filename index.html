@@ -542,6 +542,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .sbrow.done span { text-decoration: line-through; opacity: .6; }
 .credits { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); }
 .footlinks { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* selected tab: white text, no underline, so the colour bar stays whole */
+.tab[aria-selected="true"], .tab[aria-selected="true"]:hover { color: var(--fg); border-bottom-color: transparent; border-top-color: transparent; font-weight: 700; }
+:root[data-theme="dark"] .tab[aria-selected="true"] { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tab[aria-selected="true"] { color: #fff; } }
+.tab.tourhl { outline-offset: -3px; }
+.tab:focus-visible { outline: 2px solid var(--fg); outline-offset: -3px; }
 </style>
 </head>
 <body>

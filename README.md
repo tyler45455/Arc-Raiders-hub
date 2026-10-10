@@ -20,6 +20,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Sharing:** share material and quest progress as an image, and copy a loadout as a link.
 - **Shopping list (Tracker tab):** built automatically from your active quests, projects, workshop levels and goals, with a box on each row to type how many you have, the best items to recycle for each material, and an option to subtract items from your tracker when you complete a quest or workshop level. The workshop planner sits beside it.
 - **Planning:** daily and weekly tasks that reset themselves, item tags (Sell, Keep, Craft), notes on each map, saved loadouts you can compare, a high-contrast mode and a print view for checklists.
+- **More tools:** an Undo bar after changes, item notes, a Trials tracker, a quest map filter, raid prep on each map, a tracker history chart, shareable shopping-list links, an optional sound cue, a quick tour for new visitors and a skip link.
 - **Extras:** a dot on the Updates tab when there is something new, an offline indicator, and a Feedback button.
 - **Tools tab:** raid checklist, project helper with wiki presets (Expedition stages, Trophy Display and past projects) that compare what a project needs with your tracker and side-by-side item compare, weapon compare and a loadout builder that checks carried weight against your augment. Backups can be copied as a short transfer code, and the browser keeps automatic snapshots.
 - **Backup:** export and import your tracker, goals, stars, projects and checklist as text.

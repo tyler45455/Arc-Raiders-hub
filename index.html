@@ -46,16 +46,16 @@
   --line: #cfc3a6;
   --fg: #14110d;
   --muted: #5e5543;
-  --accent: #c8231a;
+  --accent: #b01e15;
   --accent-fg: #ffffff;
-  --warm: #b4560f;
-  --good: #17844c;
+  --warm: #964607;
+  --good: #12703f;
   --danger: #a8231b;
   --r-common: #6b6455;
-  --r-uncommon: #17844c;
-  --r-rare: #17808a;
+  --r-uncommon: #12703f;
+  --r-rare: #106a74;
   --r-epic: #7b3fb0;
-  --r-legendary: #a86a05;
+  --r-legendary: #8a5503;
   --font-display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
@@ -416,10 +416,36 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .inv .qin { width: 100%; box-sizing: border-box; font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--warm); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; }
 .shoprow.covered { opacity: .6; }
 .shoprow.covered .shmiss { color: var(--good); }
+
+.skip { position: absolute; left: 8px; top: -60px; z-index: 100; background: var(--accent); color: var(--accent-fg); padding: 8px 14px; border-radius: 6px; }
+.skip:focus { top: 8px; }
+.undobar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: flex; align-items: center; gap: 12px; background: var(--fg); color: var(--bg); padding: 8px 8px 8px 14px; border-radius: 10px; box-shadow: 0 6px 22px rgba(0,0,0,.4); max-width: calc(100% - 32px); }
+.undobar .btn { background: var(--bg); color: var(--fg); border-color: var(--bg); }
+.tour { position: fixed; left: 16px; right: 16px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 70; max-width: 460px; margin: 0 auto; background: var(--surface); color: var(--fg); border: 2px solid var(--accent); border-radius: 12px; padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.45); display: grid; gap: 10px; }
+.tour .tbtn { display: flex; gap: 8px; justify-content: space-between; align-items: center; }
+.tourhl { outline: 3px solid var(--accent) !important; outline-offset: 3px; position: relative; z-index: 5; }
+.inote { margin-top: 6px; padding: 6px 10px; border-left: 3px solid var(--warm); color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
+.noted { display: grid; gap: 6px; margin-top: 6px; }
+.noted textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 8px 10px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; }
+.trrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 6px 0; border-top: 1px solid var(--line); }
+.trrow label { flex: 1 1 200px; min-width: 0; }
+.trrow input[type="number"] { width: 92px; font: inherit; padding: 4px 8px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; }
+.trrow.done label { text-decoration: line-through; color: var(--muted); }
+.trtier { font-family: var(--font-mono); font-size: 12px; color: var(--warm); min-width: 84px; }
+.hline { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+.hdot { fill: var(--accent); }
+.hax { stroke: var(--line); stroke-width: 1; }
+.htxt { fill: var(--muted); font-size: 10px; font-family: var(--font-mono); }
+.prep h3 { margin: 14px 0 4px; }
+.prep .y.ok { border-color: var(--good); }
+.sharedbox { border: 2px dashed var(--accent); border-radius: 10px; padding: 10px 12px; margin: 12px 0; }
+.shoprow .acts { margin-top: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body>
 
+<a class="skip" href="#main">Skip to content</a>
 <header class="band">
   <div class="wrap">
     <div class="toprow"><p class="eyebrow">Fan-made field reference</p><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="contrast" id="contrastBtn">Contrast: Off</button><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button></div></div>
@@ -441,11 +467,11 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main" tabindex="-1">
 
   <div class="note hint" id="hint" hidden>
     <div id="hintText"></div>
-    <button class="btn ghost" type="button" data-action="hintClose">Got it</button>
+    <button class="btn ghost" type="button" data-action="tourStart">Take a tour</button><button class="btn ghost" type="button" data-action="hintClose">Got it</button>
   </div>
 
   <!-- RECYCLING -->
@@ -513,8 +539,9 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
         <label class="tog"><input type="checkbox" data-shopsrc="goal" checked> Goals</label>
       </div>
       <div id="shopOut"></div>
+      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="cueOn"> Play a small sound and vibration when a material is covered or a goal is met</label>
       <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="autoSpend"> Subtract items from my tracker when I complete a quest or workshop level</label>
-      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><span class="muted" id="shopMsg" role="status"></span></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><button class="btn ghost" type="button" data-action="shopLink">Copy list as link</button><span class="muted" id="shopMsg" role="status"></span></div>
     </div>
 
     <details class="tool" id="wsTool" open>
@@ -527,7 +554,14 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <div class="muted" id="trackerSummary"></div>
       <button class="btn ghost" type="button" data-action="shareTracker">Share as image</button><button class="btn danger" type="button" data-action="trackReset" id="resetBtn">Reset all</button>
     </div>
+    <div id="sharedList"></div>
     <div id="inventory"></div>
+    <details class="card" id="histCard">
+      <summary>History</summary>
+      <p class="muted" style="margin-top:8px;">One point per day, saved in this browser as you use the tracker.</p>
+      <select id="histMat" aria-label="Material" style="font:inherit;padding:6px 8px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:6px;"></select>
+      <div id="histOut" aria-live="polite"></div>
+    </details>
     <details class="card" id="backupCard">
       <summary>Back up or move your data</summary>
       <p class="muted" style="margin-top:8px;">Your tracker, goals, starred items, projects and checklist are saved only in this browser. Press Export to get a block of text you can keep, then paste it here on another device and press Import.</p>
@@ -631,6 +665,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <div class="chips" id="qTraders" role="group" aria-label="Trader"></div>
       <div class="qbar">
         <select id="qStatus" aria-label="Completion filter"><option value="all">All quests</option><option value="todo">Not completed</option><option value="done">Completed</option></select>
+        <select id="qMap" aria-label="Show quests for a map"><option value="">All maps</option></select>
         <select id="qSort" aria-label="Sort quests"><option value="chain">Wiki order</option><option value="ready">Closest to ready</option></select>
         <label class="tog"><input type="checkbox" id="qLocked"> Show locked</label>
         <label class="tog" title="Only quests where your tracker covers every tracked required item"><input type="checkbox" id="qReady"> Ready with my tracker</label>
@@ -798,6 +833,8 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <div>Wrong number or missing item? Use the Report button on any row to open a GitHub issue.<span id="reportAddr" hidden></span></div>
   </div>
 </footer>
+<div class="undobar" id="undoBar" role="status" aria-live="polite" hidden><span id="undoText"></span><button class="btn" type="button" data-action="undo">Undo</button></div>
+<div class="tour" id="tour" role="dialog" aria-label="Quick tour" hidden><div id="tourText"></div><div class="tbtn"><span class="muted" id="tourStep"></span><span style="display:flex;gap:8px;"><button class="btn ghost" type="button" data-action="tourSkip">Skip</button><button class="btn" type="button" data-action="tourNext" id="tourNextBtn">Next</button></span></div></div>
 
 <script>
 (function () {
@@ -1221,6 +1258,7 @@ Integrated Binoculars|Common`;
       '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
       '<p class="muted">' + esc(CONDITIONS) + "</p>" +
       '<div class="mapnote"><label for="mapNote" class="muted">Your notes for this map (saved in this browser)</label><textarea id="mapNote" rows="3" maxlength="2000" placeholder="Good loot rooms, spawns to avoid...">' + esc(mapNotes[m.name] || "") + "</textarea></div>" +
+      prepHtml(m.name) +
       '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
     document.getElementById("mapTable").innerHTML = MAPS.map(function (x) {
       return "<tr><td>" + esc(x.name) + "</td><td>" + (x.diff || "n/a") + " / 5</td><td>" + esc(x.len) + "</td><td>" + esc(x.unlock) + "</td></tr>";
@@ -1346,7 +1384,10 @@ Integrated Binoculars|Common`;
       (has ? '<button class="btn ghost" type="button" data-action="cartAdd" data-item="' + esc(it.name) + '">+ Cart</button>' : "") +
       (has ? '<button class="btn" type="button" data-action="addItem" data-item="' + esc(it.name) + '">Add to tracker</button>' : "") +
       '<button class="btn ghost tagbtn' + (itemTags[it.name] ? " on" : "") + '" type="button" data-action="tag" data-item="' + esc(it.name) + '" title="Cycle your tag: Sell, Keep, Craft">' + (itemTags[it.name] ? "Tag: " + itemTags[it.name].charAt(0).toUpperCase() + itemTags[it.name].slice(1) : "Tag") + "</button>" +
+      '<button class="btn ghost tagbtn' + (itemNotes[it.name] ? " on" : "") + '" type="button" data-action="noteEdit" data-item="' + esc(it.name) + '">Note</button>' +
       '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
+      (itemNotes[it.name] && noteEdit !== it.name ? '<div class="inote">' + esc(itemNotes[it.name]) + "</div>" : "") +
+      (noteEdit === it.name ? '<div class="noted"><textarea data-notefor="' + esc(it.name) + '" rows="2" maxlength="300" placeholder="Your note, like: needed for Expedition 6" aria-label="Note for ' + esc(it.name) + '">' + esc(itemNotes[it.name] || "") + '</textarea><div><button class="btn" type="button" data-action="noteDone">Done</button></div></div>' : "") +
       '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
   }
 
@@ -1428,7 +1469,7 @@ Integrated Binoculars|Common`;
     }
 
     az.innerHTML = "";
-    var nameHits = items.filter(function (it) { return nameMatch(it.name, q) && keep(it); });
+    var nameHits = items.filter(function (it) { return (nameMatch(it.name, q) || (itemNotes[it.name] || "").toLowerCase().indexOf(q) !== -1) && keep(it); });
     var mats = allMaterials().filter(function (m) { return m.toLowerCase().indexOf(q) !== -1; }).slice(0, 4);
 
     mats.forEach(function (m) {
@@ -1499,6 +1540,7 @@ Integrated Binoculars|Common`;
 
   /* ---------- rendering: tracker ---------- */
   function bump(mat, n) {
+    pushUndo("Changed " + mat);
     tracker[mat] = (tracker[mat] || 0) + n;
     if (tracker[mat] <= 0) { delete tracker[mat]; }
     save("arcHubTracker", tracker);
@@ -1513,6 +1555,7 @@ Integrated Binoculars|Common`;
   function renderTracker() {
     var shopRows = [], sm = {};
     try { shopRows = shopData(); shopRows.forEach(function (r) { sm[r.n] = r; }); renderShop(); renderPlanner(); } catch (e0) {}
+    histSoon();
     var set = {};
     Object.keys(tracker).concat(Object.keys(goals)).forEach(function (k) { set[k] = true; });
     var keys = Object.keys(set).sort();
@@ -1547,7 +1590,10 @@ Integrated Binoculars|Common`;
   }
   function invTypeUpdate(name, val) {
     var n = parseInt(val, 10); if (!(n >= 0)) { n = 0; }
+    pushUndo("Changed " + name);
+    var preMiss = missOf(name), preGoal = goals[name] && (tracker[name] || 0) < goals[name];
     tracker[name] = n; save("arcHubTracker", tracker);
+    if ((preMiss > 0 && missOf(name) === 0) || (preGoal && n >= goals[name])) { cue(); }
     invTyping = true; shopTyping = true;
     try { renderTracker(); renderDatalist(); updateGoalToggle(); renderResults(); } finally { invTyping = false; shopTyping = false; }
     var cards = document.querySelectorAll("#inventory .inv");
@@ -1705,6 +1751,8 @@ Integrated Binoculars|Common`;
     var sortBy = document.getElementById("qSort").value;
     var list = QUESTS.filter(function (q) {
       if (qTrader && q.trader !== qTrader) { return false; }
+      var mapSel = document.getElementById("qMap").value;
+      if (mapSel && q.loc.indexOf(mapSel) === -1 && q.loc.indexOf("Any") === -1) { return false; }
       if (!showLocked && qLocked(q)) { return false; }
       var sf = document.getElementById("qStatus").value;
       if (sf === "todo" && qDone[q.name]) { return false; }
@@ -1830,7 +1878,10 @@ Integrated Binoculars|Common`;
         '<div><span class="k">Divisions: </span>after your first point in a week you join a division of 100 Raiders (first come, first served), ranked on combined personal-best scores. Ranks update on Mondays.</div>' +
         '<div><span class="k">Ranks: </span>14 ranks, most with three sub-ranks. Cantina Legend is for the top 1,000 players in Hotshot. In a new season you start two ranks below your last placement.</div>' +
         '<div><span class="k">Season rewards: </span>cosmetics and emotes based on final rank. The wiki has not listed Season 6 rewards or an end date yet.</div></div></div>' +
-        '<div class="qcard"><div class="qh"><b>Week 1</b><span class="qmeta">October 8 to 14, 2026</span></div><ol style="margin:6px 0 0 20px;padding:0;">' + TW.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol>" +
+        '<div class="qcard"><div class="qh"><b>Week 1</b><span class="qmeta">October 8 to 14, 2026</span></div><p class="muted" id="trSum" style="margin:4px 0;">' + trSummary() + '. Tick challenges off and note your points. Rewards come at 1,000, 2,000 and 3,000.</p>' + TW.map(function (x, i) {
+        var tr = trials[trKey(i)] || {};
+        return '<div class="trrow' + (tr.d ? " done" : "") + '"><input type="checkbox" id="tr' + i + '" data-trial="' + i + '"' + (tr.d ? " checked" : "") + '><label for="tr' + i + '">' + esc(x) + '</label><input type="number" min="0" inputmode="numeric" data-trialp="' + i + '" value="' + (tr.p || "") + '" placeholder="points" aria-label="Your points for ' + esc(x) + '"><span class="trtier" id="trt' + i + '">' + trTier(tr.p || 0) + "</span></div>";
+      }).join("") +
         '<p class="muted" style="margin-top:8px;">Point values for these challenges are not on the wiki yet.</p>' +
         '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(qWiki("Trials")) + '">Trials on the wiki</a></div></div>' +
         '<details class="card"><summary>Removed challenges (' + TR.length + ")</summary>" +
@@ -2014,6 +2065,12 @@ Integrated Binoculars|Common`;
     ["Oct 10, 2026", "Added a Sheltered Retreat project preset from a community guide, because the wiki page would not load."],
     ["Oct 10, 2026", "Added 107 quests with objectives and the quest chain, plus enemies, traders, workshop, skills and blueprints."]
   ];
+  var itemNotes = load("arcHubNotes", {});
+  var trials = load("arcHubTrials", {});
+  var cueOn = load("arcHubCue", false);
+  var hist = load("arcHubHist", []);
+  var noteEdit = "";
+  var undoStack = [], lastUndoAt = 0, undoTimer = null, sharedList = null, histTimer = null;
   var recentTimer = null;
 
   function nameMatch(name, q) {
@@ -2341,7 +2398,8 @@ Integrated Binoculars|Common`;
     return '<div class="shoprow' + (r.miss ? "" : " covered") + '" data-shoprow="' + esc(r.n) + '"><div class="sh1"><b>' + esc(r.n) + '</b><span class="shmiss">' + (r.miss ? r.miss + " missing" : "covered &#10003;") + "</span>" +
       '<span class="shctl"><input type="number" min="0" inputmode="numeric" data-shophave="' + esc(r.n) + '" value="' + r.have + '" aria-label="How many ' + esc(r.n) + ' you have"> <span>of ' + r.need + "</span></span></div>" +
       '<div class="muted">For: ' + esc(shopLabel(r.src)) + "</div>" +
-      '<div class="muted">Best to recycle: ' + (b.length ? b.map(esc).join(", ") : "find in raids") + "</div></div>";
+      '<div class="muted">Best to recycle: ' + (b.length ? b.map(esc).join(", ") : "find in raids") + "</div>" +
+      '<div class="acts"><button class="btn ghost" type="button" data-action="shopFind" data-m="' + esc(r.n) + '">Find items that give this</button></div></div>';
   }
   function renderShop() {
     var box = document.getElementById("shopOut");
@@ -2351,12 +2409,15 @@ Integrated Binoculars|Common`;
     var rows = shopData(true);
     if (!rows.length) { box.innerHTML = '<div class="empty-line">Nothing needed right now. Turn a source on above or add quests, projects or goals.</div>'; return; }
     var missing = rows.filter(function (r) { return r.miss > 0; }).length;
-    box.innerHTML = '<div class="muted" id="shopCount">' + missing + " of " + rows.length + " materials still needed. Type how many you have.</div>" + rows.slice(0, 80).map(shopRowHtml).join("") + (rows.length > 80 ? '<div class="muted">And ' + (rows.length - 80) + " more.</div>" : "");
+    box.innerHTML = '<div class="muted" id="shopCount" aria-live="polite">' + missing + " of " + rows.length + " materials still needed. Type how many you have.</div>" + rows.slice(0, 80).map(shopRowHtml).join("") + (rows.length > 80 ? '<div class="muted">And ' + (rows.length - 80) + " more.</div>" : "");
   }
   function shopTypeUpdate(name, val) {
     var n = parseInt(val, 10); if (!(n >= 0)) { n = 0; }
+    pushUndo("Changed " + name);
+    var preMiss = missOf(name);
     if (n > 0) { tracker[name] = n; } else if (goals[name]) { tracker[name] = 0; } else { delete tracker[name]; }
     save("arcHubTracker", tracker);
+    if (preMiss > 0 && missOf(name) === 0) { cue(); }
     shopTyping = true;
     try { renderTracker(); renderDatalist(); updateGoalToggle(); renderResults(); } finally { shopTyping = false; }
     var all = shopData(true), row = null;
@@ -2411,7 +2472,7 @@ Integrated Binoculars|Common`;
     var opts = loadouts.map(function (l, i) { return '<option value="' + i + '">' + esc(l.name) + "</option>"; }).join("");
     var keepA = (document.getElementById("loCA") || {}).value, keepB = (document.getElementById("loCB") || {}).value;
     var html = '<div class="group-title">Saved loadouts</div>' + loadouts.map(function (l, i) {
-      return '<div class="rcrow"><label>' + esc(l.name) + '</label><button class="btn ghost" type="button" data-action="loLoad" data-i="' + i + '">Load</button><button class="btn danger" type="button" data-action="loDel" data-i="' + i + '">Delete</button></div>';
+      return '<div class="rcrow"><label>' + esc(l.name) + '</label><button class="btn ghost" type="button" data-action="loLoad" data-i="' + i + '">Load</button><button class="btn ghost" type="button" data-action="loLink" data-i="' + i + '">Link</button><button class="btn danger" type="button" data-action="loDel" data-i="' + i + '">Delete</button></div>';
     }).join("");
     if (loadouts.length > 1) {
       html += '<div class="rcadd" style="grid-template-columns:1fr 1fr;"><select id="loCA" aria-label="Compare loadout A">' + opts + '</select><select id="loCB" aria-label="Compare loadout B">' + opts + '</select></div><div id="loCmpOut"></div>';
@@ -2445,6 +2506,123 @@ Integrated Binoculars|Common`;
     var el = document.getElementById("changesList");
     if (el) { el.innerHTML = DATA_CHANGES.map(function (c) { return "<li><b>" + esc(c[0]) + ":</b> " + esc(c[1]) + "</li>"; }).join(""); }
   }
+
+
+  /* ---------- undo ---------- */
+  function undoSnap() {
+    return JSON.stringify({ tracker: tracker, goals: goals, qDone: qDone, projects: projects, wsDone: wsDone, wsPlan: wsPlan, itemTags: itemTags, checklist: checklist, rchk: rchk, loadouts: loadouts, itemNotes: itemNotes, trials: trials, favs: favs, bpOwned: bpOwned });
+  }
+  function pushUndo(label) {
+    var now = Date.now();
+    if (!(now - lastUndoAt < 2500 && undoStack.length)) { undoStack.push({ l: label, s: undoSnap() }); if (undoStack.length > 15) { undoStack.shift(); } }
+    lastUndoAt = now;
+    showUndo(undoStack[undoStack.length - 1].l);
+  }
+  function showUndo(label) {
+    var bar = document.getElementById("undoBar"); if (!bar) { return; }
+    document.getElementById("undoText").textContent = label;
+    bar.hidden = false;
+    clearTimeout(undoTimer); undoTimer = setTimeout(function () { bar.hidden = true; }, 9000);
+  }
+  function doUndo() {
+    var u = undoStack.pop(); if (!u) { return; }
+    var d = JSON.parse(u.s);
+    tracker = d.tracker; goals = d.goals; qDone = d.qDone; projects = d.projects; wsDone = d.wsDone; wsPlan = d.wsPlan; itemTags = d.itemTags;
+    checklist = d.checklist; rchk = d.rchk; loadouts = d.loadouts; itemNotes = d.itemNotes; trials = d.trials; favs = d.favs; bpOwned = d.bpOwned;
+    save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubQuestsDone", qDone); save("arcHubProjects", projects); save("arcHubWs", wsDone); save("arcHubWsPlan", wsPlan);
+    save("arcHubTags", itemTags); save("arcHubCheck", checklist); save("arcHubRepeat", rchk); save("arcHubLoadouts", loadouts); save("arcHubNotes", itemNotes); save("arcHubTrials", trials); save("arcHubFavs", favs); save("arcHubBP", bpOwned);
+    lastUndoAt = 0;
+    refresh(); renderTools(); renderQuests(); renderRef(); renderMaps(); updateFavToggle(); updateGoalToggle();
+    document.getElementById("undoText").textContent = "Undone";
+    clearTimeout(undoTimer); undoTimer = setTimeout(function () { document.getElementById("undoBar").hidden = true; }, 2500);
+    if (!undoStack.length) { document.querySelector("#undoBar .btn").hidden = true; } else { document.querySelector("#undoBar .btn").hidden = false; }
+  }
+
+  /* ---------- cue ---------- */
+  function cue() {
+    if (!cueOn) { return; }
+    try { if (window.navigator.vibrate) { window.navigator.vibrate(60); } } catch (e) {}
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) { return; }
+      var c = new AC(), o = c.createOscillator(), g = c.createGain();
+      o.type = "sine"; o.frequency.value = 880; g.gain.value = 0.05; o.connect(g); g.connect(c.destination);
+      o.start(); o.stop(c.currentTime + 0.12); setTimeout(function () { try { c.close(); } catch (e2) {} }, 400);
+    } catch (e3) {}
+  }
+  function missOf(name) { var m = null; shopData(true).forEach(function (r) { if (r.n === name) { m = r.miss; } }); return m; }
+
+  /* ---------- tour ---------- */
+  var TOUR = [
+    ["#gq", "Search everything here: items, quests, enemies, blueprints and weapons."],
+    ["#tab-tracker", "Tracker: type how many materials you have. The shopping list builds itself from your quests and workshop upgrades."],
+    ["#tab-quests", "Quests: tick them off to unlock the next ones and see what to hand in."],
+    ["#tab-tools", "Tools: checklists, loadouts, saved projects and a Keep or recycle list."]
+  ];
+  var tourI = -1;
+  function tourClear() { Array.prototype.forEach.call(document.querySelectorAll(".tourhl"), function (e) { e.classList.remove("tourhl"); }); }
+  function tourShow(i) {
+    tourClear(); tourI = i;
+    if (i >= TOUR.length) { document.getElementById("tour").hidden = true; save("arcHubTour", true); tourI = -1; return; }
+    var el = document.querySelector(TOUR[i][0]);
+    if (el) { el.classList.add("tourhl"); try { el.scrollIntoView({ block: "center", behavior: "auto" }); } catch (e) {} }
+    document.getElementById("tourText").textContent = TOUR[i][1];
+    document.getElementById("tourStep").textContent = (i + 1) + " of " + TOUR.length;
+    document.getElementById("tourNextBtn").textContent = i === TOUR.length - 1 ? "Done" : "Next";
+    document.getElementById("tour").hidden = false;
+  }
+
+  /* ---------- history ---------- */
+  function histDay() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function recordHist() {
+    var day = histDay(), copy = {};
+    Object.keys(tracker).forEach(function (k) { copy[k] = tracker[k]; });
+    var last = hist[hist.length - 1];
+    if (last && last.d === day) { last.v = copy; } else { hist.push({ d: day, v: copy }); }
+    hist = hist.slice(-90); save("arcHubHist", hist);
+  }
+  function histSoon() { clearTimeout(histTimer); histTimer = setTimeout(function () { recordHist(); if (document.getElementById("histCard").open) { renderHist(); } }, 900); }
+  function renderHist() {
+    var sel = document.getElementById("histMat"), out = document.getElementById("histOut");
+    var names = {}; Object.keys(tracker).forEach(function (k) { names[k] = 1; }); hist.forEach(function (h) { Object.keys(h.v).forEach(function (k) { names[k] = 1; }); });
+    var list = Object.keys(names).sort(), cur = sel.value;
+    sel.innerHTML = list.map(function (n) { return "<option>" + esc(n) + "</option>"; }).join("");
+    if (cur && list.indexOf(cur) !== -1) { sel.value = cur; }
+    if (!list.length) { out.innerHTML = '<div class="empty-line">Track a material to start a history.</div>'; return; }
+    var m = sel.value, pts = hist.map(function (h) { return [h.d, h.v[m] || 0]; });
+    if (pts.length < 2) { out.innerHTML = '<div class="empty-line">History builds up as you use the tracker, one point per day. Come back tomorrow.</div>'; return; }
+    var W = 300, H = 120, pl = 30, pb = 18, max = Math.max.apply(null, pts.map(function (x) { return x[1]; })) || 1;
+    var xy = pts.map(function (x, i) { return [pl + (W - pl - 6) * i / (pts.length - 1), 6 + (H - pb - 10) * (1 - x[1] / max)]; });
+    out.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(m) + ' over time" style="width:100%;max-width:520px;height:auto;"><line class="hax" x1="' + pl + '" y1="' + (H - pb) + '" x2="' + W + '" y2="' + (H - pb) + '"/><line class="hax" x1="' + pl + '" y1="6" x2="' + pl + '" y2="' + (H - pb) + '"/>' +
+      '<polyline class="hline" points="' + xy.map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ") + '"/>' + xy.map(function (p) { return '<circle class="hdot" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.5"/>'; }).join("") +
+      '<text class="htxt" x="2" y="12">' + max + '</text><text class="htxt" x="2" y="' + (H - pb) + '">0</text><text class="htxt" x="' + pl + '" y="' + (H - 4) + '">' + esc(pts[0][0]) + '</text><text class="htxt" x="' + W + '" y="' + (H - 4) + '" text-anchor="end">' + esc(pts[pts.length - 1][0]) + "</text></svg>" +
+      '<div class="muted">' + esc(m) + ": " + pts[0][1] + " on " + esc(pts[0][0]) + ", " + pts[pts.length - 1][1] + " on " + esc(pts[pts.length - 1][0]) + ".</div>";
+  }
+
+  /* ---------- shared shopping list ---------- */
+  function renderShared() {
+    var box = document.getElementById("sharedList"); if (!box) { return; }
+    if (!sharedList) { box.innerHTML = ""; return; }
+    box.innerHTML = '<div class="sharedbox"><b>Shared shopping list</b> (' + sharedList.length + ' materials)<div class="chips" style="margin-top:6px;">' + sharedList.map(function (r) { return '<span class="y"><b>' + r[1] + "&times;</b> " + esc(r[0]) + "</span>"; }).join("") + '</div><div class="acts" style="margin-top:8px;"><button class="btn ghost" type="button" data-action="sharedClose">Dismiss</button></div></div>';
+  }
+
+  /* ---------- raid prep + trials ---------- */
+  function prepHtml(map) {
+    var act = qActive(), here = act.filter(function (q) { return q.loc.indexOf(map) !== -1; });
+    var anyN = act.filter(function (q) { return q.loc.indexOf("Any") !== -1 && q.loc.indexOf(map) === -1; }).length;
+    var bring = {};
+    here.forEach(function (q) { q.req.forEach(function (r) { bring[r.n] = (bring[r.n] || 0) + r.q; }); });
+    var bk = Object.keys(bring).sort();
+    var h = '<div class="prep"><h3>Raid prep for ' + esc(map) + "</h3>";
+    if (!here.length) { h += '<p class="muted">No active quests are tied to this map' + (anyN ? ", but " + anyN + " work on any map" : "") + ".</p>"; }
+    else {
+      h += '<p class="muted">' + here.length + " active quest" + (here.length === 1 ? "" : "s") + " here" + (anyN ? " (plus " + anyN + " that work on any map)" : "") + ":</p><ul class=\"mapnotes\">" + here.slice(0, 12).map(function (q) { return "<li>" + esc(q.name) + " <span class=\"muted\">(" + esc(q.trader) + ")</span></li>"; }).join("") + "</ul>";
+      if (bk.length) { h += '<p class="muted">Bring:</p><div class="chips">' + bk.map(function (n) { var ok = (tracker[n] || 0) >= bring[n]; return '<span class="y' + (ok ? " ok" : "") + '"><b>' + bring[n] + "&times;</b> " + esc(n) + (ok ? " &#10003;" : "") + "</span>"; }).join("") + "</div>"; }
+    }
+    return h + "</div>";
+  }
+  function trKey(i) { return "s6w1:" + i; }
+  function trTier(p) { return p >= 3000 ? "Epic tier" : p >= 2000 ? "Rare tier" : p >= 1000 ? "Uncommon tier" : p > 0 ? "Keep going" : ""; }
+  function trSummary() { var n = 0; for (var i = 0; i < 5; i++) { if (trials[trKey(i)] && trials[trKey(i)].d) { n++; } } return n + " of 5 done"; }
 
   /* ---------- tools tab ---------- */
   function renderChecklist() {
@@ -2555,7 +2733,7 @@ Integrated Binoculars|Common`;
 
   /* ---------- backup ---------- */
   function snapText() {
-    return JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk });
+    return JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist });
   }
   var snaps = load("arcHubSnaps", []);
   function takeSnapshot() {
@@ -2601,7 +2779,7 @@ Integrated Binoculars|Common`;
     importData();
   }
   function exportData() {
-    var txt = JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk });
+    var txt = JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist });
     var ta = document.getElementById("backup"), msg = document.getElementById("backupMsg");
     ta.value = txt; ta.focus(); ta.select();
     msg.textContent = "Export ready. Copy this text and keep it somewhere safe.";
@@ -2618,6 +2796,7 @@ Integrated Binoculars|Common`;
     var msg = document.getElementById("backupMsg"), d;
     try { d = JSON.parse(document.getElementById("backup").value); } catch (e) { msg.textContent = "That does not look like an Arc Raiders Hub backup."; return; }
     if (!d || d.app !== "arc-raiders-hub") { msg.textContent = "That does not look like an Arc Raiders Hub backup."; return; }
+    pushUndo("Imported a backup");
     tracker = numMap(d.tracker); goals = numMap(d.goals);
     favs = Array.isArray(d.favs) ? d.favs.filter(function (x) { return typeof x === "string"; }).slice(0, 500) : [];
     customItems = Array.isArray(d.custom) ? d.custom.filter(function (c) { return c && typeof c.name === "string" && Array.isArray(c.yields); }).slice(0, 200) : [];
@@ -2635,6 +2814,9 @@ Integrated Binoculars|Common`;
     oo = objOf(d.tags); if (oo) { itemTags = {}; Object.keys(oo).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(oo[k]) !== -1 && k.length < 80) { itemTags[k] = oo[k]; } }); save("arcHubTags", itemTags); }
     oo = objOf(d.notes); if (oo) { mapNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 60) { mapNotes[k] = oo[k].slice(0, 2000); } }); save("arcHubMapNotes", mapNotes); }
     if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
+    oo = objOf(d.inotes); if (oo) { itemNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 80) { itemNotes[k] = oo[k].slice(0, 300); } }); save("arcHubNotes", itemNotes); }
+    oo = objOf(d.trials); if (oo) { trials = {}; Object.keys(oo).forEach(function (k) { var x = oo[k]; if (x && typeof x === "object" && k.length < 20) { trials[k] = { d: !!x.d, p: Math.max(0, parseInt(x.p, 10) || 0) }; } }); save("arcHubTrials", trials); }
+    if (Array.isArray(d.hist)) { hist = d.hist.filter(function (h) { return h && typeof h.d === "string" && h.d.length < 12 && h.v && typeof h.v === "object"; }).map(function (h) { return { d: h.d, v: numMap(h.v) }; }).slice(-90); save("arcHubHist", hist); }
     if (Array.isArray(d.repeat)) { rchk = d.repeat.filter(function (c) { return c && typeof c.t === "string"; }).map(function (c) { return { t: c.t.slice(0, 80), p: c.p === "weekly" ? "weekly" : "daily", d: !!c.d, k: typeof c.k === "string" ? c.k : "" }; }).slice(0, 50); save("arcHubRepeat", rchk); }
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubFavs", favs);
     save("arcHubCustom", customItems); save("arcHubProjects", projects); save("arcHubCheck", checklist);
@@ -2665,6 +2847,10 @@ Integrated Binoculars|Common`;
     if (r.tab === "quests" && /^p=/.test(r.arg)) {
       var dec = qDecode(r.arg.slice(2));
       if (dec && dec.n) { qPending = dec; renderQuests(); }
+    }
+    if (r.tab === "tracker" && /^list=/.test(r.arg)) {
+      sharedList = r.arg.slice(5).split("~").map(function (x) { var i = x.lastIndexOf("*"); return [x.slice(0, i), parseInt(x.slice(i + 1), 10) || 0]; }).filter(function (x) { return x[0] && x[1] > 0 && x[0].length < 80; }).slice(0, 80);
+      renderShared();
     }
     if (r.tab === "tools" && /^lo=/.test(r.arg)) { try { loApply(r.arg); } catch (e3) {} }
     if (r.tab === "maps" && r.arg) {
@@ -2729,6 +2915,7 @@ Integrated Binoculars|Common`;
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
     if (name === "tools") { renderRepeat(); renderKeep(); }
+    if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
     if (!quiet) { writeHash(); }
@@ -2842,6 +3029,7 @@ Integrated Binoculars|Common`;
     } else if (a === "presetAdd") {
       presetAdd(parseInt(t.getAttribute("data-s"), 10));
     } else if (a === "projDel") {
+      pushUndo("Deleted a project");
       projects.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubProjects", projects); renderProjects();
     } else if (a === "exportData") {
       exportData();
@@ -2877,7 +3065,24 @@ Integrated Binoculars|Common`;
       try {
         window.navigator.clipboard.writeText(window.location.href).then(function () { done("Link copied"); }, function () { done("Copy the address bar"); });
       } catch (e) { done("Copy the address bar"); }
+    } else if (a === "undo") { doUndo();
+    } else if (a === "tourStart") { setHint(false); tourShow(0);
+    } else if (a === "tourNext") { tourShow(tourI + 1);
+    } else if (a === "tourSkip") { tourClear(); document.getElementById("tour").hidden = true; save("arcHubTour", true); tourI = -1;
+    } else if (a === "noteEdit") { var nn = t.getAttribute("data-item"); noteEdit = noteEdit === nn ? "" : nn; renderResults(); var nt = document.querySelector('[data-notefor]'); if (nt) { nt.focus(); }
+    } else if (a === "noteDone") { noteEdit = ""; renderResults();
+    } else if (a === "shopFind") {
+      var sfm = t.getAttribute("data-m"); showTab("recycle"); document.getElementById("searchBox").value = sfm; renderResults(); writeHash(); window.scrollTo(0, 0);
+    } else if (a === "shopLink") {
+      var sl = shopData(false).map(function (r) { return r.n + "*" + r.miss; }).join("~"), sm2 = document.getElementById("shopMsg");
+      var slink = window.location.href.split("#")[0] + "#tracker/" + encodeURIComponent("list=" + sl);
+      try { window.navigator.clipboard.writeText(slink).then(function () { sm2.textContent = "Link copied."; }, function () { sm2.textContent = "Copy failed."; }); } catch (e10) { sm2.textContent = "Copy failed."; }
+    } else if (a === "sharedClose") { sharedList = null; renderShared();
+    } else if (a === "loLink") {
+      var ll = loadouts[parseInt(t.getAttribute("data-i"), 10)];
+      if (ll) { var llk = window.location.href.split("#")[0] + "#tools/" + encodeURIComponent(ll.code), lm2 = document.getElementById("loMsg"); try { window.navigator.clipboard.writeText(llk).then(function () { lm2.textContent = "Link copied."; }, function () { lm2.textContent = "Copy failed."; }); } catch (e11) { lm2.textContent = "Copy failed."; } }
     } else if (a === "tag") {
+      pushUndo("Changed tag");
       var tn = t.getAttribute("data-item"), order = ["", "sell", "keep", "craft"], cur2 = itemTags[tn] || "";
       var nx = order[(order.indexOf(cur2) + 1) % order.length];
       if (nx) { itemTags[tn] = nx; } else { delete itemTags[tn]; }
@@ -2886,6 +3091,7 @@ Integrated Binoculars|Common`;
       var rt = document.getElementById("rcNew").value.trim();
       if (rt) { rchk.push({ t: rt.slice(0, 80), p: document.getElementById("rcPer").value === "weekly" ? "weekly" : "daily", d: false, k: pKey(document.getElementById("rcPer").value) }); document.getElementById("rcNew").value = ""; save("arcHubRepeat", rchk); renderRepeat(); }
     } else if (a === "rchkDel") {
+      pushUndo("Removed a task");
       rchk.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubRepeat", rchk); renderRepeat();
     } else if (a === "printChecks") {
       document.body.classList.add("print-chk"); try { window.print(); } catch (e7) {} document.body.classList.remove("print-chk");
@@ -2902,6 +3108,7 @@ Integrated Binoculars|Common`;
     } else if (a === "loLoad") {
       var lo = loadouts[parseInt(t.getAttribute("data-i"), 10)]; if (lo) { loApply(lo.code); }
     } else if (a === "loDel") {
+      pushUndo("Deleted a loadout");
       loadouts.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubLoadouts", loadouts); renderLoSaved();
     } else if (a === "contrast") {
       var cn = !load("arcHubContrast", false); save("arcHubContrast", cn); applyContrast(cn);
@@ -2942,6 +3149,7 @@ Integrated Binoculars|Common`;
       bump(t.getAttribute("data-m"), -1);
     } else if (a === "trackReset") {
       if (t.getAttribute("data-armed") === "1") {
+        pushUndo("Reset tracker");
         tracker = {};
         goals = {};
         save("arcHubTracker", tracker);
@@ -2983,6 +3191,7 @@ Integrated Binoculars|Common`;
   document.addEventListener("change", function (e) {
     var n = e.target && e.target.getAttribute && e.target.getAttribute("data-qdone");
     if (!n) { return; }
+    pushUndo("Quest: " + n);
     if (e.target.checked) { qDone[n] = 1; } else { delete qDone[n]; }
     save("arcHubQuestsDone", qDone);
     if (e.target.checked && autoSpend) { var qq = QUESTS.filter(function (x) { return x.name === n; })[0]; if (qq && qq.req.length) { spend(qq.req, n); } }
@@ -3003,6 +3212,7 @@ Integrated Binoculars|Common`;
     var g = e.target && e.target.getAttribute && e.target.getAttribute("data-goal");
     if (!g) { return; }
     var v = parseInt(e.target.value, 10) || 0;
+    pushUndo("Changed goal for " + g);
     if (v > 0) { goals[g] = v; } else { delete goals[g]; }
     save("arcHubGoals", goals);
     invTyping = true; shopTyping = true;
@@ -3031,6 +3241,7 @@ Integrated Binoculars|Common`;
     var v;
     if ((v = el.getAttribute("data-rchk")) !== null) { var c = rchk[parseInt(v, 10)]; if (c) { c.d = el.checked; save("arcHubRepeat", rchk); renderRepeat(); } return; }
     if ((v = el.getAttribute("data-wsdone")) !== null) {
+      pushUndo("Workshop: " + v);
       var oldL = wsDone[v] || 0, newL = parseInt(el.value, 10) || 0;
       wsDone[v] = newL; save("arcHubWs", wsDone);
       if (autoSpend && newL > oldL) { var wr = WORKSHOP.filter(function (w) { return w[0] === v; }); for (var li = oldL; li < newL && li < wr.length; li++) { spend(qItems(wr[li][2]), v + " level " + wr[li][1]); } }
@@ -3039,17 +3250,39 @@ Integrated Binoculars|Common`;
     if ((v = el.getAttribute("data-wsplan")) !== null) { if (el.checked) { delete wsPlan[v]; } else { wsPlan[v] = false; } save("arcHubWsPlan", wsPlan); renderTracker(); return; }
     if ((v = el.getAttribute("data-shopsrc")) !== null) { shopSrc[v] = el.checked; save("arcHubShopSrc", shopSrc); renderTracker(); return; }
     if (el.getAttribute("data-invhave") !== null) { return; }
+    if ((v = el.getAttribute("data-trial")) !== null) { pushUndo("Trials"); var tk = trKey(v); trials[tk] = trials[tk] || {}; trials[tk].d = el.checked; save("arcHubTrials", trials); var row = el.closest(".trrow"); if (row) { row.className = "trrow" + (el.checked ? " done" : ""); } var ts = document.getElementById("trSum"); if (ts) { ts.textContent = trSummary() + ". Tick challenges off and note your points. Rewards come at 1,000, 2,000 and 3,000."; } return; }
+    if (el.id === "cueOn") { cueOn = el.checked; save("arcHubCue", cueOn); if (cueOn) { cue(); } return; }
+    if (el.id === "qMap") { renderQuests(); return; }
+    if (el.id === "histMat") { renderHist(); return; }
     if (el.id === "autoSpend") { autoSpend = el.checked; save("arcHubAutoSpend", autoSpend); return; }
     if (el.id === "tagFilter") { renderResults(); return; }
     if (el.id === "loCA" || el.id === "loCB") { renderLoCmp(); }
   });
   document.addEventListener("input", function (e) {
+    if (e.target && e.target.getAttribute && e.target.getAttribute("data-trialp") !== null) {
+      var ti = e.target.getAttribute("data-trialp"), tk2 = trKey(ti), pv = parseInt(e.target.value, 10) || 0;
+      trials[tk2] = trials[tk2] || {}; trials[tk2].p = pv; save("arcHubTrials", trials);
+      var tt = document.getElementById("trt" + ti); if (tt) { tt.textContent = trTier(pv); } return;
+    }
+    if (e.target && e.target.getAttribute && e.target.getAttribute("data-notefor") !== null) {
+      var nf = e.target.getAttribute("data-notefor"), nv = e.target.value.slice(0, 300);
+      if (nv.trim()) { itemNotes[nf] = nv; } else { delete itemNotes[nf]; } save("arcHubNotes", itemNotes); return;
+    }
     if (e.target && e.target.getAttribute && e.target.getAttribute("data-invhave") !== null) { invTypeUpdate(e.target.getAttribute("data-invhave"), e.target.value); return; }
     if (e.target && e.target.getAttribute && e.target.getAttribute("data-shophave") !== null) { shopTypeUpdate(e.target.getAttribute("data-shophave"), e.target.value); return; }
     if (e.target && e.target.id === "mapNote") { mapNotes[MAPS[curMap].name] = e.target.value.slice(0, 2000); save("arcHubMapNotes", mapNotes); }
   });
   window.addEventListener("afterprint", function () { document.body.classList.remove("print-chk"); });
   applyContrast(!!load("arcHubContrast", false));
+  (function () {
+    var mp = document.getElementById("qMap");
+    mp.innerHTML = '<option value="">All maps</option>' + MAPS.filter(function (m) { return m.diff > 0; }).map(function (m) { return "<option>" + esc(m.name) + "</option>"; }).join("") + "<option>Frigate</option>";
+    document.getElementById("cueOn").checked = !!cueOn;
+    document.getElementById("histCard").addEventListener("toggle", function () { if (this.open) { renderHist(); } });
+    recordHist();
+    var auto = !load("arcHubTour", false) && !load("arcHubHint", false) && !window.location.hash && !window.navigator.webdriver;
+    if (auto) { setTimeout(function () { setHint(false); tourShow(0); }, 700); }
+  })();
   renderChanges();
   document.getElementById("gq").addEventListener("input", gSearch);
   document.getElementById("gq").addEventListener("keydown", function (e) {

@@ -407,6 +407,12 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   body.print-chk .printable * { color: #000 !important; }
 }
 .chip[aria-pressed="true"], .chip[aria-pressed="true"]:hover, .chip[aria-pressed="true"]:focus { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.shoprow { padding: 8px 0; border-top: 1px solid var(--line); display: grid; gap: 2px; }
+.shoprow .sh1 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.shoprow .sh1 b { flex: 1 1 140px; min-width: 0; }
+.shoprow .shmiss { color: var(--warm); font-family: var(--font-mono); font-size: 13px; }
+.shoprow .shctl { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.shoprow .shctl .btn { padding: 1px 9px; }
 </style>
 </head>
 <body>
@@ -494,6 +500,26 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       </div>
       <datalist id="matList"></datalist>
     </div>
+    <div class="tool" id="shopTool">
+      <h3>Shopping list</h3>
+      <p class="muted">Built automatically from your active quests, saved projects, workshop upgrades and tracker goals, compared with what you track. Use + and &minus; to update your count right here.</p>
+      <div class="chips" role="group" aria-label="What to include">
+        <label class="tog"><input type="checkbox" data-shopsrc="quest" checked> Quests</label>
+        <label class="tog"><input type="checkbox" data-shopsrc="project" checked> Projects</label>
+        <label class="tog"><input type="checkbox" data-shopsrc="workshop" checked> Workshop</label>
+        <label class="tog"><input type="checkbox" data-shopsrc="goal" checked> Goals</label>
+      </div>
+      <div id="shopOut"></div>
+      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="autoSpend"> Subtract items from my tracker when I complete a quest or workshop level</label>
+      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><span class="muted" id="shopMsg" role="status"></span></div>
+    </div>
+
+    <details class="tool" id="wsTool" open>
+      <summary><b>Workshop planner</b></summary>
+      <p class="muted">Tick how many levels of each station you have finished. Each station&rsquo;s next level goes on the shopping list unless you untick &ldquo;Include&rdquo;.</p>
+      <div id="wsPlanner"></div>
+    </details>
+
     <div class="toolbar">
       <div class="muted" id="trackerSummary"></div>
       <button class="btn ghost" type="button" data-action="shareTracker">Share as image</button><button class="btn danger" type="button" data-action="trackReset" id="resetBtn">Reset all</button>
@@ -640,7 +666,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   <!-- TOOLS -->
   <section class="panel" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools" hidden>
     <h2>Tools</h2>
-    <p class="muted">A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
+    <p class="muted">The shopping list and workshop planner are now in the Tracker tab. A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
 
     <div class="tool printable">
       <h3>Raid checklist</h3>
@@ -700,19 +726,6 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="loShare">Copy loadout link</button><span class="muted" id="loMsg" role="status"></span></div>
       <div class="rcadd" style="grid-template-columns:1fr auto;"><input type="text" id="loName" placeholder="Name this loadout" aria-label="Loadout name" maxlength="40"><button class="btn" type="button" data-action="loSave">Save loadout</button></div>
       <div id="loSaved"></div>
-    </div>
-
-    <div class="tool">
-      <h3>Workshop planner</h3>
-      <p class="muted">Tick how many levels of each station you have finished. The next level&rsquo;s needs are compared with your tracker. Turn on &ldquo;Plan&rdquo; to add them to the shopping list.</p>
-      <div id="wsPlanner"></div>
-    </div>
-
-    <div class="tool">
-      <h3>Shopping list</h3>
-      <p class="muted">Everything you still need for active quests, saved projects, planned workshop levels and tracker goals, with the items that recycle into it best.</p>
-      <div id="shopOut"></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><span class="muted" id="shopMsg" role="status"></span></div>
     </div>
 
     <div class="tool">
@@ -1495,6 +1508,8 @@ Integrated Binoculars|Common`;
   }
 
   function renderTracker() {
+    var shopRows = [], sm = {};
+    try { shopRows = shopData(); shopRows.forEach(function (r) { sm[r.n] = r; }); renderShop(); renderPlanner(); } catch (e0) {}
     var set = {};
     Object.keys(tracker).concat(Object.keys(goals)).forEach(function (k) { set[k] = true; });
     var keys = Object.keys(set).sort();
@@ -1518,6 +1533,7 @@ Integrated Binoculars|Common`;
       return '<div class="inv"><div class="n">' + esc(k) + '</div><div class="ctl"><div class="q">' + have + "</div>" +
         '<div class="step"><button type="button" data-action="dec" data-m="' + esc(k) + '" aria-label="Remove one ' + esc(k) + '">&minus;</button>' +
         '<button type="button" data-action="inc" data-m="' + esc(k) + '" aria-label="Add one ' + esc(k) + '">+</button></div></div>' + prog +
+        (sm[k] ? '<div class="muted">Still need ' + sm[k].miss + " for " + esc(shopLabel(sm[k].src)) + "</div>" : "") +
         '<div class="goalline"><label for="g-' + esc(k) + '">Goal</label><input type="number" min="0" id="g-' + esc(k) + '" data-goal="' + esc(k) + '" value="' + (g || "") + '" placeholder="none"></div></div>';
     }).join("") + "</div>";
   }
@@ -2258,21 +2274,26 @@ Integrated Binoculars|Common`;
         var have = tracker[r.n] || 0, ok = have >= r.q;
         return '<div class="need"><div>' + esc(r.n) + ": <b>" + Math.min(have, r.q) + " / " + r.q + "</b>" + (ok ? " &#10003;" : " (" + (r.q - have) + " to go)") + '</div><div class="bar' + (ok ? " done" : "") + '"><i style="width:' + Math.min(100, Math.round(have / r.q * 100)) + '%"></i></div></div>';
       }).join("") : '<div class="empty-line">All levels done.</div>';
-      return '<div class="wsrow"><div class="wsh"><b>' + esc(n) + '</b><span><label>Levels done <select data-wsdone="' + esc(n) + '" aria-label="' + esc(n) + ' levels done">' + opts + "</select> of " + rows.length + '</label> <label class="tog"><input type="checkbox" data-wsplan="' + esc(n) + '"' + (wsPlan[n] ? " checked" : "") + "> Plan</label></span></div>" +
+      return '<div class="wsrow"><div class="wsh"><b>' + esc(n) + '</b><span><label>Levels done <select data-wsdone="' + esc(n) + '" aria-label="' + esc(n) + ' levels done">' + opts + "</select> of " + rows.length + '</label> <label class="tog"><input type="checkbox" data-wsplan="' + esc(n) + '"' + (wsPlan[n] !== false ? " checked" : "") + "> Include</label></span></div>" +
         (next ? '<div class="muted">Next: level ' + esc(next[1]) + "</div>" : "") + body + "</div>";
     }).join("");
   }
+  var shopSrc = load("arcHubShopSrc", {});
+  var autoSpend = load("arcHubAutoSpend", false);
+  function shopLabel(src) { return src.slice(0, 3).join(", ") + (src.length > 3 ? " +" + (src.length - 3) : ""); }
   function shopData() {
-    var t = {}, src = {};
-    function add(n, q, w) { t[n] = (t[n] || 0) + q; if (!src[n]) { src[n] = []; } if (src[n].indexOf(w) === -1) { src[n].push(w); } }
-    qActive().forEach(function (q) { q.req.forEach(function (r) { add(r.n, r.q, "quest"); }); });
-    projects.forEach(function (p) { p.needs.forEach(function (n) { add(n[0], n[1], "project"); }); });
-    wsStations().forEach(function (st) {
-      if (!wsPlan[st[0]]) { return; }
-      var next = st[1][Math.min(wsDone[st[0]] || 0, st[1].length)];
-      if (next) { qItems(next[2]).forEach(function (r) { add(r.n, r.q, "workshop"); }); }
-    });
-    Object.keys(goals).forEach(function (m) { if (goals[m] > (t[m] || 0)) { t[m] = goals[m]; if (!src[m]) { src[m] = []; } if (src[m].indexOf("goal") === -1) { src[m].push("goal"); } } });
+    var t = {}, src = {}, kinds = {};
+    function add(n, q, kind, label) { t[n] = (t[n] || 0) + q; if (!src[n]) { src[n] = []; } if (src[n].indexOf(label) === -1) { src[n].push(label); } if (!kinds[n]) { kinds[n] = {}; } kinds[n][kind] = 1; }
+    if (shopSrc.quest !== false) { qActive().forEach(function (q) { q.req.forEach(function (r) { add(r.n, r.q, "quest", q.name); }); }); }
+    if (shopSrc.project !== false) { projects.forEach(function (p) { p.needs.forEach(function (n) { add(n[0], n[1], "project", p.name); }); }); }
+    if (shopSrc.workshop !== false) {
+      wsStations().forEach(function (st) {
+        if (wsPlan[st[0]] === false) { return; }
+        var next = st[1][Math.min(wsDone[st[0]] || 0, st[1].length)];
+        if (next) { qItems(next[2]).forEach(function (r) { add(r.n, r.q, "workshop", st[0] + " L" + next[1]); }); }
+      });
+    }
+    if (shopSrc.goal !== false) { Object.keys(goals).forEach(function (m) { if (goals[m] > (t[m] || 0)) { t[m] = goals[m]; if (!src[m]) { src[m] = []; } if (src[m].indexOf("goal") === -1) { src[m].push("goal"); } } }); }
     var rows = [];
     Object.keys(t).forEach(function (n) {
       var have = tracker[n] || 0, miss = t[n] - have;
@@ -2289,12 +2310,27 @@ Integrated Binoculars|Common`;
   function renderShop() {
     var box = document.getElementById("shopOut");
     if (!box) { return; }
+    Array.prototype.forEach.call(document.querySelectorAll("[data-shopsrc]"), function (el) { el.checked = shopSrc[el.getAttribute("data-shopsrc")] !== false; });
+    var as = document.getElementById("autoSpend"); if (as) { as.checked = !!autoSpend; }
     var rows = shopData();
-    if (!rows.length) { box.innerHTML = '<div class="empty-line">Nothing missing. Add quests, projects, goals or plan a workshop level.</div>'; return; }
-    box.innerHTML = '<div class="tablewrap"><table><thead><tr><th>Material</th><th>Missing</th><th>Have / need</th><th>For</th><th>Best to recycle</th></tr></thead><tbody>' + rows.slice(0, 60).map(function (r) {
+    if (!rows.length) { box.innerHTML = '<div class="empty-line">Nothing missing. Everything for your active quests, projects and workshop levels is covered.</div>'; return; }
+    box.innerHTML = '<div class="muted">' + rows.length + " materials still needed.</div>" + rows.slice(0, 60).map(function (r) {
       var b = bestSources(r.n);
-      return "<tr><td>" + esc(r.n) + "</td><td><b>" + r.miss + "</b></td><td>" + r.have + " / " + r.need + "</td><td>" + r.src.map(esc).join(", ") + "</td><td>" + (b.length ? b.map(esc).join(", ") : "Find in raids") + "</td></tr>";
-    }).join("") + "</tbody></table></div>" + (rows.length > 60 ? '<div class="muted">And ' + (rows.length - 60) + " more.</div>" : "");
+      return '<div class="shoprow"><div class="sh1"><b>' + esc(r.n) + '</b><span class="shmiss">' + r.miss + ' missing</span>' +
+        '<span class="shctl"><button type="button" class="btn ghost" data-action="dec" data-m="' + esc(r.n) + '" aria-label="Remove one ' + esc(r.n) + '">&minus;</button> <span>' + r.have + " / " + r.need + '</span> <button type="button" class="btn ghost" data-action="inc" data-m="' + esc(r.n) + '" aria-label="Add one ' + esc(r.n) + '">+</button></span></div>' +
+        '<div class="muted">For: ' + esc(shopLabel(r.src)) + "</div>" +
+        '<div class="muted">Best to recycle: ' + (b.length ? b.map(esc).join(", ") : "find in raids") + "</div></div>";
+    }).join("") + (rows.length > 60 ? '<div class="muted">And ' + (rows.length - 60) + " more.</div>" : "");
+  }
+  function spend(reqs, label) {
+    var got = [];
+    reqs.forEach(function (r) {
+      var h = tracker[r.n] || 0;
+      if (h > 0) { var u = Math.min(h, r.q); tracker[r.n] = h - u; if (!tracker[r.n] && !goals[r.n]) { delete tracker[r.n]; } got.push(u + "x " + r.n); }
+    });
+    if (got.length) { save("arcHubTracker", tracker); }
+    var m = document.getElementById("shopMsg"); if (m) { m.textContent = got.length ? "Subtracted " + got.join(", ") + " for " + label + "." : ""; }
+    renderTracker(); renderResults();
   }
   function shopText() {
     return "Still needed (" + shopData().length + "):\n" + shopData().map(function (r) { return r.miss + "x " + r.n + " (" + r.src.join(", ") + ")"; }).join("\n");
@@ -2459,7 +2495,7 @@ Integrated Binoculars|Common`;
     renderWeaponCompare(); renderLoadout();
   }
   function renderTools() {
-    renderRepeat(); renderPlanner(); renderShop(); renderLoSaved();
+    renderRepeat(); renderLoSaved();
     renderKeep();
     renderChecklist();
     renderPresets();
@@ -2546,7 +2582,7 @@ Integrated Binoculars|Common`;
     save("arcHubBP", bpOwned);
     function objOf(o) { return o && typeof o === "object" && !Array.isArray(o) ? o : null; }
     var oo = objOf(d.ws); if (oo) { wsDone = {}; Object.keys(oo).forEach(function (k) { var n = parseInt(oo[k], 10); if (n > 0 && n < 20 && k.length < 40) { wsDone[k] = n; } }); save("arcHubWs", wsDone); }
-    oo = objOf(d.plan); if (oo) { wsPlan = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 40) { wsPlan[k] = true; } }); save("arcHubWsPlan", wsPlan); }
+    oo = objOf(d.plan); if (oo) { wsPlan = {}; Object.keys(oo).forEach(function (k) { if (oo[k] === false && k.length < 40) { wsPlan[k] = false; } }); save("arcHubWsPlan", wsPlan); }
     oo = objOf(d.tags); if (oo) { itemTags = {}; Object.keys(oo).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(oo[k]) !== -1 && k.length < 80) { itemTags[k] = oo[k]; } }); save("arcHubTags", itemTags); }
     oo = objOf(d.notes); if (oo) { mapNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 60) { mapNotes[k] = oo[k].slice(0, 2000); } }); save("arcHubMapNotes", mapNotes); }
     if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
@@ -2643,7 +2679,8 @@ Integrated Binoculars|Common`;
     });
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderPlanner(); renderShop(); renderKeep(); }
+    if (name === "tools") { renderRepeat(); renderKeep(); }
+    if (name === "tracker") { renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
     if (!quiet) { writeHash(); }
   }
@@ -2898,7 +2935,9 @@ Integrated Binoculars|Common`;
     var n = e.target && e.target.getAttribute && e.target.getAttribute("data-qdone");
     if (!n) { return; }
     if (e.target.checked) { qDone[n] = 1; } else { delete qDone[n]; }
-    save("arcHubQuestsDone", qDone); renderQuests();
+    save("arcHubQuestsDone", qDone);
+    if (e.target.checked && autoSpend) { var qq = QUESTS.filter(function (x) { return x.name === n; })[0]; if (qq && qq.req.length) { spend(qq.req, n); } }
+    renderQuests(); renderTracker();
   });
   document.getElementById("presetSel").addEventListener("change", function () { presetIdx = parseInt(this.value, 10) || 0; renderPresets(); });
   document.getElementById("gearSort").addEventListener("change", renderGear);
@@ -2939,8 +2978,15 @@ Integrated Binoculars|Common`;
     var el = e.target; if (!el || !el.getAttribute) { return; }
     var v;
     if ((v = el.getAttribute("data-rchk")) !== null) { var c = rchk[parseInt(v, 10)]; if (c) { c.d = el.checked; save("arcHubRepeat", rchk); renderRepeat(); } return; }
-    if ((v = el.getAttribute("data-wsdone")) !== null) { wsDone[v] = parseInt(el.value, 10) || 0; save("arcHubWs", wsDone); renderPlanner(); renderShop(); return; }
-    if ((v = el.getAttribute("data-wsplan")) !== null) { if (el.checked) { wsPlan[v] = true; } else { delete wsPlan[v]; } save("arcHubWsPlan", wsPlan); renderPlanner(); renderShop(); return; }
+    if ((v = el.getAttribute("data-wsdone")) !== null) {
+      var oldL = wsDone[v] || 0, newL = parseInt(el.value, 10) || 0;
+      wsDone[v] = newL; save("arcHubWs", wsDone);
+      if (autoSpend && newL > oldL) { var wr = WORKSHOP.filter(function (w) { return w[0] === v; }); for (var li = oldL; li < newL && li < wr.length; li++) { spend(qItems(wr[li][2]), v + " level " + wr[li][1]); } }
+      renderTracker(); return;
+    }
+    if ((v = el.getAttribute("data-wsplan")) !== null) { if (el.checked) { delete wsPlan[v]; } else { wsPlan[v] = false; } save("arcHubWsPlan", wsPlan); renderTracker(); return; }
+    if ((v = el.getAttribute("data-shopsrc")) !== null) { shopSrc[v] = el.checked; save("arcHubShopSrc", shopSrc); renderTracker(); return; }
+    if (el.id === "autoSpend") { autoSpend = el.checked; save("arcHubAutoSpend", autoSpend); return; }
     if (el.id === "tagFilter") { renderResults(); return; }
     if (el.id === "loCA" || el.id === "loCB") { renderLoCmp(); }
   });

@@ -13,7 +13,14 @@
 <meta property="og:title" content="Arc Raiders Hub - Recycling Lookup and Material Tracker">
 <meta property="og:description" content="Search what ARC Raiders items recycle or salvage into, track your materials, and catch up on every update through Frozen Trail 2.0.">
 <meta property="og:site_name" content="Arc Raiders Hub">
-<meta name="twitter:card" content="summary">
+<meta property="og:url" content="https://tyler45455.github.io/Arc-Raiders-hub/">
+<meta property="og:image" content="https://tyler45455.github.io/Arc-Raiders-hub/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tyler45455.github.io/Arc-Raiders-hub/og-image.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230d141b'/%3E%3Cpath d='M32 10 L52 46 H12 Z' fill='none' stroke='%236fcbe6' stroke-width='5' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -233,6 +240,22 @@ table { border-collapse: collapse; width: 100%; font-size: 14px; }
 th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 
+[hidden] { display: none !important; }
+.toprow { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.toprow .btn { padding: 5px 10px; font-size: 12px; }
+.stamp { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin: -4px 0 14px; }
+.hint { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.hint .btn { flex: none; }
+.toolrow { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 4px 0 8px; font-size: 13px; color: var(--muted); }
+.toolrow label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.toolrow .btn { padding: 5px 10px; font-size: 12px; }
+.help { grid-column: 1 / -1; font-size: 13px; color: var(--good); }
+.help b { font-weight: 600; }
+.bar { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.bar.done > i { background: var(--good); }
+.goalline { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.goalline input { width: 76px; padding: 4px 6px; font-size: 13px; }
 footer { border-top: 1px solid var(--line); padding-block: 18px 28px; color: var(--muted); font-size: 13px; }
 footer .wrap > * { margin: 4px 0; }
 code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surface2); padding: 1px 5px; border-radius: 4px; }
@@ -243,9 +266,10 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 
 <header class="band">
   <div class="wrap">
-    <p class="eyebrow">Fan-made field reference</p>
+    <div class="toprow"><p class="eyebrow">Fan-made field reference</p><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button></div>
     <h1>Arc Raiders <em>Hub</em></h1>
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
+    <p class="stamp" id="dataStamp"></p>
     <div class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycling lookup</button>
       <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Material tracker<span class="count" id="trackerCount"></span></button>
@@ -263,6 +287,11 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <h2>Recycling lookup</h2>
     <p class="muted">Search an item to see what it breaks down into, or search a material to see every item that gives it, biggest yield first.</p>
 
+    <div class="note hint" id="hint">
+      <div><b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set goals in the Material tracker and the lookup will point out items that help.</div>
+      <button class="btn ghost" type="button" data-action="hintClose">Got it</button>
+    </div>
+
     <div class="searchbar">
       <input type="text" id="searchBox" placeholder="Try Garlic Press, Wires, ARC Alloy, Chemicals..." autocomplete="off" aria-label="Search items or materials">
       <div class="seg" role="group" aria-label="Amount to show">
@@ -271,6 +300,10 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       </div>
     </div>
     <div class="chips" id="chips"></div>
+    <div class="toolrow">
+      <label id="goalWrap" hidden><input type="checkbox" id="goalOnly"> Only items that help my goals</label>
+      <button class="btn ghost" type="button" data-action="copyLink" id="copyLink">Copy link to this search</button>
+    </div>
     <div class="note" id="coverage"></div>
 
     <div id="azbar" class="azbar"></div>
@@ -295,11 +328,12 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   <!-- TRACKER -->
   <section class="panel" id="panel-tracker" role="tabpanel" aria-labelledby="tab-tracker" hidden>
     <h2>Material tracker</h2>
-    <p class="muted">Add materials by hand, or press "Add to tracker" on any item in the lookup. Saved in this browser only.</p>
+    <p class="muted">Add materials by hand, or press "Add to tracker" on any item in the lookup. Set a goal for a material to see progress, and the lookup will show which items help you reach it. Saved in this browser only.</p>
     <div class="card" style="margin-top:14px;">
-      <div class="form-grid" style="grid-template-columns: 3fr 1fr auto;">
+      <div class="form-grid" style="grid-template-columns: 3fr 1fr 1fr auto;">
         <div><label for="tName">Material</label><input type="text" id="tName" list="matList" placeholder="Metal Parts"></div>
-        <div><label for="tQty">Amount</label><input type="number" id="tQty" value="1" min="1"></div>
+        <div><label for="tQty">Have</label><input type="number" id="tQty" value="1" min="0"></div>
+        <div><label for="tGoal">Goal (optional)</label><input type="number" id="tGoal" min="0" placeholder="200"></div>
         <button class="btn" type="button" data-action="trackAdd">Add</button>
       </div>
       <datalist id="matList"></datalist>
@@ -399,7 +433,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 <footer>
   <div class="wrap">
     <div>Fan-made, not affiliated with Embark Studios. ARC RAIDERS is a trademark of Embark Studios AB.</div>
-    <div>Item data from the <a href="https://arcraiders.wiki" target="_blank" rel="noopener">ARC Raiders Wiki</a> (CC BY-SA 4.0), read October 9, 2026.</div>
+    <div>Item data from the <a href="https://arcraiders.wiki" target="_blank" rel="noopener">ARC Raiders Wiki</a> (CC BY-SA 4.0). <span id="dataStamp2"></span></div>
     <div>Wrong number or missing item? Use the Report button on any row to open a GitHub issue.<span id="reportAddr" hidden></span></div>
   </div>
 </footer>
@@ -851,7 +885,10 @@ Integrated Binoculars|Common`;
   var items = [];
   var mode = "rec";
   var customItems = load("arcHubCustom", []);
+  var DATA_UPDATED = "October 9, 2026";
   var tracker = load("arcHubTracker", {});
+  var goals = load("arcHubGoals", {});
+  var curTab = "recycle";
   var rarityMap = {};
   var lootNames = {};
 
@@ -945,7 +982,30 @@ Integrated Binoculars|Common`;
       '<div class="acts">' +
       (has ? '<button class="btn" type="button" data-action="addItem" data-item="' + esc(it.name) + '">Add to tracker</button>' : "") +
       '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
-      '<div class="detail">' + yieldChips(it, hl) + "</div></div>";
+      '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + "</div>";
+  }
+
+  function need(m) { var g = goals[m]; return g ? Math.max(0, g - (tracker[m] || 0)) : 0; }
+  function goalHelp(it) {
+    var out = [];
+    pairs(yieldsOf(it)).forEach(function (p) { var n = need(p[0]); if (n > 0) { out.push([p[0], p[1], n]); } });
+    return out;
+  }
+  function helpLine(it) {
+    var h = goalHelp(it);
+    if (!h.length) { return ""; }
+    return '<div class="help">Helps your goals: ' + h.map(function (x) {
+      return "<b>+" + x[1] + "</b> " + esc(x[0]) + " (" + x[2] + " still needed)";
+    }).join(", ") + "</div>";
+  }
+  function keep(it) {
+    var box = document.getElementById("goalOnly");
+    return !(box && box.checked) || goalHelp(it).length > 0;
+  }
+  function updateGoalToggle() {
+    var any = Object.keys(goals).some(function (m) { return need(m) > 0; });
+    document.getElementById("goalWrap").hidden = !any;
+    if (!any) { document.getElementById("goalOnly").checked = false; }
   }
 
   function renderCoverage() {
@@ -975,7 +1035,7 @@ Integrated Binoculars|Common`;
     if (!q) {
       var letters = {};
       var cur = "";
-      items.forEach(function (it) {
+      items.filter(keep).forEach(function (it) {
         var L = it.name.charAt(0).toUpperCase();
         if (L !== cur) {
           cur = L; letters[L] = true;
@@ -991,11 +1051,11 @@ Integrated Binoculars|Common`;
     }
 
     az.innerHTML = "";
-    var nameHits = items.filter(function (it) { return it.name.toLowerCase().indexOf(q) !== -1; });
+    var nameHits = items.filter(function (it) { return it.name.toLowerCase().indexOf(q) !== -1 && keep(it); });
     var mats = allMaterials().filter(function (m) { return m.toLowerCase().indexOf(q) !== -1; }).slice(0, 4);
 
     mats.forEach(function (m) {
-      var src = items.filter(function (it) { return yieldsOf(it)[m]; })
+      var src = items.filter(function (it) { return yieldsOf(it)[m] && keep(it); })
         .sort(function (a, b) { return yieldsOf(b)[m] - yieldsOf(a)[m] || a.name.localeCompare(b.name); });
       var label = mode === "rec" ? "recycle into" : "salvage into";
       html += '<div class="group-title"><b>' + src.length + "</b> items " + label + " " + esc(m) + ", biggest first</div>";
@@ -1060,14 +1120,21 @@ Integrated Binoculars|Common`;
     save("arcHubTracker", tracker);
     renderTracker();
     renderDatalist();
+    updateGoalToggle();
+    if (Object.keys(goals).length) { renderResults(); }
   }
 
   function renderTracker() {
-    var keys = Object.keys(tracker).sort();
-    var total = 0;
-    keys.forEach(function (k) { total += tracker[k]; });
+    var set = {};
+    Object.keys(tracker).concat(Object.keys(goals)).forEach(function (k) { set[k] = true; });
+    var keys = Object.keys(set).sort();
+    var total = 0, gTotal = 0, gMet = 0;
+    keys.forEach(function (k) {
+      total += tracker[k] || 0;
+      if (goals[k]) { gTotal++; if ((tracker[k] || 0) >= goals[k]) { gMet++; } }
+    });
     document.getElementById("trackerCount").textContent = keys.length ? "(" + keys.length + ")" : "";
-    document.getElementById("trackerSummary").textContent = keys.length ? keys.length + " material types, " + total + " total" : "";
+    document.getElementById("trackerSummary").textContent = keys.length ? keys.length + " material types, " + total + " total" + (gTotal ? ", " + gMet + " of " + gTotal + " goals met" : "") : "";
     document.getElementById("resetBtn").hidden = !keys.length;
     var box = document.getElementById("inventory");
     if (!keys.length) {
@@ -1075,9 +1142,13 @@ Integrated Binoculars|Common`;
       return;
     }
     box.innerHTML = '<div class="inv-grid">' + keys.map(function (k) {
-      return '<div class="inv"><div class="n">' + esc(k) + '</div><div class="ctl"><div class="q">' + tracker[k] + "</div>" +
+      var have = tracker[k] || 0, g = goals[k] || 0;
+      var pct = g ? Math.min(100, Math.round(have * 100 / g)) : 0;
+      var prog = g ? '<div class="bar' + (have >= g ? " done" : "") + '"><i style="width:' + pct + '%"></i></div><div class="muted">' + (have >= g ? "Goal met" : (g - have) + " to go") + "</div>" : "";
+      return '<div class="inv"><div class="n">' + esc(k) + '</div><div class="ctl"><div class="q">' + have + "</div>" +
         '<div class="step"><button type="button" data-action="dec" data-m="' + esc(k) + '" aria-label="Remove one ' + esc(k) + '">&minus;</button>' +
-        '<button type="button" data-action="inc" data-m="' + esc(k) + '" aria-label="Add one ' + esc(k) + '">+</button></div></div></div>';
+        '<button type="button" data-action="inc" data-m="' + esc(k) + '" aria-label="Add one ' + esc(k) + '">+</button></div></div>' + prog +
+        '<div class="goalline"><label for="g-' + esc(k) + '">Goal</label><input type="number" min="0" id="g-' + esc(k) + '" data-goal="' + esc(k) + '" value="' + (g || "") + '" placeholder="none"></div></div>';
     }).join("") + "</div>";
   }
 
@@ -1105,12 +1176,46 @@ Integrated Binoculars|Common`;
   }
 
   /* ---------- events ---------- */
-  function showTab(name) {
+  function readHash() {
+    var h = "";
+    try { h = decodeURIComponent((window.location.hash || "").slice(1)); } catch (e) { h = ""; }
+    var i = h.indexOf("/");
+    return { tab: i < 0 ? h : h.slice(0, i), arg: i < 0 ? "" : h.slice(i + 1) };
+  }
+  function writeHash() {
+    try {
+      var arg = "";
+      if (curTab === "recycle") { arg = document.getElementById("searchBox").value.trim(); }
+      if (curTab === "maps") { arg = MAPS[curMap].name; }
+      var h = "#" + curTab + (arg ? "/" + encodeURIComponent(arg) : "");
+      if (window.location.hash !== h) { window.history.replaceState(null, "", h); }
+    } catch (e) {}
+  }
+  function applyHash() {
+    var r = readHash();
+    if (["recycle", "tracker", "maps", "frozen", "updates"].indexOf(r.tab) === -1) { return; }
+    showTab(r.tab, true);
+    if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
+    if (r.tab === "maps" && r.arg) {
+      for (var i = 0; i < MAPS.length; i++) { if (MAPS[i].name === r.arg) { curMap = i; renderMaps(); } }
+    }
+  }
+
+  function applyTheme(t) {
+    var root = document.documentElement;
+    if (t === "light" || t === "dark") { root.setAttribute("data-theme", t); } else { root.removeAttribute("data-theme"); t = "auto"; }
+    document.getElementById("themeBtn").textContent = "Theme: " + t.charAt(0).toUpperCase() + t.slice(1);
+    return t;
+  }
+
+  function showTab(name, quiet) {
+    curTab = name;
     ["recycle", "tracker", "maps", "frozen", "updates"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
     });
+    if (!quiet) { writeHash(); }
   }
 
   function setMode(m) {
@@ -1126,13 +1231,14 @@ Integrated Binoculars|Common`;
     if (!t || t === document) { return; }
 
     if (t.getAttribute("data-tab")) { showTab(t.getAttribute("data-tab")); return; }
-    if (t.getAttribute("data-map")) { curMap = parseInt(t.getAttribute("data-map"), 10); renderMaps(); return; }
+    if (t.getAttribute("data-map")) { curMap = parseInt(t.getAttribute("data-map"), 10); renderMaps(); writeHash(); return; }
     if (t.getAttribute("data-mode")) { setMode(t.getAttribute("data-mode")); return; }
 
     var a = t.getAttribute("data-action");
     if (a === "chip") {
       document.getElementById("searchBox").value = t.getAttribute("data-q");
       renderResults();
+      writeHash();
     } else if (a === "jump") {
       var el = document.getElementById("L-" + t.getAttribute("data-l"));
       if (el) { el.scrollIntoView(); }
@@ -1147,6 +1253,21 @@ Integrated Binoculars|Common`;
           break;
         }
       }
+    } else if (a === "theme") {
+      var cur = load("arcHubTheme", "auto");
+      var nxt = cur === "auto" ? "light" : (cur === "light" ? "dark" : "auto");
+      save("arcHubTheme", nxt);
+      applyTheme(nxt);
+    } else if (a === "hintClose") {
+      save("arcHubHint", true);
+      document.getElementById("hint").hidden = true;
+    } else if (a === "copyLink") {
+      writeHash();
+      var btn = t, label = t.textContent;
+      var done = function (msg) { btn.textContent = msg; setTimeout(function () { btn.textContent = label; }, 1500); };
+      try {
+        window.navigator.clipboard.writeText(window.location.href).then(function () { done("Link copied"); }, function () { done("Copy the address bar"); });
+      } catch (e) { done("Copy the address bar"); }
     } else if (a === "saveItem") {
       saveItem();
     } else if (a === "delItem") {
@@ -1156,11 +1277,14 @@ Integrated Binoculars|Common`;
       refresh();
     } else if (a === "trackAdd") {
       var name = document.getElementById("tName").value.trim();
-      var qty = parseInt(document.getElementById("tQty").value, 10);
-      if (name && qty > 0) {
-        bump(name, qty);
+      var qty = parseInt(document.getElementById("tQty").value, 10) || 0;
+      var gl = parseInt(document.getElementById("tGoal").value, 10) || 0;
+      if (name && (qty > 0 || gl > 0)) {
+        if (gl > 0) { goals[name] = gl; save("arcHubGoals", goals); }
+        if (qty > 0) { bump(name, qty); } else { renderTracker(); renderDatalist(); updateGoalToggle(); renderResults(); }
         document.getElementById("tName").value = "";
         document.getElementById("tQty").value = 1;
+        document.getElementById("tGoal").value = "";
       }
     } else if (a === "inc") {
       bump(t.getAttribute("data-m"), 1);
@@ -1169,9 +1293,13 @@ Integrated Binoculars|Common`;
     } else if (a === "trackReset") {
       if (t.getAttribute("data-armed") === "1") {
         tracker = {};
+        goals = {};
         save("arcHubTracker", tracker);
+        save("arcHubGoals", goals);
         renderTracker();
         renderDatalist();
+        updateGoalToggle();
+        renderResults();
       } else {
         t.setAttribute("data-armed", "1");
         t.textContent = "Press again to confirm";
@@ -1180,12 +1308,39 @@ Integrated Binoculars|Common`;
     }
   });
 
-  document.getElementById("searchBox").addEventListener("input", renderResults);
+  document.getElementById("searchBox").addEventListener("input", function () { renderResults(); writeHash(); });
+  document.getElementById("goalOnly").addEventListener("change", renderResults);
+  document.addEventListener("change", function (e) {
+    var g = e.target && e.target.getAttribute && e.target.getAttribute("data-goal");
+    if (!g) { return; }
+    var v = parseInt(e.target.value, 10) || 0;
+    if (v > 0) { goals[g] = v; } else { delete goals[g]; }
+    save("arcHubGoals", goals);
+    renderTracker();
+    updateGoalToggle();
+    renderResults();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) { return; }
+    var tag = e.target && e.target.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") { return; }
+    e.preventDefault();
+    showTab("recycle");
+    var box = document.getElementById("searchBox");
+    box.focus(); box.select();
+  });
+  window.addEventListener("hashchange", applyHash);
   document.getElementById("reportAddr").textContent = "";
 
+  document.getElementById("dataStamp").textContent = "Data checked against the wiki on " + DATA_UPDATED;
+  document.getElementById("dataStamp2").textContent = "Last data check: " + DATA_UPDATED + ".";
+  document.getElementById("hint").hidden = !!load("arcHubHint", false);
+  applyTheme(load("arcHubTheme", "auto"));
   renderTimeline();
   renderMaps();
   refresh();
+  updateGoalToggle();
+  applyHash();
 })();
 </script>
 <script data-goatcounter="https://tyler45455.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>

@@ -7,7 +7,9 @@ A free, fan-made reference site for ARC Raiders.
 ## Features
 
 - **Recycling lookup:** search any item to see what it recycles or salvages into, or search a material (Metal Parts, ARC Alloy and so on) to see every item that gives it, biggest yield first. Toggle between recycle and in-raid salvage amounts.
-- **Material tracker:** keep count of the materials you need. Saved in your own browser only.
+- **Material tracker:** keep count of the materials you need and set goals with progress bars. The lookup then flags items that help your goals. Saved in your own browser only.
+- **Shareable links:** the address updates as you search, so you can copy a link to a result. Press `/` to jump to the search box.
+- **Install as an app:** add the site to your phone's home screen. There is also a light/dark theme toggle.
 - **Maps:** difficulty, unlock requirement, conditions and update notes for each map.
 - **Frozen Trail 2.0:** a summary of the latest update.
 - **Update history:** highlights for every major update from launch to now.

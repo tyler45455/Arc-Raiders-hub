@@ -299,6 +299,9 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .bar.done > i { background: var(--good); }
 .goalline { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
 .goalline input { width: 76px; padding: 4px 6px; font-size: 13px; }
+.wcmp th { text-align: left; font-weight: 600; }
+.wcmp td.win { background: var(--hl, rgba(46, 158, 91, .18)); font-weight: 700; }
+.qwarn { font-size: 13px; font-weight: 600; color: var(--accent); }
 .refgrid { display: grid; gap: 4px; font-size: 13px; }
 .refgrid .k { color: var(--muted); }
 .qtools { display: grid; gap: 10px; margin: 12px 0; }
@@ -418,8 +421,12 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
         <button class="btn" type="button" data-action="exportData">Export</button>
         <button class="btn ghost" type="button" data-action="importData">Import</button>
+        <button class="btn ghost" type="button" data-action="makeCode">Copy transfer code</button>
       </div>
       <div class="muted" id="backupMsg" style="margin-top:8px;" role="status"></div>
+      <h4 style="margin:12px 0 4px;">Automatic snapshots</h4>
+      <div class="muted">This browser keeps its three most recent snapshots, taken when you open the site at least 12 hours after the last one.</div>
+      <div id="snapList"></div>
     </details>
   </section>
 
@@ -512,6 +519,17 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <label><input type="checkbox" id="qLocked"> Also show locked quests (ones whose earlier quest is not completed)</label>
       <label><input type="checkbox" id="qReady"> Only quests where my tracker covers every tracked required item</label>
     </div>
+    <div class="gearrow"><select id="qSort" aria-label="Sort quests"><option value="chain">Sort: wiki order</option><option value="ready">Sort: closest to ready first</option></select></div>
+    <div id="qBanner"></div>
+    <details class="card" id="qNeedsCard"><summary>Materials my unlocked quests need</summary>
+      <div id="qNeeds"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn" type="button" data-action="qGoalsAll">Set tracker goals for all of these</button></div>
+    </details>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">
+      <button class="btn ghost" type="button" data-action="qCopy">Copy my quest to-do list</button>
+      <button class="btn ghost" type="button" data-action="qLink">Copy progress link</button>
+    </div>
+    <textarea id="qShareBox" rows="6" aria-label="Quest list to copy" hidden readonly></textarea>
     <div class="muted" id="qCount" role="status"></div>
     <div id="qOut"></div>
   </section>
@@ -563,6 +581,26 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     </div>
 
     <div class="tool">
+      <h3>Compare weapons</h3>
+      <p class="muted">Pick two weapons to see their stats side by side. The better value in each row is highlighted.</p>
+      <div class="cmp-grid"><select id="wcA" aria-label="First weapon"></select><select id="wcB" aria-label="Second weapon"></select></div>
+      <div id="wcOut"></div>
+    </div>
+
+    <div class="tool">
+      <h3>Loadout builder</h3>
+      <p class="muted">Choose an augment, shield, weapons and items to see your carried weight against the augment&rsquo;s weight limit.</p>
+      <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+        <div><label for="loAug">Augment</label><select id="loAug"></select></div>
+        <div><label for="loShield">Shield</label><select id="loShield"></select></div>
+        <div><label for="loW1">Weapon 1</label><select id="loW1"></select></div>
+        <div><label for="loW2">Weapon 2</label><select id="loW2"></select></div>
+      </div>
+      <div id="loItems" style="display:grid;gap:6px;margin-top:8px;"></div>
+      <div id="loOut"></div>
+    </div>
+
+    <div class="tool">
       <h3>Compare items</h3>
       <p class="muted">Pick two items to see what each breaks down into, using the Recycle or Salvage setting from the lookup tab.</p>
       <div class="cmp-grid">
@@ -604,6 +642,18 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 <footer>
   <div class="wrap">
     <div>Fan-made, not affiliated with Embark Studios. ARC RAIDERS is a trademark of Embark Studios AB.</div>
+    <details><summary>Data freshness</summary>
+      <div class="muted">When each part of the site was last checked against the ARC Raiders Wiki:</div>
+      <div class="tablewrap"><table><thead><tr><th>Section</th><th>Last checked</th></tr></thead><tbody>
+        <tr><td>Recycling and salvage data</td><td>October 9, 2026</td></tr>
+        <tr><td>Weapons &amp; gear</td><td>October 9, 2026</td></tr>
+        <tr><td>Quests, objectives and quest chain</td><td>October 10, 2026</td></tr>
+        <tr><td>Reference: enemies, traders, workshop, skills, blueprints</td><td>October 10, 2026</td></tr>
+        <tr><td>Project presets</td><td>October 10, 2026 (Sheltered Retreat not added yet)</td></tr>
+        <tr><td>Maps and update history</td><td>October 9, 2026</td></tr>
+      </tbody></table></div>
+      <div class="muted">A weekly check compares the wiki with this site and opens an issue on GitHub when something has changed.</div>
+    </details>
     <div>Item data from the <a href="https://arcraiders.wiki" target="_blank" rel="noopener">ARC Raiders Wiki</a> (CC BY-SA 4.0). <span id="dataStamp2"></span></div>
     <div>Wrong number or missing item? Use the Report button on any row to open a GitHub issue.<span id="reportAddr" hidden></span></div>
   </div>
@@ -1155,7 +1205,7 @@ Integrated Binoculars|Common`;
       (has ? '<button class="btn ghost" type="button" data-action="cartAdd" data-item="' + esc(it.name) + '">+ Cart</button>' : "") +
       (has ? '<button class="btn" type="button" data-action="addItem" data-item="' + esc(it.name) + '">Add to tracker</button>' : "") +
       '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
-      '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + changedLine(it) + "</div>";
+      '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
   }
 
   function need(m) { var g = goals[m]; return g ? Math.max(0, g - (tracker[m] || 0)) : 0; }
@@ -1163,6 +1213,11 @@ Integrated Binoculars|Common`;
     var out = [];
     pairs(yieldsOf(it)).forEach(function (p) { var n = need(p[0]); if (n > 0) { out.push([p[0], p[1], n]); } });
     return out;
+  }
+  function questLine(it) {
+    var q = [];
+    try { q = qNeededFor(it.name); } catch (e) { q = []; }
+    return q.length ? '<div class="qwarn">Needed for quest: ' + q.map(esc).join(", ") + " (hand it in instead of recycling)</div>" : "";
   }
   function helpLine(it) {
     var h = goalHelp(it);
@@ -1385,7 +1440,51 @@ Integrated Binoculars|Common`;
   var qDone = load("arcHubQuestsDone", {});
   var QPREV = {"Clearer Skies": ["Picking Up The Pieces"], "Trash Into Treasure": ["Picking Up The Pieces"], "Off The Radar": ["Clearer Skies", "Trash Into Treasure"], "A Bad Feeling": ["Off The Radar"], "Hatch Repairs": ["A Bad Feeling"], "The Right Tool": ["A Bad Feeling"], "Down to Earth": ["Hatch Repairs"], "A Better Use": ["The Right Tool"], "The Trifecta": ["Down to Earth"], "Greasing Her Palms": ["A Better Use"], "Dormant Barons": ["Greasing Her Palms", "The Trifecta"], "What We Left Behind": ["Dormant Barons"], "Doctor's Orders": ["Greasing Her Palms"], "Broken Monument": ["What We Left Behind"], "Medical Merchandise": ["Doctor's Orders"], "Marked For Death": ["Broken Monument"], "Straight Record": ["Broken Monument"], "A Reveal in Ruins": ["Medical Merchandise"], "Market Correction": ["Marked For Death"], "Keeping The Memory": ["Straight Record"], "A Lay Of The Land": ["A Reveal in Ruins"], "Eyes On The Prize": ["Market Correction"], "Echoes Of Victory Ridge": ["Keeping The Memory"], "Eyes in the Sky": ["A Lay Of The Land"], "Industrial Espionage": ["Eyes On The Prize"], "A Balanced Harvest": ["A Lay Of The Land"], "Unexpected Initiative": ["Echoes Of Victory Ridge", "Industrial Espionage"], "Untended Garden": ["Eyes in the Sky"], "A Symbol of Unification": ["Unexpected Initiative"], "After Rain Comes": ["A Balanced Harvest"], "The Root of the Matter": ["A Balanced Harvest"], "Celeste's Journals": ["Unexpected Initiative"], "The Major's Footlocker": ["Eyes in the Sky"], "Water Troubles": ["Untended Garden"], "Back on Top": ["A Symbol of Unification"], "Source Of The Contamination": ["Water Troubles"], "Our Presence up There": ["Back on Top"], "Switching The Supply": ["Source Of The Contamination"], "Lost In Transmission": ["Our Presence up There"], "A Warm Place To Rest": ["Switching The Supply"], "Communication Hideout": ["Lost In Transmission"], "Prescriptions of the Past": ["A Warm Place To Rest"], "Into The Fray": ["Communication Hideout", "Water Troubles"], "Power Out": ["Prescriptions of the Past"], "Paving The Way": ["Into The Fray"], "Flickering Threat": ["Power Out"], "Deciphering The Data": ["Paving The Way"], "Bees!": ["Flickering Threat"], "Groundbreaking": ["Deciphering The Data"], "Dust on the Wires": ["The Trifecta"], "Espresso": ["Bees!"], "A Dead End": ["Groundbreaking"], "Safe Passage": ["A Bad Feeling"], "Life Of A Pharmacist": ["Espresso"], "Fragmented Logs": ["A Dead End", "Dust on the Wires"], "Reduced to Rubble": ["A First Foothold"], "In My Image": ["A Bad Feeling"], "What Goes Around": ["Safe Passage"], "Tribute To Toledo": ["Life Of A Pharmacist"], "Furtive Meetings": ["Fragmented Logs"], "With A Trace": ["Reduced to Rubble"], "Cold Storage": ["In My Image"], "Sparks Fly": ["What Goes Around"], "Digging Up Dirt": ["Tribute To Toledo"], "Last Entry": ["Furtive Meetings"], "Worth Your Salt": ["Groundbreaking"], "A First Foothold": ["Off The Radar"], "A New Type Of Plant": ["Building A Library"], "A Prime Specimen": ["The Clean Dream"], "A Rising Tide": ["A Dead End"], "A Toxic Trail": ["Life Of A Pharmacist"], "A Wrench in the Works": ["Safe Harbor"], "Armored Transports": ["A New Type Of Plant", "With A Trace"], "Battening Down": ["Off The Radar"], "Bombing Run": ["Combat Recon"], "Building A Library": ["Digging Up Dirt"], "Clamoring for Attention": ["Dormant Barons"], "Collision Course": ["Safe Passage"], "Combat Recon": ["Into The Fray", "Out of the Shadows"], "Keeping an Eye Out": ["The Clean Dream"], "Line in the Sand": ["Last Entry"], "Mixed Signals": ["Dormant Barons"], "Movie Night": ["With a View"], "On Deaf Ears": ["Snap And Salvage", "Worth Your Salt"], "On The Map": ["On Deaf Ears"], "Out of the Shadows": ["A Symbol of Unification", "Sparks Fly"], "Outstanding Balance": ["The Clean Dream"], "Safe Harbor": ["Line in the Sand"], "Settled in Full": ["Outstanding Balance"], "Shoring Up Defenses": ["Off The Radar"], "Snap And Salvage": ["Cold Storage"], "Stable Housing": ["With a View"], "Taking Stock": ["Clean Hands"], "Test Case": ["The League"], "The Clean Dream": ["With A Trace"], "The League": ["Sparks Fly"], "The Stench Of Corruption": ["A Toxic Trail"], "Turnabout": ["Digging Up Dirt"], "Waking the Grid": ["Dust on the Wires"], "With a View": ["Snap And Salvage"]};
   function qLocked(q) { return (QPREV[q.name] || []).some(function (p) { return !qDone[p]; }); }
+  var QNEXT = {};
+  Object.keys(QPREV).forEach(function (k) { QPREV[k].forEach(function (p) { (QNEXT[p] = QNEXT[p] || []).push(k); }); });
   var qTrader = "";
+  var qPending = null;
+  function qActive() { return QUESTS.filter(function (q) { return !qDone[q.name] && !qLocked(q); }); }
+  function qNeededFor(name) {
+    return qActive().filter(function (q) { return q.req.some(function (r) { return r.n === name; }); }).map(function (q) { return q.name; });
+  }
+  function qTotals(mats) {
+    var t = {};
+    qActive().forEach(function (q) { q.req.forEach(function (r) { if (mats[r.n]) { t[r.n] = (t[r.n] || 0) + r.q; } }); });
+    return t;
+  }
+  function qReadiness(q, mats) {
+    var t = q.req.filter(function (r) { return mats[r.n]; });
+    if (!t.length) { return 1; }
+    var got = 0, need = 0;
+    t.forEach(function (r) { need += r.q; got += Math.min(r.q, tracker[r.n] || 0); });
+    return got / need;
+  }
+  function qEncode() {
+    var bytes = [], i, b;
+    for (i = 0; i < QUESTS.length; i += 8) {
+      b = 0;
+      for (var j = 0; j < 8; j++) { if (QUESTS[i + j] && qDone[QUESTS[i + j].name]) { b |= 1 << j; } }
+      bytes.push(String.fromCharCode(b));
+    }
+    return window.btoa(bytes.join("")).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function qDecode(code) {
+    try {
+      var bin = window.atob(code.replace(/-/g, "+").replace(/_/g, "/")), out = {}, n = 0;
+      for (var i = 0; i < QUESTS.length; i++) {
+        var byte = bin.charCodeAt(i >> 3) || 0;
+        if (byte & (1 << (i & 7))) { out[QUESTS[i].name] = 1; n++; }
+      }
+      return { done: out, n: n };
+    } catch (e) { return null; }
+  }
+  function qShowText(txt, msg) {
+    var box = document.getElementById("qShareBox");
+    box.hidden = false; box.value = txt; box.focus(); box.select();
+    var m = document.getElementById("qCount"); m.textContent = msg;
+    try { window.navigator.clipboard.writeText(txt).then(function () { m.textContent = msg + " Copied to your clipboard."; }, function () {}); } catch (e) {}
+  }
   function qItems(txt) {
     if (!txt || txt === "-") { return []; }
     return txt.split("; ").map(function (p) {
@@ -1422,11 +1521,13 @@ Integrated Binoculars|Common`;
     var traders = [];
     QUESTS.forEach(function (q) { if (traders.indexOf(q.trader) === -1) { traders.push(q.trader); } });
     document.getElementById("qTraders").innerHTML = ['<button type="button" class="chip" data-action="qTrader" data-t="" aria-pressed="' + (qTrader === "") + '">All traders</button>'].concat(traders.map(function (t) {
-      return '<button type="button" class="chip" data-action="qTrader" data-t="' + esc(t) + '" aria-pressed="' + (qTrader === t) + '">' + esc(t) + "</button>";
+      var all = QUESTS.filter(function (q) { return q.trader === t; });
+      return '<button type="button" class="chip" data-action="qTrader" data-t="' + esc(t) + '" aria-pressed="' + (qTrader === t) + '">' + esc(t) + " " + all.filter(function (q) { return qDone[q.name]; }).length + "/" + all.length + "</button>";
     })).join("");
     var term = document.getElementById("qQ").value.trim().toLowerCase();
     var readyOnly = document.getElementById("qReady").checked;
     var showLocked = document.getElementById("qLocked").checked;
+    var sortBy = document.getElementById("qSort").value;
     var list = QUESTS.filter(function (q) {
       if (qTrader && q.trader !== qTrader) { return false; }
       if (!showLocked && qLocked(q)) { return false; }
@@ -1440,6 +1541,17 @@ Integrated Binoculars|Common`;
       if (readyOnly) { var st = qStatus(q, mats); if (!st.t.length || !st.ok) { return false; } }
       return true;
     });
+    if (sortBy === "ready") {
+      list = list.map(function (q, i) { return { q: q, i: i, r: qReadiness(q, mats) }; }).sort(function (a, b) {
+        var da = qDone[a.q.name] ? 1 : 0, db = qDone[b.q.name] ? 1 : 0;
+        return da - db || b.r - a.r || a.i - b.i;
+      }).map(function (x) { return x.q; });
+    }
+    var tot = qTotals(mats), tk = Object.keys(tot).sort();
+    document.getElementById("qNeeds").innerHTML = tk.length ? '<div class="refgrid" style="margin-top:8px;">' + tk.map(function (k) {
+      var have = tracker[k] || 0;
+      return "<div>" + esc(k) + ": <b>" + Math.min(have, tot[k]) + " / " + tot[k] + "</b>" + (have >= tot[k] ? " &#10003;" : " (" + (tot[k] - have) + " to go)") + "</div>";
+    }).join("") + "</div>" : '<p class="muted" style="margin-top:8px;">No tracked materials are needed by your unlocked quests right now.</p>';
     var nd = QUESTS.filter(function (q) { return qDone[q.name]; }).length;
     document.getElementById("qProg").textContent = nd + " of " + QUESTS.length + " completed, " + QUESTS.filter(qLocked).length + " locked";
     document.getElementById("qCount").textContent = list.length + " of " + QUESTS.length + " quests";
@@ -1451,10 +1563,13 @@ Integrated Binoculars|Common`;
         '<label class="qchk"><input type="checkbox" data-qdone="' + esc(q.name) + '"' + (qDone[q.name] ? " checked" : "") + '> Mark as completed</label>' +
         (q.obj.length ? '<details class="qobj"' + (term ? " open" : "") + '><summary>Objectives (' + q.obj.length + ')</summary><ol>' + q.obj.map(function (o) { return "<li>" + esc(o) + "</li>"; }).join("") + "</ol></details>" : "") +
         '<div class="qrow"><span class="lbl">Hand in</span>' + (q.req.length ? q.req.map(function (r) { return qChip(r, mats); }).join("") : '<span class="muted">Nothing listed</span>') + "</div>" +
+        (QNEXT[q.name] ? '<div class="qstat">Unlocks: ' + QNEXT[q.name].map(esc).join(", ") + "</div>" : "") +
         (st.txt ? '<div class="qstat' + (st.ok ? " ok" : "") + '">' + st.txt + "</div>" : "") +
         '<div class="qrow"><span class="lbl">Rewards</span>' + q.rew.map(function (r) { return qChip(r, null); }).join("") + "</div>" +
-        '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(q.name)) + '">Report</a></div></div>';
+        '<div class="acts">' + (st.t.length ? '<button class="btn ghost" type="button" data-action="qGoal" data-q="' + esc(q.name) + '">Set tracker goals</button>' : "") + '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(q.name)) + '">Report</a></div></div>';
     }).join("") : '<div class="empty-line">No quests match.</div>';
+    var bn = document.getElementById("qBanner");
+    bn.innerHTML = qPending ? '<div class="note"><div>Shared progress link: ' + qPending.n + ' completed quests. Loading it replaces your current quest progress.</div><div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" type="button" data-action="qLoadShared">Load it</button><button class="btn ghost" type="button" data-action="qIgnoreShared">Ignore</button></div></div>' : "";
   }
   var presetIdx = 0;
   function renderPresets() {
@@ -1839,6 +1954,61 @@ Integrated Binoculars|Common`;
     for (var i = 0; i < items.length; i++) { if (items[i].name.toLowerCase() === n) { return items[i]; } }
     return null;
   }
+  function wcRows(a, b) {
+    var rows = [["Class", "cls", 0], ["Rarity", "rarity", 0], ["Ammo", "ammo", 0], ["Damage", "dmg", 1], ["Fire rate", "rate", 1], ["Range", "range", 1], ["Magazine", "mag", 1], ["Reload", "reload", -1], ["Weight", "wt", -1],
+      ["Headshot multiplier", "hs", 1], ["ARC armor penetration", "armor", 0], ["Stability", "stab", 1], ["Agility", "agi", 1], ["Stealth", "stealth", 0], ["Sell price (Coins)", "sell", 0], ["Mod slots", "slots", 0]];
+    return rows.map(function (r) {
+      var x = numOf(a[r[1]]), y = numOf(b[r[1]]), ca = "", cb = "";
+      if (r[2] && x >= 0 && y >= 0 && x !== y) { var aw = r[2] > 0 ? x > y : x < y; ca = aw ? ' class="win"' : ""; cb = aw ? "" : ' class="win"'; }
+      return "<tr><th>" + r[0] + "</th><td" + ca + ">" + dash(a[r[1]]) + "</td><td" + cb + ">" + dash(b[r[1]]) + "</td></tr>";
+    }).join("");
+  }
+  function renderWeaponCompare() {
+    var A = GEARDATA.weapons.map(wObj), a = A[document.getElementById("wcA").selectedIndex], b = A[document.getElementById("wcB").selectedIndex];
+    if (!a || !b) { return; }
+    document.getElementById("wcOut").innerHTML = '<div class="tablewrap"><table class="wcmp"><thead><tr><th></th><th>' + esc(a.name) + "</th><th>" + esc(b.name) + "</th></tr></thead><tbody>" + wcRows(a, b) + "</tbody></table></div>" +
+      '<p class="muted">Highlighted: higher damage, fire rate, range, magazine, headshot multiplier, stability and agility, and lower reload time and weight. Values are as listed on the wiki.</p>';
+  }
+  function renderLoadout() {
+    var W = GEARDATA.weapons.map(wObj), aug = GEARDATA.augments[document.getElementById("loAug").selectedIndex];
+    var shName = document.getElementById("loShield").value, lines = [], total = 0;
+    function addLine(label, wt) { if (wt >= 0) { total += wt; lines.push([label, wt]); } else { lines.push([label + " (weight not listed)", 0]); } }
+    ["loW1", "loW2"].forEach(function (id) {
+      var i = document.getElementById(id).selectedIndex;
+      if (i > 0) { addLine(W[i - 1].name, numOf(W[i - 1].wt)); }
+    });
+    if (shName) { addLine(shName, numOf((GPROPS[shName] || [])[1])); }
+    var rows = document.querySelectorAll("#loItems .loitem");
+    Array.prototype.forEach.call(rows, function (r) {
+      var nm = r.querySelector("select").value, q = parseInt(r.querySelector("input").value, 10) || 0;
+      if (nm && q > 0) { var w = numOf((GPROPS[nm] || [])[1]); if (w >= 0) { total += w * q; lines.push([q + " x " + nm, w * q]); } }
+    });
+    var limit = aug[1], over = total > limit, msg = "";
+    var shClass = shName ? shName.split(" ")[0] : "";
+    if (shClass && aug[2].indexOf(shClass) === -1) { msg += '<div class="qwarn">The ' + esc(shName) + " is not compatible with the " + esc(aug[0]) + " (it works with: " + esc(aug[2]) + ").</div>"; }
+    document.getElementById("loOut").innerHTML = '<div class="refgrid" style="margin-top:10px;">' + lines.map(function (l) { return "<div>" + esc(l[0]) + ": <b>" + (Math.round(l[1] * 100) / 100) + "</b></div>"; }).join("") + "</div>" +
+      '<div class="qstat' + (over ? "" : " ok") + '" style="margin-top:8px;">Carried weight: ' + (Math.round(total * 100) / 100) + " of " + limit + " (" + esc(aug[0]) + " weight limit)" + (over ? ": over by " + (Math.round((total - limit) * 100) / 100) : ": " + (Math.round((limit - total) * 100) / 100) + " to spare") + "</div>" + msg +
+      '<p class="muted">The augment&rsquo;s own weight and any ammo are not counted. It has ' + aug[5] + " quick use slots and " + aug[6] + " safe pocket slots.</p>";
+  }
+  function initLoadout() {
+    var wopts = GEARDATA.weapons.map(function (w) { return '<option>' + esc(w[0]) + "</option>"; }).join("");
+    document.getElementById("wcA").innerHTML = wopts; document.getElementById("wcB").innerHTML = wopts;
+    document.getElementById("wcB").selectedIndex = 1;
+    document.getElementById("loAug").innerHTML = GEARDATA.augments.map(function (a) { return "<option>" + esc(a[0]) + "</option>"; }).join("");
+    document.getElementById("loShield").innerHTML = '<option value="">No shield</option>' + GEARDATA.shields.map(function (a) { return "<option>" + esc(a[0]) + "</option>"; }).join("");
+    document.getElementById("loW1").innerHTML = '<option value="">No weapon</option>' + wopts;
+    document.getElementById("loW2").innerHTML = '<option value="">No weapon</option>' + wopts;
+    document.getElementById("loW1").selectedIndex = 1;
+    var iopts = '<option value="">Add an item</option>' + Object.keys(GPROPS).filter(function (k) { return GEARDATA.shields.every(function (x) { return x[0] !== k; }); }).sort().map(function (k) { return "<option>" + esc(k) + "</option>"; }).join("");
+    var h = "";
+    for (var i = 0; i < 4; i++) { h += '<div class="loitem" style="display:grid;grid-template-columns:1fr 70px;gap:6px;"><select aria-label="Item ' + (i + 1) + '">' + iopts + '</select><input type="number" min="1" max="99" value="1" aria-label="Quantity ' + (i + 1) + '"></div>'; }
+    document.getElementById("loItems").innerHTML = h;
+    ["wcA", "wcB"].forEach(function (id) { document.getElementById(id).addEventListener("change", renderWeaponCompare); });
+    ["loAug", "loShield", "loW1", "loW2"].forEach(function (id) { document.getElementById(id).addEventListener("change", renderLoadout); });
+    document.getElementById("loItems").addEventListener("change", renderLoadout);
+    document.getElementById("loItems").addEventListener("input", renderLoadout);
+    renderWeaponCompare(); renderLoadout();
+  }
   function renderTools() {
     renderChecklist();
     renderPresets();
@@ -1848,6 +2018,52 @@ Integrated Binoculars|Common`;
   }
 
   /* ---------- backup ---------- */
+  function snapText() {
+    return JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned });
+  }
+  var snaps = load("arcHubSnaps", []);
+  function takeSnapshot() {
+    var has = Object.keys(tracker).length || Object.keys(qDone).length || Object.keys(bpOwned).length || projects.length || Object.keys(goals).length || favs.length;
+    if (!has) { return; }
+    var now = Date.now();
+    if (snaps.length && now - snaps[0].t < 12 * 3600 * 1000) { return; }
+    snaps.unshift({ t: now, d: snapText() });
+    snaps = snaps.slice(0, 3);
+    save("arcHubSnaps", snaps);
+  }
+  function renderSnaps() {
+    var box = document.getElementById("snapList");
+    box.innerHTML = snaps.length ? snaps.map(function (sn, i) {
+      return '<div style="display:flex;gap:8px;align-items:center;margin-top:6px;"><span class="muted" style="flex:1;">' + esc(new Date(sn.t).toLocaleString()) + '</span><button class="btn ghost" type="button" data-action="snapRestore" data-i="' + i + '">Restore</button></div>';
+    }).join("") : '<div class="muted" style="margin-top:6px;">No snapshots yet.</div>';
+  }
+  function b64FromBytes(u8) { var b = ""; for (var i = 0; i < u8.length; i++) { b += String.fromCharCode(u8[i]); } return window.btoa(b).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function bytesFromB64(t) { var bin = window.atob(t.replace(/-/g, "+").replace(/_/g, "/")), u = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) { u[i] = bin.charCodeAt(i); } return u; }
+  function makeCode() {
+    var msg = document.getElementById("backupMsg"), ta = document.getElementById("backup"), raw = new window.TextEncoder().encode(snapText());
+    function done(code) {
+      ta.value = code; ta.focus(); ta.select(); msg.textContent = "Transfer code ready. Paste it into this box on your other device and press Import.";
+      try { window.navigator.clipboard.writeText(code).then(function () { msg.textContent += " It was also copied."; }, function () {}); } catch (e) {}
+    }
+    if (typeof window.CompressionStream === "function") {
+      var cs = new window.CompressionStream("deflate-raw"), w = cs.writable.getWriter();
+      w.write(raw); w.close();
+      new window.Response(cs.readable).arrayBuffer().then(function (buf) { done("ARH2." + b64FromBytes(new Uint8Array(buf))); }, function () { done("ARH1." + b64FromBytes(raw)); });
+    } else { done("ARH1." + b64FromBytes(raw)); }
+  }
+  function importAny() {
+    var ta = document.getElementById("backup"), v = ta.value.trim(), msg = document.getElementById("backupMsg");
+    try {
+      if (v.indexOf("ARH1.") === 0) { ta.value = new window.TextDecoder().decode(bytesFromB64(v.slice(5))); importData(); return; }
+      if (v.indexOf("ARH2.") === 0) {
+        var ds = new window.DecompressionStream("deflate-raw"), w = ds.writable.getWriter();
+        w.write(bytesFromB64(v.slice(5))); w.close();
+        new window.Response(ds.readable).arrayBuffer().then(function (buf) { ta.value = new window.TextDecoder().decode(buf); importData(); }, function () { msg.textContent = "That transfer code could not be read."; });
+        return;
+      }
+    } catch (e) { msg.textContent = "That transfer code could not be read."; return; }
+    importData();
+  }
   function exportData() {
     var txt = JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned });
     var ta = document.getElementById("backup"), msg = document.getElementById("backupMsg");
@@ -1879,7 +2095,7 @@ Integrated Binoculars|Common`;
     save("arcHubBP", bpOwned);
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubFavs", favs);
     save("arcHubCustom", customItems); save("arcHubProjects", projects); save("arcHubCheck", checklist);
-    refresh(); renderTools(); renderQuests(); updateFavToggle(); updateGoalToggle();
+    refresh(); renderTools(); renderQuests(); renderRef(); updateFavToggle(); updateGoalToggle();
     msg.textContent = "Imported. Your data has been replaced with the backup.";
   }
 
@@ -1903,6 +2119,10 @@ Integrated Binoculars|Common`;
     if (["recycle", "tracker", "gear", "quests", "ref", "tools", "maps", "frozen", "updates"].indexOf(r.tab) === -1) { return; }
     showTab(r.tab, true);
     if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
+    if (r.tab === "quests" && /^p=/.test(r.arg)) {
+      var dec = qDecode(r.arg.slice(2));
+      if (dec && dec.n) { qPending = dec; renderQuests(); }
+    }
     if (r.tab === "maps" && r.arg) {
       for (var i = 0; i < MAPS.length; i++) { if (MAPS[i].name === r.arg) { curMap = i; renderMaps(); } }
     }
@@ -1919,7 +2139,7 @@ Integrated Binoculars|Common`;
     recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Not sure if an item is worth recycling? Set a goal in the Material tracker (for example 200 Metal Parts). Any item that gives a material you still need will show a green &ldquo;Helps your goals&rdquo; line, and you can tick &ldquo;Only items that help my goals&rdquo; to hide the rest.",
     tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Use the + and &minus; buttons to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
     gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
-    quests: "<b>Quests.</b> Search by quest, trader, location, objective, required item or reward, or tap a trader to filter. Required items you already track in the Material tracker show how many you have, and a highlighted line means your tracker covers them all. New players start with the first quest. Tick &ldquo;Mark as completed&rdquo; to unlock the next ones, use the Show filter to hide finished quests, or tick &ldquo;Also show locked quests&rdquo; to see everything. Tap a quest name to open its wiki page, where the quest chain is shown.",
+    quests: "<b>Quests.</b> Search by quest, trader, location, objective, required item or reward, or tap a trader to filter. Required items you already track in the Material tracker show how many you have, and a highlighted line means your tracker covers them all. New players start with the first quest. Tick &ldquo;Mark as completed&rdquo; to unlock the next ones, use the Show filter to hide finished quests, or tick &ldquo;Also show locked quests&rdquo; to see everything. Tap a quest name to open its wiki page, where the quest chain is shown. &ldquo;Closest to ready&rdquo; sorting puts quests you can almost finish first, and the copy buttons export your to-do list or a link to your progress.",
     ref: "<b>Reference.</b> Pick Enemies, Traders, Workshop, Skills or Blueprints and search inside it. Enemy drops you already track are highlighted, workshop costs show how much of each material you have and can be added to the Project helper, and you can tick the blueprints you own.",
     tools: "<b>Tools.</b> Tick off the raid checklist, pick a project preset (Expedition stages, Trophy Display and past projects) or type your own, and watch your tracker fill the bars, or compare what two items recycle into. You can also star items and build a recycle cart in the lookup, and export a backup from the Material tracker tab.",
     maps: "<b>Maps.</b> Pick a map to see its difficulty, unlock requirement, conditions and what changed there, plus the overview image. Copy the address bar to share a specific map.",
@@ -2042,6 +2262,27 @@ Integrated Binoculars|Common`;
         document.getElementById("pName").value = ""; document.getElementById("pNeeds").value = "";
         pm.textContent = "Saved " + pn + "."; renderProjects();
       }
+    } else if (a === "qGoal") {
+      var gq = QUESTS.filter(function (x) { return x.name === t.getAttribute("data-q"); })[0], gm = matSet();
+      if (gq) { gq.req.forEach(function (r) { if (gm[r.n]) { goals[r.n] = Math.max(goals[r.n] || 0, r.q); } }); save("arcHubGoals", goals); refresh(); }
+      var go = t.textContent; t.textContent = "Goals set"; setTimeout(function () { t.textContent = go; }, 1500);
+    } else if (a === "qGoalsAll") {
+      var tt = qTotals(matSet());
+      Object.keys(tt).forEach(function (k) { goals[k] = Math.max(goals[k] || 0, tt[k]); });
+      save("arcHubGoals", goals); refresh();
+      var ga = t.textContent; t.textContent = "Goals set in the tracker"; setTimeout(function () { t.textContent = ga; }, 1500);
+    } else if (a === "qCopy") {
+      var lines = qActive().map(function (q) {
+        return "[ ] " + q.name + " (" + q.trader + ", " + q.loc.join("/") + ")" + (q.req.length ? " - hand in: " + q.req.map(function (r) { return (r.q > 1 ? r.q + "x " : "") + r.n; }).join(", ") : "");
+      });
+      qShowText("My ARC Raiders quests to do (" + lines.length + ")\n" + lines.join("\n"), lines.length + " quests ready to start.");
+    } else if (a === "qLink") {
+      var base = window.location.href.split("#")[0];
+      qShowText(base + "#quests/p=" + qEncode(), "Progress link ready.");
+    } else if (a === "qLoadShared") {
+      if (qPending) { qDone = qPending.done; save("arcHubQuestsDone", qDone); qPending = null; renderQuests(); }
+    } else if (a === "qIgnoreShared") {
+      qPending = null; renderQuests();
     } else if (a === "refSec") {
       refSec = t.getAttribute("data-s"); document.getElementById("refQ").value = ""; renderRef();
     } else if (a === "wsAdd") {
@@ -2058,7 +2299,12 @@ Integrated Binoculars|Common`;
     } else if (a === "exportData") {
       exportData();
     } else if (a === "importData") {
-      importData();
+      importAny();
+    } else if (a === "makeCode") {
+      makeCode();
+    } else if (a === "snapRestore") {
+      var sn = snaps[parseInt(t.getAttribute("data-i"), 10)];
+      if (sn) { document.getElementById("backup").value = sn.d; importData(); }
     } else if (a === "zoomMap") {
       lbOpen(t.getAttribute("data-src"), t.getAttribute("data-name"));
     } else if (a === "zoomToggle") {
@@ -2134,6 +2380,7 @@ Integrated Binoculars|Common`;
   document.getElementById("favOnly").addEventListener("change", renderResults);
   document.getElementById("gearQ").addEventListener("input", renderGear);
   document.getElementById("qQ").addEventListener("input", renderQuests);
+  document.getElementById("qSort").addEventListener("change", renderQuests);
   document.getElementById("refQ").addEventListener("input", renderRef);
   document.getElementById("bpStatus").addEventListener("change", renderRef);
   document.addEventListener("change", function (e) {
@@ -2203,6 +2450,9 @@ Integrated Binoculars|Common`;
   renderTools();
   renderGear();
   renderQuests();
+  initLoadout();
+  takeSnapshot();
+  renderSnaps();
   applyHash();
   try {
     if ("serviceWorker" in window.navigator && /^https?:$/.test(window.location.protocol)) { window.navigator.serviceWorker.register("sw.js"); }

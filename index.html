@@ -215,6 +215,13 @@ details.card summary { cursor: pointer; font-weight: 600; }
 .tl-date { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 .tl-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
 .tl-body { color: var(--fg); max-width: 70ch; font-weight: 500; }
+.mapcard { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 16px; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 10px; }
+.mapcard h3 { margin: 0; font-family: var(--font-display); font-size: 26px; text-transform: uppercase; letter-spacing: 0.02em; }
+.mapcard p { margin: 0; max-width: 70ch; }
+.mapstats { display: flex; flex-wrap: wrap; gap: 8px 24px; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.mapstats b { color: var(--fg); }
+.dots { letter-spacing: 3px; color: var(--accent); }
+.mapnotes { margin: 0; padding-left: 18px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; max-width: 70ch; }
 .tl-points { color: var(--muted); max-width: 70ch; margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
 .cols { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 14px; }
 .cols .card { margin-top: 0; }
@@ -241,6 +248,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <div class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycling lookup</button>
       <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Material tracker<span class="count" id="trackerCount"></span></button>
+      <button class="tab" role="tab" id="tab-maps" data-tab="maps" aria-selected="false">Maps</button>
       <button class="tab" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail 2.0</button>
       <button class="tab" role="tab" id="tab-updates" data-tab="updates" aria-selected="false">Update history</button>
     </div>
@@ -363,6 +371,19 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
         </tbody>
       </table></div>
     </div>
+  </section>
+
+  <!-- MAPS -->
+  <section class="panel" id="panel-maps" role="tabpanel" aria-labelledby="tab-maps" hidden>
+    <h2>Maps</h2>
+    <p class="muted">Pick a map to see its difficulty, unlock requirement, conditions and what changed there. Detailed layouts are on the wiki; each card links to that map's page.</p>
+    <div class="chips" id="mapChips" role="group" aria-label="Maps"></div>
+    <div class="mapcard" id="mapCard" aria-live="polite"></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Map</th><th>Difficulty</th><th>Round length</th><th>Unlock</th></tr></thead>
+      <tbody id="mapTable"></tbody>
+    </table></div>
+    <p class="muted">Map data from the ARC Raiders Wiki (CC BY-SA 4.0). Map art belongs to Embark Studios and is not reproduced here.</p>
   </section>
 
   <!-- UPDATES -->
@@ -763,6 +784,51 @@ Integrated Binoculars|Common`;
     "ARC Plated Coupler", "ARC Powercell", "Arcade Duck", "Assorted Seeds", "Banjo", "Battered Paperback",
     "Blaze Grenade Trap", "Bloated Tuna Can", "Integrated Binoculars"];
 
+  var MAPS = [
+    { name: "Dam Battlegrounds", diff: 2, len: "30 min", unlock: "None", wiki: "Dam_Battlegrounds",
+      desc: "A silent power plant surrounded by polluted, waterlogged land and dense wildlife.",
+      notes: ["The starter map, available from the beginning.", "Comets were removed from standard Dam Battlegrounds sessions in Riven Tides (1.26.0).", "Map update in Shrouded Sky (1.17.0)."] },
+    { name: "Buried City", diff: 3, len: "30 min", unlock: "8 rounds", wiki: "Buried_City",
+      desc: "Narrow streets and empty plazas of a sand-covered ruin that was once a home for people.",
+      notes: ["Hosts the permanent Bird City condition (more bird traps, ziplines and flying ARC) added in Headwinds (1.13.0), which cycles in and out weekly."] },
+    { name: "Spaceport", diff: 3, len: "30 min (40 min during Hidden Bunker)", unlock: "12 rounds", wiki: "Spaceport",
+      desc: "A former launch site where escape shuttles once departed for the heavens.",
+      notes: ["Hidden Bunker is a major condition that extends the round to 40 minutes."] },
+    { name: "The Blue Gate", diff: 4, len: "30 min (40 min during Locked Gate)", unlock: "18 rounds", wiki: "The_Blue_Gate",
+      desc: "A former symbol of connection, now an entryway into dangerous mountains.",
+      notes: ["Gained the Locked Gate condition in Cold Snap (1.7.0), which extends the round to 40 minutes.", "Tunnel out-of-bounds issues were fixed in Shrouded Sky (1.17.0)."] },
+    { name: "Riven Tides", diff: 5, len: "30 min", unlock: "20 rounds", wiki: "Riven_Tides",
+      desc: "An abandoned coastal harbor resort with a history of grand plans and retreats.",
+      notes: ["Added in Riven Tides (1.26.0) with the Beachcombing condition for finding buried treasure.", "Home of the ARC Turbine.", "Loot value raised by about 15% in Frozen Trail 2.0."] },
+    { name: "Stella Montis", diff: 4, len: "30 min", unlock: "24 rounds", wiki: "Stella_Montis",
+      desc: "A remote research facility among snowy peaks, reportedly humanity's last preservation site.",
+      notes: ["Added in North Line (1.2.0).", "The Aphelion blueprint drops here since Cold Snap (1.7.0)."] },
+    { name: "Pendola Pass", diff: 3, len: "30 min", unlock: "Not listed on the wiki", wiki: "Pendola_Pass",
+      desc: "A mountaintop observatory that now draws orbital attention.",
+      notes: ["Added in Frozen Trail 2.0 with the Frigate and Redirection conditions.", "The only map testing Dynamic Loot Zones, where zone loot values vary between raids."] },
+    { name: "Practice Range", diff: 0, len: "2 hours", unlock: "4 rounds", wiki: "Practice_Range",
+      desc: "A mountain-hollow training area that offers a rare pocket of open-air safety.",
+      notes: ["A safe space to test weapons; no difficulty rating is listed."] }
+  ];
+  var CONDITIONS = "Minor conditions: Beachcombing, Bird City, Lush Blooms, Prospecting Probes, Husk Graveyard, Uncovered Caches, Launch Tower Loot, Harvester, Matriarch, Redirection. Major: Night Raid, Electromagnetic Storm, Hidden Bunker, Locked Gate, Hurricane, Close Scrutiny, ARC Frigate. Cold Snap is currently disabled.";
+  var curMap = 0;
+
+  function renderMaps() {
+    document.getElementById("mapChips").innerHTML = MAPS.map(function (m, i) {
+      return '<button class="chip" data-map="' + i + '" aria-pressed="' + (i === curMap) + '">' + esc(m.name) + "</button>";
+    }).join("");
+    var m = MAPS[curMap];
+    var dots = m.diff ? new Array(m.diff + 1).join("\u25CF") + new Array(6 - m.diff).join("\u25CB") : "n/a";
+    document.getElementById("mapCard").innerHTML = "<h3>" + esc(m.name) + "</h3><p>" + esc(m.desc) + "</p>" +
+      '<div class="mapstats"><span>Difficulty <b class="dots">' + dots + "</b></span><span>Round <b>" + esc(m.len) + "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>" +
+      '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
+      '<p class="muted">' + esc(CONDITIONS) + "</p>" +
+      '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
+    document.getElementById("mapTable").innerHTML = MAPS.map(function (x) {
+      return "<tr><td>" + esc(x.name) + "</td><td>" + (x.diff || "n/a") + " / 5</td><td>" + esc(x.len) + "</td><td>" + esc(x.unlock) + "</td></tr>";
+    }).join("");
+  }
+
   var UPDATES = [
     {"date": "Oct 8, 2026", "title": "Frozen Trail 2.0", "ver": "2.0", "latest": true, "body": "The biggest update since launch: a new map, new enemies and a rebuilt progression system.", "points": ["New map Pendola Pass, with the Frigate and Redirection map conditions. It is the only map testing Dynamic Loot Zones, where zone loot values vary between raids.", "New enemies Bully, Skulker and Hydra; new weapons Bantam and Stiletto; plus the Grappling Hook, Tether Launcher, Yank Grenade and cameras.", "Skill Tree revamped with new skills and binary mid-branch choices.", "Reward Pass replaces Raider Decks, Cred is replaced by Reward Points, and Feats are split into Easy, Medium and Hard.", "New Outpost unlocked through a project, with a Research Bench, 100 furniture designs and 14 Weapon Stencils.", "Stash gains two more upgrade tiers (328 slots before Expedition and Nomadic Envoy bonuses); Solo vs. Squads removed from matchmaking.", "ARC explosive damage reworked: more against armor plates, less against fragile parts. Anvil raised from Green to Blue rarity. Riven Tides loot value up about 15%."]},
     {"date": "Sep 8, 2026", "title": "Live Update 1.45.0", "ver": "1.45.0", "latest": false, "body": "Expedition 5 begins and the end of Cred is announced.", "points": ["Raider Project Ascending the Mountain, the Hornet Hunter Set and the start of Expedition 5.", "Cred stays usable until Oct 8, then expires with Frozen Trail; claimed rewards are kept.", "Starting an Expedition no longer resets quests by default; you choose whether to reset.", "New severe over-encumbrance tier limits you to walking; Aphelion weapon sway reduced.", "Unreal Engine upgraded from 5.3 to 5.7; several PS5 and general crash fixes.", "Known issue: PC crashes tied to Windows Update KB5121003, with a workaround provided."]},
@@ -1038,7 +1104,7 @@ Integrated Binoculars|Common`;
 
   /* ---------- events ---------- */
   function showTab(name) {
-    ["recycle", "tracker", "frozen", "updates"].forEach(function (t) {
+    ["recycle", "tracker", "maps", "frozen", "updates"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
@@ -1054,10 +1120,11 @@ Integrated Binoculars|Common`;
 
   document.addEventListener("click", function (e) {
     var t = e.target;
-    while (t && t !== document && !(t.getAttribute && (t.getAttribute("data-action") || t.getAttribute("data-tab") || t.getAttribute("data-mode")))) { t = t.parentNode; }
+    while (t && t !== document && !(t.getAttribute && (t.getAttribute("data-action") || t.getAttribute("data-tab") || t.getAttribute("data-mode") || t.getAttribute("data-map")))) { t = t.parentNode; }
     if (!t || t === document) { return; }
 
     if (t.getAttribute("data-tab")) { showTab(t.getAttribute("data-tab")); return; }
+    if (t.getAttribute("data-map")) { curMap = parseInt(t.getAttribute("data-map"), 10); renderMaps(); return; }
     if (t.getAttribute("data-mode")) { setMode(t.getAttribute("data-mode")); return; }
 
     var a = t.getAttribute("data-action");
@@ -1115,6 +1182,7 @@ Integrated Binoculars|Common`;
   document.getElementById("reportAddr").textContent = "";
 
   renderTimeline();
+  renderMaps();
   refresh();
 })();
 </script>

@@ -412,7 +412,9 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .shoprow .sh1 b { flex: 1 1 140px; min-width: 0; }
 .shoprow .shmiss { color: var(--warm); font-family: var(--font-mono); font-size: 13px; }
 .shoprow .shctl { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.shoprow .shctl .btn { padding: 1px 9px; }
+.shoprow .shctl input { width: 76px; box-sizing: border-box; font: inherit; padding: 4px 8px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; }
+.shoprow.covered { opacity: .6; }
+.shoprow.covered .shmiss { color: var(--good); }
 </style>
 </head>
 <body>
@@ -502,7 +504,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     </div>
     <div class="tool" id="shopTool">
       <h3>Shopping list</h3>
-      <p class="muted">Built automatically from your active quests, saved projects, workshop upgrades and tracker goals, compared with what you track. Use + and &minus; to update your count right here.</p>
+      <p class="muted">Built automatically from your active quests, saved projects, workshop upgrades and tracker goals, compared with what you track. Type how many you have in each box to update your tracker.</p>
       <div class="chips" role="group" aria-label="What to include">
         <label class="tog"><input type="checkbox" data-shopsrc="quest" checked> Quests</label>
         <label class="tog"><input type="checkbox" data-shopsrc="project" checked> Projects</label>
@@ -2281,7 +2283,8 @@ Integrated Binoculars|Common`;
   var shopSrc = load("arcHubShopSrc", {});
   var autoSpend = load("arcHubAutoSpend", false);
   function shopLabel(src) { return src.slice(0, 3).join(", ") + (src.length > 3 ? " +" + (src.length - 3) : ""); }
-  function shopData() {
+  var shopTyping = false;
+  function shopData(all) {
     var t = {}, src = {}, kinds = {};
     function add(n, q, kind, label) { t[n] = (t[n] || 0) + q; if (!src[n]) { src[n] = []; } if (src[n].indexOf(label) === -1) { src[n].push(label); } if (!kinds[n]) { kinds[n] = {}; } kinds[n][kind] = 1; }
     if (shopSrc.quest !== false) { qActive().forEach(function (q) { q.req.forEach(function (r) { add(r.n, r.q, "quest", q.name); }); }); }
@@ -2296,10 +2299,10 @@ Integrated Binoculars|Common`;
     if (shopSrc.goal !== false) { Object.keys(goals).forEach(function (m) { if (goals[m] > (t[m] || 0)) { t[m] = goals[m]; if (!src[m]) { src[m] = []; } if (src[m].indexOf("goal") === -1) { src[m].push("goal"); } } }); }
     var rows = [];
     Object.keys(t).forEach(function (n) {
-      var have = tracker[n] || 0, miss = t[n] - have;
-      if (miss > 0) { rows.push({ n: n, need: t[n], have: have, miss: miss, src: src[n] }); }
+      var have = tracker[n] || 0, miss = Math.max(0, t[n] - have);
+      if (all || miss > 0) { rows.push({ n: n, need: t[n], have: have, miss: miss, src: src[n] }); }
     });
-    rows.sort(function (a, b) { return b.miss - a.miss || a.n.localeCompare(b.n); });
+    rows.sort(all ? function (a, b) { return a.n.localeCompare(b.n); } : function (a, b) { return b.miss - a.miss || a.n.localeCompare(b.n); });
     return rows;
   }
   function bestSources(m) {
@@ -2307,20 +2310,40 @@ Integrated Binoculars|Common`;
       .sort(function (a, b) { return yieldsOf(b)[m] - yieldsOf(a)[m] || a.name.localeCompare(b.name); }).slice(0, 2)
       .map(function (it) { return it.name + " (+" + yieldsOf(it)[m] + ")"; });
   }
+  function shopRowHtml(r) {
+    var b = bestSources(r.n);
+    return '<div class="shoprow' + (r.miss ? "" : " covered") + '" data-shoprow="' + esc(r.n) + '"><div class="sh1"><b>' + esc(r.n) + '</b><span class="shmiss">' + (r.miss ? r.miss + " missing" : "covered &#10003;") + "</span>" +
+      '<span class="shctl"><input type="number" min="0" inputmode="numeric" data-shophave="' + esc(r.n) + '" value="' + r.have + '" aria-label="How many ' + esc(r.n) + ' you have"> <span>of ' + r.need + "</span></span></div>" +
+      '<div class="muted">For: ' + esc(shopLabel(r.src)) + "</div>" +
+      '<div class="muted">Best to recycle: ' + (b.length ? b.map(esc).join(", ") : "find in raids") + "</div></div>";
+  }
   function renderShop() {
     var box = document.getElementById("shopOut");
-    if (!box) { return; }
+    if (!box || shopTyping) { return; }
     Array.prototype.forEach.call(document.querySelectorAll("[data-shopsrc]"), function (el) { el.checked = shopSrc[el.getAttribute("data-shopsrc")] !== false; });
     var as = document.getElementById("autoSpend"); if (as) { as.checked = !!autoSpend; }
-    var rows = shopData();
-    if (!rows.length) { box.innerHTML = '<div class="empty-line">Nothing missing. Everything for your active quests, projects and workshop levels is covered.</div>'; return; }
-    box.innerHTML = '<div class="muted">' + rows.length + " materials still needed.</div>" + rows.slice(0, 60).map(function (r) {
-      var b = bestSources(r.n);
-      return '<div class="shoprow"><div class="sh1"><b>' + esc(r.n) + '</b><span class="shmiss">' + r.miss + ' missing</span>' +
-        '<span class="shctl"><button type="button" class="btn ghost" data-action="dec" data-m="' + esc(r.n) + '" aria-label="Remove one ' + esc(r.n) + '">&minus;</button> <span>' + r.have + " / " + r.need + '</span> <button type="button" class="btn ghost" data-action="inc" data-m="' + esc(r.n) + '" aria-label="Add one ' + esc(r.n) + '">+</button></span></div>' +
-        '<div class="muted">For: ' + esc(shopLabel(r.src)) + "</div>" +
-        '<div class="muted">Best to recycle: ' + (b.length ? b.map(esc).join(", ") : "find in raids") + "</div></div>";
-    }).join("") + (rows.length > 60 ? '<div class="muted">And ' + (rows.length - 60) + " more.</div>" : "");
+    var rows = shopData(true);
+    if (!rows.length) { box.innerHTML = '<div class="empty-line">Nothing needed right now. Turn a source on above or add quests, projects or goals.</div>'; return; }
+    var missing = rows.filter(function (r) { return r.miss > 0; }).length;
+    box.innerHTML = '<div class="muted" id="shopCount">' + missing + " of " + rows.length + " materials still needed. Type how many you have.</div>" + rows.slice(0, 80).map(shopRowHtml).join("") + (rows.length > 80 ? '<div class="muted">And ' + (rows.length - 80) + " more.</div>" : "");
+  }
+  function shopTypeUpdate(name, val) {
+    var n = parseInt(val, 10); if (!(n >= 0)) { n = 0; }
+    if (n > 0) { tracker[name] = n; } else if (goals[name]) { tracker[name] = 0; } else { delete tracker[name]; }
+    save("arcHubTracker", tracker);
+    shopTyping = true;
+    try { renderTracker(); renderDatalist(); updateGoalToggle(); renderResults(); } finally { shopTyping = false; }
+    var all = shopData(true), row = null;
+    all.forEach(function (r) { if (r.n === name) { row = r; } });
+    var els = document.querySelectorAll("#shopOut .shoprow");
+    Array.prototype.forEach.call(els, function (el) {
+      if (el.getAttribute("data-shoprow") === name && row) {
+        el.className = "shoprow" + (row.miss ? "" : " covered");
+        el.querySelector(".shmiss").innerHTML = row.miss ? row.miss + " missing" : "covered &#10003;";
+      }
+    });
+    var c = document.getElementById("shopCount");
+    if (c) { c.textContent = all.filter(function (r) { return r.miss > 0; }).length + " of " + all.length + " materials still needed. Type how many you have."; }
   }
   function spend(reqs, label) {
     var got = [];
@@ -2991,6 +3014,7 @@ Integrated Binoculars|Common`;
     if (el.id === "loCA" || el.id === "loCB") { renderLoCmp(); }
   });
   document.addEventListener("input", function (e) {
+    if (e.target && e.target.getAttribute && e.target.getAttribute("data-shophave") !== null) { shopTypeUpdate(e.target.getAttribute("data-shophave"), e.target.value); return; }
     if (e.target && e.target.id === "mapNote") { mapNotes[MAPS[curMap].name] = e.target.value.slice(0, 2000); save("arcHubMapNotes", mapNotes); }
   });
   window.addEventListener("afterprint", function () { document.body.classList.remove("print-chk"); });

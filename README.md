@@ -10,6 +10,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Material tracker:** keep count of the materials you need and set goals with progress bars. The lookup then flags items that help your goals. Saved in your own browser only.
 - **Shareable links:** the address updates as you search, so you can copy a link to a result. Press `/` to jump to the search box.
 - **Install as an app:** add the site to your phone's home screen. There is also a light/dark theme toggle.
+- **Weapons & gear:** stats for all 26 weapons plus augments, shields, healing, utility, grenades, traps and mines. Filter, sort weapons by damage, fire rate, range, weight or sell price, and open full stats for each.
 - **Lookup extras:** star items, build a recycle cart, typo-tolerant search, recent searches, and a note when an item is mentioned in an update.
 - **Tools tab:** raid checklist, project helper (compare what a project needs with your tracker) and side-by-side item compare.
 - **Backup:** export and import your tracker, goals, stars, projects and checklist as text.
@@ -25,7 +26,7 @@ Use the **Report** button on any item to open a pre-filled GitHub issue, or [ope
 
 ## Data and its limits
 
-Recycling data comes from the [ARC Raiders Wiki](https://arcraiders.wiki) (CC BY-SA 4.0), using the "Recycled from" tables on the material pages. Only nine materials are loaded (Metal Parts, Plastic Parts, Rubber Parts, Chemicals, Fabric, Wires, ARC Alloy, Oil and Canister), so items that also break into other materials are marked **partial**. Wiki pages are dated April to October 2026, so numbers can lag behind the game.
+Recycling data comes from the [ARC Raiders Wiki](https://arcraiders.wiki) (CC BY-SA 4.0), using the "Recycled from" tables on the material pages. Weapon and gear stats come from the wiki's weapon and equipment pages; a dash means the wiki has no value yet. Only nine materials are loaded (Metal Parts, Plastic Parts, Rubber Parts, Chemicals, Fabric, Wires, ARC Alloy, Oil and Canister), so items that also break into other materials are marked **partial**. Wiki pages are dated April to October 2026, so numbers can lag behind the game.
 
 ## Contributing
 

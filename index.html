@@ -413,6 +413,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .shoprow .shmiss { color: var(--warm); font-family: var(--font-mono); font-size: 13px; }
 .shoprow .shctl { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .shoprow .shctl input { width: 76px; box-sizing: border-box; font: inherit; padding: 4px 8px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; }
+.inv .qin { width: 100%; box-sizing: border-box; font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--warm); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; }
 .shoprow.covered { opacity: .6; }
 .shoprow.covered .shmiss { color: var(--good); }
 </style>
@@ -1523,21 +1524,46 @@ Integrated Binoculars|Common`;
     document.getElementById("trackerCount").textContent = keys.length ? "(" + keys.length + ")" : "";
     document.getElementById("trackerSummary").textContent = keys.length ? keys.length + " material types, " + total + " total" + (gTotal ? ", " + gMet + " of " + gTotal + " goals met" : "") : "";
     document.getElementById("resetBtn").hidden = !keys.length;
+    if (invTyping) { return; }
     var box = document.getElementById("inventory");
     if (!keys.length) {
       box.innerHTML = '<div class="empty">Nothing tracked yet.<br>Add a material above, or press &ldquo;Add to tracker&rdquo; on an item in the lookup.</div>';
       return;
     }
     box.innerHTML = '<div class="inv-grid">' + keys.map(function (k) {
-      var have = tracker[k] || 0, g = goals[k] || 0;
-      var pct = g ? Math.min(100, Math.round(have * 100 / g)) : 0;
-      var prog = g ? '<div class="bar' + (have >= g ? " done" : "") + '"><i style="width:' + pct + '%"></i></div><div class="muted">' + (have >= g ? "Goal met" : (g - have) + " to go") + "</div>" : "";
-      return '<div class="inv"><div class="n">' + esc(k) + '</div><div class="ctl"><div class="q">' + have + "</div>" +
-        '<div class="step"><button type="button" data-action="dec" data-m="' + esc(k) + '" aria-label="Remove one ' + esc(k) + '">&minus;</button>' +
-        '<button type="button" data-action="inc" data-m="' + esc(k) + '" aria-label="Add one ' + esc(k) + '">+</button></div></div>' + prog +
-        (sm[k] ? '<div class="muted">Still need ' + sm[k].miss + " for " + esc(shopLabel(sm[k].src)) + "</div>" : "") +
+      var ip = invParts(k), g = goals[k] || 0;
+      return '<div class="inv" data-inv="' + esc(k) + '"><div class="n">' + esc(k) + '</div><div class="ctl"><input class="qin" type="number" min="0" inputmode="numeric" data-invhave="' + esc(k) + '" value="' + (tracker[k] || 0) + '" aria-label="How many ' + esc(k) + ' you have"></div>' +
+        '<div class="invprog">' + ip.prog + '</div><div class="invneed">' + ip.need + '</div>' +
         '<div class="goalline"><label for="g-' + esc(k) + '">Goal</label><input type="number" min="0" id="g-' + esc(k) + '" data-goal="' + esc(k) + '" value="' + (g || "") + '" placeholder="none"></div></div>';
     }).join("") + "</div>";
+  }
+  function invParts(k) {
+    var have = tracker[k] || 0, g = goals[k] || 0, pct = g ? Math.min(100, Math.round(have * 100 / g)) : 0, sr = null;
+    try { shopData().forEach(function (r) { if (r.n === k) { sr = r; } }); } catch (e1) { sr = null; }
+    return {
+      prog: g ? '<div class="bar' + (have >= g ? " done" : "") + '"><i style="width:' + pct + '%"></i></div><div class="muted">' + (have >= g ? "Goal met" : (g - have) + " to go") + "</div>" : "",
+      need: sr ? '<div class="muted">Still need ' + sr.miss + " for " + esc(shopLabel(sr.src)) + "</div>" : ""
+    };
+  }
+  function invTypeUpdate(name, val) {
+    var n = parseInt(val, 10); if (!(n >= 0)) { n = 0; }
+    tracker[name] = n; save("arcHubTracker", tracker);
+    invTyping = true; shopTyping = true;
+    try { renderTracker(); renderDatalist(); updateGoalToggle(); renderResults(); } finally { invTyping = false; shopTyping = false; }
+    var cards = document.querySelectorAll("#inventory .inv");
+    Array.prototype.forEach.call(cards, function (el) {
+      if (el.getAttribute("data-inv") === name) { var ip = invParts(name); el.querySelector(".invprog").innerHTML = ip.prog; el.querySelector(".invneed").innerHTML = ip.need; }
+    });
+    var all = shopData(true), row = null; all.forEach(function (r) { if (r.n === name) { row = r; } });
+    Array.prototype.forEach.call(document.querySelectorAll("#shopOut .shoprow"), function (el) {
+      if (el.getAttribute("data-shoprow") === name && row) {
+        el.className = "shoprow" + (row.miss ? "" : " covered");
+        el.querySelector(".shmiss").innerHTML = row.miss ? row.miss + " missing" : "covered &#10003;";
+        var inp = el.querySelector("[data-shophave]"); if (inp && document.activeElement !== inp) { inp.value = row.have; }
+      }
+    });
+    var c = document.getElementById("shopCount");
+    if (c) { c.textContent = all.filter(function (r) { return r.miss > 0; }).length + " of " + all.length + " materials still needed. Type how many you have."; }
   }
 
   function renderDatalist() {
@@ -2283,7 +2309,7 @@ Integrated Binoculars|Common`;
   var shopSrc = load("arcHubShopSrc", {});
   var autoSpend = load("arcHubAutoSpend", false);
   function shopLabel(src) { return src.slice(0, 3).join(", ") + (src.length > 3 ? " +" + (src.length - 3) : ""); }
-  var shopTyping = false;
+  var shopTyping = false, invTyping = false;
   function shopData(all) {
     var t = {}, src = {}, kinds = {};
     function add(n, q, kind, label) { t[n] = (t[n] || 0) + q; if (!src[n]) { src[n] = []; } if (src[n].indexOf(label) === -1) { src[n].push(label); } if (!kinds[n]) { kinds[n] = {}; } kinds[n][kind] = 1; }
@@ -2655,7 +2681,7 @@ Integrated Binoculars|Common`;
 
   var HINTS = {
     recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set a goal in the Tracker and items that help it show a green &ldquo;Helps your goals&rdquo; line.",
-    tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Use the + and &minus; buttons to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
+    tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Type in the box on each card to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
     gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
     quests: "<b>Quests.</b> Search or tap a trader to filter. Tick &ldquo;Mark as completed&rdquo; to unlock the next quests, or turn on &ldquo;Show locked&rdquo; to see everything. Items you track show how many you have.",
     ref: "<b>Reference.</b> Pick a section, then search inside it. Enemy drops you track are highlighted, workshop costs can be added to the Project helper, and you can tick the blueprints you own.",
@@ -2703,7 +2729,7 @@ Integrated Binoculars|Common`;
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
     if (name === "tools") { renderRepeat(); renderKeep(); }
-    if (name === "tracker") { renderTracker(); }
+    if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
     if (!quiet) { writeHash(); }
   }
@@ -2979,9 +3005,12 @@ Integrated Binoculars|Common`;
     var v = parseInt(e.target.value, 10) || 0;
     if (v > 0) { goals[g] = v; } else { delete goals[g]; }
     save("arcHubGoals", goals);
-    renderTracker();
-    updateGoalToggle();
-    renderResults();
+    invTyping = true; shopTyping = true;
+    try { renderTracker(); updateGoalToggle(); renderResults(); } finally { invTyping = false; shopTyping = false; }
+    Array.prototype.forEach.call(document.querySelectorAll("#inventory .inv"), function (c) {
+      if (c.getAttribute("data-inv") === g) { var ip = invParts(g); c.querySelector(".invprog").innerHTML = ip.prog; c.querySelector(".invneed").innerHTML = ip.need; }
+    });
+    renderShop();
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !document.getElementById("lightbox").hidden) { lbClose(); return; }
@@ -3009,11 +3038,13 @@ Integrated Binoculars|Common`;
     }
     if ((v = el.getAttribute("data-wsplan")) !== null) { if (el.checked) { delete wsPlan[v]; } else { wsPlan[v] = false; } save("arcHubWsPlan", wsPlan); renderTracker(); return; }
     if ((v = el.getAttribute("data-shopsrc")) !== null) { shopSrc[v] = el.checked; save("arcHubShopSrc", shopSrc); renderTracker(); return; }
+    if (el.getAttribute("data-invhave") !== null) { return; }
     if (el.id === "autoSpend") { autoSpend = el.checked; save("arcHubAutoSpend", autoSpend); return; }
     if (el.id === "tagFilter") { renderResults(); return; }
     if (el.id === "loCA" || el.id === "loCB") { renderLoCmp(); }
   });
   document.addEventListener("input", function (e) {
+    if (e.target && e.target.getAttribute && e.target.getAttribute("data-invhave") !== null) { invTypeUpdate(e.target.getAttribute("data-invhave"), e.target.value); return; }
     if (e.target && e.target.getAttribute && e.target.getAttribute("data-shophave") !== null) { shopTypeUpdate(e.target.getAttribute("data-shophave"), e.target.value); return; }
     if (e.target && e.target.id === "mapNote") { mapNotes[MAPS[curMap].name] = e.target.value.slice(0, 2000); save("arcHubMapNotes", mapNotes); }
   });

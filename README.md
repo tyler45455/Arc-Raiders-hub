@@ -10,6 +10,10 @@ A free, fan-made reference site for ARC Raiders.
 - **Material tracker:** keep count of the materials you need and set goals with progress bars. The lookup then flags items that help your goals. Saved in your own browser only.
 - **Shareable links:** the address updates as you search, so you can copy a link to a result. Press `/` to jump to the search box.
 - **Install as an app:** add the site to your phone's home screen. There is also a light/dark theme toggle.
+- **Lookup extras:** star items, build a recycle cart, typo-tolerant search, recent searches, and a note when an item is mentioned in an update.
+- **Tools tab:** raid checklist, project helper (compare what a project needs with your tracker) and side-by-side item compare.
+- **Backup:** export and import your tracker, goals, stars, projects and checklist as text.
+- **Offline:** after one visit the site keeps working without a connection.
 - **Maps:** difficulty, unlock requirement, conditions and update notes for each map.
 - **Frozen Trail 2.0:** a summary of the latest update.
 - **Update history:** highlights for every major update from launch to now.

@@ -252,6 +252,27 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--lin
 th { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 
 [hidden] { display: none !important; }
+textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font: 13px var(--font-mono); resize: vertical; }
+.star { padding: 5px 9px; }
+.changed { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
+.cart { border: 1px solid var(--accent); border-radius: 8px; padding: 12px 14px; margin: 12px 0; background: var(--surface); display: grid; gap: 8px; }
+.cart[hidden] { display: none !important; }
+.cart .lst { display: flex; flex-wrap: wrap; gap: 6px; }
+.cart .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.recent { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+.recent[hidden] { display: none !important; }
+.tool { margin-top: 18px; }
+.tool h3 { font-family: var(--font-display); font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; margin: 0 0 4px; }
+.chk { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.chk label { flex: 1; cursor: pointer; min-width: 0; overflow-wrap: anywhere; }
+.chk.done label { color: var(--muted); text-decoration: line-through; }
+.addrow { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
+.proj { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-top: 10px; background: var(--surface); display: grid; gap: 8px; }
+.proj .ph { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.need { display: grid; gap: 3px; font-size: 13px; }
+.cmp { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 10px; }
+.cmp .card { margin-top: 0; }
+.cmp-grid { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 10px; }
 .toprow { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .topbtns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .toprow .btn { padding: 5px 10px; font-size: 12px; }
@@ -285,6 +306,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <div class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycling lookup</button>
       <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Material tracker<span class="count" id="trackerCount"></span></button>
+      <button class="tab" role="tab" id="tab-tools" data-tab="tools" aria-selected="false">Tools</button>
       <button class="tab" role="tab" id="tab-maps" data-tab="maps" aria-selected="false">Maps</button>
       <button class="tab" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail 2.0</button>
       <button class="tab" role="tab" id="tab-updates" data-tab="updates" aria-selected="false">Update history</button>
@@ -312,12 +334,15 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       </div>
     </div>
     <div class="chips" id="chips"></div>
+    <div class="recent" id="recent" hidden></div>
     <div class="toolrow">
+      <label id="favWrap" hidden><input type="checkbox" id="favOnly"> Only my starred items</label>
       <label id="goalWrap" hidden><input type="checkbox" id="goalOnly"> Only items that help my goals</label>
       <button class="btn ghost" type="button" data-action="copyLink" id="copyLink">Copy link to this search</button>
     </div>
     <div class="note" id="coverage"></div>
 
+    <div class="cart" id="cart" hidden></div>
     <div id="azbar" class="azbar"></div>
     <div id="results"></div>
 
@@ -355,6 +380,16 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <button class="btn danger" type="button" data-action="trackReset" id="resetBtn">Reset all</button>
     </div>
     <div id="inventory"></div>
+    <details class="card" id="backupCard">
+      <summary>Back up or move your data</summary>
+      <p class="muted" style="margin-top:8px;">Your tracker, goals, starred items, projects and checklist are saved only in this browser. Press Export to get a block of text you can keep, then paste it here on another device and press Import.</p>
+      <textarea id="backup" rows="5" aria-label="Backup text" placeholder="Export creates text here. Paste a backup here to import it."></textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <button class="btn" type="button" data-action="exportData">Export</button>
+        <button class="btn ghost" type="button" data-action="importData">Import</button>
+      </div>
+      <div class="muted" id="backupMsg" style="margin-top:8px;" role="status"></div>
+    </details>
   </section>
 
   <!-- FROZEN TRAIL -->
@@ -417,6 +452,46 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
           <tr><td>Tian Wen</td><td>No longer sells Anvil and Hullcracker offers</td></tr>
         </tbody>
       </table></div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="panel" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools" hidden>
+    <h2>Tools</h2>
+    <p class="muted">A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
+
+    <div class="tool">
+      <h3>Raid checklist</h3>
+      <p class="muted">Tick things off before you drop in. Edit the list to match how you play.</p>
+      <div id="checklist"></div>
+      <div class="addrow"><input type="text" id="chkNew" placeholder="Add a checklist item" aria-label="New checklist item"><button class="btn" type="button" data-action="chkAdd">Add</button></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn ghost" type="button" data-action="chkUntick">Untick all</button>
+        <button class="btn ghost" type="button" data-action="chkDefaults">Restore defaults</button>
+      </div>
+    </div>
+
+    <div class="tool">
+      <h3>Project helper</h3>
+      <p class="muted">Enter what a project, craft or upgrade needs and see how close your tracker is. The needs are not pre-filled, so check them against the game. Format: <code>200 Metal Parts, 50 Wires</code></p>
+      <div class="form-grid" style="grid-template-columns: 1fr 2fr auto;">
+        <div><label for="pName">Project name</label><input type="text" id="pName" placeholder="Workbench upgrade"></div>
+        <div><label for="pNeeds">Needs</label><input type="text" id="pNeeds" placeholder="200 Metal Parts, 50 Wires" list="matList"></div>
+        <button class="btn" type="button" data-action="projAdd">Save</button>
+      </div>
+      <div class="muted" id="projMsg" style="margin-top:8px;" role="status"></div>
+      <div id="projList"></div>
+    </div>
+
+    <div class="tool">
+      <h3>Compare items</h3>
+      <p class="muted">Pick two items to see what each breaks down into, using the Recycle or Salvage setting from the lookup tab.</p>
+      <div class="cmp-grid">
+        <input type="text" id="cmpA" list="itemList" placeholder="First item" aria-label="First item" autocomplete="off">
+        <input type="text" id="cmpB" list="itemList" placeholder="Second item" aria-label="Second item" autocomplete="off">
+      </div>
+      <datalist id="itemList"></datalist>
+      <div id="cmpOut"></div>
     </div>
   </section>
 
@@ -997,9 +1072,11 @@ Integrated Binoculars|Common`;
     else if (!it.confirmed) { badges += '<span class="badge partial" title="Built from the material pages loaded so far. This item may give more materials than shown.">partial</span>'; }
     return '<div class="row"><div class="head"><span class="name">' + esc(it.name) + "</span>" + badges + "</div>" +
       '<div class="acts">' +
+      '<button class="btn ghost star" type="button" data-action="fav" data-item="' + esc(it.name) + '" aria-pressed="' + (favs.indexOf(it.name) !== -1) + '" aria-label="Star ' + esc(it.name) + '" title="Star this item">' + (favs.indexOf(it.name) !== -1 ? "\u2605" : "\u2606") + "</button>" +
+      (has ? '<button class="btn ghost" type="button" data-action="cartAdd" data-item="' + esc(it.name) + '">+ Cart</button>' : "") +
       (has ? '<button class="btn" type="button" data-action="addItem" data-item="' + esc(it.name) + '">Add to tracker</button>' : "") +
       '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
-      '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + "</div>";
+      '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + changedLine(it) + "</div>";
   }
 
   function need(m) { var g = goals[m]; return g ? Math.max(0, g - (tracker[m] || 0)) : 0; }
@@ -1017,6 +1094,8 @@ Integrated Binoculars|Common`;
   }
   function keep(it) {
     var box = document.getElementById("goalOnly");
+    var fb = document.getElementById("favOnly");
+    if (fb && fb.checked && favs.indexOf(it.name) === -1) { return false; }
     return !(box && box.checked) || goalHelp(it).length > 0;
   }
   function updateGoalToggle() {
@@ -1068,7 +1147,7 @@ Integrated Binoculars|Common`;
     }
 
     az.innerHTML = "";
-    var nameHits = items.filter(function (it) { return it.name.toLowerCase().indexOf(q) !== -1 && keep(it); });
+    var nameHits = items.filter(function (it) { return nameMatch(it.name, q) && keep(it); });
     var mats = allMaterials().filter(function (m) { return m.toLowerCase().indexOf(q) !== -1; }).slice(0, 4);
 
     mats.forEach(function (m) {
@@ -1083,6 +1162,13 @@ Integrated Binoculars|Common`;
     if (nameHits.length) {
       html += '<div class="group-title"><b>' + nameHits.length + "</b> items named like &ldquo;" + esc(q) + "&rdquo;</div>";
       nameHits.forEach(function (it) { html += itemRow(it, ""); });
+    }
+    if (!html) {
+      var fz = fuzzy(q);
+      if (fz.length) {
+        html += '<div class="group-title">No exact match for &ldquo;' + esc(q) + '&rdquo;. Did you mean:</div>';
+        fz.forEach(function (it) { html += itemRow(it, ""); });
+      }
     }
     if (!html) {
       html = '<div class="empty">Nothing found for &ldquo;' + esc(q) + '&rdquo;. Open "Add or correct an item" below to add it.</div>';
@@ -1138,6 +1224,8 @@ Integrated Binoculars|Common`;
     renderTracker();
     renderDatalist();
     updateGoalToggle();
+    renderProjects();
+    renderCart();
     if (Object.keys(goals).length) { renderResults(); }
   }
 
@@ -1193,6 +1281,192 @@ Integrated Binoculars|Common`;
   }
 
   /* ---------- events ---------- */
+  /* ---------- extra state ---------- */
+  var favs = load("arcHubFavs", []);
+  var recent = load("arcHubRecent", []);
+  var cart = [];
+  var projects = load("arcHubProjects", []);
+  var DEFAULT_CHECK = ["Healing items packed", "Ammo for your main weapon", "Keys or access items", "Augment and shield equipped", "Safe pocket item chosen", "Checked today's map conditions"];
+  var checklist = load("arcHubCheck", null) || DEFAULT_CHECK.map(function (t) { return { t: t, d: false }; });
+  var recentTimer = null;
+
+  function nameMatch(name, q) {
+    var n = name.toLowerCase();
+    if (n.indexOf(q) !== -1) { return true; }
+    var toks = q.split(/\s+/).filter(Boolean);
+    return toks.length > 1 && toks.every(function (t) { return n.indexOf(t) !== -1; });
+  }
+  function lev(a, b) {
+    var prev = [], cur = [], i, j;
+    for (j = 0; j <= b.length; j++) { prev[j] = j; }
+    for (i = 1; i <= a.length; i++) {
+      cur = [i];
+      for (j = 1; j <= b.length; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+  function fuzzy(q) {
+    if (q.length < 3) { return []; }
+    var limit = q.length > 7 ? 3 : 2;
+    var scored = [];
+    items.forEach(function (it) {
+      if (!keep(it)) { return; }
+      var n = it.name.toLowerCase();
+      var best = lev(q, n);
+      n.split(/[\s\-]+/).forEach(function (w) { best = Math.min(best, lev(q, w)); });
+      if (n.length > q.length) { best = Math.min(best, lev(q, n.slice(0, q.length)) + 1); }
+      if (best <= limit) { scored.push([best, it]); }
+    });
+    scored.sort(function (a, b) { return a[0] - b[0] || a[1].name.localeCompare(b[1].name); });
+    return scored.slice(0, 8).map(function (x) { return x[1]; });
+  }
+
+  var changedCache = {};
+  function changedIn(name) {
+    if (changedCache[name] !== undefined) { return changedCache[name]; }
+    var out = [];
+    if (name.length >= 5) {
+      var re = new RegExp("\\b" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i");
+      UPDATES.forEach(function (u) {
+        if (re.test(u.points.join(" | ") + " " + u.body)) { out.push(u.title); }
+      });
+    }
+    changedCache[name] = out;
+    return out;
+  }
+  function changedLine(it) {
+    var c = changedIn(it.name);
+    return c.length ? '<div class="changed">Mentioned in: ' + c.map(esc).join(", ") + "</div>" : "";
+  }
+
+  function addRecent(q) {
+    q = q.trim();
+    if (q.length < 3) { return; }
+    recent = recent.filter(function (r) { return r.toLowerCase() !== q.toLowerCase(); });
+    recent.unshift(q);
+    recent = recent.slice(0, 6);
+    save("arcHubRecent", recent);
+    renderRecent();
+  }
+  function renderRecent() {
+    var box = document.getElementById("recent");
+    box.hidden = !recent.length;
+    box.innerHTML = recent.length ? "Recent: " + recent.map(function (r) {
+      return '<button type="button" class="chip" data-action="chip" data-q="' + esc(r) + '">' + esc(r) + "</button>";
+    }).join("") : "";
+  }
+  function updateFavToggle() {
+    document.getElementById("favWrap").hidden = !favs.length;
+    if (!favs.length) { document.getElementById("favOnly").checked = false; }
+  }
+
+  function findItem(name) {
+    for (var i = 0; i < items.length; i++) { if (items[i].name === name) { return items[i]; } }
+    return null;
+  }
+  function cartTotals() {
+    var tot = {};
+    cart.forEach(function (n) {
+      var it = findItem(n);
+      if (it) { Object.keys(yieldsOf(it)).forEach(function (m) { tot[m] = (tot[m] || 0) + yieldsOf(it)[m]; }); }
+    });
+    return pairs(tot);
+  }
+  function renderCart() {
+    var box = document.getElementById("cart");
+    box.hidden = !cart.length;
+    if (!cart.length) { box.innerHTML = ""; return; }
+    var tot = cartTotals();
+    box.innerHTML = "<div><b>Recycle cart</b> <span class=\"muted\">(" + cart.length + " item" + (cart.length === 1 ? "" : "s") + ", " + (mode === "rec" ? "recycle" : "salvage") + " amounts)</span></div>" +
+      '<div class="lst">' + cart.map(function (n) {
+        return '<span class="y">' + esc(n) + ' <button type="button" class="btn ghost" style="padding:0 6px;font-size:12px;" data-action="cartDel" data-item="' + esc(n) + '" aria-label="Remove ' + esc(n) + ' from cart">&times;</button></span>';
+      }).join("") + "</div>" +
+      '<div class="lst">' + (tot.length ? '<span class="muted">You would get:</span>' + tot.map(function (p) { return '<span class="y"><b>' + p[1] + "&times;</b> " + esc(p[0]) + "</span>"; }).join("") : '<span class="empty-line">Nothing from these items.</span>') + "</div>" +
+      '<div class="acts"><button class="btn" type="button" data-action="cartToTracker">Add all to tracker</button><button class="btn ghost" type="button" data-action="cartClear">Clear cart</button></div>';
+  }
+
+  /* ---------- tools tab ---------- */
+  function renderChecklist() {
+    var box = document.getElementById("checklist");
+    if (!checklist.length) { box.innerHTML = '<div class="empty-line">Your checklist is empty. Add an item below.</div>'; return; }
+    box.innerHTML = checklist.map(function (c, i) {
+      return '<div class="chk' + (c.d ? " done" : "") + '"><input type="checkbox" id="chk' + i + '" data-chk="' + i + '"' + (c.d ? " checked" : "") + '><label for="chk' + i + '">' + esc(c.t) + '</label>' +
+        '<button type="button" class="btn ghost" style="padding:3px 8px;" data-action="chkDel" data-i="' + i + '" aria-label="Remove ' + esc(c.t) + '">&times;</button></div>';
+    }).join("");
+  }
+  function renderProjects() {
+    var box = document.getElementById("projList");
+    if (!projects.length) { box.innerHTML = ""; return; }
+    box.innerHTML = projects.map(function (p, i) {
+      var done = 0, rows = p.needs.map(function (n) {
+        var have = tracker[n[0]] || 0, ok = have >= n[1];
+        if (ok) { done++; }
+        return '<div class="need"><div>' + esc(n[0]) + ": <b>" + Math.min(have, n[1]) + " / " + n[1] + "</b>" + (ok ? " &#10003;" : " (" + (n[1] - have) + " to go)") + '</div><div class="bar' + (ok ? " done" : "") + '"><i style="width:' + Math.min(100, Math.round(have * 100 / n[1])) + '%"></i></div></div>';
+      }).join("");
+      return '<div class="proj"><div class="ph"><b>' + esc(p.name) + ' <span class="muted">' + done + " of " + p.needs.length + ' ready</span></b>' +
+        '<button class="btn danger" type="button" data-action="projDel" data-i="' + i + '">Delete</button></div>' + rows + "</div>";
+    }).join("");
+  }
+  function renderCompare() {
+    var a = findItemCI(document.getElementById("cmpA").value), b = findItemCI(document.getElementById("cmpB").value);
+    var out = document.getElementById("cmpOut");
+    if (!a || !b) { out.innerHTML = '<p class="muted" style="margin-top:10px;">Choose two items from the lists to compare them.</p>'; return; }
+    var ya = yieldsOf(a), yb = yieldsOf(b);
+    function col(it, y, other) {
+      var p = pairs(y);
+      return '<div class="card"><h3>' + esc(it.name) + "</h3>" + (p.length ? '<div class="detail" style="display:flex;flex-wrap:wrap;gap:4px 6px;">' + p.map(function (x) {
+        return '<span class="y' + (other[x[0]] ? " hl" : "") + '"><b>' + x[1] + "&times;</b> " + esc(x[0]) + "</span>";
+      }).join("") + "</div>" : '<span class="empty-line">No data for this setting.</span>') + "</div>";
+    }
+    var shared = Object.keys(ya).filter(function (m) { return yb[m]; });
+    out.innerHTML = '<div class="cmp">' + col(a, ya, yb) + col(b, yb, ya) + "</div>" +
+      '<p class="muted" style="margin-top:8px;">' + (shared.length ? "Both give: " + shared.map(esc).join(", ") + " (outlined)." : "They share no materials.") + "</p>";
+  }
+  function findItemCI(n) {
+    n = (n || "").trim().toLowerCase();
+    for (var i = 0; i < items.length; i++) { if (items[i].name.toLowerCase() === n) { return items[i]; } }
+    return null;
+  }
+  function renderTools() {
+    renderChecklist();
+    renderProjects();
+    renderCompare();
+    document.getElementById("itemList").innerHTML = items.map(function (it) { return '<option value="' + esc(it.name) + '"></option>'; }).join("");
+  }
+
+  /* ---------- backup ---------- */
+  function exportData() {
+    var txt = JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist });
+    var ta = document.getElementById("backup"), msg = document.getElementById("backupMsg");
+    ta.value = txt; ta.focus(); ta.select();
+    msg.textContent = "Export ready. Copy this text and keep it somewhere safe.";
+    try { window.navigator.clipboard.writeText(txt).then(function () { msg.textContent = "Export ready and copied. Paste it somewhere safe."; }, function () {}); } catch (e) {}
+  }
+  function numMap(o) {
+    var out = {};
+    if (o && typeof o === "object" && !Array.isArray(o)) {
+      Object.keys(o).forEach(function (k) { var v = parseInt(o[k], 10); if (v > 0 && k.length < 80) { out[k] = v; } });
+    }
+    return out;
+  }
+  function importData() {
+    var msg = document.getElementById("backupMsg"), d;
+    try { d = JSON.parse(document.getElementById("backup").value); } catch (e) { msg.textContent = "That does not look like an Arc Raiders Hub backup."; return; }
+    if (!d || d.app !== "arc-raiders-hub") { msg.textContent = "That does not look like an Arc Raiders Hub backup."; return; }
+    tracker = numMap(d.tracker); goals = numMap(d.goals);
+    favs = Array.isArray(d.favs) ? d.favs.filter(function (x) { return typeof x === "string"; }).slice(0, 500) : [];
+    customItems = Array.isArray(d.custom) ? d.custom.filter(function (c) { return c && typeof c.name === "string" && Array.isArray(c.yields); }).slice(0, 200) : [];
+    projects = Array.isArray(d.projects) ? d.projects.filter(function (p) { return p && typeof p.name === "string" && Array.isArray(p.needs); }).slice(0, 50) : [];
+    if (Array.isArray(d.checklist)) { checklist = d.checklist.filter(function (c) { return c && typeof c.t === "string"; }).map(function (c) { return { t: c.t, d: !!c.d }; }).slice(0, 100); }
+    save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubFavs", favs);
+    save("arcHubCustom", customItems); save("arcHubProjects", projects); save("arcHubCheck", checklist);
+    refresh(); renderTools(); updateFavToggle(); updateGoalToggle();
+    msg.textContent = "Imported. Your data has been replaced with the backup.";
+  }
+
   function readHash() {
     var h = "";
     try { h = decodeURIComponent((window.location.hash || "").slice(1)); } catch (e) { h = ""; }
@@ -1210,7 +1484,7 @@ Integrated Binoculars|Common`;
   }
   function applyHash() {
     var r = readHash();
-    if (["recycle", "tracker", "maps", "frozen", "updates"].indexOf(r.tab) === -1) { return; }
+    if (["recycle", "tracker", "tools", "maps", "frozen", "updates"].indexOf(r.tab) === -1) { return; }
     showTab(r.tab, true);
     if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
     if (r.tab === "maps" && r.arg) {
@@ -1228,6 +1502,7 @@ Integrated Binoculars|Common`;
   var HINTS = {
     recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Not sure if an item is worth recycling? Set a goal in the Material tracker (for example 200 Metal Parts). Any item that gives a material you still need will show a green &ldquo;Helps your goals&rdquo; line, and you can tick &ldquo;Only items that help my goals&rdquo; to hide the rest.",
     tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Use the + and &minus; buttons to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
+    tools: "<b>Tools.</b> Tick off the raid checklist, save a project with what it needs and watch your tracker fill the bars, or compare what two items recycle into. You can also star items and build a recycle cart in the lookup, and export a backup from the Material tracker tab.",
     maps: "<b>Maps.</b> Pick a map to see its difficulty, unlock requirement, conditions and what changed there, plus the overview image. Copy the address bar to share a specific map.",
     frozen: "<b>Frozen Trail 2.0.</b> A quick summary of the latest update: the new map, enemies, weapons, gear and balance changes.",
     updates: "<b>Update history.</b> Every major update from launch to now, newest first, with the main highlights. Weekly store updates and small hotfixes are left out."
@@ -1263,7 +1538,7 @@ Integrated Binoculars|Common`;
   function showTab(name, quiet) {
     curTab = name;
     renderHint();
-    ["recycle", "tracker", "maps", "frozen", "updates"].forEach(function (t) {
+    ["recycle", "tracker", "tools", "maps", "frozen", "updates"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
@@ -1276,6 +1551,8 @@ Integrated Binoculars|Common`;
     document.getElementById("modeRec").setAttribute("aria-pressed", m === "rec" ? "true" : "false");
     document.getElementById("modeSal").setAttribute("aria-pressed", m === "sal" ? "true" : "false");
     renderResults();
+    renderCart();
+    renderCompare();
   }
 
   document.addEventListener("click", function (e) {
@@ -1292,6 +1569,7 @@ Integrated Binoculars|Common`;
       document.getElementById("searchBox").value = t.getAttribute("data-q");
       renderResults();
       writeHash();
+      addRecent(t.getAttribute("data-q"));
     } else if (a === "jump") {
       var el = document.getElementById("L-" + t.getAttribute("data-l"));
       if (el) { el.scrollIntoView(); }
@@ -1306,6 +1584,47 @@ Integrated Binoculars|Common`;
           break;
         }
       }
+    } else if (a === "fav") {
+      var fn = t.getAttribute("data-item"), fi = favs.indexOf(fn);
+      if (fi === -1) { favs.push(fn); } else { favs.splice(fi, 1); }
+      save("arcHubFavs", favs); updateFavToggle(); renderResults();
+    } else if (a === "cartAdd") {
+      var cn = t.getAttribute("data-item");
+      if (cart.indexOf(cn) === -1) { cart.push(cn); }
+      renderCart();
+    } else if (a === "cartDel") {
+      cart = cart.filter(function (n) { return n !== t.getAttribute("data-item"); });
+      renderCart();
+    } else if (a === "cartClear") {
+      cart = []; renderCart();
+    } else if (a === "cartToTracker") {
+      cartTotals().forEach(function (p) { bump(p[0], p[1]); });
+      var ol = t.textContent; t.textContent = "Added";
+      setTimeout(function () { t.textContent = ol; }, 1200);
+    } else if (a === "chkAdd") {
+      var ci = document.getElementById("chkNew"), ct = ci.value.trim();
+      if (ct) { checklist.push({ t: ct, d: false }); ci.value = ""; save("arcHubCheck", checklist); renderChecklist(); }
+    } else if (a === "chkDel") {
+      checklist.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubCheck", checklist); renderChecklist();
+    } else if (a === "chkUntick") {
+      checklist.forEach(function (c) { c.d = false; }); save("arcHubCheck", checklist); renderChecklist();
+    } else if (a === "chkDefaults") {
+      checklist = DEFAULT_CHECK.map(function (x) { return { t: x, d: false }; }); save("arcHubCheck", checklist); renderChecklist();
+    } else if (a === "projAdd") {
+      var pn = document.getElementById("pName").value.trim(), py = parseYields(document.getElementById("pNeeds").value), pm = document.getElementById("projMsg");
+      if (!pn) { pm.textContent = "Enter a project name."; }
+      else if (!py) { pm.textContent = 'Use the format "200 Metal Parts, 50 Wires".'; }
+      else {
+        projects.push({ name: pn, needs: py }); save("arcHubProjects", projects);
+        document.getElementById("pName").value = ""; document.getElementById("pNeeds").value = "";
+        pm.textContent = "Saved " + pn + "."; renderProjects();
+      }
+    } else if (a === "projDel") {
+      projects.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubProjects", projects); renderProjects();
+    } else if (a === "exportData") {
+      exportData();
+    } else if (a === "importData") {
+      importData();
     } else if (a === "zoomMap") {
       lbOpen(t.getAttribute("data-src"), t.getAttribute("data-name"));
     } else if (a === "zoomToggle") {
@@ -1371,8 +1690,23 @@ Integrated Binoculars|Common`;
     }
   });
 
-  document.getElementById("searchBox").addEventListener("input", function () { renderResults(); writeHash(); });
+  document.getElementById("searchBox").addEventListener("input", function () {
+    renderResults(); writeHash();
+    clearTimeout(recentTimer);
+    var v = this.value;
+    recentTimer = setTimeout(function () { if (document.querySelectorAll("#results .row").length) { addRecent(v); } }, 1200);
+  });
   document.getElementById("goalOnly").addEventListener("change", renderResults);
+  document.getElementById("favOnly").addEventListener("change", renderResults);
+  document.getElementById("cmpA").addEventListener("input", renderCompare);
+  document.getElementById("cmpB").addEventListener("input", renderCompare);
+  document.getElementById("chkNew").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); document.querySelector('[data-action="chkAdd"]').click(); } });
+  document.addEventListener("change", function (e) {
+    var ci = e.target && e.target.getAttribute && e.target.getAttribute("data-chk");
+    if (ci === null || ci === undefined || ci === false) { return; }
+    var c = checklist[parseInt(ci, 10)];
+    if (c) { c.d = e.target.checked; save("arcHubCheck", checklist); renderChecklist(); }
+  });
   document.addEventListener("change", function (e) {
     var g = e.target && e.target.getAttribute && e.target.getAttribute("data-goal");
     if (!g) { return; }
@@ -1408,7 +1742,14 @@ Integrated Binoculars|Common`;
   renderMaps();
   refresh();
   updateGoalToggle();
+  updateFavToggle();
+  renderRecent();
+  renderCart();
+  renderTools();
   applyHash();
+  try {
+    if ("serviceWorker" in window.navigator && /^https?:$/.test(window.location.protocol)) { window.navigator.serviceWorker.register("sw.js"); }
+  } catch (e) {}
 })();
 </script>
 <script data-goatcounter="https://tyler45455.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>

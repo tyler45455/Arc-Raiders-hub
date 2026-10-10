@@ -1909,7 +1909,7 @@ Integrated Binoculars|Common`;
   function qUpSet(name) {
     var seen = {}, stack = [name];
     while (stack.length) { var n = stack.pop(); if (seen[n]) { continue; } seen[n] = 1; (QPREV[n] || []).forEach(function (p) { stack.push(p); }); }
-    return Object.keys(seen).filter(function (k) { return !qDone[k]; });
+    return Object.keys(seen).filter(function (k) { return k !== name && !qDone[k]; });
   }
   var qUpArm = "", qUpTimer = 0;
   var QNEXT = {};

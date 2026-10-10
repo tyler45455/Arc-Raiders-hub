@@ -378,13 +378,41 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .kofi { margin-bottom: 6px; color: var(--muted); }
 .kofi a { white-space: nowrap; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
 .kofi a:hover { color: var(--fg); }
+
+.mapnote textarea, .rcadd input, .rcadd select { width: 100%; box-sizing: border-box; font: inherit; padding: 8px 10px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; }
+.mapnote { margin-top: 12px; display: grid; gap: 4px; }
+.rcadd { display: grid; grid-template-columns: 1fr 110px auto; gap: 6px; margin-top: 8px; }
+.rcrow { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-top: 1px solid var(--line); }
+.rcrow label { flex: 1; min-width: 0; }
+.rcrow.done label { text-decoration: line-through; color: var(--muted); }
+.rcgrp { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 2px; }
+.wsrow { padding: 8px 0; border-top: 1px solid var(--line); }
+.wsrow .wsh { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; }
+.wsrow .wsh > span { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.wsrow label { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; padding: 0; border-radius: 0; }
+.wsrow select { width: auto; min-width: 56px; font: inherit; padding: 4px 6px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; }
+.tagbtn.on { color: var(--warm); border-color: var(--warm); }
+.cmpl td, .cmpl th { vertical-align: top; }
+.cmpl .bad { color: var(--danger); font-weight: 600; }
+:root[data-contrast="high"] { --bg: #fffdf5; --surface: #ffffff; --line: #3a3326; --fg: #000000; --muted: #26211a; --accent: #a30f08; --warm: #8a3d00; --good: #0b5f33; --danger: #8c120b; }
+@media (prefers-color-scheme: dark) { :root[data-contrast="high"]:not([data-theme="light"]) { --bg: #000000; --surface: #0d0d0d; --surface2: #1a1a1a; --line: #d9ceb4; --fg: #ffffff; --muted: #ede4cc; --accent: #ff6a5e; --warm: #ffd23f; --good: #5cf0a0; --danger: #ff8a80; } }
+:root[data-contrast="high"][data-theme="dark"] { --bg: #000000; --surface: #0d0d0d; --surface2: #1a1a1a; --line: #d9ceb4; --fg: #ffffff; --muted: #ede4cc; --accent: #ff6a5e; --warm: #ffd23f; --good: #5cf0a0; --danger: #ff8a80; }
+:root[data-contrast="high"] a { text-decoration: underline; }
+:root[data-contrast="high"] .btn, :root[data-contrast="high"] .card, :root[data-contrast="high"] .tool, :root[data-contrast="high"] .row { border-width: 2px; }
+@media print {
+  header, footer, .tabs, .gsearch, .hint, .btn, .acts, .addrow, .rcadd, #hint { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  body.print-chk .panel > *:not(.printable) { display: none !important; }
+  body.print-chk .printable { border: 0 !important; box-shadow: none !important; }
+  body.print-chk .printable * { color: #000 !important; }
+}
 </style>
 </head>
 <body>
 
 <header class="band">
   <div class="wrap">
-    <div class="toprow"><p class="eyebrow">Fan-made field reference</p><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button></div></div>
+    <div class="toprow"><p class="eyebrow">Fan-made field reference</p><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="contrast" id="contrastBtn">Contrast: Off</button><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button></div></div>
     <h1>Arc Raiders <em>Hub</em></h1>
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
     <p class="stamp"><span id="dataStamp"></span><span class="offstate" id="offState"></span></p>
@@ -426,6 +454,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <div class="recent" id="recent" hidden></div>
     <div class="toolrow">
       <label id="favWrap" hidden><input type="checkbox" id="favOnly"> Only my starred items</label>
+      <label id="tagWrap">Tag <select id="tagFilter" aria-label="Filter by your tag"><option value="all">All items</option><option value="sell">Sell</option><option value="keep">Keep</option><option value="craft">Craft</option><option value="none">Untagged</option></select></label>
       <label id="goalWrap" hidden><input type="checkbox" id="goalOnly"> Only items that help my goals</label>
       <button class="btn ghost" type="button" data-action="copyLink" id="copyLink">Copy link to this search</button>
     </div>
@@ -587,6 +616,8 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <div class="qbar" style="margin:10px 0;">
       <button class="btn ghost" type="button" data-action="qCopy">Copy to-do list</button>
       <button class="btn ghost" type="button" data-action="qLink">Copy progress link</button>
+      <button class="btn ghost" type="button" data-action="qCode">Copy short code</button>
+      <input type="text" id="qCodeIn" placeholder="Paste a quest code or link" aria-label="Paste a quest code or link" style="min-width:0;"><button class="btn ghost" type="button" data-action="qCodeLoad">Load code</button>
     </div>
     <textarea id="qShareBox" rows="6" aria-label="Quest list to copy" hidden readonly></textarea>
     <div class="muted" id="qCount" role="status"></div>
@@ -610,7 +641,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <h2>Tools</h2>
     <p class="muted">A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
 
-    <div class="tool">
+    <div class="tool printable">
       <h3>Raid checklist</h3>
       <p class="muted">Tick things off before you drop in. Edit the list to match how you play.</p>
       <div id="checklist"></div>
@@ -619,6 +650,14 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
         <button class="btn ghost" type="button" data-action="chkUntick">Untick all</button>
         <button class="btn ghost" type="button" data-action="chkDefaults">Restore defaults</button>
       </div>
+    </div>
+
+    <div class="tool printable">
+      <h3>Daily and weekly tasks</h3>
+      <p class="muted">Tick things off and they reset on their own: daily tasks at midnight, weekly tasks on Monday (your device&rsquo;s time).</p>
+      <div id="repeatList"></div>
+      <div class="rcadd"><input type="text" id="rcNew" placeholder="Add a task" aria-label="New repeating task"><select id="rcPer" aria-label="How often"><option value="daily">Daily</option><option value="weekly">Weekly</option></select><button class="btn" type="button" data-action="rchkAdd">Add</button></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="printChecks">Print checklists</button></div>
     </div>
 
     <div class="tool">
@@ -658,6 +697,21 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
       <div id="loItems" style="display:grid;gap:6px;margin-top:8px;"></div>
       <div id="loOut"></div>
       <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="loShare">Copy loadout link</button><span class="muted" id="loMsg" role="status"></span></div>
+      <div class="rcadd" style="grid-template-columns:1fr auto;"><input type="text" id="loName" placeholder="Name this loadout" aria-label="Loadout name" maxlength="40"><button class="btn" type="button" data-action="loSave">Save loadout</button></div>
+      <div id="loSaved"></div>
+    </div>
+
+    <div class="tool">
+      <h3>Workshop planner</h3>
+      <p class="muted">Tick how many levels of each station you have finished. The next level&rsquo;s needs are compared with your tracker. Turn on &ldquo;Plan&rdquo; to add them to the shopping list.</p>
+      <div id="wsPlanner"></div>
+    </div>
+
+    <div class="tool">
+      <h3>Shopping list</h3>
+      <p class="muted">Everything you still need for active quests, saved projects, planned workshop levels and tracker goals, with the items that recycle into it best.</p>
+      <div id="shopOut"></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><span class="muted" id="shopMsg" role="status"></span></div>
     </div>
 
     <div class="tool">
@@ -710,6 +764,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <div class="kofi">Free and ad-free. If it saved you time, <a href="https://ko-fi.com/tyler45455" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="currentColor"/><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 3v2M11 2v3M14 3v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>buy me a coffee</a>.</div>
     <div>Fan-made, not affiliated with Embark Studios. ARC RAIDERS is a trademark of Embark Studios AB.</div>
     <details><summary>Data freshness</summary>
+      <h4 style="margin:8px 0 4px;">Recent changes</h4><ul class="muted" id="changesList"></ul>
       <div class="muted">When each part of the site was last checked against the ARC Raiders Wiki:</div>
       <div class="tablewrap"><table><thead><tr><th>Section</th><th>Last checked</th></tr></thead><tbody>
         <tr><td>Recycling and salvage data</td><td>October 9, 2026</td></tr>
@@ -1147,6 +1202,7 @@ Integrated Binoculars|Common`;
       '<div class="mapstats"><span>Difficulty <b class="dots">' + dots + "</b></span><span>Round <b>" + esc(m.len) + "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>" +
       '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
       '<p class="muted">' + esc(CONDITIONS) + "</p>" +
+      '<div class="mapnote"><label for="mapNote" class="muted">Your notes for this map (saved in this browser)</label><textarea id="mapNote" rows="3" maxlength="2000" placeholder="Good loot rooms, spawns to avoid...">' + esc(mapNotes[m.name] || "") + "</textarea></div>" +
       '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
     document.getElementById("mapTable").innerHTML = MAPS.map(function (x) {
       return "<tr><td>" + esc(x.name) + "</td><td>" + (x.diff || "n/a") + " / 5</td><td>" + esc(x.len) + "</td><td>" + esc(x.unlock) + "</td></tr>";
@@ -1271,6 +1327,7 @@ Integrated Binoculars|Common`;
       '<button class="btn ghost star" type="button" data-action="fav" data-item="' + esc(it.name) + '" aria-pressed="' + (favs.indexOf(it.name) !== -1) + '" aria-label="Star ' + esc(it.name) + '" title="Star this item">' + (favs.indexOf(it.name) !== -1 ? "\u2605" : "\u2606") + "</button>" +
       (has ? '<button class="btn ghost" type="button" data-action="cartAdd" data-item="' + esc(it.name) + '">+ Cart</button>' : "") +
       (has ? '<button class="btn" type="button" data-action="addItem" data-item="' + esc(it.name) + '">Add to tracker</button>' : "") +
+      '<button class="btn ghost tagbtn' + (itemTags[it.name] ? " on" : "") + '" type="button" data-action="tag" data-item="' + esc(it.name) + '" title="Cycle your tag: Sell, Keep, Craft">' + (itemTags[it.name] ? "Tag: " + itemTags[it.name].charAt(0).toUpperCase() + itemTags[it.name].slice(1) : "Tag") + "</button>" +
       '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
       '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
   }
@@ -1300,6 +1357,8 @@ Integrated Binoculars|Common`;
     var box = document.getElementById("goalOnly");
     var fb = document.getElementById("favOnly");
     if (fb && fb.checked && favs.indexOf(it.name) === -1) { return false; }
+    var tf = document.getElementById("tagFilter");
+    if (tf && tf.value !== "all") { if (tf.value === "none" ? !!itemTags[it.name] : itemTags[it.name] !== tf.value) { return false; } }
     return !(box && box.checked) || goalHelp(it).length > 0;
   }
   function updateGoalToggle() {
@@ -1663,7 +1722,7 @@ Integrated Binoculars|Common`;
   }
   var ENEMIES = [["Snitch", "Flying", "158", "Thrusters; destroying several makes it spiral and crash; a few Medium/Heavy Ammo shots kill it", "ARC Powercell, ARC Alloy, Snitch Scanner, ARC Synthetic Resin, ARC Thermo Lining, Sensors", "-", "Unarmed scout; calls reinforcements (Wasps, Firefly and Hornet, or Rocketeer) after third call; foliage hides you"], ["Wasp", "Flying", "110", "Thrusters; several destroyed causes loss of flight control and crash damage", "ARC Powercell, Light Ammo, ARC Alloy, Simple Gun Parts, ARC Synthetic Resin, ARC Thermo Lining, Wasp Driver", "-", "Red laser then light projectile volley; patrols in swarms with Hornets and Fireflies; Snitch calls more"], ["Hornet", "Flying", "200", "Rear thrusters (front armored); Medium or Heavy Ammo punctures armor", "ARC Powercell, Medium Ammo, ARC Alloy, Simple Gun Parts, ARC Performance Steel, ARC Synthetic Resin, Hornet Driver", "-", "Stun round drains shields; slow dodgeable projectiles; swarm support with Wasps and Fireflies"], ["Firefly", "Flying", "200", "Yellow fuel tank exposed by flamethrower takes extra damage; destroying thrusters crashes it", "Firefly Burner, ARC Powercell, Chemicals, ARC Alloy, Simple Gun Parts, ARC Synthetic Resin, Synthesized Fuel", "-", "Flamethrower damage over time; hangs back then swoops in to flush cover; ignites area on death"], ["Spotter", "Flying", "80", "Thrusters; killing both Spotters blinds the Bombardier", "Spotter Relay, ARC Powercell, ARC Alloy, ARC Synthetic Resin, ARC Thermo Lining, Sensors", "-", "Unarmed; marks Raiders with laser for Bombardier and ARC; new pair respawns; break line of sight"], ["Rocketeer", "Flying", "1100", "Unarmored thrusters; destroying two makes it fall; eyebrow and top weak point; Showstopper grounds it", "Rocketeer Driver, ARC Powercell, ARC Alloy, Electrical Components, Advanced ARC Powercell, ARC Circuitry, ARC Motion Core, Heavy Gun Parts, Launcher Ammo", "-", "Four lasers then missile barrage can down a Raider in two hits; splash hits behind cover"], ["Vaporizer", "Flying", "1500", "Thrusters; shoot underside panel to expose core; trigger energy shield first, then use high damage", "Vaporizer Regulator, ARC Powercell, ARC Alloy, Electrical Components, Advanced ARC Powercell, ARC Circuitry, ARC Flex Rubber, Energy Clip, Heavy Gun Parts", "-", "Energy shield blocks projectiles; laser leaves burning fire pools; dangerous without cover"], ["ARC Turbine", "Flying", "~4000", "Spinning yellow tanks visible after landing; Jupiter from 150-200 m", "Turbine Compressor, ARC Alloy, Advanced ARC Powercell, Medium Gun Parts", "-", "Falls from sky late in match; cluster missiles cause stunning lightning; drops proximity mines; heavy armor"], ["Tick", "Ground", "10", "One melee hit from a Raider Tool kills it", "Tick Pod", "-", "Lunges at head, latches and drains health and shield; spawns dormant on ceilings indoors; attacks in groups"], ["Pop", "Ground", "20", "Fast-firing weapon at close range before it detonates", "ARC Powercell, ARC Alloy, Crude Explosives, Pop Trigger, ARC Coolant, ARC Thermo Lining", "-", "Unarmored roller; beeps faster then explodes, damaging shields and health; found in swarms in large indoor facilities"], ["Fireball", "Ground", "20", "Core exposed when front panel opens; Medium/Heavy Ammo needed to break the shell", "ARC Powercell, ARC Alloy, Crude Explosives, Fireball Burner, ARC Coolant, ARC Thermo Lining", "Buried City, The Blue Gate", "Long flamethrower burst causes burning; sets area on fire when destroyed; often with Pops"], ["Turret", "Ground", "80", "Unarmored; a few bullets from any ammo type", "Light Ammo, ARC Powercell, ARC Alloy, Simple Gun Parts, ARC Synthetic Resin, ARC Thermo Lining", "-", "Stationary; constant bullet stream, fires at last known position; scanner light is visible"], ["Sentinel", "Ground", "300", "Yellow canister on swivel arm takes increased damage; slow to react", "Heavy Ammo, ARC Alloy, Simple Gun Parts, Advanced ARC Powercell, ARC Coolant, ARC Flex Rubber, ARC Motion Core, ARC Synthetic Resin, ARC Thermo Lining, Medium Gun Parts, Sentinel Firing Core", "Dam Battlegrounds, Buried City, Spaceport, The Blue Gate, Stella Montis", "Stationary on high ground; laser-tracked Heavy Ammo shot, long range; most common in Hurricane conditions"], ["Surveyor", "Ground", "257", "Core exposed while transmitting; stun it, then use explosives; Heavy Ammo strips armor", "Surveyor Vault, ARC Powercell, ARC Alloy, Mechanical Components, Advanced ARC Powercell, ARC Circuitry, ARC Coolant, ARC Motion Core, ARC Performance Steel, Sensors", "-", "Unarmed roller; flees faster than sprint, rams if cornered; resumes transmission after danger passes"], ["Shredder", "Ground", "385", "Thrusters (stagger and extra damage); explosives; Jolt Mine stuns it", "Shredder Gyro, Shotgun Ammo, ARC Powercell, ARC Alloy, Mechanical Components, Simple Gun Parts, ARC Synthetic Resin, ARC Thermo Lining", "Stella Montis", "Shrapnel bursts in all directions plus charged cone blast; deadly in close quarters; pursues using cover"], ["Comet", "Ground", "150", "Core exposed during charge; Seeker Grenades strip armor", "Comet Igniter, ARC Alloy, Crude Explosives, Advanced ARC Powercell, ARC Coolant, ARC Thermo Lining, Explosive Compound", "-", "Charges at high speed and self-destructs in wide blast; self-destruct damages igniter; removed from Dam Battlegrounds"], ["Bombardier", "Ground", "2670", "Rear plate and yellow leg-joint kneecaps for critical damage; Deadline mine near canister", "Bombardier Cell, ARC Powercell, ARC Alloy, Mechanical Components, Advanced ARC Powercell, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, Heavy Gun Parts, Launcher Ammo", "Dam Battlegrounds, Buried City, Spaceport, The Blue Gate", "Long-range mortar flushes Raiders from cover; accompanied by two Spotters; vulnerable right after firing"], ["Bastion", "Ground", "2050", "Yellow kneecaps and rear cylinder; destroying canister exposes barrel weak spot; Blaze Grenades, Deadline", "Bastion Cell, ARC Powercell, Medium Ammo, ARC Alloy, Mechanical Components, Advanced ARC Powercell, ARC Circuitry, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, Medium Gun Parts", "Dam Battlegrounds, Buried City, Spaceport, The Blue Gate, Stella Montis", "Slow, heavily armored; screeches then gatling fire at last seen position; guards open areas; use cover"], ["Leaper", "Ground", "1100", "Eye and leg joints; Blaze Grenade then Heavy Ammo; core 300 HP", "Leaper Pulse Unit, ARC Alloy, Mechanical Components, Advanced ARC Powercell, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, Explosive Compound", "Dam Battlegrounds, Buried City, Spaceport, The Blue Gate, Riven Tides", "Accurate crushing leap and shockwave pulse; guards objectives; not found in Stella Montis"], ["Skulker", "Ground", "-", "-", "-", "-", "Small, elusive; ambushes with tail weaponry then glides away to keep distance. The wiki page is a stub."], ["Hydra", "Ground", "-", "-", "-", "-", "Relentless, unmoving, devastating; seemingly guards major ARC operations. The wiki page is a stub."], ["Bully", "Ground", "-", "Legs and head; head opens when shot to reveal weak spot", "-", "-", "Relentless charges, pursues far; believed to guard ARC infrastructure; heavy armor. The wiki page is a work in progress."], ["Queen", "Boss", "23000", "Core and leg joints", "Advanced ARC Powercell, Advanced Electrical Components, Advanced Mechanical Components, ARC Alloy, ARC Circuitry, ARC Coolant, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, ARC Synthetic Resin, ARC Thermo Lining, Complex Gun Parts, Magnetic Accelerator, Queen Reactor", "-", "Estimated health; guards Harvesters under map modifier; mortars, laser, EMP pulse and ground slam"], ["Matriarch", "Boss", "23000", "Core and leg joints; shoot faceplates off to expose core", "Advanced ARC Powercell, Advanced Electrical Components, Advanced Mechanical Components, ARC Alloy, ARC Circuitry, ARC Coolant, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, ARC Synthetic Resin, ARC Thermo Lining, Complex Gun Parts, Magnetic Accelerator, Matriarch Reactor", "-", "Estimated health; homing missile swarm, gas and flashbang capsules, energy shield, summons ARC; needs cover"], ["Wasp Husk", "Container", "-", "-", "Advanced ARC Powercell, ARC Alloy, ARC Circuitry, ARC Coolant, ARC Flex Rubber, ARC Powercell, ARC Performance Steel, ARC Thermo Lining, Damaged Wasp Driver, Light Ammo, Wasp Driver", "-", "Breachable loot container, not an enemy; 400 Search XP"], ["ARC Probe", "Container", "-", "-", "ARC Powercell, ARC Alloy, ARC Circuitry, ARC Motion Core, ARC Synthetic Resin", "-", "Unarmed; beeps loudly when breached to alert nearby ARC; trapped after failed breach; 700 Search XP"], ["ARC Courier", "Container", "-", "-", "Advanced ARC Powercell, ARC Alloy, ARC Circuitry, ARC Motion Core, ARC Powercell, Burned ARC Circuitry, Damaged ARC Motion Core, Damaged Hornet Driver, Damaged Wasp Driver, Fireball Burner, Hornet Driver, Pop Trigger, Sentinel Firing Core, Spotter Relay, Surveyor Vault, Vaporizer Regulator", "-", "Breachable loot container, not an enemy; transports goods and sometimes crashes; 700 Search XP"], ["Rocketeer Husk", "Container", "-", "-", "Advanced ARC Powercell, ARC Alloy, ARC Coolant, ARC Powercell, ARC Thermo Lining, Damaged Rocketeer Driver, Launcher Ammo, Rocketeer Driver", "-", "Breachable loot container, not an enemy; event only; 700 Search XP; data in progress on the wiki"], ["ARC Assessor", "Container", "-", "-", "ARC Powercell, ARC Alloy, Advanced ARC Powercell, Advanced Electrical Components, ARC Circuitry, ARC Coolant, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, ARC Synthetic Resin, ARC Thermo Lining, Assessor Matrix", "-", "Unarmed; breaching calls down a deadly ARC squadron; trapped; event only; 200 Search XP"], ["Baron Husk", "Container", "-", "-", "Advanced ARC Powercell, ARC Alloy, ARC Circuitry, ARC Coolant, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, ARC Powercell, ARC Synthetic Resin, ARC Thermo Lining, Burned ARC Circuitry, Damaged ARC Motion Core, Damaged ARC Powercell, Degraded ARC Rubber, Dried-Out ARC Resin, Impure ARC Coolant, Rusty ARC Steel, Tattered ARC Lining", "-", "Six-legged walker husk; breachable and trapped; 500 Search XP; page in progress"], ["Deforester Husk", "Container", "-", "-", "Advanced ARC Powercell, Advanced Electrical Components, Advanced Mechanical Components, ARC Circuitry, ARC Coolant, ARC Flex Rubber, ARC Motion Core, ARC Performance Steel, ARC Powercell, ARC Synthetic Resin, Burned ARC Circuitry, Damaged ARC Powercell, Degraded ARC Rubber, Impure ARC Coolant", "The Blue Gate", "Puzzle container needing two ARC Powercells; timed fire obstacles can ignite you"]];
   var TRADERS = [["Celeste", "Metal Parts", "1 Assorted Seeds", "-"], ["Celeste", "Plastic Parts", "1 Assorted Seeds", "-"], ["Celeste", "Rubber Parts", "1 Assorted Seeds", "-"], ["Celeste", "Chemicals", "1 Assorted Seeds", "-"], ["Celeste", "Fabric", "1 Assorted Seeds", "-"], ["Celeste", "Sheet Metal", "3 Assorted Seeds", "-"], ["Celeste", "Planks", "3 Assorted Seeds", "-"], ["Celeste", "Great Mullein", "5 Assorted Seeds", "Stock 10"], ["Celeste", "Wires", "4 Assorted Seeds", "Stock 10"], ["Celeste", "Steel Spring", "6 Assorted Seeds", "Stock 10"], ["Celeste", "Oil", "6 Assorted Seeds", "Stock 10"], ["Celeste", "Simple Gun Parts", "7 Assorted Seeds", "Stock 5"], ["Celeste", "Battery", "5 Assorted Seeds", "Stock 10"], ["Celeste", "Canister", "6 Assorted Seeds", "Stock 10"], ["Celeste", "Magnet", "6 Assorted Seeds", "Stock 10"], ["Celeste", "Duct Tape", "6 Assorted Seeds", "Stock 10"], ["Celeste", "Rope", "10 Assorted Seeds", "Stock 5"], ["Celeste", "Steel Cable", "20 Assorted Seeds", "Stock 5"], ["Celeste", "Synthesized Fuel", "14 Assorted Seeds", "Stock 5"], ["Celeste", "Syringe", "10 Assorted Seeds", "Stock 5"], ["Celeste", "Sensors", "10 Assorted Seeds", "Stock 5"], ["Celeste", "Heavy Gun Parts", "15 Assorted Seeds", "Stock 3"], ["Celeste", "Medium Gun Parts", "15 Assorted Seeds", "Stock 3"], ["Celeste", "Light Gun Parts", "15 Assorted Seeds", "Stock 3"], ["Celeste", "Moss", "10 Assorted Seeds", "Stock 5"], ["Celeste", "Speaker Component", "10 Assorted Seeds", "Stock 5"], ["Celeste", "Processor", "10 Assorted Seeds", "Stock 5"], ["Celeste", "Voltage Converter", "10 Assorted Seeds", "Stock 5"], ["Celeste", "Complex Gun Parts", "60 Assorted Seeds", "Stock 1"], ["Celeste", "Exodus Modules", "55 Assorted Seeds", "Stock 1"], ["Shani", "Remote Raider Flare", "810 Coins", "Utility"], ["Shani", "Firecracker", "810 Coins", "Grenade"], ["Shani", "Binoculars", "1.9k Coins", "Gadget"], ["Shani", "Blue Light Stick", "3k Coins", "Grenade"], ["Shani", "Red Light Stick", "3k Coins", "Grenade"], ["Shani", "Yellow Light Stick", "3k Coins", "Grenade"], ["Shani", "Green Light Stick", "3k Coins", "Grenade"], ["Shani", "Basic Camera", "1.9k Coins", "Gadget"], ["Shani", "Advanced Camera", "3k Coins", "Stock 3"], ["Shani", "Fireworks Box", "6k Coins", "Utility; stock 3"], ["Shani", "Raider Hatch Key", "9k Coins", "Key; stock 2"], ["Tian Wen", "Light Ammo", "900 Coins", "Quantity x25"], ["Tian Wen", "Medium Ammo", "900 Coins", "Quantity x20"], ["Tian Wen", "Heavy Ammo", "900 Coins", "Quantity x10"], ["Tian Wen", "Shotgun Ammo", "900 Coins", "Quantity x5"], ["Tian Wen", "Launcher Ammo", "4.5k Coins", "Stock 15"], ["Tian Wen", "Energy Clip", "3k Coins", "Stock 20"], ["Tian Wen", "Stitcher I", "2.4k Coins", "-"], ["Tian Wen", "Kettle I", "2.52k Coins", "-"], ["Tian Wen", "Ferro I", "1425 Coins", "-"], ["Tian Wen", "Ferro IV", "8.7k Coins", "Stock 3"], ["Tian Wen", "Arpeggio I", "16.5k Coins", "Stock 3"], ["Tian Wen", "Burletta I", "8.7k Coins", "Stock 3"], ["Tian Wen", "Il Toro I", "15k Coins", "Stock 3"], ["Tian Wen", "Bantam I", "11.4k Coins", "Stock 3"], ["Tian Wen", "Renegade I", "21k Coins", "Stock 1"], ["Tian Wen", "Osprey I", "21k Coins", "Stock 1"], ["Tian Wen", "Torrente I", "21k Coins", "Stock 1"], ["Tian Wen", "Rascal I", "21k Coins", "Stock 2"], ["Tian Wen", "Extended Light Mag I", "1.92k Coins", "Stock 5"], ["Tian Wen", "Muzzle Brake I", "1.92k Coins", "Stock 5"], ["Tian Wen", "Angled Grip I", "1.92k Coins", "Stock 5"], ["Tian Wen", "Extended Medium Mag II", "6k Coins", "Stock 5"], ["Tian Wen", "Extended Light Mag II", "6k Coins", "Stock 3"], ["Tian Wen", "Vertical Grip II", "6k Coins", "Stock 5"], ["Tian Wen", "Angled Grip II", "6k Coins", "Stock 5"], ["Tian Wen", "Silencer I", "6k Coins", "Stock 1"], ["Tian Wen", "Shotgun Choke II", "6k Coins", "Stock 3"], ["Tian Wen", "Stable Stock III", "15k Coins", "Stock 2"], ["Tian Wen", "Angled Grip III", "15k Coins", "Stock 1"], ["Tian Wen", "Padded Stock", "15k Coins", "Stock 1"], ["Lance", "Looting Mk. 1", "1.92k Coins", "-"], ["Lance", "Combat Mk. 1", "1.92k Coins", "-"], ["Lance", "Tactical Mk. 1", "1.92k Coins", "-"], ["Lance", "Looting Mk. 2", "6k Coins", "Stock 1"], ["Lance", "Combat Mk. 2", "6k Coins", "Stock 1"], ["Lance", "Tactical Mk. 2", "6k Coins", "Stock 1"], ["Lance", "Bandage", "750 Coins", "-"], ["Lance", "Herbal Bandage", "2.7k Coins", "Stock 10"], ["Lance", "Sterilized Bandage", "6k Coins", "Stock 3"], ["Lance", "Light Shield", "1.92k Coins", "-"], ["Lance", "Medium Shield", "6k Coins", "Stock 3"], ["Lance", "Heavy Shield", "16.5k Coins", "Stock 1"], ["Lance", "Shield Recharger", "1.56k Coins", "-"], ["Lance", "Surge Shield Recharger", "3.6k Coins", "Stock 5"], ["Lance", "Defibrillator", "3k Coins", "-"], ["Lance", "Adrenaline Shot", "900 Coins", "-"], ["Apollo", "Blue Light Stick", "450 Coins", "-"], ["Apollo", "Green Light Stick", "450 Coins", "-"], ["Apollo", "Red Light Stick", "450 Coins", "-"], ["Apollo", "Yellow Light Stick", "450 Coins", "-"], ["Apollo", "Remote Raider Flare", "810 Coins", "-"], ["Apollo", "Gas Grenade", "810 Coins", "Stock 6"], ["Apollo", "Noisemaker", "1.92k Coins", "Stock 6"], ["Apollo", "Door Blocker", "810 Coins", "Stock 6"], ["Apollo", "Gas Mine", "810 Coins", "-"], ["Apollo", "Light Impact Grenade", "810 Coins", "-"], ["Apollo", "Pulse Mine", "1.41k Coins", "Stock 6"], ["Apollo", "Seeker Grenade", "1.92k Coins", "Stock 6"], ["Apollo", "Barricade Kit", "1.92k Coins", "Stock 6"], ["Apollo", "Recorder", "3k Coins", "Stock 6"], ["Apollo", "Snap Blast Grenade", "2.4k Coins", "Stock 3"], ["Apollo", "Jolt Mine", "2.55k Coins", "Stock 3"], ["Apollo", "Smoke Grenade", "3k Coins", "Stock 6"], ["Apollo", "Zipline", "3k Coins", "Stock 3"], ["Apollo", "Trailblazer", "6.6k Coins", "Stock 3"], ["Apollo", "Deadline", "18k Coins", "Stock 1"], ["Nomadic Envoys", "Anvil II", "20k Barter", "Weekly rotating offer; stock 2"], ["Nomadic Envoys", "Yank Grenade", "9k Barter", "Weekly rotating offer; stock 5"], ["Nomadic Envoys", "Grappling Hook", "9k Barter", "Weekly rotating offer; stock 2"], ["Nomadic Envoys", "Deadline", "20k Barter", "Weekly rotating offer; stock 2"], ["Nomadic Envoys", "Hullcracker II", "30k Barter", "Weekly rotating offer; stock 3"], ["Nomadic Envoys", "Battered Paperback", "7k Barter", "Weekly rotating offer; stock 2"], ["Nomadic Envoys", "Snowy Mountain Pick", "70k Barter", "Weekly rotating offer; stock 1"], ["Nomadic Envoys", "Raider Tokens x25", "150k Barter", "Weekly rotating offer; stock 1"], ["Nomadic Envoys", "Stash Expansion (+12 slots)", "200000 Coins first, 400000 Coins second", "Service; unlock level 25; two available"], ["Nomadic Envoys", "Expedition Vault slot (+1 slot)", "200000 Coins per slot", "Service; unlock level 25; up to 5 slots"]];
-  var WORKSHOP = [["Gunsmith", "1", "20× Metal Parts; 30× Rubber Parts", "Anvil, Burletta, Il Toro, Ferro, Hairpin, Kettle, Rattler, Stitcher and tier I mods"], ["Gunsmith", "2", "3× Rusted Tools; 5× Mechanical Components; 8× Wasp Driver", "Osprey, Rascal, Torrente, Venator, Arpeggio, tier II mods and Silencer I"], ["Gunsmith", "3", "3× Rusted Gear; 5× Advanced Mechanical Components; 4× Sentinel Firing Core", "Aphelion, Dolabra, Equalizer, Jupiter, Bettina, Bobcat, Hullcracker, Tempest, Vulcano, Canto, Renegade and tier III mods"], ["Gear Bench", "1", "25× Plastic Parts; 30× Fabric", "Combat Mk. 1, Looting Mk. 1, Tactical Mk. 1, Medium Shield, Light Shield"], ["Gear Bench", "2", "3× Power Cable; 5× Electrical Components; 5× Hornet Driver", "Combat Mk. 2, Looting Mk. 2, Tactical Mk. 2, Heavy Shield"], ["Gear Bench", "3", "3× Industrial Battery; 5× Advanced Electrical Components; 6× Bastion Cell", "All Mk. 3 augments (Aggressive, Flanking, Cautious, Safekeeper, Survivor, Defensive, Healing, Revival, Smoke)"], ["Medical Lab", "1", "50× Fabric; 6× ARC Alloy", "Herbal Bandage, Shield Recharger, Adrenaline Shot, Bandage, White Flag"], ["Medical Lab", "2", "2× Cracked Bioscanner; 5× Durable Cloth; 8× Tick Pod", "Defibrillator, Sterilized Bandage, Surge Shield Recharger"], ["Medical Lab", "3", "3× Rusted Shut Medical Kit; 8× Antiseptic; 5× Surveyor Vault", "Vita Spray, Vita Shot"], ["Explosives Station", "1", "50× Chemicals; 6× ARC Alloy", "Seeker Grenade, Gas Grenade, Light Impact Grenade, Pulse Mine, Gas Mine"], ["Explosives Station", "2", "3× Synthesized Fuel; 5× Crude Explosives; 5× Pop Trigger", "Shrapnel Grenade, Snap Blast Grenade, Jolt Mine, Trigger 'Nade, Fireworks Box"], ["Explosives Station", "3", "3× Laboratory Reagents; 5× Explosive Compound; 3× Rocketeer Driver", "Wolfpack, Blaze Grenade, Heavy Fuze Grenade, Showstopper, Trailblazer, Deadline, Explosive Mine, Surge Coil"], ["Utility Station", "1", "50× Plastic Parts; 6× ARC Alloy", "Binoculars, Crash Mat, light sticks, Firecracker, Li'l Smoke Grenade, Barricade Kit, Door Blocker, Remote Raider Flare"], ["Utility Station", "2", "2× Damaged Heat Sink; 5× Electrical Components; 6× Snitch Scanner", "Smoke Grenade, Lure Grenade, Raider Hatch Key, Zipline"], ["Utility Station", "3", "3× Fried Motherboard; 5× Advanced Electrical Components; 4× Leaper Pulse Unit", "Snap Hook, Photoelectric Cloak, Powered Descender, Tagging Grenade"], ["Refiner", "1", "60× Metal Parts; 5× ARC Powercell", "Refines Crude Explosives, Durable Cloth, Electrical Components, Mechanical Components"], ["Refiner", "2", "3× Toaster; 5× ARC Motion Core; 8× Fireball Burner", "Refines Advanced Electrical Components, Advanced Mechanical Components, Antiseptic, ARC Circuitry, ARC Motion Core, Explosive Compound, gun parts, Mod Components"], ["Refiner", "3", "3× Motor; 10× ARC Circuitry; 6× Bombardier Cell", "Refines Complex Gun Parts, Magnetic Accelerator, Power Rod"]];
+  var WORKSHOP = [["Gunsmith", "1", "20× Metal Parts; 30× Rubber Parts", "Anvil, Burletta, Il Toro, Ferro, Hairpin, Kettle, Rattler, Stitcher and tier I mods"], ["Gunsmith", "2", "3× Rusted Tools; 5× Mechanical Components; 8× Wasp Driver", "Osprey, Rascal, Torrente, Venator, Arpeggio, tier II mods and Silencer I"], ["Gunsmith", "3", "3× Rusted Gear; 5× Advanced Mechanical Components; 4× Sentinel Firing Core", "Aphelion, Dolabra, Equalizer, Jupiter, Bettina, Bobcat, Hullcracker, Tempest, Vulcano, Canto, Renegade and tier III mods"], ["Gear Bench", "1", "25× Plastic Parts; 30× Fabric", "Combat Mk. 1, Looting Mk. 1, Tactical Mk. 1, Medium Shield, Light Shield"], ["Gear Bench", "2", "3× Power Cable; 5× Electrical Components; 5× Hornet Driver", "Combat Mk. 2, Looting Mk. 2, Tactical Mk. 2, Heavy Shield"], ["Gear Bench", "3", "3× Industrial Battery; 5× Advanced Electrical Components; 6× Bastion Cell", "All Mk. 3 augments (Aggressive, Flanking, Cautious, Safekeeper, Survivor, Defensive, Healing, Revival, Smoke)"], ["Medical Lab", "1", "50× Fabric; 6× ARC Alloy", "Herbal Bandage, Shield Recharger, Adrenaline Shot, Bandage, White Flag"], ["Medical Lab", "2", "2× Cracked Bioscanner; 5× Durable Cloth; 8× Tick Pod", "Defibrillator, Sterilized Bandage, Surge Shield Recharger"], ["Medical Lab", "3", "3× Rusted Shut Medical Kit; 8× Antiseptic; 5× Surveyor Vault", "Vita Spray, Vita Shot"], ["Explosives Station", "1", "50× Chemicals; 6× ARC Alloy", "Seeker Grenade, Gas Grenade, Light Impact Grenade, Pulse Mine, Gas Mine"], ["Explosives Station", "2", "3× Synthesized Fuel; 5× Crude Explosives; 5× Pop Trigger", "Shrapnel Grenade, Snap Blast Grenade, Jolt Mine, Trigger 'Nade, Fireworks Box"], ["Explosives Station", "3", "3× Laboratory Reagents; 5× Explosive Compound; 3× Rocketeer Driver", "Wolfpack, Blaze Grenade, Heavy Fuze Grenade, Showstopper, Trailblazer, Deadline, Explosive Mine, Surge Coil"], ["Utility Station", "1", "50× Plastic Parts; 6× ARC Alloy", "Binoculars, Crash Mat, light sticks, Firecracker, Li'l Smoke Grenade, Barricade Kit, Door Blocker, Remote Raider Flare"], ["Utility Station", "2", "2× Damaged Heat Sink; 5× Electrical Components; 6× Snitch Scanner", "Smoke Grenade, Lure Grenade, Raider Hatch Key, Zipline"], ["Utility Station", "3", "3× Fried Motherboard; 5× Advanced Electrical Components; 4× Leaper Pulse Unit", "Snap Hook, Photoelectric Cloak, Powered Descender, Tagging Grenade"], ["Refiner", "1", "60× Metal Parts; 5× ARC Powercell", "Refines Crude Explosives, Durable Cloth, Electrical Components, Mechanical Components"], ["Refiner", "2", "3× Toaster; 5× ARC Motion Core; 8× Fireball Burner", "Refines Advanced Electrical Components, Advanced Mechanical Components, Antiseptic, ARC Circuitry, ARC Motion Core, Explosive Compound, gun parts, Mod Components"], ["Refiner", "3", "3× Motor; 10× ARC Circuitry; 6× Bombardier Cell", "Refines Complex Gun Parts, Magnetic Accelerator, Power Rod"], ["Research Station", "1", "3× Mini Pump; 35× Planks; 5× Battered Paperback", "Not listed on the wiki yet. Needs a matching Outpost level."], ["Research Station", "2", "3× Calculator; 3× Raider Logbook; 5× Skulker Targeter", "Not listed on the wiki yet. Needs a matching Outpost level."], ["Research Station", "3", "3× Differential Microphone; 3× Exodus Technical Handbook; 6× Bully Fragmenter", "Not listed on the wiki yet. Needs a matching Outpost level."], ["Research Station", "4", "3× Thermal Shaker; 3× ARC Data Module; 1× Frigate Inductor", "Fully upgraded unlocks the Amplified weapon tier (per a community guide). Needs a matching Outpost level."]];
   var STASH = [["2", "5000", "88"], ["3", "10000", "112"], ["4", "15000", "136"], ["5", "25000", "160"], ["6", "40000", "184"], ["7", "60000", "208"], ["8", "90000", "232"], ["9", "130000", "256"], ["10", "200000", "280"], ["11", "750000", "304"]];
   var SKILLS = [["Used To The Weight", "Conditioning", "1", "Starting node", "Shields slow you less"], ["Stubborn Mule", "Conditioning", "-", "-", "Stamina regeneration is less affected by being over-encumbered"], ["Three Deep Breaths", "Conditioning", "-", "-", "After an ability drains your stamina, you recover more quickly"], ["Vigorous Vaulter", "Conditioning", "1", "-", "No vault slowdown while exhausted"], ["Vault 'N' Carry", "Conditioning", "1", "-", "Vault while holding a carryable"], ["Mule's Gallop", "Conditioning", "-", "Large node 1 (10 branch points), choose one", "Sprint while over-encumbered"], ["Back On Your Feet", "Conditioning", "-", "Large node 1 (10 branch points), choose one", "Health regenerates when critically hurt, up to a limit"], ["Loaded Arms", "Conditioning", "1", "-", "Equipped weapon has less impact on encumbrance"], ["Broad Shoulders", "Conditioning", "5", "-", "+2 max carry weight per level, capped at +10"], ["Downed But Determined", "Conditioning", "5", "-", "Downed time is 100 s by default, about 6 s more per level"], ["Crawl Before You Walk", "Conditioning", "5", "-", "Crawl faster while downed"], ["Speedy Mule", "Conditioning", "-", "-", "Reduces the speed penalty when severely over-encumbered"], ["Proficient Pryer", "Conditioning", "5", "-", "About 5% faster breaching per point, last point gives 10%; door breach 7 s instead of 10 s"], ["Security Breach", "Conditioning", "-", "Large node 2 (30 or 40 branch points), choose one", "Breach Security Lockers, including ones others opened"], ["Weapon Bash", "Conditioning", "-", "Large node 2 (30 or 40 branch points), choose one", "Melee attack with equipped weapon"], ["Bull Rush", "Conditioning", "-", "Large node 2 (30 or 40 branch points), choose one", "Knock back players and ARC while sprinting with weapon stowed"], ["Youthful Lungs", "Mobility", "-", "Starting node", "Increases max stamina"], ["Sure-Footed Scrambler", "Mobility", "-", "-", "Longer scrambling on steep slopes while sprinting"], ["Nimble Climber", "Mobility", "-", "-", "Climb and vault more quickly"], ["Ready To Roll", "Mobility", "-", "-", "Larger Recovery Roll timing window when falling"], ["Fight Or Flight", "Mobility", "-", "-", "Regains fixed stamina when hurt in combat; has a cooldown"], ["Vault Spring", "Mobility", "-", "Large node 1 (10 branch points), choose one", "Jump at the end of a vault"], ["Vaults On Vaults On Vaults", "Mobility", "-", "Large node 1 (10 branch points), choose one", "Vaulting costs no stamina"], ["Effortless Roll", "Mobility", "-", "-", "Dodge Rolls cost less stamina"], ["Right Back At It", "Mobility", "-", "-", "Faster recovery after a heavy landing"], ["Marathon Runner", "Mobility", "-", "-", "Moving around costs less stamina"], ["Slip And Slide", "Mobility", "-", "-", "Slide further and faster"], ["Off The Wall", "Mobility", "-", "-", "Wall Leap goes further"], ["Swift Start", "Mobility", "-", "-", "Longer duration of high speed at the start of a sprint"], ["Sprinting On Fumes", "Mobility", "-", "Large node 2 (30 or 40 branch points), choose one", "Stamina never fully drains while sprinting; any action or damage cancels it"], ["Wall Run", "Mobility", "-", "Large node 2 (30 or 40 branch points), choose one", "Run up a wall for a few steps while sprinting"], ["In The Flow", "Mobility", "-", "Large node 2 (30 or 40 branch points), choose one", "Chaining mobility moves while sprinting raises speed and lowers stamina cost"], ["In-round Crafting", "Survival", "1", "Starting node", "Field-craft items topside (Flame Spray, Shaker, Bandage and others)"], ["Looter's Instinct", "Survival", "-", "-", "Container loot is revealed faster when searching"], ["Sturdy Ankles", "Survival", "-", "-", "Less fall damage from non-lethal heights"], ["Silent Scavenger", "Survival", "-", "-", "Less noise when looting"], ["Agile Croucher", "Survival", "-", "-", "Faster crouched movement"], ["Quick Roll", "Survival", "-", "Large node (10 branch points), choose one", "Faster, cheaper dodge roll that covers less distance"], ["Minesweeper", "Survival", "-", "Large node (10 branch points), choose one", "Defuse mines and explosive deployables when close"], ["Gentle Pressure", "Survival", "-", "-", "Less noise when breaching"], ["Traveling Tinkerer", "Survival", "1", "-", "Unlocks more field-craft items (grenade traps, Noisemaker, Herbal Bandage, Raider Hatch Key) and Workbench grenade trap crafting"], ["Stylish Landing", "Survival", "-", "-", "Recovery Roll can be used from higher up"], ["A Little Extra", "Survival", "1", "-", "Breaching yields 1-2 crafting materials"], ["Looter's Luck", "Survival", "5", "-", "Search animation covers two container items instead of one"], ["Turtle Crawl", "Survival", "5", "-", "Take less damage while downed"], ["Road Warrior", "Survival", "-", "Large node 2 (30 or 40 branch points), choose one", "More ammo and ARC Powercells from ARC; full-efficiency recycling in a round"], ["Nomadic Crafting", "Survival", "-", "Large node 2 (30 or 40 branch points), choose one", "Field-craft a much wider range of items"], ["Field Repair", "Survival", "-", "Large node 2 (30 or 40 branch points), choose one", "Repair weapons, shields and gadgets up to 30% durability in a round"]];
   var BPS = [["Anvil", "Weapon (Hand Cannon)", "Rare", "Scavenged on all maps from Raider Containers; Trial reward"], ["Angled Grip II", "Mod (Underbarrel)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Angled Grip III", "Mod (Underbarrel)", "Rare", "Scavenged during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Aphelion", "Weapon (Battle Rifle)", "Legendary", "Scavenged on Stella Montis only; not a Trial reward"], ["Barricade Kit", "Utility", "Uncommon", "Scavenged on all maps from Electrical Containers; Trial reward"], ["Bettina", "Weapon (Assault Rifle)", "Epic", "Scavenged on all maps from Raider Containers; Trial reward"], ["Blaze Grenade", "Grenade", "Rare", "Scavenged on all maps from Industrial Containers; Trial reward"], ["Bobcat", "Weapon (SMG)", "Epic", "Scavenged only during Locked Gate or Hurricane conditions (First Wave Cache); Trial reward; Project reward: Trophy Display stage 4"], ["Burletta", "Weapon (Pistol)", "Uncommon", "Quest reward: Industrial Espionage; also Trial reward"], ["Canto", "Weapon (SMG)", "Rare", "Scavenged only during Hurricane from First Wave Cache; Trial reward"], ["Combat Mk. 3 (Aggressive)", "Augment (Combat)", "Epic", "Scavenged on Stella Montis and The Blue Gate from Medical or Security Containers; Trial reward"], ["Combat Mk. 3 (Flanking)", "Augment (Combat)", "Epic", "Scavenged on Stella Montis and The Blue Gate from Medical or Security Containers; Trial reward"], ["Compensator II", "Mod (Muzzle)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Compensator III", "Mod (Muzzle)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Crash Mat", "Grenade", "Uncommon", "Scavenged on Riven Tides only (any container); Trial reward; Project rewards (ended): Ascending The Mountain stage 2, Phantom Targets stage 6"], ["Complex Gun Parts", "Material", "Epic", "Scavenged on all maps from Security Containers; not a Trial reward"], ["Dolabra", "Weapon (Shotgun)", "Legendary", "Scavenged only during Close Scrutiny from ARC Assessor; not a Trial reward"], ["Deadline", "Trap (Mine)", "Epic", "Scavenged on Stella Montis only; Trial reward"], ["Defibrillator", "Healing", "Rare", "Scavenged on all maps from Medical Containers; Trial reward"], ["Explosive Mine", "Trap (Mine)", "Rare", "Scavenged on all maps from Industrial Containers; Trial reward"], ["Extended Barrel II", "Mod (Muzzle)", "Rare", "Scavenged on all maps (container not stated on the wiki); Trial reward"], ["Extended Barrel III", "Mod (Muzzle)", "Epic", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Extended Light Mag II", "Mod (Light Magazine)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Extended Light Mag III", "Mod (Light Magazine)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Extended Medium Mag II", "Mod (Medium Magazine)", "Uncommon", "Scavenged on all maps during Night Raid from Residential Containers; Trial reward"], ["Extended Medium Mag III", "Mod (Medium Magazine)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Extended Shotgun Mag II", "Mod (Shotgun Magazine)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Extended Shotgun Mag III", "Mod (Shotgun Magazine)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Equalizer", "Weapon (Special)", "Legendary", "Dropped by the Harvester during the Harvester condition; not a Trial reward"], ["Fireworks Box", "Utility", "Rare", "Quest reward: Test Case; also scavenged only during Cold Snap; Project reward (ended): Phantom Targets stage 5"], ["Gas Mine", "Trap (Mine)", "Common", "Scavenged on Stella Montis only"], ["Heavy Gun Parts", "Material", "Rare", "Scavenged on all maps from Raider Containers; Trial reward; Project reward (ended): Avian Alarm stage 2"], ["Hullcracker", "Weapon (Special)", "Epic", "Quest reward: The Major's Footlocker; not scavengable"], ["Il Toro", "Weapon (Shotgun)", "Uncommon", "Scavenged on all maps from Raider Containers; Trial reward"], ["Jolt Mine", "Trap (Mine)", "Rare", "Scavenged on all maps from Industrial Containers; Trial reward"], ["Jupiter", "Weapon (Sniper Rifle)", "Legendary", "Dropped by the Harvester during the Harvester condition; not a Trial reward"], ["Light Gun Parts", "Material", "Rare", "Scavenged on all maps from Raider Containers; Trial reward; Project reward: Trophy Display stage 1"], ["Red Light Stick", "Grenade", "Common", "Scavenged on all maps; Trial reward"], ["Green Light Stick", "Grenade", "Common", "Scavenged on all maps; Trial reward"], ["Yellow Light Stick", "Grenade", "Common", "Scavenged on all maps; Trial reward; Quest reward: Last Entry"], ["Blue Light Stick", "Grenade", "Common", "Scavenged on all maps; Trial reward"], ["Lightweight Stock", "Mod (Stock)", "Epic", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Looting Mk. 3 (Safekeeper)", "Augment (Looting)", "Epic", "Scavenged on all maps from Medical Containers, Security Containers or Metal Crates; Trial reward"], ["Looting Mk. 3 (Survivor)", "Augment (Looting)", "Epic", "Scavenged on all maps from Medical Containers, Security Containers or Metal Crates; Trial reward"], ["Lure Grenade", "Grenade", "Uncommon", "Quest reward: Greasing Her Palms; not scavengable"], ["Medium Gun Parts", "Material", "Rare", "Scavenged on all maps from Raider Containers; Trial reward"], ["Muzzle Brake II", "Mod (Muzzle)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Muzzle Brake III", "Mod (Muzzle)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Osprey", "Weapon (Sniper Rifle)", "Rare", "Scavenged on all maps from Raider Containers; Trial reward"], ["Padded Stock", "Mod (Stock)", "Epic", "Scavenged only during Electromagnetic Storm, Locked Gate, Night Raid or Hidden Bunker from Residential Containers; Trial reward"], ["Powered Descender", "Gadget", "Epic", "Scavenged on Riven Tides only (any container)"], ["Pulse Mine", "Trap (Mine)", "Uncommon", "Scavenged on Stella Montis only; Trial reward"], ["Rascal", "Weapon (Special)", "Rare", "Scavenged on all maps from Raider Containers"], ["Remote Raider Flare", "Utility", "Common", "Scavenged on all maps from Electrical Containers; Trial reward"], ["Seeker Grenade", "Grenade", "Uncommon", "Scavenged on Stella Montis only"], ["Shotgun Choke II", "Mod (Shotgun Muzzle)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Shotgun Choke III", "Mod (Shotgun Muzzle)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Shotgun Silencer", "Mod (Shotgun Muzzle)", "Epic", "Scavenged only during Electromagnetic Storm, Locked Gate, Night Raid or Hidden Bunker from Residential Containers; Trial reward; Project reward: Trophy Display stage 3"], ["Showstopper", "Grenade", "Rare", "Scavenged on all maps from Industrial Containers; Trial reward"], ["Silencer I", "Mod (Muzzle)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Silencer II", "Mod (Muzzle)", "Rare", "Scavenged on all maps from Residential Containers; Trial reward"], ["Smoke Grenade", "Grenade", "Rare", "Scavenged on all maps from Residential Containers"], ["Snap Hook", "Gadget", "Legendary", "Scavenged only during Electromagnetic Storm; Trial reward: Trophy only; Project reward: Trophy Display stage 5"], ["Stable Stock II", "Mod (Stock)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Stable Stock III", "Mod (Stock)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Surge Coil", "Utility", "Rare", "Scavenged only during Electromagnetic Storm (container not stated on the wiki)"], ["Tactical Mk. 3 (Defensive)", "Augment (Tactical)", "Epic", "Scavenged on Stella Montis and The Blue Gate from Medical Containers, Security Containers or ARC Surveyor; Trial reward"], ["Tactical Mk. 3 (Healing)", "Augment (Tactical)", "Epic", "Scavenged on Stella Montis and The Blue Gate from Medical or Security Containers; Trial reward"], ["Tactical Mk. 3 (Revival)", "Augment (Tactical)", "Epic", "Scavenged on Stella Montis and The Blue Gate from Medical or Security Containers; Trial reward"], ["Tactical Mk. 3 (Smoke)", "Augment (Tactical)", "Epic", "Scavengable (map and container not stated on the wiki)"], ["Tagging Grenade", "Grenade", "Rare", "Scavenged on all maps from Electrical Containers; Trial reward"], ["Tempest", "Weapon (Assault Rifle)", "Epic", "Scavenged only during Night Raid or Hurricane from Residential Containers or First Wave Cache; Trial reward"], ["Torrente", "Weapon (LMG)", "Rare", "Scavenged on all maps from Raider Containers; Trial reward"], ["Trailblazer", "Grenade", "Rare", "Scavenged on Stella Montis only; Trial reward"], ["Trigger 'Nade", "Grenade", "Rare", "Quest reward: Sparks Fly; also scavenged on all maps"], ["Venator", "Weapon (Pistol)", "Rare", "Scavenged on all maps from Raider Containers; Trial reward"], ["Vertical Grip II", "Mod (Underbarrel)", "Uncommon", "Scavenged on all maps from Residential Containers; Trial reward"], ["Vertical Grip III", "Mod (Underbarrel)", "Rare", "Scavenged only during Electromagnetic Storm, Locked Gate or Night Raid from Residential Containers; Trial reward"], ["Vita Shot", "Healing", "Rare", "Scavenged on all maps from Medical Containers or ARC Surveyor; Trial reward; Project reward: Trophy Display stage 2"], ["Vita Spray", "Healing", "Epic", "Quest reward: Worth Your Salt; also scavenged on all maps from Medical Containers or ARC Surveyor; Trial reward"], ["Vulcano", "Weapon (Shotgun)", "Epic", "Scavenged only during Hidden Bunker or Hurricane (First Wave Cache); Trial reward"], ["Wolfpack", "Grenade", "Epic", "Scavenged only during Night Raid from Residential Containers; Trial reward"], ["White Flag", "Utility", "Common", "Scavenged on Riven Tides only (any container); Trial reward"]];
@@ -1881,6 +1940,18 @@ Integrated Binoculars|Common`;
   var projects = load("arcHubProjects", []);
   var DEFAULT_CHECK = ["Healing items packed", "Ammo for your main weapon", "Keys or access items", "Augment and shield equipped", "Safe pocket item chosen", "Checked today's map conditions"];
   var checklist = load("arcHubCheck", null) || DEFAULT_CHECK.map(function (t) { return { t: t, d: false }; });
+  var wsDone = load("arcHubWs", {});
+  var wsPlan = load("arcHubWsPlan", {});
+  var itemTags = load("arcHubTags", {});
+  var mapNotes = load("arcHubMapNotes", {});
+  var loadouts = load("arcHubLoadouts", []);
+  var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
+  var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
+  var DATA_CHANGES = [
+    ["Oct 10, 2026", "Added Research Station levels 1 to 4 from the wiki Outpost page (a stub: crafting details are not published yet)."],
+    ["Oct 10, 2026", "Added a Sheltered Retreat project preset from a community guide, because the wiki page would not load."],
+    ["Oct 10, 2026", "Added 107 quests with objectives and the quest chain, plus enemies, traders, workshop, skills and blueprints."]
+  ];
   var recentTimer = null;
 
   function nameMatch(name, q) {
@@ -1998,6 +2069,7 @@ Integrated Binoculars|Common`;
     qActive().forEach(function (q) { q.req.forEach(function (r) { addK(r.n, "quest: " + q.name); }); });
     projects.forEach(function (p) { p.needs.forEach(function (n) { if ((tracker[n[0]] || 0) < n[1]) { addK(n[0], "project: " + p.name); } }); });
     Object.keys(goals).forEach(function (m) { if (need(m) > 0) { addK(m, "tracker goal"); } });
+    Object.keys(itemTags).forEach(function (n) { if (itemTags[n] === "keep") { addK(n, "your Keep tag"); } });
     Object.keys(kmap).sort().forEach(function (n) { keepL.push([{ name: n }, kmap[n]]); seen[n] = true; });
     items.forEach(function (it) {
       if (seen[it.name]) { return; }
@@ -2126,6 +2198,151 @@ Integrated Binoculars|Common`;
     renderLoadout();
   }
 
+
+  /* ---------- repeating tasks ---------- */
+  function pKey(per) {
+    var d = new Date();
+    if (per === "weekly") { d = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)); }
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+  function rchkRoll() {
+    var ch = false;
+    rchk.forEach(function (c) { var k = pKey(c.p); if (c.k !== k) { c.k = k; c.d = false; ch = true; } });
+    if (ch) { save("arcHubRepeat", rchk); }
+  }
+  function renderRepeat() {
+    rchkRoll();
+    var box = document.getElementById("repeatList");
+    if (!box) { return; }
+    var html = "";
+    [["daily", "Daily"], ["weekly", "Weekly"]].forEach(function (g) {
+      var rows = rchk.map(function (c, i) { return [c, i]; }).filter(function (x) { return x[0].p === g[0]; });
+      html += '<div class="rcgrp">' + g[1] + "</div>" + (rows.length ? rows.map(function (x) {
+        return '<div class="rcrow' + (x[0].d ? " done" : "") + '"><input type="checkbox" id="rc' + x[1] + '" data-rchk="' + x[1] + '"' + (x[0].d ? " checked" : "") + '><label for="rc' + x[1] + '">' + esc(x[0].t) + '</label><button type="button" class="btn ghost" style="padding:3px 8px;" data-action="rchkDel" data-i="' + x[1] + '" aria-label="Remove ' + esc(x[0].t) + '">&times;</button></div>';
+      }).join("") : '<div class="empty-line">None yet.</div>');
+    });
+    box.innerHTML = html;
+  }
+
+  /* ---------- workshop planner and shopping list ---------- */
+  function wsStations() {
+    var out = [], by = {};
+    WORKSHOP.forEach(function (w) { if (!by[w[0]]) { by[w[0]] = []; out.push(w[0]); } by[w[0]].push(w); });
+    return out.map(function (n) { return [n, by[n]]; });
+  }
+  function renderPlanner() {
+    var box = document.getElementById("wsPlanner");
+    if (!box) { return; }
+    box.innerHTML = wsStations().map(function (st) {
+      var n = st[0], rows = st[1], done = Math.min(wsDone[n] || 0, rows.length), next = rows[done];
+      var opts = ""; for (var i = 0; i <= rows.length; i++) { opts += '<option value="' + i + '"' + (i === done ? " selected" : "") + ">" + i + "</option>"; }
+      var body = next ? qItems(next[2]).map(function (r) {
+        var have = tracker[r.n] || 0, ok = have >= r.q;
+        return '<div class="need"><div>' + esc(r.n) + ": <b>" + Math.min(have, r.q) + " / " + r.q + "</b>" + (ok ? " &#10003;" : " (" + (r.q - have) + " to go)") + '</div><div class="bar' + (ok ? " done" : "") + '"><i style="width:' + Math.min(100, Math.round(have / r.q * 100)) + '%"></i></div></div>';
+      }).join("") : '<div class="empty-line">All levels done.</div>';
+      return '<div class="wsrow"><div class="wsh"><b>' + esc(n) + '</b><span><label>Levels done <select data-wsdone="' + esc(n) + '" aria-label="' + esc(n) + ' levels done">' + opts + "</select> of " + rows.length + '</label> <label class="tog"><input type="checkbox" data-wsplan="' + esc(n) + '"' + (wsPlan[n] ? " checked" : "") + "> Plan</label></span></div>" +
+        (next ? '<div class="muted">Next: level ' + esc(next[1]) + "</div>" : "") + body + "</div>";
+    }).join("");
+  }
+  function shopData() {
+    var t = {}, src = {};
+    function add(n, q, w) { t[n] = (t[n] || 0) + q; if (!src[n]) { src[n] = []; } if (src[n].indexOf(w) === -1) { src[n].push(w); } }
+    qActive().forEach(function (q) { q.req.forEach(function (r) { add(r.n, r.q, "quest"); }); });
+    projects.forEach(function (p) { p.needs.forEach(function (n) { add(n[0], n[1], "project"); }); });
+    wsStations().forEach(function (st) {
+      if (!wsPlan[st[0]]) { return; }
+      var next = st[1][Math.min(wsDone[st[0]] || 0, st[1].length)];
+      if (next) { qItems(next[2]).forEach(function (r) { add(r.n, r.q, "workshop"); }); }
+    });
+    Object.keys(goals).forEach(function (m) { if (goals[m] > (t[m] || 0)) { t[m] = goals[m]; if (!src[m]) { src[m] = []; } if (src[m].indexOf("goal") === -1) { src[m].push("goal"); } } });
+    var rows = [];
+    Object.keys(t).forEach(function (n) {
+      var have = tracker[n] || 0, miss = t[n] - have;
+      if (miss > 0) { rows.push({ n: n, need: t[n], have: have, miss: miss, src: src[n] }); }
+    });
+    rows.sort(function (a, b) { return b.miss - a.miss || a.n.localeCompare(b.n); });
+    return rows;
+  }
+  function bestSources(m) {
+    return items.filter(function (it) { return yieldsOf(it)[m]; })
+      .sort(function (a, b) { return yieldsOf(b)[m] - yieldsOf(a)[m] || a.name.localeCompare(b.name); }).slice(0, 2)
+      .map(function (it) { return it.name + " (+" + yieldsOf(it)[m] + ")"; });
+  }
+  function renderShop() {
+    var box = document.getElementById("shopOut");
+    if (!box) { return; }
+    var rows = shopData();
+    if (!rows.length) { box.innerHTML = '<div class="empty-line">Nothing missing. Add quests, projects, goals or plan a workshop level.</div>'; return; }
+    box.innerHTML = '<div class="tablewrap"><table><thead><tr><th>Material</th><th>Missing</th><th>Have / need</th><th>For</th><th>Best to recycle</th></tr></thead><tbody>' + rows.slice(0, 60).map(function (r) {
+      var b = bestSources(r.n);
+      return "<tr><td>" + esc(r.n) + "</td><td><b>" + r.miss + "</b></td><td>" + r.have + " / " + r.need + "</td><td>" + r.src.map(esc).join(", ") + "</td><td>" + (b.length ? b.map(esc).join(", ") : "Find in raids") + "</td></tr>";
+    }).join("") + "</tbody></table></div>" + (rows.length > 60 ? '<div class="muted">And ' + (rows.length - 60) + " more.</div>" : "");
+  }
+  function shopText() {
+    return "Still needed (" + shopData().length + "):\n" + shopData().map(function (r) { return r.miss + "x " + r.n + " (" + r.src.join(", ") + ")"; }).join("\n");
+  }
+
+  /* ---------- saved loadouts ---------- */
+  function loSum(code) {
+    var f = code.slice(3).split("~~"), tot = 0;
+    var aug = GEARDATA.augments.filter(function (a) { return a[0] === f[0]; })[0] || GEARDATA.augments[0];
+    var wl = [];
+    [f[2], f[3]].forEach(function (n) {
+      if (!n) { return; }
+      var wp = GEARDATA.weapons.filter(function (x) { return x[0] === n; })[0];
+      var w = wp ? numOf(wObj(wp).wt) : -1; if (w >= 0) { tot += w; } wl.push(n);
+    });
+    if (f[1]) { var sw = numOf((GPROPS[f[1]] || [])[1]); if (sw >= 0) { tot += sw; } }
+    var il = [];
+    (f[4] ? f[4].split("~") : []).forEach(function (x) {
+      var pr = x.split("*"), q = parseInt(pr[1], 10) || 1, w = numOf((GPROPS[pr[0]] || [])[1]);
+      if (w >= 0) { tot += w * q; } il.push(q + " x " + pr[0]);
+    });
+    tot = Math.round(tot * 100) / 100;
+    return { aug: aug[0], limit: aug[1], shield: f[1] || "None", weapons: wl, items: il, total: tot, over: tot > aug[1] };
+  }
+  function renderLoSaved() {
+    var box = document.getElementById("loSaved");
+    if (!box) { return; }
+    if (!loadouts.length) { box.innerHTML = ""; return; }
+    var opts = loadouts.map(function (l, i) { return '<option value="' + i + '">' + esc(l.name) + "</option>"; }).join("");
+    var keepA = (document.getElementById("loCA") || {}).value, keepB = (document.getElementById("loCB") || {}).value;
+    var html = '<div class="group-title">Saved loadouts</div>' + loadouts.map(function (l, i) {
+      return '<div class="rcrow"><label>' + esc(l.name) + '</label><button class="btn ghost" type="button" data-action="loLoad" data-i="' + i + '">Load</button><button class="btn danger" type="button" data-action="loDel" data-i="' + i + '">Delete</button></div>';
+    }).join("");
+    if (loadouts.length > 1) {
+      html += '<div class="rcadd" style="grid-template-columns:1fr 1fr;"><select id="loCA" aria-label="Compare loadout A">' + opts + '</select><select id="loCB" aria-label="Compare loadout B">' + opts + '</select></div><div id="loCmpOut"></div>';
+    }
+    box.innerHTML = html;
+    if (loadouts.length > 1) {
+      document.getElementById("loCA").value = keepA && loadouts[keepA] ? keepA : "0";
+      document.getElementById("loCB").value = keepB && loadouts[keepB] ? keepB : "1";
+      renderLoCmp();
+    }
+  }
+  function renderLoCmp() {
+    var a = loadouts[parseInt(document.getElementById("loCA").value, 10)], b = loadouts[parseInt(document.getElementById("loCB").value, 10)];
+    if (!a || !b) { return; }
+    var A = loSum(a.code), B = loSum(b.code);
+    function row(k, x, y) { return "<tr><th>" + k + "</th><td>" + x + "</td><td>" + y + "</td></tr>"; }
+    document.getElementById("loCmpOut").innerHTML = '<div class="tablewrap"><table class="cmpl"><thead><tr><th></th><th>' + esc(a.name) + "</th><th>" + esc(b.name) + "</th></tr></thead><tbody>" +
+      row("Augment", esc(A.aug), esc(B.aug)) + row("Weight limit", A.limit, B.limit) + row("Shield", esc(A.shield), esc(B.shield)) +
+      row("Weapons", A.weapons.map(esc).join("<br>") || "None", B.weapons.map(esc).join("<br>") || "None") +
+      row("Items", A.items.map(esc).join("<br>") || "None", B.items.map(esc).join("<br>") || "None") +
+      row("Carried weight", '<span class="' + (A.over ? "bad" : "") + '">' + A.total + (A.over ? " (over)" : "") + "</span>", '<span class="' + (B.over ? "bad" : "") + '">' + B.total + (B.over ? " (over)" : "") + "</span>") +
+      "</tbody></table></div>";
+  }
+
+  /* ---------- contrast ---------- */
+  function applyContrast(on) {
+    if (on) { document.documentElement.setAttribute("data-contrast", "high"); } else { document.documentElement.removeAttribute("data-contrast"); }
+    var b = document.getElementById("contrastBtn"); if (b) { b.textContent = "Contrast: " + (on ? "On" : "Off"); }
+  }
+  function renderChanges() {
+    var el = document.getElementById("changesList");
+    if (el) { el.innerHTML = DATA_CHANGES.map(function (c) { return "<li><b>" + esc(c[0]) + ":</b> " + esc(c[1]) + "</li>"; }).join(""); }
+  }
+
   /* ---------- tools tab ---------- */
   function renderChecklist() {
     var box = document.getElementById("checklist");
@@ -2224,6 +2441,7 @@ Integrated Binoculars|Common`;
     renderWeaponCompare(); renderLoadout();
   }
   function renderTools() {
+    renderRepeat(); renderPlanner(); renderShop(); renderLoSaved();
     renderKeep();
     renderChecklist();
     renderPresets();
@@ -2234,7 +2452,7 @@ Integrated Binoculars|Common`;
 
   /* ---------- backup ---------- */
   function snapText() {
-    return JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned });
+    return JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk });
   }
   var snaps = load("arcHubSnaps", []);
   function takeSnapshot() {
@@ -2280,7 +2498,7 @@ Integrated Binoculars|Common`;
     importData();
   }
   function exportData() {
-    var txt = JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned });
+    var txt = JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk });
     var ta = document.getElementById("backup"), msg = document.getElementById("backupMsg");
     ta.value = txt; ta.focus(); ta.select();
     msg.textContent = "Export ready. Copy this text and keep it somewhere safe.";
@@ -2308,6 +2526,13 @@ Integrated Binoculars|Common`;
     bpOwned = {};
     if (d.blueprints && typeof d.blueprints === "object" && !Array.isArray(d.blueprints)) { Object.keys(d.blueprints).forEach(function (k) { if (d.blueprints[k] && k.length < 80) { bpOwned[k] = 1; } }); }
     save("arcHubBP", bpOwned);
+    function objOf(o) { return o && typeof o === "object" && !Array.isArray(o) ? o : null; }
+    var oo = objOf(d.ws); if (oo) { wsDone = {}; Object.keys(oo).forEach(function (k) { var n = parseInt(oo[k], 10); if (n > 0 && n < 20 && k.length < 40) { wsDone[k] = n; } }); save("arcHubWs", wsDone); }
+    oo = objOf(d.plan); if (oo) { wsPlan = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 40) { wsPlan[k] = true; } }); save("arcHubWsPlan", wsPlan); }
+    oo = objOf(d.tags); if (oo) { itemTags = {}; Object.keys(oo).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(oo[k]) !== -1 && k.length < 80) { itemTags[k] = oo[k]; } }); save("arcHubTags", itemTags); }
+    oo = objOf(d.notes); if (oo) { mapNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 60) { mapNotes[k] = oo[k].slice(0, 2000); } }); save("arcHubMapNotes", mapNotes); }
+    if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
+    if (Array.isArray(d.repeat)) { rchk = d.repeat.filter(function (c) { return c && typeof c.t === "string"; }).map(function (c) { return { t: c.t.slice(0, 80), p: c.p === "weekly" ? "weekly" : "daily", d: !!c.d, k: typeof c.k === "string" ? c.k : "" }; }).slice(0, 50); save("arcHubRepeat", rchk); }
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubFavs", favs);
     save("arcHubCustom", customItems); save("arcHubProjects", projects); save("arcHubCheck", checklist);
     refresh(); renderTools(); renderQuests(); renderRef(); updateFavToggle(); updateGoalToggle();
@@ -2400,7 +2625,7 @@ Integrated Binoculars|Common`;
     });
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderKeep(); }
+    if (name === "tools") { renderRepeat(); renderPlanner(); renderShop(); renderKeep(); }
     if (name === "updates") { markUpdatesSeen(); }
     if (!quiet) { writeHash(); }
   }
@@ -2548,6 +2773,40 @@ Integrated Binoculars|Common`;
       try {
         window.navigator.clipboard.writeText(window.location.href).then(function () { done("Link copied"); }, function () { done("Copy the address bar"); });
       } catch (e) { done("Copy the address bar"); }
+    } else if (a === "tag") {
+      var tn = t.getAttribute("data-item"), order = ["", "sell", "keep", "craft"], cur2 = itemTags[tn] || "";
+      var nx = order[(order.indexOf(cur2) + 1) % order.length];
+      if (nx) { itemTags[tn] = nx; } else { delete itemTags[tn]; }
+      save("arcHubTags", itemTags); renderResults();
+    } else if (a === "rchkAdd") {
+      var rt = document.getElementById("rcNew").value.trim();
+      if (rt) { rchk.push({ t: rt.slice(0, 80), p: document.getElementById("rcPer").value === "weekly" ? "weekly" : "daily", d: false, k: pKey(document.getElementById("rcPer").value) }); document.getElementById("rcNew").value = ""; save("arcHubRepeat", rchk); renderRepeat(); }
+    } else if (a === "rchkDel") {
+      rchk.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubRepeat", rchk); renderRepeat();
+    } else if (a === "printChecks") {
+      document.body.classList.add("print-chk"); try { window.print(); } catch (e7) {} document.body.classList.remove("print-chk");
+    } else if (a === "shopCopy") {
+      var sm = document.getElementById("shopMsg");
+      try { window.navigator.clipboard.writeText(shopText()).then(function () { sm.textContent = "List copied."; }, function () { sm.textContent = "Copy failed."; }); } catch (e8) { sm.textContent = "Copy failed."; }
+    } else if (a === "loSave") {
+      var ln = document.getElementById("loName").value.trim().slice(0, 40);
+      if (ln) {
+        loadouts = loadouts.filter(function (l) { return l.name.toLowerCase() !== ln.toLowerCase(); });
+        loadouts.push({ name: ln, code: loCode() }); loadouts = loadouts.slice(-20);
+        save("arcHubLoadouts", loadouts); document.getElementById("loName").value = ""; renderLoSaved();
+      }
+    } else if (a === "loLoad") {
+      var lo = loadouts[parseInt(t.getAttribute("data-i"), 10)]; if (lo) { loApply(lo.code); }
+    } else if (a === "loDel") {
+      loadouts.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubLoadouts", loadouts); renderLoSaved();
+    } else if (a === "contrast") {
+      var cn = !load("arcHubContrast", false); save("arcHubContrast", cn); applyContrast(cn);
+    } else if (a === "qCode") {
+      qShowText(qEncode(), "Short code ready. Others can paste it into Load code.");
+    } else if (a === "qCodeLoad") {
+      var cv = document.getElementById("qCodeIn").value.trim(), pm = /p=([^&\s]+)/.exec(cv), dc = null;
+      try { dc = qDecode(pm ? pm[1] : cv); } catch (e9) { dc = null; }
+      if (dc && dc.n !== undefined) { qPending = dc; renderQuests(); document.getElementById("qCodeIn").value = ""; } else { qShowText("", "That code did not work. Copy it again."); }
     } else if (a === "gGo") { gGo(parseInt(t.getAttribute("data-i"), 10));
     } else if (a === "shareTracker") { shareTracker();
     } else if (a === "shareQuests") { shareQuests();
@@ -2658,6 +2917,21 @@ Integrated Binoculars|Common`;
     box.focus(); box.select();
   });
   window.addEventListener("hashchange", applyHash);
+  document.addEventListener("change", function (e) {
+    var el = e.target; if (!el || !el.getAttribute) { return; }
+    var v;
+    if ((v = el.getAttribute("data-rchk")) !== null) { var c = rchk[parseInt(v, 10)]; if (c) { c.d = el.checked; save("arcHubRepeat", rchk); renderRepeat(); } return; }
+    if ((v = el.getAttribute("data-wsdone")) !== null) { wsDone[v] = parseInt(el.value, 10) || 0; save("arcHubWs", wsDone); renderPlanner(); renderShop(); return; }
+    if ((v = el.getAttribute("data-wsplan")) !== null) { if (el.checked) { wsPlan[v] = true; } else { delete wsPlan[v]; } save("arcHubWsPlan", wsPlan); renderPlanner(); renderShop(); return; }
+    if (el.id === "tagFilter") { renderResults(); return; }
+    if (el.id === "loCA" || el.id === "loCB") { renderLoCmp(); }
+  });
+  document.addEventListener("input", function (e) {
+    if (e.target && e.target.id === "mapNote") { mapNotes[MAPS[curMap].name] = e.target.value.slice(0, 2000); save("arcHubMapNotes", mapNotes); }
+  });
+  window.addEventListener("afterprint", function () { document.body.classList.remove("print-chk"); });
+  applyContrast(!!load("arcHubContrast", false));
+  renderChanges();
   document.getElementById("gq").addEventListener("input", gSearch);
   document.getElementById("gq").addEventListener("keydown", function (e) {
     if (e.key === "Escape") { document.getElementById("gres").hidden = true; }

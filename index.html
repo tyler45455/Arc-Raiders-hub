@@ -314,12 +314,39 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .qcard.qlock { border-style: dashed; }
 .qcard.qdone { opacity: .6; }
 .qcard.qdone .qh a { text-decoration: line-through; }
-.qchk { font-size: 13px; display: flex; gap: 6px; align-items: center; }
+.qchk { margin-right: auto; font-size: 13px; font-weight: 600; display: flex; gap: 6px; align-items: center; }
 .qobj summary { cursor: pointer; font-size: 13px; font-weight: 600; }
 .qobj ol { margin: 6px 0 0; padding-left: 20px; font-size: 13px; display: grid; gap: 3px; }
 .qstat { font-size: 12.5px; font-weight: 600; color: var(--muted); }
 .qstat.ok { color: var(--accent); }
 .presetbox { border: 1px dashed var(--line); border-radius: 8px; padding: 10px 12px; margin: 10px 0; display: grid; gap: 8px; }
+/* cleanup pass */
+input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
+.band .wrap { padding-block: 16px 0; }
+.lede { font-size: 14px; margin: 6px 0 12px; }
+.stamp { margin: 0 0 8px; font-size: 11.5px; color: var(--muted); font-family: var(--font-mono); }
+.tabs { gap: 0; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { padding: 11px 14px; font-size: 14.5px; }
+@media (min-width: 900px) { .tabs { -webkit-mask-image: none; mask-image: none; } .tab { padding: 12px 18px; } }
+main { padding-block: 18px 40px; }
+h2 { margin-bottom: 4px; }
+.panel > .muted:first-of-type { max-width: 70ch; margin: 0 0 12px; }
+.note { margin-block: 0 14px; }
+.tool { margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px 16px; }
+.tool h3 { margin-bottom: 2px; }
+.qbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.qbar select { width: auto; padding: 7px 10px; font-size: 14px; }
+.qbar .qprog { margin-left: auto; }
+.tog { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; background: var(--surface); font-size: 13px; cursor: pointer; }
+.tog:has(input:checked) { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.qcard .acts { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.qcard, .proj { box-shadow: 0 1px 0 rgba(0, 0, 0, .03); }
+.qcard .qh a, .qcard .qh b { font-size: 15.5px; }
+.qcard .qh { align-items: baseline; }
+.qrow .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; min-width: 62px; }
+.details-card, details.card { margin-block: 10px; }
+@media (max-width: 600px) { .qbar .qprog { margin-left: 0; flex-basis: 100%; } h2 { font-size: 24px; } }
 footer { border-top: 1px solid var(--line); padding-block: 18px 28px; color: var(--muted); font-size: 13px; }
 footer .wrap > * { margin: 4px 0; }
 code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surface2); padding: 1px 5px; border-radius: 4px; }
@@ -335,15 +362,15 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
     <p class="stamp" id="dataStamp"></p>
     <div class="tabs" role="tablist" id="tabs">
-      <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycling lookup</button>
-      <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Material tracker<span class="count" id="trackerCount"></span></button>
-      <button class="tab" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Weapons &amp; gear</button>
+      <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycle</button>
+      <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Tracker<span class="count" id="trackerCount"></span></button>
+      <button class="tab" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Gear</button>
       <button class="tab" role="tab" id="tab-quests" data-tab="quests" aria-selected="false">Quests</button>
       <button class="tab" role="tab" id="tab-ref" data-tab="ref" aria-selected="false">Reference</button>
       <button class="tab" role="tab" id="tab-tools" data-tab="tools" aria-selected="false">Tools</button>
       <button class="tab" role="tab" id="tab-maps" data-tab="maps" aria-selected="false">Maps</button>
-      <button class="tab" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail 2.0</button>
-      <button class="tab" role="tab" id="tab-updates" data-tab="updates" aria-selected="false">Update history</button>
+      <button class="tab" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail</button>
+      <button class="tab" role="tab" id="tab-updates" data-tab="updates" aria-selected="false">Updates</button>
     </div>
   </div>
 </header>
@@ -511,22 +538,25 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   <!-- QUESTS -->
   <section class="panel" id="panel-quests" role="tabpanel" aria-labelledby="tab-quests" hidden>
     <h2>Quests</h2>
-    <p class="muted">All 107 trader quests from the ARC Raiders Wiki with where they happen, the objectives, what you hand in and what you get. Quests stay hidden until you complete the quest before them (from the wiki&rsquo;s Previous quest field), so mark quests as completed to unlock the next ones. Required items you already track show how many you have.</p>
+    <p class="muted">All 107 trader quests with objectives, hand-in items and rewards. A quest stays hidden until you complete the one before it, so tick quests off to unlock the next.</p>
     <div class="qtools">
       <input type="text" id="qQ" placeholder="Search quest, objective, trader, location, item or reward" aria-label="Search quests" autocomplete="off">
       <div class="chips" id="qTraders" role="group" aria-label="Trader"></div>
-      <div class="gearrow"><select id="qStatus" aria-label="Completion filter"><option value="all">Show: all quests</option><option value="todo">Show: not completed</option><option value="done">Show: completed</option></select><span class="muted" id="qProg" role="status"></span></div>
-      <label><input type="checkbox" id="qLocked"> Also show locked quests (ones whose earlier quest is not completed)</label>
-      <label><input type="checkbox" id="qReady"> Only quests where my tracker covers every tracked required item</label>
+      <div class="qbar">
+        <select id="qStatus" aria-label="Completion filter"><option value="all">All quests</option><option value="todo">Not completed</option><option value="done">Completed</option></select>
+        <select id="qSort" aria-label="Sort quests"><option value="chain">Wiki order</option><option value="ready">Closest to ready</option></select>
+        <label class="tog"><input type="checkbox" id="qLocked"> Show locked</label>
+        <label class="tog" title="Only quests where your tracker covers every tracked required item"><input type="checkbox" id="qReady"> Ready with my tracker</label>
+        <span class="muted qprog" id="qProg" role="status"></span>
+      </div>
     </div>
-    <div class="gearrow"><select id="qSort" aria-label="Sort quests"><option value="chain">Sort: wiki order</option><option value="ready">Sort: closest to ready first</option></select></div>
     <div id="qBanner"></div>
     <details class="card" id="qNeedsCard"><summary>Materials my unlocked quests need</summary>
       <div id="qNeeds"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn" type="button" data-action="qGoalsAll">Set tracker goals for all of these</button></div>
     </details>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">
-      <button class="btn ghost" type="button" data-action="qCopy">Copy my quest to-do list</button>
+    <div class="qbar" style="margin:10px 0;">
+      <button class="btn ghost" type="button" data-action="qCopy">Copy to-do list</button>
       <button class="btn ghost" type="button" data-action="qLink">Copy progress link</button>
     </div>
     <textarea id="qShareBox" rows="6" aria-label="Quest list to copy" hidden readonly></textarea>
@@ -537,7 +567,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
   <!-- REFERENCE -->
   <section class="panel" id="panel-ref" role="tabpanel" aria-labelledby="tab-ref" hidden>
     <h2>Reference</h2>
-    <p class="muted">Enemies, trader stock, workshop upgrades, the skill tree and blueprints, all from the ARC Raiders Wiki. A dash means the wiki does not list that value.</p>
+    <p class="muted">Enemies, trader stock, workshop upgrades, the skill tree and blueprints. A dash means the wiki lists no value.</p>
     <div class="chips" id="refChips" role="group" aria-label="Section"></div>
     <div class="qtools"><input type="text" id="refQ" placeholder="Search this section" aria-label="Search this section" autocomplete="off">
       <div class="gearrow" id="bpTools" hidden><select id="bpStatus" aria-label="Blueprint filter"><option value="all">Show: all blueprints</option><option value="missing">Show: ones I do not have</option><option value="owned">Show: ones I have</option></select><span class="muted" id="bpProg" role="status"></span></div>
@@ -1560,13 +1590,12 @@ Integrated Binoculars|Common`;
       return '<div class="qcard' + (qDone[q.name] ? " qdone" : "") + (qLocked(q) ? " qlock" : "") + '"><div class="qh"><a href="' + esc(qWiki(q.name)) + '" target="_blank" rel="noopener">' + esc(q.name) + '</a>' +
         '<span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span></div>" +
         (qLocked(q) ? '<div class="qstat">Locked: finish ' + QPREV[q.name].filter(function (p) { return !qDone[p]; }).map(esc).join(" and ") + " first</div>" : "") +
-        '<label class="qchk"><input type="checkbox" data-qdone="' + esc(q.name) + '"' + (qDone[q.name] ? " checked" : "") + '> Mark as completed</label>' +
         (q.obj.length ? '<details class="qobj"' + (term ? " open" : "") + '><summary>Objectives (' + q.obj.length + ')</summary><ol>' + q.obj.map(function (o) { return "<li>" + esc(o) + "</li>"; }).join("") + "</ol></details>" : "") +
         '<div class="qrow"><span class="lbl">Hand in</span>' + (q.req.length ? q.req.map(function (r) { return qChip(r, mats); }).join("") : '<span class="muted">Nothing listed</span>') + "</div>" +
         (QNEXT[q.name] ? '<div class="qstat">Unlocks: ' + QNEXT[q.name].map(esc).join(", ") + "</div>" : "") +
         (st.txt ? '<div class="qstat' + (st.ok ? " ok" : "") + '">' + st.txt + "</div>" : "") +
         '<div class="qrow"><span class="lbl">Rewards</span>' + q.rew.map(function (r) { return qChip(r, null); }).join("") + "</div>" +
-        '<div class="acts">' + (st.t.length ? '<button class="btn ghost" type="button" data-action="qGoal" data-q="' + esc(q.name) + '">Set tracker goals</button>' : "") + '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(q.name)) + '">Report</a></div></div>';
+        '<div class="acts"><label class="qchk"><input type="checkbox" data-qdone="' + esc(q.name) + '"' + (qDone[q.name] ? " checked" : "") + '> Mark as completed</label>' + (st.t.length ? '<button class="btn ghost" type="button" data-action="qGoal" data-q="' + esc(q.name) + '">Set tracker goals</button>' : "") + '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(q.name)) + '">Report</a></div></div>';
     }).join("") : '<div class="empty-line">No quests match.</div>';
     var bn = document.getElementById("qBanner");
     bn.innerHTML = qPending ? '<div class="note"><div>Shared progress link: ' + qPending.n + ' completed quests. Loading it replaces your current quest progress.</div><div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" type="button" data-action="qLoadShared">Load it</button><button class="btn ghost" type="button" data-action="qIgnoreShared">Ignore</button></div></div>' : "";
@@ -2136,12 +2165,12 @@ Integrated Binoculars|Common`;
   }
 
   var HINTS = {
-    recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Not sure if an item is worth recycling? Set a goal in the Material tracker (for example 200 Metal Parts). Any item that gives a material you still need will show a green &ldquo;Helps your goals&rdquo; line, and you can tick &ldquo;Only items that help my goals&rdquo; to hide the rest.",
+    recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set a goal in the Tracker and items that help it show a green &ldquo;Helps your goals&rdquo; line.",
     tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Use the + and &minus; buttons to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
     gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
-    quests: "<b>Quests.</b> Search by quest, trader, location, objective, required item or reward, or tap a trader to filter. Required items you already track in the Material tracker show how many you have, and a highlighted line means your tracker covers them all. New players start with the first quest. Tick &ldquo;Mark as completed&rdquo; to unlock the next ones, use the Show filter to hide finished quests, or tick &ldquo;Also show locked quests&rdquo; to see everything. Tap a quest name to open its wiki page, where the quest chain is shown. &ldquo;Closest to ready&rdquo; sorting puts quests you can almost finish first, and the copy buttons export your to-do list or a link to your progress.",
-    ref: "<b>Reference.</b> Pick Enemies, Traders, Workshop, Skills or Blueprints and search inside it. Enemy drops you already track are highlighted, workshop costs show how much of each material you have and can be added to the Project helper, and you can tick the blueprints you own.",
-    tools: "<b>Tools.</b> Tick off the raid checklist, pick a project preset (Expedition stages, Trophy Display and past projects) or type your own, and watch your tracker fill the bars, or compare what two items recycle into. You can also star items and build a recycle cart in the lookup, and export a backup from the Material tracker tab.",
+    quests: "<b>Quests.</b> Search or tap a trader to filter. Tick &ldquo;Mark as completed&rdquo; to unlock the next quests, or turn on &ldquo;Show locked&rdquo; to see everything. Items you track show how many you have.",
+    ref: "<b>Reference.</b> Pick a section, then search inside it. Enemy drops you track are highlighted, workshop costs can be added to the Project helper, and you can tick the blueprints you own.",
+    tools: "<b>Tools.</b> A raid checklist, project presets that fill from your tracker, weapon compare, a loadout builder and item compare. Back up your data from the Tracker tab.",
     maps: "<b>Maps.</b> Pick a map to see its difficulty, unlock requirement, conditions and what changed there, plus the overview image. Copy the address bar to share a specific map.",
     frozen: "<b>Frozen Trail 2.0.</b> A quick summary of the latest update: the new map, enemies, weapons, gear and balance changes.",
     updates: "<b>Update history.</b> Every major update from launch to now, newest first, with the main highlights. Weekly store updates and small hotfixes are left out."

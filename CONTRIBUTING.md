@@ -21,3 +21,7 @@ Add or replace images in `maps/` using the file names in `maps/README.md`, under
 
 ## Licensing
 Data comes from the [ARC Raiders Wiki](https://arcraiders.wiki) (CC BY-SA 4.0), so contributed data stays under the same licence. ARC Raiders and its artwork belong to Embark Studios AB.
+
+## Translations
+
+Translations live in `index.html` in the `I18N` object (search for `I18N-START`). Each language has an `x` map of exact English text to its translation and an `r` list of patterns for text with numbers. Fix a wrong line there and open a pull request, or open an issue with the wording you suggest.

@@ -29,6 +29,8 @@ A free, fan-made reference site for ARC Raiders.
 - **Frozen Trail 2.0:** a summary of the latest update.
 - **Update history:** highlights for every major update from launch to now.
 - **Custom items:** add an item that is missing or fix a number locally in your browser.
+- **Languages:** Japanese, French and Spanish (picker in the header; `?lang=fr` also works). Item, quest and enemy names stay in English. In those languages a "Report a translation error" button opens a pre-filled GitHub issue; highlight the wrong text first and it is included.
+- **Phone:** bottom tab bar, "Install app" button, reset countdowns, where-to-farm finder, stash planner, and Keep or Sell hints on each item.
 
 ## Report a wrong number
 

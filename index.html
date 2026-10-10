@@ -257,6 +257,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .star { padding: 5px 9px; }
 .changed { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
 .cart { border: 1px solid var(--accent); border-radius: 8px; padding: 12px 14px; margin: 12px 0; background: var(--surface); display: grid; gap: 8px; }
+@media (max-width: 600px) { .cartbtn { display: none !important; } }
 .cart[hidden] { display: none !important; }
 .cart .lst { display: flex; flex-wrap: wrap; gap: 6px; }
 .cart .acts { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1381,7 +1382,7 @@ Integrated Binoculars|Common`;
     return '<div class="row"><div class="head"><span class="name">' + esc(it.name) + "</span>" + badges + "</div>" +
       '<div class="acts">' +
       '<button class="btn ghost star" type="button" data-action="fav" data-item="' + esc(it.name) + '" aria-pressed="' + (favs.indexOf(it.name) !== -1) + '" aria-label="Star ' + esc(it.name) + '" title="Star this item">' + (favs.indexOf(it.name) !== -1 ? "\u2605" : "\u2606") + "</button>" +
-      (has ? '<button class="btn ghost" type="button" data-action="cartAdd" data-item="' + esc(it.name) + '">+ Cart</button>' : "") +
+      (has ? '<button class="btn ghost cartbtn" type="button" data-action="cartAdd" data-item="' + esc(it.name) + '">+ Cart</button>' : "") +
       (has ? '<button class="btn" type="button" data-action="addItem" data-item="' + esc(it.name) + '">Add to tracker</button>' : "") +
       '<button class="btn ghost tagbtn' + (itemTags[it.name] ? " on" : "") + '" type="button" data-action="tag" data-item="' + esc(it.name) + '" title="Cycle your tag: Sell, Keep, Craft">' + (itemTags[it.name] ? "Tag: " + itemTags[it.name].charAt(0).toUpperCase() + itemTags[it.name].slice(1) : "Tag") + "</button>" +
       '<button class="btn ghost tagbtn' + (itemNotes[it.name] ? " on" : "") + '" type="button" data-action="noteEdit" data-item="' + esc(it.name) + '">Note</button>' +

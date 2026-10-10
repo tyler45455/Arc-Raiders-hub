@@ -2039,7 +2039,7 @@ Integrated Binoculars|Common`;
         (QNEXT[q.name] ? '<div class="qstat">Unlocks: ' + QNEXT[q.name].map(esc).join(", ") + "</div>" : "") +
         (st.txt ? '<div class="qstat' + (st.ok ? " ok" : "") + '">' + st.txt + "</div>" : "") +
         '<div class="qrow"><span class="lbl">Rewards</span>' + q.rew.map(function (r) { return qChip(r, null); }).join("") + "</div>" +
-        '<div class="acts"><label class="qchk"><input type="checkbox" data-qdone="' + esc(q.name) + '"' + (qDone[q.name] ? " checked" : "") + '> Mark as completed</label>' + (function () { var upn = qUpSet(q.name).length; return upn > 1 ? '<button class="btn ghost" type="button" data-action="qUpTo" data-q="' + esc(q.name) + '">' + (qUpArm === q.name ? "Press again to mark " + upn + " quests as done" : "I've finished up to here") + "</button>" : ""; })() + (st.t.length ? '<button class="btn ghost" type="button" data-action="qGoal" data-q="' + esc(q.name) + '">Set tracker goals</button>' : "") + '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(q.name)) + '">Report</a></div></div>';
+        '<div class="acts"><label class="qchk"><input type="checkbox" data-qdone="' + esc(q.name) + '"' + (qDone[q.name] ? " checked" : "") + '> Mark as completed</label>' + (function () { var upn = qUpSet(q.name).length; return '<button class="btn ghost" type="button" data-action="qUpTo" data-q="' + esc(q.name) + '"' + (upn === 0 ? " disabled" : "") + ">" + (qUpArm === q.name && upn > 1 ? "Press again to mark " + upn + " quests as done" : "I've finished up to here") + "</button>"; })() + (st.t.length ? '<button class="btn ghost" type="button" data-action="qGoal" data-q="' + esc(q.name) + '">Set tracker goals</button>' : "") + '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(q.name)) + '">Report</a></div></div>';
     }).join("") : '<div class="empty-line">No quests match.</div>';
     var bn = document.getElementById("qBanner");
     bn.innerHTML = qPending ? '<div class="note"><div>Shared progress link: ' + qPending.n + ' completed quests. Loading it replaces your current quest progress.</div><div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" type="button" data-action="qLoadShared">Load it</button><button class="btn ghost" type="button" data-action="qIgnoreShared">Ignore</button></div></div>' : "";
@@ -3557,7 +3557,8 @@ Integrated Binoculars|Common`;
       lbOpen(t.getAttribute("data-src"), t.getAttribute("data-name"));
     } else if (a === "qUpTo") {
       var uq = t.getAttribute("data-q"), ul = qUpSet(uq);
-      if (qUpArm !== uq) { qUpArm = uq; clearTimeout(qUpTimer); qUpTimer = setTimeout(function () { qUpArm = ""; renderQuests(); }, 5000); renderQuests(); }
+      if (!ul.length) { return; }
+      if (qUpArm !== uq && ul.length > 1) { qUpArm = uq; clearTimeout(qUpTimer); qUpTimer = setTimeout(function () { qUpArm = ""; renderQuests(); }, 5000); renderQuests(); }
       else {
         qUpArm = ""; clearTimeout(qUpTimer); pushUndo("Marked " + ul.length + " quests done");
         ul.forEach(function (k) { qDone[k] = 1; }); save("arcHubQuestsDone", qDone); renderQuests(); renderTracker();

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/map/dam-battlegrounds/</loc></url>
+  <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/map/buried-city/</loc></url>
+  <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/map/spaceport/</loc></url>
+  <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/map/the-blue-gate/</loc></url>
+  <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/map/riven-tides/</loc></url>
+  <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/map/stella-montis/</loc></url>
+  <url><loc>https://tyler45455.github.io/Arc-Raiders-hub/map/pendola-pass/</loc></url>
 </urlset>

@@ -62,3 +62,7 @@ The site counts anonymous page views with [GoatCounter](https://www.goatcounter.
 ## Credits and disclaimer
 
 Data: [ARC Raiders Wiki](https://arcraiders.wiki), CC BY-SA 4.0. This is an unofficial fan project and is not affiliated with or endorsed by Embark Studios. ARC Raiders and its artwork are the property of Embark Studios AB.
+
+## Maps
+
+Each map has an overview image (`maps/<name>.jpg`) and a detailed version (`maps/<name>-detail.jpg`) that opens when someone enlarges the map. The enlarged view supports zoom and pan, a room finder, and personal pins saved in the browser. Room names and positions live in the `ROOMS` block in `index.html`. Each map also has a static page under `map/<name>/` (for search engines and link previews) generated from that data.

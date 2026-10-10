@@ -2219,11 +2219,42 @@ Integrated Binoculars|Common`;
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
   var DATA_CHANGES = [
-    ["Oct 10, 2026", "Added detailed, zoomable maps for 7 maps with a key, a room finder (115 named rooms) and personal pins, from in-game screenshots. Difficulty and unlock data were not re-checked."],
-    ["Oct 10, 2026", "Added Trials (Season 6) to the Reference tab: how Trials work, the Week 1 challenges and removed challenges. Point values and season rewards are not on the wiki yet."],
-    ["Oct 10, 2026", "Added Research Station levels 1 to 4 from the wiki Outpost page (a stub: crafting details are not published yet)."],
-    ["Oct 10, 2026", "Added a Sheltered Retreat project preset from a community guide, because the wiki page would not load."],
-    ["Oct 10, 2026", "Added 107 quests with objectives and the quest chain, plus enemies, traders, workshop, skills and blueprints."]
+    ["Oct 10, 2026", "Site changes now have their own tab (this one)."],
+    ["Oct 10, 2026", "Updated the maps data freshness and styled the room finder."],
+    ["Oct 10, 2026", "Added a map viewer upgrade: zoom and pan on the enlarged map, a room finder across all maps, personal pins saved on your device, and links that preview the map when shared. Also added a squad checklist link, a Link button on items, and search pages for each map."],
+    ["Oct 10, 2026", "Improved the link preview image and search tags (a sitemap and robots file for search engines)."],
+    ["Oct 10, 2026", "Added a tip to the Maps how-to explaining that an enlarged map has much more detail."],
+    ["Oct 10, 2026", "Added detailed, zoomable maps for 7 maps with a key and 115 named rooms, from in-game screenshots. Difficulty and unlock data were not re-checked."],
+    ["Oct 10, 2026", "Added Japanese, French and Spanish translations, with a button to report translation errors on GitHub. Also added a phone tab bar, reset countdowns, a farm finder, a stash planner, sell/keep hints, a recycle sort and rarity filter, an install button and per-tab Checked dates."],
+    ["Oct 10, 2026", "Phone fixes: item action buttons now sit in one row below the name, and the + Cart button is hidden so rows no longer overlap."],
+    ["Oct 10, 2026", "Added Undo, a first-visit tour, a trials tracker, item notes, a quest map filter, raid prep, a history chart, shared shopping list links, a sound cue and accessibility fixes."],
+    ["Oct 10, 2026", "Tracker cards and the shopping list now take typed counts in a box instead of plus and minus buttons, and keep rows in a stable order."],
+    ["Oct 10, 2026", "Moved the shopping list and workshop planner into the Tracker tab. Quest and workshop needs are tracked automatically, with an optional auto-subtract when you complete something."],
+    ["Oct 10, 2026", "Added Trials (Season 6) to the Reference tab: how Trials work, the Week 1 challenges and removed challenges. Point values and season rewards are not on the wiki yet. Also fixed selected chips going blank on hover."],
+    ["Oct 10, 2026", "Added a workshop planner, shopping list, daily and weekly tasks, item tags, map notes, saved loadouts, a high-contrast mode, a print view, quest share codes and Research Station levels 1 to 4 (a stub: crafting details are not published yet)."],
+    ["Oct 10, 2026", "Added a quiet Ko-fi link in the footer."],
+    ["Oct 10, 2026", "Added global search, a keep/recycle list, share-as-image, loadout links, an offline indicator, a new-update dot, a feedback button and a Sheltered Retreat project preset from a community guide (the wiki page would not load)."],
+    ["Oct 10, 2026", "Redid the social preview image and app icons in the ARC Raiders palette."],
+    ["Oct 10, 2026", "Recolored the whole site to the ARC Raiders palette: black and cream with red, yellow, green and cyan stripes."],
+    ["Oct 10, 2026", "Visual cleanup: shorter tab names, a tidier Quests toolbar, boxed Tools sections and shorter hints and intros."],
+    ["Oct 10, 2026", "Added quest planning (goals, sorting, a to-do link and a recycle warning), weapon compare, a loadout builder, a transfer code with snapshots, and data freshness notes."],
+    ["Oct 10, 2026", "Added a Reference tab with enemies, traders, workshop upgrades, skills and a blueprint tracker."],
+    ["Oct 10, 2026", "Quests are now hidden until the previous quest in the wiki quest chain is completed, with an optional show-locked toggle."],
+    ["Oct 10, 2026", "Quests can be marked completed, with a completion filter and a progress count. Completion is included in backups."],
+    ["Oct 10, 2026", "Added objectives for all 107 quests, and made them searchable."],
+    ["Oct 10, 2026", "Added the Quests tab with 107 quests and wiki project presets for the Project helper."],
+    ["Oct 10, 2026", "Gear now shows rarity, weight and sell prices, plus grenade damage and sorting for grenades and augments. Removed the Aphelion stars."],
+    ["Oct 9, 2026", "Added the Weapons & gear tab with stats from the wiki."],
+    ["Oct 9, 2026", "Added the Tools tab, favorites, a cart, fuzzy search, backup and restore, offline support and a contributing guide."],
+    ["Oct 9, 2026", "Tap or click a map to open an enlarged, zoomable view."],
+    ["Oct 9, 2026", "Added a How to use button with a hint for each tab."],
+    ["Oct 9, 2026", "Added goals, shareable links, a theme toggle, a first-time hint, a keyboard shortcut, an app manifest, a social preview image and an issue template."],
+    ["Oct 9, 2026", "Added GoatCounter, a simple visitor counter."],
+    ["Oct 9, 2026", "Added map images for all the maps, shown in full without cropping."],
+    ["Oct 9, 2026", "Added the Maps tab with a card for each map."],
+    ["Oct 9, 2026", "Expanded the update history with highlights for each update."],
+    ["Oct 9, 2026", "Wrong-number reports now go to GitHub Issues."],
+    ["Oct 9, 2026", "Rebuilt the site: all 238 items from the wiki material pages, a recycle/salvage toggle, a materials tracker and a Frozen Trail 2.0 summary."]
   ];
   var itemNotes = load("arcHubNotes", {});
   var trials = load("arcHubTrials", {});

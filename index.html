@@ -877,13 +877,6 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <div id="loSaved"></div>
     </div>
 
-    <div class="tool" id="ffTool">
-      <h3>Where do I farm this?</h3>
-      <p class="muted">Pick a material to see how many you still need, what needs it, and which items give the most.</p>
-      <div class="rcadd" style="grid-template-columns:1fr;"><select id="ffMat" aria-label="Material to farm"></select></div>
-      <div id="ffOut"></div>
-    </div>
-
     <div class="tool" id="stashTool">
       <h3>Stash space planner</h3>
       <p class="muted">An estimate only: the wiki does not list stack sizes, so this counts slots you type in. Your stash size is in the game&rsquo;s stash screen.</p>
@@ -2301,6 +2294,7 @@ Integrated Binoculars|Common`;
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
   var DATA_CHANGES = [
+    ["Oct 10, 2026", "Removed the Where do I farm this? tool from Tools. Where to farm this is still on every shopping list row."],
     ["Oct 10, 2026", "New logo in the header, a Display menu (raid mode, text size, reduced motion, theme and contrast), +1 / +5 / +10 buttons on the shopping list, +1 to tracker in search, map layers by room type, route lines through your pins and shareable map views."],
     ["Oct 10, 2026", "New tools: Pre-raid planner, Weekly goals and Squad board. Added keyboard shortcuts (press ?), a What is new pop-up, an offline badge, a Credits section and a page for every item that search engines can find."],
     ["Oct 10, 2026", "The quick tour now has 11 steps covering the shopping list, Where to farm this, reset, tool tabs, map search and the enlarged map, Site changes and languages."],

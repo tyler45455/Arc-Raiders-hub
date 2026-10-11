@@ -1,0 +1,811 @@
+/* Items: recycling tables, rarity, where to farm.
+   Loaded by index.html before the main script and by tools/build-pages.js. */
+var ARC = window.ARC_DATA = window.ARC_DATA || {};
+
+ARC.TABLES = {
+"Metal Parts": `
+Acoustic Guitar|4|-
+ARC Alloy|2|1
+ARC Performance Steel|12|7
+Barricade Kit|4|3
+Battery|2|1
+Bicycle Pump|10|-
+Blaze Grenade|4|-
+Broken Flashlight|6|7
+Cable Stripper|2|1
+Candle Holder|8|4
+Compensator I|5|3
+Damaged ARC Powercell|-|1
+Damaged Fireball Burner|-|1
+Damaged Heat Sink|6|-
+Damaged Tick Pod|-|1
+Damaged Wasp Driver|-|1
+Dog Collar|1|-
+Door Blocker|2|1
+Extended Barrel I|5|3
+Ferro I|2|2
+Ferro II|4|2
+Ferro III|6|-
+Frying Pan|8|4
+Garlic Press|12|7
+Hairpin I|2|2
+Hairpin II|4|4
+Hairpin III|6|-
+Hand Drill|-|2
+Ice Cream Scooper|7|3
+Industrial Charger|5|-
+Industrial Magnet|4|-
+Kettle I|3|3
+Kettle II|6|6
+Kettle III|12|-
+Magnet|2|1
+Mechanical Components|3|3
+Metal Brackets|8|4
+Muzzle Brake I|5|3
+Number Plate|3|2
+Rattler I|8|4
+Rattler II|12|8
+Rattler III|-|12
+Rattler IV|-|14
+Rocket Thruster|6|-
+Ruined Baton|6|4
+Ruined Handcuffs|8|4
+Rusted Bolts|8|4
+Rusted Gear|4|12
+Rusted Tools|8|7
+Rusty ARC Steel|8|3
+Sensors|1|-
+Shotgun Choke I|5|3
+Shrapnel Grenade|1|-
+Simple Gun Parts|2|1
+Steel Spring|2|1
+Stitcher I|3|3
+Stitcher II|6|6
+Stitcher III|12|-
+Unusable Weapon|4|-
+Water Pump|4|-
+Zipline|-|4`,
+"Plastic Parts": `
+Adrenaline Shot|1|-
+Advanced Camera|-|5
+Alarm Clock|6|-
+Angled Grip I|6|3
+ARC Synthetic Resin|14|9
+Basic Camera|5|-
+Binoculars|4|4
+Calculator|2|-
+Camera Lens|8|4
+Canister|3|1
+Combat Mk. 1|3|3
+Cooling Fan|14|-
+Crash Mat|3|-
+Crumpled Plastic Bottle|4|1
+Defibrillator|1|-
+Dried-Out ARC Resin|9|4
+Electrical Components|3|3
+Extended Light Mag I|6|3
+Extended Medium Mag I|6|3
+Extended Shotgun Mag I|6|3
+Firecracker|3|1
+Free Loadout Augment|6|-
+Fried Motherboard|5|-
+Jolt Mine|2|-
+Li'l Smoke Grenade|1|-
+Light Impact Grenade|1|-
+Light Shield|4|-
+Looting Mk. 1|3|3
+Mini Pump|2|2
+Processor|1|2
+Recorder|10|4
+Remote Control|7|-
+Ruined Augment|2|3
+Ruined Riot Shield|10|10
+Shaker|10|4
+Speaker Component|2|2
+Surge Shield Recharger|-|5
+Synthesized Fuel|1|-
+Syringe|3|2
+Tactical Mk. 1|3|3
+Tagging Grenade|1|-
+Toaster|5|-
+Vertical Grip I|6|3
+White Flag|1|-`,
+"Rubber Parts": `
+ARC Flex Rubber|16|9
+Binoculars|2|-
+Calculator|-|2
+Combat Mk. 1|3|-
+Cracked Bioscanner|3|-
+Deflated Football|9|9
+Degraded ARC Rubber|11|5
+Diving Goggles|12|5
+Electrical Components|3|-
+Expired Respirator|8|5
+Ferro I|1|-
+Ferro II|3|-
+Free Loadout Augment|6|-
+Gas Grenade|1|-
+Gas Mine|1|-
+Hairpin I|1|-
+Hairpin II|3|-
+Headphones|7|-
+Heavy Fuze Grenade|2|-
+Kettle I|2|-
+Kettle II|6|-
+Looting Mk. 1|3|-
+Mechanical Components|2|-
+Remote Raider Flare|1|-
+Rubber Pad|18|12
+Ruined Accordion|18|13
+Ruined Augment|2|-
+Ruined Baton|3|-
+Ruined Riot Shield|6|-
+Shield Recharger|4|3
+Speaker Component|3|-
+Stable Stock I|6|3
+Steel Cable|-|1
+Stitcher I|2|-
+Stitcher II|6|-
+Tactical Mk. 1|3|-
+Thermostat|7|-
+Voltage Converter|1|2
+Water Filter|2|-
+Wires|2|1`,
+"Chemicals": `
+Adrenaline Shot|1|1
+Antiseptic|10|5
+ARC Coolant|16|9
+Blue Light Stick|1|1
+Coolant|5|-
+Cooling Coil|6|-
+Crude Explosives|3|2
+Defibrillator|-|2
+Epoxy Bucket|8|4
+Gas Grenade|1|1
+Gas Mine|1|2
+Green Light Stick|1|1
+Household Cleaner|11|5
+Impure ARC Coolant|12|5
+Industrial Battery|7|-
+Laboratory Reagents|16|-
+Li'l Smoke Grenade|1|2
+Light Impact Grenade|1|1
+Oil|3|1
+Pulse Mine|6|3
+Red Light Stick|1|1
+Remote Raider Flare|1|1
+Seeker Grenade|-|3
+Smoke Grenade|2|3
+Snap Blast Grenade|1|2
+Syringe|2|-
+Tick Pod|2|-
+Trigger 'Nade|1|-
+Vita Shot|4|-
+Yellow Light Stick|1|1`,
+"Fabric": `
+ARC Thermo Lining|16|9
+Bandage|2|1
+Crash Mat|6|4
+Deflated Football|9|-
+Dog Collar|8|5
+Duct Tape|3|1
+Durable Cloth|6|2
+Expired Respirator|4|-
+Herbal Bandage|5|8
+Polluted Air Filter|6|-
+Ripped Safety Vest|-|8
+Rope|5|2
+Ruined Parachute|10|5
+Ruined Tactical Vest|5|5
+Sterilized Bandage|1|-
+Tattered ARC Lining|12|5
+Tattered Clothes|11|5
+Torn Blanket|12|5
+White Flag|5|3`,
+"Wires": `
+Acoustic Guitar|6|3
+Advanced Electrical Components|1|-
+Broken Handheld Radio|2|-
+Broken Taser|2|-
+Compensator II|1|-
+Compensator III|2|-
+Cooling Fan|4|4
+Damaged Heat Sink|2|3
+Extended Barrel II|1|-
+Extended Barrel III|1|-
+Fried Motherboard|-|5
+Humidifier|2|-
+Muzzle Brake II|1|-
+Muzzle Brake III|2|-
+Portable TV|6|4
+Power Bank|2|-
+Power Cable|4|3
+Processor|1|-
+Projector|2|-
+Sensors|1|1
+Shotgun Choke II|1|-
+Shotgun Choke III|2|-
+Shotgun Silencer|1|-
+Silencer I|1|-
+Silencer II|2|-
+Silencer III|3|-
+Toaster|3|3
+Voltage Converter|1|-`,
+"ARC Alloy": `
+ARC Circuitry|2|1
+ARC Motion Core|2|1
+Bastion Cell|3|-
+Bombardier Cell|3|-
+Burned ARC Circuitry|2|1
+Comet Igniter|2|-
+Damaged ARC Motion Core|2|1
+Damaged ARC Powercell|1|-
+Damaged Fireball Burner|1|-
+Damaged Hornet Driver|2|1
+Damaged Leaper Pulse Unit|3|2
+Damaged Rocketeer Driver|3|2
+Damaged Tick Pod|1|-
+Damaged Wasp Driver|1|-
+Fireball Burner|1|1
+Firefly Burner|2|-
+Glitched ARC Circuitry|6|-
+Glitched ARC Light Ring|3|-
+Glitched ARC Phased Array|3|-
+Glitched ARC Power Converter|3|-
+Glitched ARC Transmitter|1|-
+Heavy Shield|-|4
+Hornet Driver|1|-
+Leaper Pulse Unit|3|-
+Light Shield|-|1
+Medium Shield|-|2
+Pop Trigger|1|-
+Rocketeer Driver|3|-
+Sentinel Firing Core|2|-
+Shredder Gyro|2|-
+Snitch Scanner|1|-
+Spotter Relay|1|-
+Surveyor Vault|1|-
+Tick Pod|2|1
+Wasp Driver|1|2`,
+"Oil": `
+Blaze Grenade|2|1
+Coolant|2|2
+Explosive Mine|2|2
+Heavy Fuze Grenade|1|-
+Motor|2|3
+Polluted Air Filter|2|2
+Synthesized Fuel|1|1
+Turbo Pump|3|-
+Water Pump|2|2`,
+"Canister": `
+Bicycle Pump|4|3
+Flame Spray|1|-
+Humidifier|2|2
+Mini Centrifuge|2|-
+Smoke Grenade|1|-
+Vita Spray|1|-
+Water Filter|3|2`,
+"Mechanical Components": `
+Advanced Mechanical Components|1|1
+Angled Grip II|1|1
+Angled Grip III|-|2
+Arpeggio I|2|-
+Arpeggio II|3|-
+Arpeggio III|4|-
+Arpeggio IV|5|-
+Bantam I|1|-
+Bantam III|2|-
+Bantam IV|4|-
+Burletta I|1|-
+Burletta II|2|-
+Burletta III|3|-
+Burletta IV|4|-
+Compensator II|1|1
+Compensator III|-|1
+Extended Barrel II|1|1
+Extended Barrel III|-|2
+Extended Light Mag II|1|1
+Extended Light Mag III|-|2
+Extended Medium Mag II|1|1
+Extended Medium Mag III|-|2
+Extended Shotgun Mag II|1|1
+Extended Shotgun Mag III|-|2
+Ferro IV|1|-
+Flow Controller|-|2
+Hairpin IV|1|-
+Hand Drill|1|-
+Horizontal Grip|-|2
+Il Toro I|2|-
+Il Toro II|3|-
+Il Toro III|4|-
+Il Toro IV|5|-
+Kettle IV|2|-
+Kinetic Converter|-|2
+Laser Level|2|1
+Leaper Pulse Unit|-|2
+Lightweight Stock|-|2
+Microscope|-|2
+Mini Centrifuge|-|2
+Mod Components|1|1
+Motor|2|-
+Muzzle Brake II|1|1
+Muzzle Brake III|-|2
+Padded Stock|-|2
+Radial Press|-|1
+Rattler III|3|-
+Rattler IV|4|-
+Rusted Gear|2|-
+Sentinel Firing Core|2|2
+Shotgun Choke II|1|1
+Shotgun Choke III|-|2
+Shotgun Silencer|-|2
+Shredder Gyro|2|2
+Silencer I|1|1
+Silencer II|-|2
+Stable Stock II|1|1
+Stable Stock III|-|2
+Stiletto I|1|-
+Stiletto II|2|-
+Stiletto III|3|-
+Stiletto IV|4|-
+Stitcher IV|2|-
+Surveyor Vault|1|1
+Turbo Pump|1|-
+Vertical Grip II|1|1
+Vertical Grip III|2|2`,
+"Advanced Mechanical Components": `
+Anvil II|2|-
+Anvil III|2|-
+Assessor Matrix|1|-
+Bastion Cell|1|1
+Bettina I|1|1
+Bettina II|2|2
+Bettina III|2|3
+Bettina IV|3|4
+Bobcat I|2|-
+Bobcat II|3|-
+Bobcat III|4|-
+Bobcat IV|5|-
+Bombardier Cell|1|1
+Canto I|1|-
+Flow Controller|1|-
+Hullcracker I|2|-
+Hullcracker II|2|-
+Hullcracker III|3|-
+Hullcracker IV|4|-
+Jupiter|-|3
+Leaper Pulse Unit|1|-
+Magnetic Accelerator|1|1
+Magnetron|-|1
+Microscope|1|-
+Mini Centrifuge|1|-
+Osprey I|1|-
+Osprey II|2|-
+Osprey III|2|-
+Osprey IV|3|-
+Radial Press|1|-
+Rascal I|1|-
+Rascal II|2|-
+Rascal III|2|-
+Rascal IV|3|-
+Renegade I|1|-
+Renegade II|2|-
+Renegade III|2|-
+Renegade IV|3|-
+Tempest I|2|-
+Tempest II|3|-
+Tempest III|4|-
+Tempest IV|5|-
+Torrente I|1|-
+Torrente II|2|-
+Torrente III|2|-
+Torrente IV|3|-
+Venator I|1|-
+Venator II|2|-
+Venator III|2|-
+Venator IV|3|-
+Vulcano I|2|-
+Vulcano II|2|-
+Vulcano III|3|-
+Vulcano IV|4|-`,
+"Electrical Components": `
+Advanced Electrical Components|1|1
+Combat Mk. 2|1|1
+Combat Mk. 3 (Aggressive)|-|2
+Combat Mk. 3 (Flanking)|-|2
+Frequency Modulation Box|-|2
+Fried Motherboard|2|-
+Glitched ARC Transmitter|1|-
+Hornet Driver|1|1
+Looting Mk. 2|1|1
+Looting Mk. 3 (Cautious)|-|2
+Looting Mk. 3 (Safekeeper)|-|2
+Looting Mk. 3 (Survivor)|-|2
+Rotary Encoder|2|-
+Sample Cleaner|2|-
+Showstopper|1|1
+Signal Amplifier|2|-
+Snitch Scanner|1|1
+Spectrometer|-|2
+Spotter Relay|1|1
+Surge Coil|1|1
+Surge Shield Recharger|1|-
+Tactical Mk. 2|1|1
+Tactical Mk. 3 (Defensive)|-|2
+Tactical Mk. 3 (Healing)|-|2
+Tactical Mk. 3 (Revival)|-|2
+Telemetry Transceiver|-|2
+Wasp Driver|1|-`,
+"Advanced Electrical Components": `
+Combat Mk. 3 (Aggressive)|1|-
+Combat Mk. 3 (Flanking)|1|-
+Frequency Modulation Box|1|-
+Glitched ARC Light Ring|1|-
+Looting Mk. 3 (Cautious)|1|-
+Looting Mk. 3 (Safekeeper)|1|-
+Looting Mk. 3 (Survivor)|1|-
+Photoelectric Cloak|1|1
+Power Rod|1|1
+Powered Descender|1|1
+Rocketeer Driver|2|-
+Snap Hook|-|2
+Spectrometer|1|-
+Tactical Mk. 3 (Defensive)|1|-
+Tactical Mk. 3 (Healing)|1|-
+Tactical Mk. 3 (Revival)|1|-
+Tactical Mk. 3 (Smoke)|1|2
+Telemetry Transceiver|1|-
+Vaporizer Regulator|1|-`,
+"Mod Components": `
+Angled Grip III|1|-
+Compensator III|1|-
+Extended Barrel III|1|-
+Extended Light Mag III|1|-
+Extended Medium Mag III|1|-
+Extended Shotgun Mag III|1|-
+Horizontal Grip|1|-
+Kinetic Converter|1|-
+Lightweight Stock|1|-
+Muzzle Brake III|1|-
+Padded Stock|1|-
+Shotgun Choke III|1|-
+Shotgun Silencer|1|-
+Silencer II|1|-
+Silencer III|1|2
+Stable Stock III|1|-`,
+"Durable Cloth": `
+Ripped Safety Vest|1|-
+Spring Cushion|2|-
+Sterilized Bandage|-|1`,
+"Antiseptic": `
+Rusted Shut Medical Kit|1|-
+Sterilized Bandage|1|-
+Vita Spray|1|1`,
+"Crude Explosives": `
+Comet Igniter|2|2
+Explosive Compound|2|1
+Fireball Burner|1|-
+Firefly Burner|2|2
+Heavy Fuze Grenade|-|1
+Laboratory Reagents|3|3
+Pop Trigger|1|1
+Seeker Grenade|1|-
+Shrapnel Grenade|1|1
+Trailblazer|2|2`,
+"Explosive Compound": `
+Deadline|1|1
+Fireworks Box|1|1
+Fossilized Lightning|3|2
+Wolfpack|1|2`,
+"Magnetic Accelerator": `
+Aphelion|2|1
+Dolabra|2|1
+Equalizer|2|1
+Jupiter|2|-
+Magnetron|1|-
+Matriarch Reactor|1|1
+Queen Reactor|1|-`,
+"Power Rod": `
+Matriarch Reactor|1|-
+Queen Reactor|1|1
+Snap Hook|1|-`,
+"Processor": `
+Alarm Clock|1|1
+Broken Guidance System|4|2
+Combat Mk. 3 (Aggressive)|1|-
+Combat Mk. 3 (Flanking)|1|-
+Exodus Modules|2|2
+Looting Mk. 3 (Cautious)|1|-
+Looting Mk. 3 (Safekeeper)|1|-
+Looting Mk. 3 (Survivor)|1|-
+Projector|1|1
+Rotary Encoder|2|2
+Spectrum Analyzer|-|2
+Tactical Mk. 3 (Defensive)|1|-
+Tactical Mk. 3 (Healing)|1|-
+Tactical Mk. 3 (Revival)|1|-
+Tactical Mk. 3 (Smoke)|1|-
+Telemetry Transceiver|1|-
+Trigger 'Nade|1|1`,
+"Sensors": `
+Broken Handheld Radio|3|2
+Explosive Mine|1|-
+Flow Controller|1|-
+Glitched ARC Phased Array|2|-
+Mini Pump|1|-
+Radio|1|-
+Radio Relay|2|2
+Remote Control|1|1
+Spectrometer|1|-
+Spectrum Analyzer|1|-
+Surge Coil|1|-
+Tagging Grenade|1|1
+Thermostat|1|1`,
+"Magnet": `
+Combat Mk. 2|1|-
+Exodus Modules|2|-
+Industrial Magnet|2|2
+Looting Mk. 2|1|-
+Microscope|3|-
+Ripped Safety Vest|1|-
+Ruined Tactical Vest|1|-
+Snap Blast Grenade|1|-
+Tactical Mk. 2|1|-`,
+"Steel Spring": `
+Advanced Mechanical Components|1|-
+Cooling Coil|2|2
+Extended Light Mag II|1|-
+Extended Light Mag III|2|-
+Extended Medium Mag II|1|-
+Extended Medium Mag III|2|-
+Extended Shotgun Mag II|1|-
+Extended Shotgun Mag III|2|-
+Magnetron|1|-
+Mod Components|1|-
+Ruined Accordion|3|-
+Rusted Tools|1|-
+Spring Cushion|2|2
+Turbo Pump|-|3`,
+"Battery": `
+Broken Flashlight|2|-
+Broken Taser|2|2
+Cracked Bioscanner|3|2
+Geiger Counter|3|3
+Industrial Battery|2|2
+Jolt Mine|1|1
+Portable TV|2|-
+Power Bank|2|2`,
+"Duct Tape": `
+Angled Grip II|1|-
+Angled Grip III|2|-
+Horizontal Grip|2|-
+Kinetic Converter|2|-
+Lightweight Stock|1|-
+Padded Stock|1|-
+Stable Stock II|1|-
+Stable Stock III|2|-
+Vertical Grip II|1|-
+Vertical Grip III|2|-`,
+"Rope": `
+Grappling Hook|1|1
+Snap Hook|3|-
+Yank Grenade|1|-`,
+"Speaker Component": `
+Differential Microphone|1|-
+Frequency Modulation Box|1|-
+Headphones|1|1
+Lure Grenade|1|1
+Noisemaker|1|1
+Photoelectric Cloak|1|-
+Radio|1|1
+Radio Relay|2|-`,
+"Voltage Converter": `
+Heavy Shield|1|-
+Industrial Charger|1|1
+Ion Sputter|4|-
+Showstopper|1|-
+Signal Amplifier|2|2`,
+"Exodus Modules": `
+Geiger Counter|1|-
+Glitched ARC Circuitry|1|-
+Ion Sputter|1|1
+Spectrum Analyzer|1|-`,
+"Synthesized Fuel": `
+Rocket Thruster|2|1`,
+"Syringe": `
+Rusted Shut Medical Kit|2|2
+Vita Shot|1|1`,
+"ARC Circuitry": `
+Deadline|1|-
+Frigate Inductor|2|-
+Heavy Shield|2|-
+Medium Shield|1|-
+Power Rod|1|-
+Powered Descender|1|-
+Rocketeer Driver|-|2
+Turbine Compressor|1|1
+Vaporizer Regulator|2|2`,
+"ARC Motion Core": `
+Magnetic Accelerator|1|-
+Turbine Compressor|1|-
+Wolfpack|1|-`,
+"ARC Powercell": `
+Advanced ARC Powercell|2|1`,
+"Advanced ARC Powercell": `
+Assessor Matrix|3|2`,
+"Simple Gun Parts": `
+Arpeggio I|2|2
+Arpeggio II|3|3
+Arpeggio III|4|4
+Arpeggio IV|5|5
+Burletta I|2|2
+Burletta II|2|2
+Burletta III|3|3
+Burletta IV|4|4
+Complex Gun Parts|3|2
+Ferro III|1|1
+Ferro IV|2|2
+Hairpin III|1|1
+Hairpin IV|2|2
+Heavy Gun Parts|2|1
+Il Toro I|2|2
+Il Toro II|3|3
+Il Toro III|4|4
+Il Toro IV|5|5
+Kettle III|1|1
+Kettle IV|2|2
+Light Gun Parts|2|1
+Medium Gun Parts|2|1
+Rattler III|1|-
+Rattler IV|2|-
+Skulker Targeter|1|-
+Stiletto I|2|-
+Stiletto II|2|-
+Stiletto III|3|-
+Stiletto IV|4|-
+Stitcher III|1|1
+Stitcher IV|2|2
+Unusable Weapon|5|3`,
+"Light Gun Parts": `
+Bobcat I|2|2
+Bobcat II|3|3
+Bobcat III|4|4
+Bobcat IV|4|5`,
+"Medium Gun Parts": `
+Canto I|2|2
+Osprey I|2|2
+Osprey II|2|2
+Osprey III|3|3
+Osprey IV|3|3
+Renegade I|2|2
+Renegade II|2|2
+Renegade III|3|3
+Renegade IV|3|3
+Tempest I|2|2
+Tempest II|3|3
+Tempest III|4|4
+Tempest IV|4|5
+Torrente I|2|2
+Torrente II|2|2
+Torrente III|3|3
+Torrente IV|3|3
+Venator I|2|2
+Venator II|2|2
+Venator III|3|3
+Venator IV|3|3`,
+"Heavy Gun Parts": `
+Anvil II|2|-
+Anvil III|3|-
+Bettina I|2|-
+Bettina II|2|-
+Bettina III|3|-
+Bettina IV|3|-
+Hullcracker I|2|2
+Hullcracker II|3|3
+Hullcracker III|4|4
+Hullcracker IV|5|5
+Rascal I|2|2
+Rascal II|2|2
+Rascal III|3|3
+Rascal IV|3|3
+Vulcano I|2|2
+Vulcano II|3|3
+Vulcano III|4|4
+Vulcano IV|5|5`,
+"Complex Gun Parts": `
+Aphelion|1|-
+Equalizer|1|-
+Jupiter|1|-`,
+"Assorted Seeds": `
+Agave|3|2
+Apricot|3|2
+Candleberries|2|-
+Fertilizer|2|1
+Great Mullein|2|1
+Herbal Bandage|2|-
+Lemon|3|2
+Moss|3|2
+Olives|2|1
+Prickly Pear|3|2
+Roots|1|1
+Sample Cleaner|14|12`
+  };
+
+ARC.EXTRAS = `
+Anvil Splitter|Amplified Fragments|5`;
+
+ARC.RARITY = `
+Acoustic Guitar|Legendary
+Adrenaline Shot|Common
+Advanced ARC Powercell|Rare
+Advanced Camera|Rare
+Advanced Electrical Components|Rare
+Advanced Mechanical Components|Rare
+Agave Juice|Common
+Agave|Uncommon
+Air Freshener|Uncommon
+Alarm Clock|Rare
+Alien Duck|Uncommon
+Angled Grip I|Common
+Angled Grip II|Uncommon
+Angled Grip III|Rare
+Antiseptic|Rare
+Anvil Splitter|Legendary
+Apricot|Uncommon
+ARC Alloy|Uncommon
+ARC Circuitry|Rare
+ARC Conductive Coupler|Epic
+ARC Coolant|Rare
+ARC Flex Rubber|Rare
+ARC Insulated Coupler|Epic
+ARC Motion Core|Rare
+ARC Performance Steel|Rare
+ARC Plated Coupler|Epic
+ARC Powercell|Common
+ARC Synthetic Resin|Rare
+ARC Thermo Lining|Rare
+Arcade Duck|Epic
+Assessor Matrix|Epic
+Assorted Seeds|Common
+Bandage|Common
+Banjo|Rare
+Barricade Kit|Uncommon
+Basic Camera|Uncommon
+Bastion Cell|Epic
+Battered Paperback|Common
+Battery|Uncommon
+Bicycle Pump|Rare
+Binoculars|Common
+Blaze Grenade Trap|Rare
+Blaze Grenade|Rare
+Bloated Tuna Can|Common
+Blue Light Stick|Common
+Integrated Binoculars|Common`;
+
+ARC.NO_RECYCLE = ["Agave Juice", "Air Freshener", "Alien Duck", "ARC Conductive Coupler", "ARC Insulated Coupler",
+    "ARC Plated Coupler", "ARC Powercell", "Arcade Duck", "Assorted Seeds", "Banjo", "Battered Paperback",
+    "Blaze Grenade Trap", "Bloated Tuna Can", "Integrated Binoculars"];
+
+ARC.FARM = {
+    "Metal Parts": { t: ["Mechanical", "Industrial", "Electrical", "Technological"], s: "Metal Crate, Car Hood, Server Rack, Seed Vault" },
+    "Plastic Parts": { t: ["Commercial", "Residential", "Technological"], s: "Industrial Drawer, Server Rack" },
+    "Rubber Parts": { t: ["Mechanical", "Industrial", "Electrical"], s: "" },
+    "Chemicals": { t: ["Mechanical", "Residential", "Medical"], s: "" },
+    "ARC Alloy": { t: ["ARC"], s: "ARC enemies" },
+    "Wires": { t: ["Electrical", "Technological"], s: "Server Rack, Power Distribution Box, Oscilloscope, Heater, Generator Fuse Box" },
+    "Fabric": { t: ["Commercial", "Medical", "Residential"], s: "" },
+    "Oil": { t: ["Mechanical"], s: "" },
+    "Canister": { t: ["Commercial"], s: "" },
+    "Advanced Mechanical Components": { t: ["Mechanical"], s: "Industrial Cleaner, Control Panel; ARC: Matriarch, Queen" },
+    "Assorted Seeds": { t: ["Nature"], s: "Fridge, Green Locker, Red Locker, Seed Drawer Box, Seed Vault, Wicker Basket" },
+    "Duct Tape": { t: ["Residential", "Commercial"], s: "" },
+    "Mechanical Components": { t: ["Mechanical"], s: "ARC: Bastion, Bombardier, Leaper, Shredder" },
+    "Mod Components": { t: ["Security"], s: "" },
+    "Processor": { t: ["Technological"], s: "Server Rack, Recording Panel, Oscilloscope, Computer" },
+    "Advanced ARC Powercell": { t: ["ARC"], s: "ARC: Bastion, Bombardier, Comet, Courier, Leaper, Matriarch, Queen, Rocketeer, Rocketeer Husk, Sentinel, Surveyor, Vaporizer" },
+    "ARC Powercell": { t: ["ARC"], s: "Found inside ARC enemies" },
+    "Electrical Components": { t: ["Electrical"], s: "ARC: Rocketeer, Vaporizer" },
+    "Steel Spring": { t: ["Industrial"], s: "Metal Crate" }
+  };
+
+ARC.FARM2 = /*FARM2*/{"Acoustic Guitar":{"v":["Shani"]},"Adrenaline Shot":{"v":["Lance"],"q":["Doctor's Orders","Espresso","Prescriptions of the Past","Sizing Things Up","Tracks Of The Beast","Trash Into Treasure"]},"Advanced Electrical Components":{"t":["Electrical"],"a":["Matriarch","Queen"],"q":["Bees!","Digging Up Dirt","Paving The Way"]},"Agave":{"t":["Nature"],"s":["Wicker Baskets"]},"Air Freshener":{"t":["Mechanical"],"q":["The Stench Of Corruption"]},"Alarm Clock":{"t":["Residential"]},"Alien Duck":{"s":["Chimneys (while Bird City is active)"]},"Angled Grip I":{"v":["Tian Wen"]},"Antiseptic":{"t":["Medical"],"q":["Doctor's Orders","A New Type Of Plant","After Rain Comes"]},"Anvil Splitter":{"q":["A Rising Tide"]},"Apricot":{"t":["Nature"],"s":["Apricot Trees (harvest)","Wicker Baskets"],"o":["Used in Fruit Mix and the Scrappy III and V upgrades","Recycles into 3× Assorted Seeds"]},"ARC Circuitry":{"t":["ARC"],"a":["Baron Husk","Bastion","Courier","Matriarch","Probe","Queen","Rocketeer","Surveyor"]},"ARC Conductive Coupler":{"t":["ARC"],"s":["Harvester Payload"]},"ARC Coolant":{"a":["Baron Husk","Comet","Fireball","Matriarch","Pop","Queen","Sentinel","Surveyor","Vaporizer"]},"ARC Flex Rubber":{"s":["Destroyed ARC machines"],"a":["Probe","Baron Husk","Bastion","Bombardier","Leaper","Matriarch","Queen","Sentinel","Tick","Vaporizer"]},"ARC Insulated Coupler":{"t":["ARC"],"s":["Harvester Payload"]},"ARC Motion Core":{"t":["ARC"],"a":["Bastion","Courier","Leaper","Matriarch","Probe","Queen","Rocketeer","Sentinel","Surveyor","Turbine"]},"ARC Performance Steel":{"t":["ARC"],"a":["Baron Husk","Bastion","Bombardier","Hornet","Leaper","Matriarch","Queen","Surveyor","Turbine"]},"ARC Plated Coupler":{"t":["ARC"],"s":["Harvester Payload (after deploying Emperor Beacon)"]},"ARC Synthetic Resin":{"t":["ARC"],"a":["Baron Husk","Deforester Husk","Hornet","Firefly","Matriarch","Probe","Queen","Sentinel","Shredder","Snitch","Spotter","Turbine","Turret","Wasp"]},"ARC Thermo Lining":{"t":["ARC"],"a":["Baron Husk","Comet","Fireball","Matriarch","Pop","Queen","Sentinel","Snitch","Tick","Turbine","Turret","Wasp"]},"Assessor Matrix":{"t":["ARC"],"a":["Assessor"]},"Bandage":{"v":["Lance"]},"Barricade Kit":{"v":["Apollo"],"q":["Reduced to Rubble","Safe Passage","Shoring Up Defenses"]},"Bastion Cell":{"t":["ARC"],"s":["Destroyed Bastions"],"a":["Bastion"],"q":["Settled in Full"]},"Battered Paperback":{"s":["Pendola Pass"]},"Battery":{"t":["Technological","Electrical"],"s":["Recording Panel","Oscilloscope","Computer","Terminal","Metal Crate","Control Console"],"v":["Celeste"],"q":["After Rain Comes","Clamoring for Attention","Trash Into Treasure"]},"Bicycle Pump":{"t":["Residential"],"q":["The League"]},"Binoculars":{"s":["3x from Decks: Raider Deck AR/RD 001: Ryder & Voyager, on Page 1, \"SCOUT PACK\""],"v":["Shani"],"q":["Combat Recon","Down to Earth","Hatch Repairs","Reduced to Rubble","Straight Record","Trash Into Treasure"]},"Blaze Grenade":{"q":["Test Case (quantity: 3×)","What Goes Around (quantity: 3×)"]},"Blaze Grenade Trap":{"s":["Scavenging - Skill: One Raider's Scraps","3× from Decks: Raider Deck AR/RD 001: Ryder & Voyager, on Page 2, \"IMPROVISATION PACK\""]},"Bloated Tuna Can":{"t":["Commercial","Residential"]},"Blue Light Stick":{"s":["Decks"],"v":["Apollo","Shani"],"q":["A Warm Place To Rest","After Rain Comes","Movie Night","The Clean Dream"]},"Bombardier Cell":{"a":["Bombardier"]},"Broken Flashlight":{"t":["Security"]},"Broken Handheld Radio":{"s":["Security"]},"Broken Taser":{"s":["Security"]},"Burned ARC Circuitry":{"s":["Found by scavenging old ARC husks"],"a":["ARC"]},"Cable Stripper":{"t":["Mechanical","Industrial"]},"Calculator":{"t":["Technological","Electrical"],"s":["Scavenging - Pendola Pass"]},"Camera Lens":{"t":["Security"]},"Candle Holder":{"t":["Residential"],"s":["Residential loot containers at Dam Battlegrounds (Pale Apartments, Ruby Residence) and Buried City (Plaza Rosa, Grandioso Apartments); commonly found"]},"Canister":{"t":["Commercial"],"v":["Celeste"],"q":["Untended Garden (quantity: 5×)"]},"Combat Mk. 1":{"v":["Lance"],"q":["Down to Earth"]},"Compensator I":{"v":["Tian Wen"],"q":["Market Correction"]},"Compensator II":{"v":["Shani"],"q":["Broken Monument"]},"Cooling Coil":{"t":["Industrial"],"s":["Car Hoods","Buses","Mobile Generators","Metal Crates","Car Tool Cabinets","Industrial Drawers","Red Locker"]},"Crude Explosives":{"t":["Industrial","Security"],"a":["Pop","Fireball"],"q":["Echoes Of Victory Ridge","Sparks Fly"]},"Crumpled Plastic Bottle":{"t":["Residential"]},"Damaged ARC Motion Core":{"a":["Baron Husk","Courier"]},"Damaged ARC Powercell":{"a":["Baron Husk"]},"Damaged Heat Sink":{"t":["Technological"],"s":["Scavenging: Server Rack"]},"Damaged Hornet Driver":{"s":["picking up used Hornet Drivers"],"a":["ARC"]},"Damaged Leaper Pulse Unit":{"s":["Found by retrieving used Leaper Pulse Units"],"a":["ARC"]},"Damaged Tick Pod":{"s":["scavenging old ARC husks"],"a":["ARC","ARC Courier"]},"Damaged Wasp Driver":{"s":["scavenging old ARC husks","retrieving exploded Wasp Drivers"],"a":["ARC"]},"Defibrillator":{"s":["Chance to appear in Free Loadout","9x from Decks"],"v":["Lance"],"q":["Armored Transports","Deciphering The Data","In My Image","Life Of A Pharmacist","Medical Merchandise","Off The Radar","On The Map","Straight Record","The Trifecta"]},"Degraded ARC Rubber":{"a":["ARC","Baron Husk"]},"Diving Goggles":{"t":["Residential"]},"Dog Collar":{"t":["Residential"]},"Door Blocker":{"v":["Apollo"],"q":["A Prime Specimen","Dormant Barons","Reduced to Rubble"]},"Dried-Out ARC Resin":{"a":["ARC","Baron Husk"]},"Duct Tape":{"t":["Residential","Commercial"],"v":["Celeste"],"q":["A Bad Feeling","A Symbol of Unification","Keeping The Memory","Source Of The Contamination"]},"Durable Cloth":{"t":["Medical","Commercial"],"q":["After Rain Comes"]},"Electrical Components":{"a":["Rocketeer","Vaporizer"],"q":["Greasing Her Palms"]},"Expired Respirator":{"t":["Medical"]},"Explosive Mine":{"q":["Building A Library (quantity: 1×)"]},"Extended Barrel III":{"q":["A Rising Tide"]},"Extended Light Mag I":{"v":["Tian Wen"],"q":["A Better Use","The Right Tool"]},"Extended Medium Mag I":{"v":["Tian Wen"]},"Extended Shotgun Mag I":{"v":["Tian Wen"]},"Fireball Burner":{"a":["Courier","Fireball"]},"Firecracker":{"v":["Shani"],"q":["Combat Recon","The League"]},"Firefly Burner":{"a":["Firefly"]},"Flame Spray":{"s":["Scavenging (One Raider's Scraps skill)","Raider Deck AR/RD 001: Ryder & Voyager, Improvisation Pack (3x)"],"q":["Keeping an Eye Out"]},"Free Loadout Augment":{"s":["Free Loadout deployment (received at no cost)"]},"Fried Motherboard":{"t":["Technological"],"s":["Server Rack","Recording Panel"]},"Frying Pan":{"t":["Residential"]},"Garlic Press":{"t":["Residential","Commercial"]},"Gas Grenade":{"v":["Apollo"]},"Gas Mine":{"v":["Apollo"],"q":["A Toxic Trail","Cold Storage"]},"Glitched ARC Circuitry":{"s":["Scavenging (ARC)"],"a":["Erratic Wasp","Leaper","Pop","Snitch"]},"Glitched ARC Light Ring":{"s":["Scavenging (ARC)"],"a":["Erratic Wasp"]},"Glitched ARC Phased Array":{"s":["Scavenging (ARC)"],"a":["Erratic Wasp"]},"Glitched ARC Power Converter":{"s":["Scavenging (ARC)"],"a":["Erratic Wasp","Fireball","Hornet","Pop"]},"Glitched ARC Transmitter":{"s":["Scavenging (ARC)"],"a":["Erratic Wasp"]},"Green Light Stick":{"s":["Raider Deck AR/RD 001: Ryder & Voyager, Mayhem Pack (3x)"],"v":["Apollo","Shani"],"q":["In My Image"]},"Hand Drill":{"t":["Mechanical","Industrial"]},"Headphones":{"t":["Residential","Commercial"]},"Heavy Fuze Grenade":{"q":["A First Foothold","Building A Library","The Clean Dream"]},"Heavy Shield":{"v":["Lance"],"q":["Prescriptions of the Past"]},"Herbal Bandage":{"v":["Lance"]},"Hornet Driver":{"s":["Scavenging (destroyed Hornets)"],"a":["Hornet","Courier"]},"Humidifier":{"t":["Residential"],"s":["Buried City: Red Tower lockers (guaranteed to appear)"]},"Ice Cream Scooper":{"t":["Commercial"]},"Impure ARC Coolant":{"s":["Scavenging (old ARC husks)"],"a":["ARC"]},"Industrial Battery":{"t":["Industrial"],"s":["Dam Battlegrounds > Hydroponic Dome Complex","Dam Battlegrounds > Power Generation Complex > shelves/carts","Car Hood"]},"Industrial Charger":{"t":["Industrial"]},"Industrial Magnet":{"t":["Industrial"]},"Household Cleaner":{"t":["Residential"]},"Jolt Mine":{"s":["Raider Deck AR/RD 001: Ryder & Voyager, Protection Pack (5x)"],"v":["Apollo"],"q":["Building A Library","Mixed Signals","Our Presence up There"]},"Leaper Pulse Unit":{"s":["Scavenging (destroyed Leapers)"],"a":["Leaper"]},"Li'l Smoke Grenade":{"s":["Raider Deck AR/RD 001: Ryder & Voyager, Ninja Pack (5x)"],"q":["Dormant Barons","Safe Passage"]},"Light Impact Grenade":{"v":["Apollo"],"q":["Safe Passage"]},"Light Shield":{"v":["Lance"],"q":["Clearer Skies"]},"Looting Mk. 1":{"v":["Lance"]},"Magnet":{"t":["Exodus"],"v":["Celeste (10 per day)"],"q":["Keeping The Memory (5x)","Tribute To Toledo (5x)"]},"Mechanical Components":{"a":["Bastion","Bombardier","Leaper","Shredder"],"q":["A Wrench in the Works (5x)","Industrial Espionage (3x)","Water Troubles (3x)"]},"Medium Shield":{"s":["Scavenging: Raider Cache","Raider Decks"],"v":["Lance (6,000 coins, 3 per day)"],"q":["Boarding The Frigate","Down to Earth","Exploring Pendola Pass","Out of the Shadows","With A Trace"]},"Metal Brackets":{"t":["Mechanical","Electrical"]},"Mini Pump":{"t":["Technological","Electrical"]},"Motor":{"t":["Mechanical"],"s":["Scavenging: Dam Battlegrounds > Water Treatment","Scavenging: Car Hoods"]},"Muzzle Brake I":{"v":["Tian Wen (1,920 coins, 5 per day)"]},"Muzzle Brake II":{"q":["A Better Use (1x)","Collision Course (1x)","What We Left Behind (1x)"]},"Number Plate":{"t":["Mechanical"]},"Oil":{"t":["Mechanical"],"v":["Celeste"],"q":["Power Out (5x)"]},"Polluted Air Filter":{"t":["Industrial"]},"Pop Trigger":{"s":["Scavenging destroyed Pops"],"a":["Courier (listed as ARC source; drop not explicitly stated)","Pop (listed as ARC source; drop not explicitly stated)"]},"Portable TV":{"t":["Residential"],"s":["Buried City dressers (wiki caption: high chance to spawn)"],"q":["Movie Night (quest listed; reward/location not stated)"]},"Power Bank":{"t":["Electrical","Residential","Commercial"]},"Power Cable":{"t":["Electrical","Residential","Commercial"]},"Processor":{"t":["Technological"],"s":["Server Rack","Recording Panel","Oscilloscope","Computer"],"v":["Celeste"],"q":["Echoes Of Victory Ridge (2x)","Sparks Fly (2x)"]},"Projector":{"t":["Residential"]},"Pulse Mine":{"v":["Apollo (1,410 coins, 6 per day)"],"q":["A Toxic Trail (3x)","Keeping an Eye Out (5x)"]},"Recorder":{"t":["Residential"],"v":["Apollo (3,000 coins, 6 per day)","Shani (50 Cred, 3 per day)"]},"Red Light Stick":{"v":["Apollo (450 coins)","Shani (10 Cred)"],"q":["The League (5x)","What Goes Around (5x)"]},"Remote Raider Flare":{"v":["Apollo"],"q":["A Prime Specimen (3x)","Off The Radar (2x)","The Trifecta (3x)"]},"Rocket Thruster":{"t":["Exodus"],"s":["Scavenging: Stella Montis","Scavenging: Spaceport (Rocket Assembly)"]},"Rocketeer Driver":{"s":["Scavenging (ARC): Rocketeer Husk","Scavenging (ARC): Rocketeer"],"a":["Rocketeer"],"q":["Out of the Shadows (1x; reward/requirement not stated)"]},"Rope":{"t":["Residential","Commercial"],"s":["Recycling"],"v":["Celeste"]},"Rubber Pad":{"t":["Electrical"]},"Ruined Accordion":{"t":["Residential"]},"Ruined Augment":{"s":["Knocked-out Raiders (only obtainable via looting)"]},"Ruined Baton":{"t":["Security"]},"Ruined Handcuffs":{"t":["Security"]},"Ruined Parachute":{"t":["Exodus"]},"Ruined Riot Shield":{"t":["Security"]},"Ruined Tactical Vest":{"t":["Security"]},"Rusted Gear":{"t":["Industrial"],"s":["Buses","Car Hoods","Car Tool Cabinets","Control Panels","Metal Crates","Mobile Generators","Industrial Drawers"]},"Rusted Tools":{"t":["Mechanical","Industrial"],"s":["Bus Side Trunk","Bus Rear Trunk","Metal Crate"]},"Rusty ARC Steel":{"s":["Scavenging (ARC husks)"]},"Seeker Grenade":{"v":["Apollo"],"q":["Boarding The Frigate (1x)","Paving The Way (3x)","Shoring Up Defenses (6x)","Stable Housing (5x)","Test Case (3x)"]},"Sensors":{"t":["Security","Technological"],"s":["Android","Server Rack"],"a":["Snitch","Surveyor"],"v":["Celeste (10 Assorted Seeds, 5 per day)"],"q":["Bees! (3x)"]},"Sentinel Firing Core":{"s":["Scavenging (ARC): Courier","Scavenging (ARC): Sentinel (scavenged from destroyed Sentinels)"]},"Shaker":{"t":["Residential"],"v":["Shani (40 Cred, 3 per day)"],"q":["On Deaf Ears"]},"Shield Recharger":{"v":["Lance (1,560 coins)"]},"Ripped Safety Vest":{"t":["Industrial"]},"Shotgun Choke I":{"s":["Scavenging (no specific containers listed)"],"v":["Tian Wen (1,920 coins, limit 5 per day)"]},"Shotgun Choke II":{"s":["Scavenging (no specific containers listed)"],"v":["Tian Wen (6,000 coins, limit 3 per day)"],"q":["Marked For Death (1x)","Unexpected Initiative (1x)"]},"Shotgun Choke III":{"s":["Scavenging (no specific containers listed)"]},"Shotgun Silencer":{"s":["Scavenging (no specific containers listed)"]},"Shrapnel Grenade":{"s":["Scavenging (no specific containers listed)"],"q":["A First Foothold (3x)","Safe Passage (3x)"]},"Shredder Gyro":{"s":["Scavenging from destroyed Shredders (listed under ARC)"],"a":["Shredder"]},"Silencer I":{"s":["Scavenging (no specific containers listed)"],"v":["Shani (100 Cred, 1 per day)","Tian Wen (6,000 coins, 1 per day)"]},"Silencer II":{"s":["Scavenging (no specific containers listed)"],"q":["Market Correction (1x)","Outstanding Balance (1x)","Snap And Salvage (1x)"]},"Silencer III":{"s":["Scavenging (no specific containers listed)"]},"Simple Gun Parts":{"t":["Raider","Security"],"a":["Wasp","Hornet","Turret","Sentinel","Shredder"],"v":["Celeste (7 Assorted Seeds, 5 per day)"],"q":["Industrial Espionage (3x)","Keeping The Memory (5x)","Water Troubles (3x)"],"o":["Recycling: Anvil, Arpeggio, Burletta, Il Toro, Unusable Weapon"]},"Smoke Grenade":{"s":["Scavenging (no specific containers listed)"],"v":["Apollo (3,000 coins, limit 6 per day)"],"q":["A Lay Of The Land (2x)","Armored Transports (3x)","Movie Night (3x)"],"o":["Decks: 8 total, 3 from Raider Deck AR/RD 001 (Ryder & Voyager, Page 1, MAYHEM PACK), 5 from Raider Deck AR/RD 003 (Surgeon, Page 3)"]},"Snap Blast Grenade":{"s":["Scavenging (no specific containers listed)"],"v":["Apollo (2,400 coins, 3 per day)"],"q":["A First Foothold (3x)","Safe Passage (3x)","Sparks Fly (2x)"]},"Snitch Scanner":{"s":["Scavenged from destroyed Snitches"],"a":["Snitch"]},"Speaker Component":{"t":["Commercial"],"s":["Scavenging (no specific containers listed)"],"v":["Celeste (10 Assorted Seeds each, 5 per day)"],"q":["Digging Up Dirt (2x)","Greasing Her Palms (3x)"],"o":["Recycling from Frequency Modulation Box, Headphones, Lure Grenade, Noisemaker, Photoelectric Cloak, Radio, Radio Relay"]},"Spotter Relay":{"s":["Scavenging from destroyed ARC enemies (Courier, Spotter)"],"a":["Courier","Spotter"]},"Stable Stock I":{"s":["Scavenging (no specific containers listed)"],"v":["Tian Wen"],"q":["A Better Use (1x)"]},"Steel Cable":{"s":["Scavenging (no specific containers listed)"]},"Steel Spring":{"t":["Industrial"],"s":["Metal Crate"],"v":["Celeste (6 Assorted Seeds, limit 10 per day)"],"q":["A Bad Feeling (5x)","A Balanced Harvest (10x)","Source Of The Contamination (5x)","Water Troubles (3x)","With a View (5x)"],"o":["Recycling: Advanced Mechanical Components, Cooling Coil, Spring Cushion, Turbo Pump (salvage only), several Extended Mag and Mod Components"]},"Sterilized Bandage":{"s":["Scavenging (no specific containers listed)"],"v":["Lance (6,000 coins, 3 per day)","Shani (40 Cred, 3 per day)"],"q":["Celeste's Childhood Drawings (3x)","Clearer Skies (3x)","Doctor's Orders (3x)","Life Of A Pharmacist (3x)","On The Map (3x)"],"o":["Raider Deck AR/RD 003 (Surgeon), Page 1 (5x)"]},"Surge Shield Recharger":{"s":["Scavenging (no specific containers listed)"],"v":["Lance (3,600 coins, up to 5 per day)","Shani (40 Cred, up to 5 per day)"],"q":["A Reveal in Ruins (1x)","Doctor's Orders (1x)","Life Of A Pharmacist (1x)","On The Map (3x)","Out of the Shadows (3x)","Waking the Grid (5x)"],"o":["Crafting; Raider Deck AR/RD 001 (Ryder & Voyager), page 4, MEDIC PACK (3x); Raider Deck AR/RD 003 (Surgeon), page 2 (5x)"]},"Surveyor Vault":{"s":["Scavenged from destroyed Surveyors"],"a":["Courier","Surveyor"],"q":["Mixed Signals (1x) - page does not say whether it rewards the item"]},"Synthesized Fuel":{"t":["Exodus"],"s":["Scavenging (no specific containers listed)"],"v":["Celeste (14 Assorted Seeds, limit 5 per day)"],"q":["Switching The Supply (3x)","Tribute To Toledo (3x)"],"o":["Recycling: Rocket Thruster yields 2 (1 when salvaged)"]},"Tactical Mk. 1":{"s":["Scavenging (no specific containers listed)"],"v":["Lance (also a free exchange service for a Free Loadout Augment)"],"q":["Trash Into Treasure (1x)"]},"Tagging Grenade":{"s":["Scavenging (no specific containers listed)"],"q":["Clamoring for Attention (3x)","Eyes in the Sky (3x)","The League (5x)"],"o":["Raider Deck AR/RD 001 (Ryder & Voyager), page 1, SCOUT PACK (5x)"]},"Tattered ARC Lining":{"s":["Scavenging old ARC husks"]},"Tattered Clothes":{"t":["Residential"],"s":["Scavenging (no specific containers listed)"]},"Thermostat":{"s":["Scavenging (no specific containers listed)"]},"Tick Pod":{"s":["Scavenged from destroyed Ticks"],"a":["Tick"]},"Toaster":{"t":["Residential"],"s":["Scavenging (no specific containers listed)"]},"Torn Blanket":{"t":["Residential","Medical"],"s":["Scavenging (no specific containers listed)"]},"Trigger 'Nade":{"s":["Scavenging (no specific containers listed)"],"q":["Sparks Fly (6x)"]},"Turbo Pump":{"t":["Exodus"],"s":["Scavenging (no specific containers listed)"]},"Unusable Weapon":{"t":["Security"],"s":["Scavenging (no specific containers listed)"]},"Vertical Grip I":{"s":["Scavenging (no specific containers listed)"],"v":["Tian Wen (1,920 coins, limit 5 per day)"]},"Vita Shot":{"s":["Scavenging (no specific containers listed)"],"q":["A New Type Of Plant (1x)","Medical Merchandise (3x)","Waking the Grid (3x)"],"o":["Raider Deck (listed on page)"]},"Vita Spray":{"s":["Scavenging (no specific containers listed)"],"q":["Eyes in the Sky (1x)"],"o":["Project: Trophy Display (Project Part 1, Stage 2, 3x)","Raider Deck AR/RD 001 (Ryder & Voyager), page 4, MEDIC PACK"]},"Voltage Converter":{"t":["Electrical"],"s":["Scavenging (no specific containers listed)"],"v":["Celeste (10 Assorted Seeds, limit 5 per day)"],"o":["Recycling from Heavy Shield, Industrial Charger, Ion Sputter, Showstopper, Signal Amplifier"]},"Wasp Driver":{"s":["Scavenging from Courier, Wasp, Wasp Husk"],"a":["Courier","Wasp"]},"Water Filter":{"t":["Industrial"],"s":["Metal Crate (industrial loot): Dam Battlegrounds Research and Administration west tunnels; The Spaceport Shipping Warehouse; Dam Battlegrounds Power Generation Complex"],"o":["Not obtainable through salvaging or recycling"]},"Water Pump":{"t":["Mechanical","Industrial"],"s":["Metal Crate (industrial loot containers); carts and shelves; Dam Battlegrounds Research and Administration (west tunnels) and Power Generation Complex; Spaceport Shipping Warehouse"]},"Syringe":{"t":["Medical"],"s":["Scavenging (no specific containers listed)"],"v":["Celeste (10 Assorted Seeds, limit 5 per day)"],"o":["Recycling from Rusted Shut Medical Kit, Vita Shot","Required (not rewarded) by Doctor's Orders"]},"Wires":{"t":["Electrical","Technological"],"s":["Server Rack","Power Distribution Box","Oscilloscope","Heater","Generator Fuse Box"],"v":["Celeste (4 Assorted Seeds, 10 per day)"],"q":["Power Out (5x) - listed as a source","With a View (5x) - listed as a source"],"o":["Recycling from 28 item types, incl. Acoustic Guitar, Cooling Fan, Portable TV, Power Cable, Toaster, Voltage Converter"]},"Yellow Light Stick":{"s":["Scavenging (no specific containers listed)"],"v":["Apollo (450 coins)","Shani (10 Cred)"],"q":["Bees! (5x)","Eyes in the Sky (5x)","Movie Night (3x)","The League (5x)"],"o":["Raider Deck AR/RD 001 (Ryder & Voyager), SCOUT PACK (5x)"]},"Zipline":{"s":["Scavenging (no specific containers listed)"],"v":["Apollo (3,000 coins, limit 3 per day)"],"q":["A Lay Of The Land (3x)","A Toxic Trail (3x)","After Rain Comes (1x)","Eyes in the Sky (1x)","Reduced to Rubble (1x)"],"o":["Raider Deck AR/RD 001 (Ryder & Voyager), SCOUT PACK (3x)","Raider Deck AR/RD 002 (Goalie), page 4 (3x)"]},"Lemon":{"t":["Nature"],"s":["Lemon Trees (harvest: 1–4 Lemons on the ground, 1–3 when you interact)","Wicker Baskets"],"o":["Used in Fruit Mix and the Scrappy III upgrade","Recycles into 3× Assorted Seeds"]},"Prickly Pear":{"t":["Nature"],"s":["Prickly Pear Cactus (1–3 on the ground beneath it)","Wicker Baskets"],"o":["Used in Fruit Mix and the Scrappy IV upgrade","Recycles into 3× Assorted Seeds"]},"Olives":{"t":["Nature"],"s":["Olive Trees (large numbers at the Olive Grove on Blue Gate)","Wicker Baskets"],"o":["Used in the Scrappy IV upgrade","Recycles into 2× Assorted Seeds"]},"Mushroom":{"t":["Nature"],"s":["Dam Battlegrounds: Water Treatment Control, Hydroponic Dome Complex, Central Swamp Lift, Wreckage","Spaceport: East Container Yard, underground tunnels in the centre","Riven Tides: Dried Riverbed","Wicker Baskets"],"o":["Used in the Scrappy V upgrade","Cannot be recycled or salvaged"]},"Great Mullein":{"t":["Nature"],"s":["Great Mullein Plants (harvest)","Backpacks","Wicker Baskets"],"v":["Celeste"],"q":["Doctor's Orders"],"o":["Crafts Antiseptic and Herbal Bandage","Recycles into 2× Assorted Seeds"]},"Fruit Mix":{"o":["Craft in your inventory (needs the In-Round Crafting skill): 1× Lemon, 1× Apricot, 1× Prickly Pear"]}}/*FARM2-END*/;

@@ -42,9 +42,9 @@ Recycling data comes from the [ARC Raiders Wiki](https://arcraiders.wiki) (CC BY
 
 ## Contributing
 
-1. Fork the repo and edit `index.html`. There is no build step; open it in a browser to test.
-2. Fix a number by editing its line in `TABLES` (format `Item|recycledQty|salvagedQty`, `-` for none).
-3. Add an update at the top of `UPDATES`.
+1. Fork the repo. Game data is in `data/` (one file per area) and the page is `index.html`. There is no build step; open `index.html` in a browser to test. See [CONTRIBUTING.md](CONTRIBUTING.md) for the one command to run before a pull request.
+2. Fix a number by editing its line in `TABLES` in `data/items.js` (format `Item|recycledQty|salvagedQty`, `-` for none).
+3. Add an update at the top of `UPDATES` in `data/updates.js`.
 4. Open a pull request and say where the number came from (wiki page or in-game screenshot).
 
 ## Map images
@@ -53,7 +53,7 @@ Optional images go in the `maps` folder; see [maps/README.md](maps/README.md) fo
 
 ## Running locally
 
-Open `index.html` in any browser. It is a single file with no dependencies apart from the Google Fonts stylesheet.
+Open `index.html` in any browser. It loads its data from the `data/` folder and has no dependencies apart from the Google Fonts stylesheet.
 
 ## Privacy
 

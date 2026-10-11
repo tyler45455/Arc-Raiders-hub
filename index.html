@@ -2111,11 +2111,7 @@ Integrated Binoculars|Common`;
     var loaded = Object.keys(TABLES);
     var withRec = items.filter(function (i) { return Object.keys(i.rec).length; }).length;
     var withSal = items.filter(function (i) { return Object.keys(i.sal).length; }).length;
-    document.getElementById("coverage").innerHTML =
-      "<b>" + items.length + " items</b> (" + withRec + " with recycle amounts, " + withSal + " with salvage amounts). " +
-      "Loaded from the wiki pages for " + loaded.join(", ") + ". " +
-      "Items marked <b>partial</b> might also give materials from pages not loaded yet. " +
-      "Wiki pages were last edited between April and October 2026, so double-check numbers in game.";
+    var cv = document.getElementById("coverage"); cv.textContent = ""; cv.hidden = true;
   }
 
   function renderChips() {
@@ -2775,6 +2771,7 @@ Integrated Binoculars|Common`;
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
   var DATA_CHANGES = [
+    ["Oct 11, 2026", "Recycle: removed the long note under the filters that listed the wiki pages loaded and explained the partial badge."],
     ["Oct 11, 2026", "Mobile: a much more compact header, and the filter and tab rows now scroll sideways in one line instead of wrapping into many rows. Feedback moved into the Display menu on phones."],
     ["Oct 10, 2026", "Quests: checked every quest's order against the wiki and fixed the Celeste chain (A Balanced Harvest, Untended Garden, After Rain Comes, The Root Of The Matter, Celeste's Journals, The Major's Footlocker, Water Troubles, Back On Top). Added Belly Of The Beast and Tracks Of The Beast. The quest list is now sorted so a quest always comes after the ones you need first."],
     ["Oct 10, 2026", "Fixed Celeste's Childhood Drawings showing as unlocked: it now requires Shoring Up Defenses first."],

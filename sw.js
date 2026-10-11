@@ -1,6 +1,6 @@
 /* Offline support: always try the network first so visitors get the newest site,
    and fall back to the last saved copy when there is no connection. */
-var CACHE = "arc-hub-v29";
+var CACHE = "arc-hub-v30";
 var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {

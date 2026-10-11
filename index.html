@@ -1037,6 +1037,17 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <datalist id="craftList"></datalist>
       <div id="crOut"></div>
     </div>
+
+    <div class="tool" id="lootTool">
+      <h3>Loot value</h3>
+      <p class="muted">What is worth the space in your bag. Ranks items by sell price per kilogram or per stash slot (a full stack). Items your active quests, projects, goals or Keep tags need are marked so you do not sell them by mistake.</p>
+      <div class="stashgrid">
+        <div><label for="lvQ">Filter</label><input type="text" id="lvQ" placeholder="Name, like: Battery" autocomplete="off"></div>
+        <div><label for="lvSort">Rank by</label><select id="lvSort"><option value="kg">Coins per kg</option><option value="slot">Coins per slot</option><option value="price">Sell price</option></select></div>
+      </div>
+      <label class="crdeep"><input type="checkbox" id="lvGear"> Include weapons, augments and shields</label>
+      <div id="lvOut"></div>
+    </div>
   </section>
 
   <!-- MAPS -->
@@ -2238,15 +2249,52 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     });
     return out;
   }
-  function renderKeep() {
-    var box = document.getElementById("keepOut");
-    if (!box) { return; }
-    var keepL = [], goL = [], safe = [], kmap = {}, seen = {};
+  /* Item name -> reasons to keep it: active quests, unfinished projects, goals and Keep tags. */
+  function keepMap() {
+    var kmap = {};
     function addK(n, w) { if (!kmap[n]) { kmap[n] = []; } if (kmap[n].indexOf(w) === -1) { kmap[n].push(w); } }
     qActive().forEach(function (q) { q.req.forEach(function (r) { addK(r.n, "quest: " + q.name); }); });
     projects.forEach(function (p) { p.needs.forEach(function (n) { if ((tracker[n[0]] || 0) < n[1]) { addK(n[0], "project: " + p.name); } }); });
     Object.keys(goals).forEach(function (m) { if (need(m) > 0) { addK(m, "tracker goal"); } });
     Object.keys(itemTags).forEach(function (n) { if (itemTags[n] === "keep") { addK(n, "your Keep tag"); } });
+    return kmap;
+  }
+  /* Loot value: sell price per kg or per slot (price x stack size), from ITEMINFO. */
+  var GEAR_NAMES = null;
+  function renderLoot() {
+    var out = document.getElementById("lvOut");
+    if (!out) { return; }
+    if (!GEAR_NAMES) {
+      GEAR_NAMES = {};
+      var G = ARC.GEARDATA || {};
+      ["weapons", "augments", "shields"].forEach(function (k) { (G[k] || []).forEach(function (g) { GEAR_NAMES[g[0]] = 1; }); });
+    }
+    var q = document.getElementById("lvQ").value.trim().toLowerCase(), by = document.getElementById("lvSort").value, gear = document.getElementById("lvGear").checked;
+    var kmap = keepMap(), byName = {};
+    items.forEach(function (it) { byName[it.name] = it; });
+    var rows = Object.keys(ITEMINFO).filter(function (n) {
+      var f = ITEMINFO[n];
+      if (f[0] == null || !(f[0] > 0) || !(f[1] > 0)) { return false; }
+      if (!gear && GEAR_NAMES[n.replace(/ (I|II|III|IV)$/, "")]) { return false; }
+      return !q || n.toLowerCase().indexOf(q) !== -1;
+    }).map(function (n) {
+      var f = ITEMINFO[n], st = f[2] || 1, it = byName[n], pv = it ? partsValue(it) : null;
+      return { n: n, p: f[0], price: f[0], w: f[1], st: st, kg: f[0] / f[1], slot: f[0] * st, pv: pv };
+    });
+    rows.sort(function (a, b) { return (b[by] - a[by]) || (a.n < b.n ? -1 : 1); });
+    var shown = rows.slice(0, 60);
+    out.innerHTML = rows.length ? '<div class="muted" style="margin-top:10px;">' + rows.length + " items" + (rows.length > shown.length ? ", top " + shown.length + " shown. Type in the filter to find others." : ".") + "</div>" +
+      shown.map(function (r, i) {
+        var k = kmap[r.n];
+        return '<div class="krow"><b>' + (i + 1) + ". " + esc(r.n) + "</b>" + (k ? '<span class="ktag keep" title="' + esc(k.join("; ")) + '">Keep</span>' : "") +
+          '<span class="muted">' + coins(r.p) + " coins &middot; " + r.w + " kg &middot; <b>" + coins(Math.round(r.kg)) + "</b>/kg &middot; stacks to " + r.st + " &middot; <b>" + coins(r.slot) + "</b>/slot" +
+          (r.pv !== null && r.pv > r.p ? ' &middot; <span class="good">recycled parts sell for ' + coins(r.pv) + "</span>" : "") + (k ? " &middot; needed for " + k.map(esc).join("; ") : "") + "</span></div>";
+      }).join("") : '<div class="empty-line">No item matches that.</div>';
+  }
+  function renderKeep() {
+    var box = document.getElementById("keepOut");
+    if (!box) { return; }
+    var keepL = [], goL = [], safe = [], kmap = keepMap(), seen = {};
     Object.keys(kmap).sort().forEach(function (n) { keepL.push([{ name: n }, kmap[n]]); seen[n] = true; });
     items.forEach(function (it) {
       if (seen[it.name]) { return; }
@@ -3400,7 +3448,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "gear") { renderGear(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); }
+    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); }
     if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
@@ -3862,6 +3910,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (cs && cs.n) { document.getElementById("crItem").value = cs.n; document.getElementById("crQty").value = cs.q || 1; document.getElementById("crDeep").checked = cs.d !== false; }
     ["crItem", "crQty"].forEach(function (id) { document.getElementById(id).addEventListener("input", renderCraft); });
     document.getElementById("crDeep").addEventListener("change", renderCraft);
+    document.getElementById("lvQ").addEventListener("input", renderLoot);
+    ["lvSort", "lvGear"].forEach(function (id) { document.getElementById(id).addEventListener("change", function () { save("arcHubLoot", { s: document.getElementById("lvSort").value, g: document.getElementById("lvGear").checked }); renderLoot(); }); });
+    var lv = load("arcHubLoot", null);
+    if (lv) { if (/^(kg|slot|price)$/.test(lv.s)) { document.getElementById("lvSort").value = lv.s; } document.getElementById("lvGear").checked = !!lv.g; }
   })();
   document.getElementById("chkNew").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); document.querySelector('[data-action="chkAdd"]').click(); } });
   document.addEventListener("change", function (e) {

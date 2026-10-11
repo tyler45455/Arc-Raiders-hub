@@ -353,6 +353,11 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .rltab td.n, .rltab th.n { text-align: right; font-variant-numeric: tabular-nums; }
 .rlrow { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
 .rlrow .muted { font-size: 13px; }
+.rlbar { fill: var(--good); }
+.rldie { fill: var(--danger); }
+.rlavg { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; }
+.rlmeter { display: inline-block; width: 46px; height: 6px; margin-left: 6px; border-radius: 3px; background: var(--line); vertical-align: middle; overflow: hidden; }
+.rlmeter i { display: block; height: 100%; background: var(--good); }
 .sktree { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px 6px; margin-top: 12px; }
 .sknode { position: relative; min-height: 56px; padding: 6px 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: inherit; font: inherit; font-size: 12px; line-height: 1.25; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .sknode::before { content: ""; position: absolute; left: 50%; top: -15px; height: 14px; border-left: 2px solid var(--line); }
@@ -2525,14 +2530,39 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     st.innerHTML = '<div class="proj"><div><b>' + all.n + "</b> raids &middot; <b>" + all.rate + "%</b> extracted &middot; average haul <b>" + cell(all.avg) + "</b> &middot; total <b>" + coins(all.tot) + "</b> coins" + (streak > 1 ? " &middot; " + streak + " extracts in a row" : "") + "</div>" +
       '<div class="tablewrap"><table class="rltab"><thead><tr><th>Map</th><th class="n">Raids</th><th class="n">Extract</th><th class="n">Avg</th><th class="n">Best</th></tr></thead><tbody>' +
       Object.keys(maps).sort(function (a, b) { return maps[b].length - maps[a].length; }).map(function (m) {
-        var g = agg(maps[m]); return "<tr><td>" + esc(m) + '</td><td class="n">' + g.n + '</td><td class="n">' + g.rate + '%</td><td class="n">' + cell(g.avg) + '</td><td class="n">' + cell(g.best) + "</td></tr>";
-      }).join("") + "</tbody></table></div><div class=\"muted\">Average and best count extracted raids with a haul value.</div></div>";
+        var g = agg(maps[m]); return "<tr><td>" + esc(m) + '</td><td class="n">' + g.n + '</td><td class="n">' + g.rate + '%<span class="rlmeter" aria-hidden="true"><i style="width:' + g.rate + '%"></i></span></td><td class="n">' + cell(g.avg) + '</td><td class="n">' + cell(g.best) + "</td></tr>";
+      }).join("") + "</tbody></table></div><div class=\"muted\">Average and best count extracted raids with a haul value.</div></div>" + rlChart();
     li.innerHTML = "<h4 style=\"margin:12px 0 4px;\">Recent raids</h4>" + raids.slice(-15).reverse().map(function (r) {
       var d = new Date(r.t), idx = raids.indexOf(r);
       return '<div class="rlrow"><div><b>' + esc(r.m) + "</b> &middot; " + (r.o === "x" ? "Extracted" : "Died") + (r.v !== null ? " &middot; " + coins(r.v) + " coins" : "") +
         '<div class="muted">' + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + (r.n ? " &middot; " + esc(r.n) : "") + "</div></div>" +
         '<button type="button" class="btn ghost" style="padding:3px 8px;" data-action="rlDel" data-i="' + idx + '" aria-label="Delete this raid">&times;</button></div>';
     }).join("") + '<div class="acts" style="margin-top:8px;"><button class="btn ghost" type="button" data-action="rlClear">Clear raid log</button></div>';
+  }
+  /* Raid log chart: the last 30 raids as bars (haul value; deaths as red marks) with the average haul as a dashed line. */
+  function rlChart() {
+    var last = raids.slice(-30);
+    if (last.length < 2) { return ""; }
+    var W = 300, H = 120, pl = 34, pb = 18, top = 8, vals = last.map(function (r) { return r.o === "x" && r.v !== null ? r.v : 0; });
+    var max = Math.max.apply(null, vals) || 1, bw = (W - pl - 4) / last.length, ch = H - pb - top;
+    var hv = last.filter(function (r) { return r.o === "x" && r.v !== null; }), avg = hv.length ? hv.reduce(function (a, r) { return a + r.v; }, 0) / hv.length : null;
+    var bars = last.map(function (r, i) {
+      var x = pl + i * bw + bw * 0.15, w = Math.max(1, bw * 0.7), tip = esc(r.m) + ": " + (r.o === "x" ? "extracted" + (r.v !== null ? ", " + coins(r.v) + " coins" : "") : "died");
+      if (r.o !== "x") { return '<rect class="rldie" x="' + x.toFixed(1) + '" y="' + (H - pb - 4) + '" width="' + w.toFixed(1) + '" height="4"><title>' + tip + "</title></rect>"; }
+      var h = r.v !== null ? Math.max(2, ch * r.v / max) : 2;
+      return '<rect class="rlbar" x="' + x.toFixed(1) + '" y="' + (H - pb - h).toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) + '"><title>' + tip + "</title></rect>";
+    }).join("");
+    var ay = avg === null ? null : (H - pb - ch * avg / max).toFixed(1);
+    var recent = raids.slice(-10), rx = recent.filter(function (r) { return r.o === "x"; }).length, rate = Math.round(rx * 100 / recent.length);
+    var allRate = Math.round(raids.filter(function (r) { return r.o === "x"; }).length * 100 / raids.length);
+    return '<h4 style="margin:12px 0 4px;">Last ' + last.length + " raids</h4>" +
+      '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Haul value of your last ' + last.length + ' raids" style="width:100%;max-width:520px;height:auto;">' +
+      '<line class="hax" x1="' + pl + '" y1="' + (H - pb) + '" x2="' + W + '" y2="' + (H - pb) + '"/><line class="hax" x1="' + pl + '" y1="' + top + '" x2="' + pl + '" y2="' + (H - pb) + '"/>' + bars +
+      (ay !== null ? '<line class="rlavg" x1="' + pl + '" y1="' + ay + '" x2="' + W + '" y2="' + ay + '"/>' : "") +
+      '<text class="htxt" x="2" y="' + (top + 6) + '">' + (max >= 1000 ? Math.round(max / 1000) + "k" : max) + '</text><text class="htxt" x="2" y="' + (H - pb) + '">0</text>' +
+      '<text class="htxt" x="' + pl + '" y="' + (H - 4) + '">older</text><text class="htxt" x="' + (W - 3) + '" y="' + (H - 4) + '" text-anchor="end">newest</text></svg>' +
+      '<div class="muted">Bars are haul value; red marks are deaths' + (avg !== null ? "; the dashed line is your average haul (" + coins(Math.round(avg)) + ")" : "") + ". " +
+      (raids.length > recent.length ? "Last " + recent.length + " raids: " + rate + "% extracted, " + (rate > allRate ? "up from" : rate < allRate ? "down from" : "same as") + " " + allRate + "% overall." : "") + "</div>";
   }
   function renderKeep() {
     var box = document.getElementById("keepOut");

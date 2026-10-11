@@ -21,7 +21,6 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
-    ["Oct 11, 2026", "Maps: a new Raider Cache zones layer in the detailed map view marks the areas where caches tend to appear on Dam Battlegrounds, The Blue Gate, Buried City and Spaceport. The zones are approximate and come from a community guide to the Hurricane event, not the wiki. Search everything finds them with the word cache."],
     ["Oct 11, 2026", "New logo: the whole triangle is made of the four colours, in equal parts around its sides."],
     ["Oct 11, 2026", "The colour stripes at the top of the site and in the logo now run blue, green, yellow, red."],
     ["Oct 11, 2026", "Added the five Amplification Modules (Mk. I to V) with where they drop, and a new Amplification section in Reference listing every weapon upgrade, its effect, research project and compatible weapons. Search everything finds both. The Mk. I wiki page would not load, so its details follow the other four."],

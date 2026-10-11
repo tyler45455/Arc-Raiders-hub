@@ -348,6 +348,10 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .crtree ul { padding-left: 18px; border-left: 1px solid var(--line); margin-left: 6px; }
 .crtree li { padding: 3px 0; }
 .crtree .st { color: var(--muted); font-size: 13px; }
+.skrow { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+.skrow .muted { grid-column: 1 / -1; font-size: 13px; }
+.skrow input[type=number] { width: 72px; }
+.skrow.warn b, .skrow .bad, #skSum .bad { color: var(--danger); font-weight: 600; }
 .cmp-grid { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 10px; }
 .gearrow { display: grid; gap: 12px; grid-template-columns: 1fr auto; align-items: center; margin-top: 14px; }
 .gearrow select { width: auto; }
@@ -1047,6 +1051,17 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       </div>
       <label class="crdeep"><input type="checkbox" id="lvGear"> Include weapons, augments and shields</label>
       <div id="lvOut"></div>
+    </div>
+
+    <div class="tool" id="skillTool">
+      <h3>Skill build planner</h3>
+      <p class="muted">Spend points across the three skill trees and share the build as a link. You earn 76 points from levels, plus up to 5 per completed Expedition. The wiki does not map which small skill leads to which, so only point totals and the large-node gates are checked.</p>
+      <div class="stashgrid">
+        <div><label for="skExp">Expedition bonus points</label><input type="number" min="0" max="200" inputmode="numeric" id="skExp" value="0"></div>
+      </div>
+      <div id="skSum" class="muted" style="margin-top:8px;" role="status"></div>
+      <div id="skOut"></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="skLink">Copy build link</button><button class="btn ghost" type="button" data-action="skReset">Clear build</button><span class="muted" id="skMsg" role="status"></span></div>
     </div>
   </section>
 
@@ -2305,6 +2320,49 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
           (r.pv !== null && r.pv > r.p ? ' &middot; <span class="good">recycled parts sell for ' + coins(r.pv) + "</span>" : "") + (k ? " &middot; needed for " + k.map(esc).join("; ") : "") + "</span></div>";
       }).join("") : '<div class="empty-line">No item matches that.</div>';
   }
+  /* Skill build planner. SKILLS rows: [name, tree, max points or "-", unlock note, effect].
+     Large nodes ("choose one") cost 1 point and need 10, or 30 to 40, points elsewhere in the same tree. */
+  var skBuild = load("arcHubSkills", {}), skExp = load("arcHubSkillExp", 0), skOpen = { Conditioning: true };
+  function skMax(k) { return /choose one/.test(k[3]) ? 1 : k[2] !== "-" ? parseInt(k[2], 10) || 1 : 5; }
+  function skGroup(k) { var m = /^(Large node(?: \d)?)/.exec(k[3]); return m ? k[1] + "|" + m[1] : ""; }
+  function skGate(k) { return !skGroup(k) ? 0 : /30 or 40/.test(k[3]) ? 30 : 10; }
+  function skTreeSpent(tree, except) {
+    return SKILLS.reduce(function (t, k) { return t + (k[1] === tree && k[0] !== except && !skGroup(k) ? skBuild[k[0]] || 0 : 0); }, 0);
+  }
+  function renderSkills() {
+    var out = document.getElementById("skOut");
+    if (!out) { return; }
+    var spent = 0, avail = 76 + (parseInt(skExp, 10) || 0), warns = 0;
+    out.innerHTML = ["Conditioning", "Mobility", "Survival"].map(function (tree) {
+      var small = skTreeSpent(tree), tot = 0;
+      var rows = SKILLS.filter(function (k) { return k[1] === tree; }).map(function (k) {
+        var v = skBuild[k[0]] || 0, g = skGroup(k), gate = skGate(k), bad = "";
+        tot += v;
+        if (g && v && small < gate) { bad = "Needs " + (gate === 30 ? "30 to 40" : gate) + " points in the rest of " + tree + " (you have " + small + ")."; warns++; }
+        if (g && v && SKILLS.some(function (o) { return o[0] !== k[0] && skGroup(o) === g && skBuild[o[0]]; })) { bad = "Pick only one skill from this large node."; warns++; }
+        var ctl = g ? '<input type="checkbox" data-sk="' + esc(k[0]) + '"' + (v ? " checked" : "") + ' aria-label="Take ' + esc(k[0]) + '">'
+          : '<input type="number" min="0" max="' + skMax(k) + '" inputmode="numeric" data-sk="' + esc(k[0]) + '" value="' + v + '" aria-label="Points in ' + esc(k[0]) + '">';
+        return '<div class="skrow' + (bad ? " warn" : "") + '"><b>' + esc(k[0]) + "</b>" + ctl + '<span class="muted">' + esc(k[4]) +
+          (g ? " &middot; " + esc(k[3]) : " &middot; max " + skMax(k) + (k[2] === "-" ? " (not listed on the wiki, assumed)" : "")) + (bad ? ' <span class="bad">' + bad + "</span>" : "") + "</span></div>";
+      }).join("");
+      spent += tot;
+      return '<details class="proj" data-tree="' + tree + '"' + (skOpen[tree] ? " open" : "") + '><summary><b>' + tree + ' <span class="muted">' + tot + " points</span></b></summary>" + rows + "</details>";
+    }).join("");
+    document.getElementById("skSum").innerHTML = "<b>" + spent + " of " + avail + "</b> points spent" + (spent > avail ? ' <span class="bad">(' + (spent - avail) + " over)</span>" : ", " + (avail - spent) + " left") + (warns ? " &middot; " + warns + " problem" + (warns > 1 ? "s" : "") + " below" : "");
+  }
+  function skSet(name, v) {
+    var k = SKILLS.filter(function (x) { return x[0] === name; })[0];
+    if (!k) { return; }
+    v = Math.max(0, Math.min(skMax(k), parseInt(v, 10) || 0));
+    if (v) { skBuild[name] = v; } else { delete skBuild[name]; }
+    save("arcHubSkills", skBuild);
+  }
+  function skApply(arg) {
+    skBuild = {}; skOpen = { Conditioning: true, Mobility: true, Survival: true };
+    arg.split("~").forEach(function (x) { var i = x.lastIndexOf("*"); if (i > 0) { skSet(x.slice(0, i), x.slice(i + 1)); } });
+    toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("skillTool")));
+    renderSkills();
+  }
   function renderKeep() {
     var box = document.getElementById("keepOut");
     if (!box) { return; }
@@ -3212,6 +3270,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var mparts = r.arg.split("~");
       for (var i = 0; i < MAPS.length; i++) { if (MAPS[i].name === mparts[0]) { curMap = i; renderMaps(); if (mparts.length > 1 && ROOMS[mapSlug(MAPS[i])]) { lb.pend = lbParseShared(mparts); lbOpen(mapDetailSrc(MAPS[i]), MAPS[i].name); } } }
     }
+    if (r.tab === "tools" && /^sk=/.test(r.arg)) { skApply(r.arg.slice(3)); }
     if (r.tab === "tools" && /^craft=/.test(r.arg)) { craftApply(r.arg.slice(6)); }
     if (r.tab === "tools" && /^sb=/.test(r.arg)) {
       toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("sbTool")));
@@ -3462,7 +3521,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "gear") { renderGear(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); }
+    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); }
     if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
@@ -3708,6 +3767,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         clearTimeout(window.__rst); window.__rst = setTimeout(function () { t.setAttribute("data-armed", "0"); t.textContent = "Reset everything to default"; }, 5000);
       }
     } else if (a === "toolTab") { toolShow(t.getAttribute("data-ti"));
+    } else if (a === "skLink") {
+      var skm = document.getElementById("skMsg");
+      copyText(window.location.href.split("#")[0] + "#tools/sk=" + encodeURIComponent(Object.keys(skBuild).map(function (n) { return n + "*" + skBuild[n]; }).join("~")), function (ok) { skm.textContent = ok ? "Link copied" : "Copy failed"; });
+    } else if (a === "skReset") {
+      if (t.getAttribute("data-armed") === "1") { skBuild = {}; save("arcHubSkills", skBuild); renderSkills(); t.setAttribute("data-armed", "0"); t.textContent = "Clear build"; }
+      else { t.setAttribute("data-armed", "1"); t.textContent = "Press again to clear"; }
     } else if (a === "crOpen") {
       e.preventDefault(); showTab("tools", true); craftApply(t.getAttribute("data-n") + "*1"); writeHash();
       var crt = document.getElementById("craftTool"); if (crt && crt.scrollIntoView) { crt.scrollIntoView({ block: "start" }); }
@@ -3926,6 +3991,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     document.getElementById("crDeep").addEventListener("change", renderCraft);
     document.getElementById("lvQ").addEventListener("input", renderLoot);
     ["lvSort", "lvGear"].forEach(function (id) { document.getElementById(id).addEventListener("change", function () { save("arcHubLoot", { s: document.getElementById("lvSort").value, g: document.getElementById("lvGear").checked }); renderLoot(); }); });
+    document.getElementById("skExp").value = skExp;
+    document.getElementById("skExp").addEventListener("input", function () { skExp = Math.max(0, parseInt(this.value, 10) || 0); save("arcHubSkillExp", skExp); renderSkills(); });
+    document.getElementById("skOut").addEventListener("toggle", function (e) { var tr = e.target.getAttribute && e.target.getAttribute("data-tree"); if (tr) { skOpen[tr] = e.target.open; } }, true);
+    document.getElementById("skOut").addEventListener("change", function (e) {
+      var n = e.target.getAttribute("data-sk");
+      if (n) { skSet(n, e.target.type === "checkbox" ? (e.target.checked ? 1 : 0) : e.target.value); renderSkills(); }
+    });
     var lv = load("arcHubLoot", null);
     if (lv) { if (/^(kg|slot|price)$/.test(lv.s)) { document.getElementById("lvSort").value = lv.s; } document.getElementById("lvGear").checked = !!lv.g; }
   })();

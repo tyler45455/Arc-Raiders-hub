@@ -533,6 +533,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .lb-route { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
 .lb-route polyline { fill: none; stroke: #f7b81c; stroke-width: 3; stroke-dasharray: 8 6; vector-effect: non-scaling-stroke; }
 .lb-rm { position: absolute; transform: translate(-50%, -50%) scale(var(--inv, 1)); pointer-events: none; display: block; width: 18px; height: 18px; white-space: nowrap; }
+.lb-zone { position: absolute; border-radius: 50%; pointer-events: none; border: 2px dashed #ff8a1c; background: repeating-linear-gradient(45deg, rgba(255,138,28,.55) 0 2px, transparent 2px 9px), repeating-linear-gradient(-45deg, rgba(255,138,28,.55) 0 2px, transparent 2px 9px), rgba(255,138,28,.12); box-sizing: border-box; }
+.lb-rm.zl { width: 0; height: 0; } .lb-rm.zl span { margin-left: 0; left: 0; top: 0; transform: translate(-50%, -50%); }
 .lb-rm i { width: 14px; height: 14px; border-radius: 50%; background: #f7b81c; border: 2px solid #0a0a0a; display: block; }
 .lb-rm span { position: absolute; left: 100%; top: 50%; margin-left: 4px; transform: translateY(-50%); background: rgba(10,10,10,.85); color: #f1e8d4; padding: 1px 6px; border-radius: 4px; font: 600 12px var(--font-body); }
 .lb-pin.shared i { background: #3a8fe6; }
@@ -3004,6 +3006,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var czr = {}; (CACHE_ZONES[lb.slug] || []).forEach(function (z) { if (z[0]) { czr[z[0]] = z[1]; } });
       R.r.forEach(function (r) {
         var isCz = lb.types["Raider Cache zones"] && czr[r[0]];
+        if (isCz) {
+          var zw = Math.round(lb.nw * 0.07), zh = zw;
+          html += '<div class="lb-zone" title="' + esc("Raider Cache zone: " + czr[r[0]]) + '" style="left:' + (r[1] * lb.nw - zw / 2) + "px;top:" + (r[2] * lb.nh - zh / 2) + "px;width:" + zw + "px;height:" + zh + 'px"></div>' +
+            '<div class="lb-rm zl" style="left:' + (r[1] * 100) + "%;top:" + (r[2] * 100) + '%"><span>' + esc(r[0]) + " (cache area)</span></div>";
+          if (!r[3] || !r[3].some(function (t) { return lb.types[t]; })) { return; }
+        }
         if (!isCz && (!r[3] || !r[3].some(function (t) { return lb.types[t]; }))) { return; }
         html += '<div class="lb-rm" title="' + esc(isCz ? "Raider Cache zone: " + czr[r[0]] : r[0]) + '" style="left:' + (r[1] * 100) + "%;top:" + (r[2] * 100) + '%"><i></i><span>' + esc(r[0]) + (isCz ? " (cache)" : "") + "</span></div>";
       });

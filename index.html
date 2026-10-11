@@ -2776,6 +2776,7 @@ Integrated Binoculars|Common`;
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
   var DATA_CHANGES = [
+    ["Oct 11, 2026", "Search everything: type a loot type and a map together (for example industrial spaceport or nature dam) to list the matching rooms on that map."],
     ["Oct 11, 2026", "Search everything now finds loot area types (Industrial, Electrical, Nature, Technological and so on, also electronic or plants). Pick one to see its rooms on every map and the items the wiki lists for it."],
     ["Oct 11, 2026", "Recycle: the partial tag on an item is now a button. Press it to see why the item is marked partial."],
     ["Oct 11, 2026", "Search everything now finds map rooms by name or by area type (Industrial, Electrical, Medical and so on) and opens the detailed map at that room."],
@@ -2990,7 +2991,25 @@ Integrated Binoculars|Common`;
     grp("Trader stock", TRADERS.filter(function (t) { return m(t[1]); }).slice(0, 4).map(function (t) { return { l: t[1], s: t[0], go: ["traders", t[1]] }; }));
     var AT = ["ARC", "Commercial", "Electrical", "Exodus", "Industrial", "Mechanical", "Medical", "Nature", "Old World", "Residential", "Security", "Technological"];
     var ALIAS = { electronic: ["Electrical", "Technological"], electronics: ["Electrical", "Technological"], tech: ["Technological"], plant: ["Nature"], plants: ["Nature"], herb: ["Nature"], military: ["Security"], old: ["Old World"], house: ["Residential"], shop: ["Commercial"] };
-    var atHit = AT.filter(function (t) { return t.toLowerCase().indexOf(q) === 0 || (ALIAS[q] || []).indexOf(t) !== -1; });
+    function atFor(w) { return AT.filter(function (t) { return t.toLowerCase().indexOf(w) === 0 || (ALIAS[w] || []).indexOf(t) !== -1; }); }
+    var atHit = atFor(q);
+    var wd = q.split(/\s+/), combo = null;
+    for (var ci = 1; ci < wd.length && !combo; ci++) {
+      var pa = wd.slice(0, ci).join(" "), pb = wd.slice(ci).join(" ");
+      [[pa, pb], [pb, pa]].forEach(function (pr) {
+        if (combo) { return; }
+        var ts = atFor(pr[0]), mm = MAPS.filter(function (mp) { return mp.name.toLowerCase().indexOf(pr[1]) !== -1 && ROOMS[mapSlug(mp)]; });
+        if (ts.length && mm.length) { combo = { ts: ts, mp: mm[0] }; }
+      });
+    }
+    if (combo) {
+      var mi0 = MAPS.indexOf(combo.mp), hits = [];
+      ROOMS[mapSlug(combo.mp)].r.forEach(function (r, ri) {
+        var ov = (r[3] || []).filter(function (x) { return combo.ts.indexOf(x) !== -1; });
+        if (ov.length) { hits.push({ l: r[0], s: (r[3] || []).join(", "), go: ["room", mi0, ri] }); }
+      });
+      if (hits.length) { groups.push([combo.ts.join(" / ") + " rooms on " + combo.mp.name, hits.slice(0, 12)]); }
+    }
     grp("Loot areas", atHit.map(function (t) { var n = areaItems(t).length; return { l: t + " loot areas", s: n + " items", go: ["area", t] }; }));
     var roomHits = [];
     MAPS.forEach(function (mp, mi) {

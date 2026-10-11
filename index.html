@@ -1124,6 +1124,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <section class="panel" id="panel-site" role="tabpanel" aria-labelledby="tab-site" hidden>
     <h2>Site changes</h2>
     <p class="muted">What changed on this website itself, newest first. For ARC Raiders game updates, see the Updates tab.</p>
+    <details class="card" id="auditBox" style="margin-bottom:12px;"><summary><b>Data gaps</b> <span class="muted" id="auditCount"></span></summary>
+      <p class="muted">What the site still does not know, worked out from its own data each time you open this. If you know an answer, the Report what you know button opens a pre-filled GitHub issue.</p>
+      <div id="auditOut"></div>
+    </details>
     <div class="chglist" id="changesList"></div>
     <div class="credits"><h3>Credits</h3><p class="muted">Item, recycle, quest and source data comes from the community-run ARC Raiders wiki and is checked by hand. Map detail images are stitched from in-game screenshots. Translations are first drafts that players correct, so please use Report a translation error when something reads wrong. Thank you to everyone who reports a mistake or suggests a feature.</p><p><a href="https://github.com/tyler45455/Arc-Raiders-hub/issues" target="_blank" rel="noopener">Report a mistake or suggest a feature on GitHub</a></p></div>
   </section>
@@ -2925,6 +2929,35 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (on) { document.documentElement.setAttribute("data-contrast", "high"); } else { document.documentElement.removeAttribute("data-contrast"); }
     var b = document.getElementById("contrastBtn"); if (b) { b.textContent = "Contrast: " + (on ? "On" : "Off"); }
   }
+  /* Data gaps: items with no source or price, quests missing objectives or rewards, keys with no source or map spot. */
+  function auditLists() {
+    var names = {};
+    items.forEach(function (it) { names[it.name] = 1; });
+    Object.keys(ITEMINFO).forEach(function (n) { names[n] = 1; });
+    var all = Object.keys(names).sort();
+    return [
+      ["Items with no known source", "Not listed as found anywhere, sold by a trader, given by a quest or craftable.", all.filter(function (n) { return !FARM[n] && !FARM2[n] && !recipeOf(n); })],
+      ["Items with no sell price", "No sell price in the item data, so value tools skip them.", all.filter(function (n) { return !ITEMINFO[n] || ITEMINFO[n][0] == null; })],
+      ["Quests with no objectives", "The quest list has no steps for these.", QUESTS.filter(function (q) { return !q.obj.length; }).map(function (q) { return q.name; })],
+      ["Quests with no rewards", "No reward items are listed.", QUESTS.filter(function (q) { return !q.rew.length; }).map(function (q) { return q.name; })],
+      ["Keys with no known source", "Nobody has said where to find these.", KEYS.filter(function (k) { return !k[4] && !k[5]; }).map(function (k) { return k[0]; })],
+      ["Keys with no spot on the map", "The door is not pinned to a room on the detail map.", KEYS.filter(function (k) { return keyMapRoom(k)[1] < 0; }).map(function (k) { return k[0] + " (" + k[1] + ")"; })]
+    ];
+  }
+  function renderAudit() {
+    var out = document.getElementById("auditOut");
+    if (!out) { return; }
+    var L = auditLists(), tot = 0;
+    out.innerHTML = L.map(function (g, gi) {
+      tot += g[2].length;
+      var body = "Section: " + g[0] + "\n\nWhat I know (name, what the site should say, and a source such as the wiki or a screenshot):\n";
+      return '<details class="proj"><summary><b>' + esc(g[0]) + '</b> <span class="muted">(' + g[2].length + ")</span></summary>" +
+        '<div class="muted">' + esc(g[1]) + "</div>" +
+        (g[2].length ? '<div class="ffchips">' + g[2].map(function (n) { return '<span class="y">' + esc(n) + "</span>"; }).join("") + "</div>" : '<div class="empty-line">Nothing missing here.</div>') +
+        (g[2].length && REPORT_ISSUES_URL ? '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" data-audit="' + gi + '" href="' + esc(REPORT_ISSUES_URL + "?title=" + encodeURIComponent("Data gap: " + g[0]) + "&body=" + encodeURIComponent(body)) + '">Report what you know</a></div>' : "") + "</details>";
+    }).join("");
+    document.getElementById("auditCount").textContent = "(" + tot + " open)";
+  }
   function renderChanges() {
     var el = document.getElementById("changesList");
     if (el) { el.innerHTML = DATA_CHANGES.map(function (c) { return '<div class="chg"><span class="tl-date">' + esc(c[0]) + "</span><div>" + esc(c[1]) + "</div></div>"; }).join(""); }
@@ -3662,6 +3695,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
+    if (name === "site") { try { renderAudit(); } catch (eA) {} }
     syncMore();
     if (!quiet) { writeHash(); }
   }

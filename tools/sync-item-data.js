@@ -87,7 +87,8 @@ function cost(c) {
   }).join(", ");
 }
 var upFrom = {};
-Object.keys(D).forEach(function (id) { var d = D[id]; if (d.upgradesTo) { upFrom[d.upgradesTo] = [d.name.en, d.upgradeCost || {}]; } });
+/* upgradeCost sits on the tier it upgrades INTO (rattler_ii holds the I to II cost). */
+Object.keys(D).forEach(function (id) { var d = D[id]; if (d.upgradesTo) { upFrom[d.upgradesTo] = [d.name.en, (D[d.upgradesTo] && D[d.upgradesTo].upgradeCost) || {}]; } });
 var F3 = {};
 ours.forEach(function (n) {
   var d = byName[n];

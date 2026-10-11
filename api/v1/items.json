@@ -1142,7 +1142,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Anvil I at the Gunsmith"
+     "Upgrade from Anvil I at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 7000,
@@ -1171,7 +1171,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Anvil II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+     "Upgrade from Anvil II at the Gunsmith (1 Heavy Gun Parts, 4 Mechanical Components)"
     ]
    },
    "sellPrice": 10000,
@@ -1386,7 +1386,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Arpeggio I at the Gunsmith"
+     "Upgrade from Arpeggio I at the Gunsmith (4 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 8000,
@@ -1421,7 +1421,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Arpeggio II at the Gunsmith (4 Mechanical Components, 1 Simple Gun Parts)"
+     "Upgrade from Arpeggio II at the Gunsmith (5 Mechanical Components, 1 Medium Gun Parts)"
     ]
    },
    "sellPrice": 11500,
@@ -1875,7 +1875,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Bettina I at the Gunsmith"
+     "Upgrade from Bettina I at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 11000,
@@ -1945,7 +1945,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Bettina III at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+     "Upgrade from Bettina III at the Gunsmith (2 Advanced Mechanical Components, 2 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 18000,
@@ -2285,7 +2285,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Bobcat I at the Gunsmith"
+     "Upgrade from Bobcat I at the Gunsmith (2 Advanced Mechanical Components, 1 Light Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -2320,7 +2320,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Bobcat II at the Gunsmith (2 Advanced Mechanical Components, 1 Light Gun Parts)"
+     "Upgrade from Bobcat II at the Gunsmith (2 Advanced Mechanical Components, 3 Light Gun Parts)"
     ]
    },
    "sellPrice": 22000,
@@ -2612,7 +2612,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Burletta I at the Gunsmith"
+     "Upgrade from Burletta I at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 5000,
@@ -2682,7 +2682,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Burletta III at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+     "Upgrade from Burletta III at the Gunsmith (1 Light Gun Parts, 4 Mechanical Components)"
     ]
    },
    "sellPrice": 10000,
@@ -5390,7 +5390,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Ferro I at the Gunsmith"
+     "Upgrade from Ferro I at the Gunsmith (7 Metal Parts)"
     ]
    },
    "sellPrice": 1000,
@@ -5425,7 +5425,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Ferro II at the Gunsmith (7 Metal Parts)"
+     "Upgrade from Ferro II at the Gunsmith (9 Metal Parts, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 2000,
@@ -5463,7 +5463,7 @@
      "Tian Wen (8,700 coins, 1 per day)"
     ],
     "other": [
-     "Upgrade from Ferro III at the Gunsmith (9 Metal Parts, 1 Simple Gun Parts)"
+     "Upgrade from Ferro III at the Gunsmith (1 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 2900,
@@ -6445,7 +6445,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Hairpin I at the Gunsmith"
+     "Upgrade from Hairpin I at the Gunsmith (8 Metal Parts)"
     ]
    },
    "sellPrice": 1000,
@@ -6480,7 +6480,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Hairpin II at the Gunsmith (8 Metal Parts)"
+     "Upgrade from Hairpin II at the Gunsmith (9 Metal Parts, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 2000,
@@ -6515,7 +6515,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Hairpin III at the Gunsmith (9 Metal Parts, 1 Simple Gun Parts)"
+     "Upgrade from Hairpin III at the Gunsmith (1 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 2900,
@@ -6963,7 +6963,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Hullcracker I at the Gunsmith"
+     "Upgrade from Hullcracker I at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 13000,
@@ -6998,7 +6998,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Hullcracker II at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+     "Upgrade from Hullcracker II at the Gunsmith (2 Advanced Mechanical Components, 1 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -7033,7 +7033,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Hullcracker III at the Gunsmith (2 Advanced Mechanical Components, 1 Heavy Gun Parts)"
+     "Upgrade from Hullcracker III at the Gunsmith (2 Advanced Mechanical Components, 3 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 22000,
@@ -7183,7 +7183,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Il Toro I at the Gunsmith"
+     "Upgrade from Il Toro I at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 7000,
@@ -7218,7 +7218,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Il Toro II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+     "Upgrade from Il Toro II at the Gunsmith (1 Heavy Gun Parts, 4 Mechanical Components)"
     ]
    },
    "sellPrice": 10000,
@@ -7635,7 +7635,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Kettle I at the Gunsmith"
+     "Upgrade from Kettle I at the Gunsmith (8 Metal Parts, 10 Plastic Parts)"
     ]
    },
    "sellPrice": 2000,
@@ -7670,7 +7670,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Kettle II at the Gunsmith (8 Metal Parts, 10 Plastic Parts)"
+     "Upgrade from Kettle II at the Gunsmith (10 Metal Parts, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 3000,
@@ -7705,7 +7705,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Kettle III at the Gunsmith (10 Metal Parts, 1 Simple Gun Parts)"
+     "Upgrade from Kettle III at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 5000,
@@ -9355,7 +9355,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Osprey I at the Gunsmith"
+     "Upgrade from Osprey I at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 10000,
@@ -9425,7 +9425,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Osprey III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+     "Upgrade from Osprey III at the Gunsmith (2 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -10318,7 +10318,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Rattler I at the Gunsmith"
+     "Upgrade from Rattler I at the Gunsmith (10 Metal Parts, 10 Rubber Parts)"
     ]
    },
    "sellPrice": 3000,
@@ -10353,7 +10353,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Rattler II at the Gunsmith (10 Metal Parts, 10 Rubber Parts)"
+     "Upgrade from Rattler II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 5000,
@@ -10644,7 +10644,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Renegade I at the Gunsmith"
+     "Upgrade from Renegade I at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 10000,
@@ -10714,7 +10714,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Renegade III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+     "Upgrade from Renegade III at the Gunsmith (2 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -13076,7 +13076,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Stitcher I at the Gunsmith"
+     "Upgrade from Stitcher I at the Gunsmith (8 Metal Parts, 12 Rubber Parts)"
     ]
    },
    "sellPrice": 2000,
@@ -13111,7 +13111,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Stitcher II at the Gunsmith (8 Metal Parts, 12 Rubber Parts)"
+     "Upgrade from Stitcher II at the Gunsmith (10 Metal Parts, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 3000,
@@ -13146,7 +13146,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Stitcher III at the Gunsmith (10 Metal Parts, 1 Simple Gun Parts)"
+     "Upgrade from Stitcher III at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
     ]
    },
    "sellPrice": 5000,
@@ -13943,7 +13943,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Tempest I at the Gunsmith"
+     "Upgrade from Tempest I at the Gunsmith (2 Advanced Mechanical Components, 1 Medium Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -13978,7 +13978,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Tempest II at the Gunsmith (2 Advanced Mechanical Components, 1 Medium Gun Parts)"
+     "Upgrade from Tempest II at the Gunsmith (2 Advanced Mechanical Components, 3 Medium Gun Parts)"
     ]
    },
    "sellPrice": 22000,
@@ -14250,7 +14250,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Torrente I at the Gunsmith"
+     "Upgrade from Torrente I at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 10000,
@@ -14320,7 +14320,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Torrente III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+     "Upgrade from Torrente III at the Gunsmith (2 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -14651,7 +14651,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Venator I at the Gunsmith"
+     "Upgrade from Venator I at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 10000,
@@ -14721,7 +14721,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Venator III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+     "Upgrade from Venator III at the Gunsmith (2 Advanced Mechanical Components, 2 Medium Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -15122,7 +15122,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Vulcano I at the Gunsmith"
+     "Upgrade from Vulcano I at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 13000,
@@ -15157,7 +15157,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Vulcano II at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+     "Upgrade from Vulcano II at the Gunsmith (2 Advanced Mechanical Components, 1 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 17000,
@@ -15192,7 +15192,7 @@
    "areaTypes": [],
    "sources": {
     "other": [
-     "Upgrade from Vulcano III at the Gunsmith (2 Advanced Mechanical Components, 1 Heavy Gun Parts)"
+     "Upgrade from Vulcano III at the Gunsmith (2 Advanced Mechanical Components, 3 Heavy Gun Parts)"
     ]
    },
    "sellPrice": 22000,

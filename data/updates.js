@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Weapon upgrades: the Crafting planner now covers weapon tiers II to IV, counting the lower tier and every upgrade part down to basic materials, and weapons show what each upgrade costs with a Plan this craft link. Fixed upgrade costs that were shown one tier too late (for example, Rattler I to II costs 10 Metal Parts and 10 Rubber Parts, as on the wiki)."],
     ["Oct 11, 2026", "New Loot value tool in the Tools tab ranks items by sell price per kilogram or per stash slot (a full stack), so you know what is worth the space in your bag. It notes when recycled parts sell for more, and marks items your active quests, projects, goals or Keep tags still need. Weapons, augments and shields are left out unless you tick the box."],
     ["Oct 11, 2026", "New Crafting planner in the Tools tab: pick any of the 144 craftable items and how many, and it works out every part down to basic materials, uses components your tracker already has, and lists the workbenches you need. Save the result as a project to feed the Tracker shopping list, or copy a link. Items with a recipe now have a Plan this craft link."],
     ["Oct 11, 2026", "Sell prices, weights, recipes and the extra where to find details are now re-checked against the RaidTheory data set every week, so they keep up with game patches. Each refresh adds a line here listing what changed."],

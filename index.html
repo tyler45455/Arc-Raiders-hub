@@ -348,10 +348,23 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .crtree ul { padding-left: 18px; border-left: 1px solid var(--line); margin-left: 6px; }
 .crtree li { padding: 3px 0; }
 .crtree .st { color: var(--muted); font-size: 13px; }
-.skrow { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
-.skrow .muted { grid-column: 1 / -1; font-size: 13px; }
-.skrow input[type=number] { width: 72px; }
-.skrow.warn b, .skrow .bad, #skSum .bad { color: var(--danger); font-weight: 600; }
+.sktree { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px 6px; margin-top: 12px; }
+.sknode { position: relative; min-height: 56px; padding: 6px 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: inherit; font: inherit; font-size: 12px; line-height: 1.25; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.sknode::before { content: ""; position: absolute; left: 50%; top: -15px; height: 14px; border-left: 2px solid var(--line); }
+.sknode.root::before { display: none; }
+.sknode .rk { font-weight: 700; font-size: 12px; }
+.sknode.on { border-color: var(--warm); box-shadow: inset 0 0 0 1px var(--warm); }
+.sknode.on::before { border-color: var(--warm); }
+.sknode.max { background: var(--surface2); }
+.sknode.lock { opacity: .45; border-style: dashed; }
+.sknode.sel { outline: 2px solid var(--accent, var(--warm)); outline-offset: 2px; }
+.sknode.big { border-radius: 14px; }
+.skdia { grid-column: 1 / -1; display: flex; gap: 6px; justify-content: center; position: relative; padding: 6px; border: 1px dashed var(--line); border-radius: 14px; }
+.skdia .lbl { position: absolute; top: -9px; left: 10px; padding: 0 4px; background: var(--surface); font-size: 11px; color: var(--muted); }
+.skdia .sknode { flex: 1 1 0; max-width: 140px; }
+.skdia .sknode::before { display: none; }
+#skInfo:empty { display: none; }
+#skInfo .bad, #skSum .bad { color: var(--danger); font-weight: 600; }
 .cmp-grid { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 10px; }
 .gearrow { display: grid; gap: 12px; grid-template-columns: 1fr auto; align-items: center; margin-top: 14px; }
 .gearrow select { width: auto; }
@@ -1055,12 +1068,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
     <div class="tool" id="skillTool">
       <h3>Skill build planner</h3>
-      <p class="muted">Spend points across the three skill trees and share the build as a link. You earn 76 points from levels, plus up to 5 per completed Expedition. The wiki does not map which small skill leads to which, so only point totals and the large-node gates are checked.</p>
+      <p class="muted">Laid out like the in-game tree. Tap a skill to add a point; a skill stays locked until the one before it has a point, and the large nodes also need 10, 30 or 40 points in that tree. You earn 76 points from levels, plus up to 5 per completed Expedition.</p>
       <div class="stashgrid">
         <div><label for="skExp">Expedition bonus points</label><input type="number" min="0" max="200" inputmode="numeric" id="skExp" value="0"></div>
       </div>
       <div id="skSum" class="muted" style="margin-top:8px;" role="status"></div>
+      <div class="chips" id="skTabs" role="group" aria-label="Skill tree" style="margin-top:8px;"></div>
       <div id="skOut"></div>
+      <div id="skInfo" class="proj" aria-live="polite"></div>
       <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="skLink">Copy build link</button><button class="btn ghost" type="button" data-action="skReset">Clear build</button><span class="muted" id="skMsg" role="status"></span></div>
     </div>
   </section>
@@ -1990,7 +2005,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
             '<div class="refgrid"><div>' + esc(k[4]) + "</div>" + (k[3] !== "-" ? '<div><span class="k">Unlock: </span>' + esc(k[3]) + "</div>" : "") + "</div></div>";
         }).join("");
       });
-      if (n) { out += '<p class="muted">Per-skill prerequisites and most max-point values are not on the wiki; it gives general tree rules instead, and its numbers come from player testing.</p>'; }
+      if (n) { out += '<p class="muted">Max points and paths come from the wiki and community guides (the wiki does not map each connection). Plan a build with the Skill build planner in the Tools tab.</p>'; }
     } else if (refSec === "amplification") {
       total = AMPS.length;
       AMPS.forEach(function (u) {
@@ -2320,49 +2335,117 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
           (r.pv !== null && r.pv > r.p ? ' &middot; <span class="good">recycled parts sell for ' + coins(r.pv) + "</span>" : "") + (k ? " &middot; needed for " + k.map(esc).join("; ") : "") + "</span></div>";
       }).join("") : '<div class="empty-line">No item matches that.</div>';
   }
-  /* Skill build planner. SKILLS rows: [name, tree, max points or "-", unlock note, effect].
-     Large nodes ("choose one") cost 1 point and need 10, or 30 to 40, points elsewhere in the same tree. */
-  var skBuild = load("arcHubSkills", {}), skExp = load("arcHubSkillExp", 0), skOpen = { Conditioning: true };
-  function skMax(k) { return /choose one/.test(k[3]) ? 1 : k[2] !== "-" ? parseInt(k[2], 10) || 1 : 5; }
-  function skGroup(k) { var m = /^(Large node(?: \d)?)/.exec(k[3]); return m ? k[1] + "|" + m[1] : ""; }
-  function skGate(k) { return !skGroup(k) ? 0 : /30 or 40/.test(k[3]) ? 30 : 10; }
-  function skTreeSpent(tree, except) {
-    return SKILLS.reduce(function (t, k) { return t + (k[1] === tree && k[0] !== except && !skGroup(k) ? skBuild[k[0]] || 0 : 0); }, 0);
+  /* Skill build planner. SKILLS rows: [name, tree, max points, unlock note, effect]; SKILL_LAYOUT gives each tree's paths.
+     Rules from the wiki: a skill needs a point in the one before it; large node 1 (pick 1 of 2) needs 10 points in the tree
+     and a point in the end of an early path; large node 2 (pick up to 2 of 3) needs 30 points for the first pick and 40 for
+     the second, plus a point in the end of a middle column. */
+  var SKL = ARC.SKILL_LAYOUT || {}, SKT = ["Conditioning", "Mobility", "Survival"];
+  var skBuild = load("arcHubSkills", {}), skExp = load("arcHubSkillExp", 0), skTree = "Conditioning", skSel = "", skMsgTxt = "";
+  var SKBY = {};
+  SKILLS.forEach(function (k) { SKBY[k[0]] = k; });
+  function skMax(n) { return SKBY[n] ? parseInt(SKBY[n][2], 10) || 1 : 1; }
+  function skParts(t) {
+    var L = SKL[t] || { early: [], mid: [] }, ln = function (re) { return SKILLS.filter(function (k) { return k[1] === t && re.test(k[3]); }).map(function (k) { return k[0]; }); };
+    var start = (SKILLS.filter(function (k) { return k[1] === t && /Starting node/.test(k[3]); })[0] || [""])[0];
+    return { start: start, early: L.early, ln1: ln(/^Large node 1/), mid: L.mid, ln2: ln(/^Large node 2/) };
+  }
+  function skPts(b, n) { return b[n] || 0; }
+  function skSum(b, list) { return list.reduce(function (a, n) { return a + skPts(b, n); }, 0); }
+  function skTreeNames(t) { return SKILLS.filter(function (k) { return k[1] === t; }).map(function (k) { return k[0]; }); }
+  /* Why a point cannot be added to n in build b ("" when it can, ignoring the overall budget). */
+  function skLock(b, n) {
+    var k = SKBY[n]; if (!k) { return "Unknown skill."; }
+    var P = skParts(k[1]), all = skTreeNames(k[1]), i;
+    if (skPts(b, n) >= skMax(n)) { return "Already at max (" + skMax(n) + ")."; }
+    if (n === P.start) { return ""; }
+    for (i = 0; i < P.early.length; i++) {
+      if (P.early[i][0] === n) { return skPts(b, P.start) ? "" : "Needs a point in " + P.start + " first."; }
+      if (P.early[i][1] === n) { return skPts(b, P.early[i][0]) ? "" : "Needs a point in " + P.early[i][0] + " first."; }
+    }
+    for (i = 0; i < P.mid.length; i++) {
+      if (P.mid[i][0] === n) { return skSum(b, P.ln1) ? "" : "Needs a pick in the first large node."; }
+      if (P.mid[i][1] === n) { return skPts(b, P.mid[i][0]) ? "" : "Needs a point in " + P.mid[i][0] + " first."; }
+    }
+    var others = function (list) { return all.filter(function (x) { return list.indexOf(x) === -1; }); };
+    if (P.ln1.indexOf(n) !== -1) {
+      if (skSum(b, P.ln1)) { return "Only one of these two can be picked."; }
+      if (!P.early.some(function (c) { return skPts(b, c[1]); })) { return "Needs a point in " + P.early.map(function (c) { return c[1]; }).join(" or ") + "."; }
+      var h1 = skSum(b, others(P.ln1));
+      return h1 >= 10 ? "" : "Needs 10 points in " + k[1] + " (you have " + h1 + ").";
+    }
+    if (P.ln2.indexOf(n) !== -1) {
+      var picks = P.ln2.filter(function (x) { return skPts(b, x); }).length;
+      if (picks >= 2) { return "Up to two of these three can be picked."; }
+      if (!P.mid.some(function (c) { return skPts(b, c[1]); })) { return "Needs a point in the last skill of a middle column (" + P.mid.map(function (c) { return c[1]; }).join(", ") + ")."; }
+      var need = picks ? 40 : 30, h2 = skSum(b, others(P.ln2));
+      return h2 >= need ? "" : "The " + (picks ? "second" : "first") + " pick needs " + need + " points in " + k[1] + " (you have " + h2 + ").";
+    }
+    return "";
+  }
+  /* A build is valid when it can be rebuilt one point at a time in tree order. */
+  function skRebuild(want) {
+    var b = {}, changed = true;
+    while (changed) {
+      changed = false;
+      SKT.forEach(function (t) {
+        var P = skParts(t), order = [P.start].concat(P.early.map(function (c) { return c[0]; }), P.early.map(function (c) { return c[1]; }), P.ln1, P.mid.map(function (c) { return c[0]; }), P.mid.map(function (c) { return c[1]; }), P.ln2);
+        order.forEach(function (n) { while (n && skPts(b, n) < Math.min(skMax(n), want[n] || 0) && !skLock(b, n)) { b[n] = skPts(b, n) + 1; changed = true; } });
+      });
+    }
+    return b;
+  }
+  function skSame(a, b) { var ka = Object.keys(a), kb = Object.keys(b); return ka.length === kb.length && ka.every(function (k) { return a[k] === b[k]; }); }
+  function skSpent() { return Object.keys(skBuild).reduce(function (a, n) { return a + skBuild[n]; }, 0); }
+  function skAvail() { return 76 + (parseInt(skExp, 10) || 0); }
+  function skNode(n, cls, style) {
+    var v = skPts(skBuild, n), mx = skMax(n), lock = v ? "" : skLock(skBuild, n);
+    return '<button type="button" class="sknode ' + (cls || "") + (v ? " on" : "") + (v >= mx ? " max" : "") + (lock ? " lock" : "") + (n === skSel ? " sel" : "") + '"' + (style ? ' style="' + style + '"' : "") +
+      ' data-action="skTap" data-sk="' + esc(n) + '" aria-label="' + esc(n) + ", " + v + " of " + mx + (lock ? ", locked" : "") + '"><span>' + esc(n) + '</span><span class="rk">' + v + "/" + mx + "</span></button>";
   }
   function renderSkills() {
     var out = document.getElementById("skOut");
     if (!out) { return; }
-    var spent = 0, avail = 76 + (parseInt(skExp, 10) || 0), warns = 0;
-    out.innerHTML = ["Conditioning", "Mobility", "Survival"].map(function (tree) {
-      var small = skTreeSpent(tree), tot = 0;
-      var rows = SKILLS.filter(function (k) { return k[1] === tree; }).map(function (k) {
-        var v = skBuild[k[0]] || 0, g = skGroup(k), gate = skGate(k), bad = "";
-        tot += v;
-        if (g && v && small < gate) { bad = "Needs " + (gate === 30 ? "30 to 40" : gate) + " points in the rest of " + tree + " (you have " + small + ")."; warns++; }
-        if (g && v && SKILLS.some(function (o) { return o[0] !== k[0] && skGroup(o) === g && skBuild[o[0]]; })) { bad = "Pick only one skill from this large node."; warns++; }
-        var ctl = g ? '<input type="checkbox" data-sk="' + esc(k[0]) + '"' + (v ? " checked" : "") + ' aria-label="Take ' + esc(k[0]) + '">'
-          : '<input type="number" min="0" max="' + skMax(k) + '" inputmode="numeric" data-sk="' + esc(k[0]) + '" value="' + v + '" aria-label="Points in ' + esc(k[0]) + '">';
-        return '<div class="skrow' + (bad ? " warn" : "") + '"><b>' + esc(k[0]) + "</b>" + ctl + '<span class="muted">' + esc(k[4]) +
-          (g ? " &middot; " + esc(k[3]) : " &middot; max " + skMax(k) + (k[2] === "-" ? " (not listed on the wiki, assumed)" : "")) + (bad ? ' <span class="bad">' + bad + "</span>" : "") + "</span></div>";
-      }).join("");
-      spent += tot;
-      return '<details class="proj" data-tree="' + tree + '"' + (skOpen[tree] ? " open" : "") + '><summary><b>' + tree + ' <span class="muted">' + tot + " points</span></b></summary>" + rows + "</details>";
+    var spent = skSpent(), avail = skAvail();
+    document.getElementById("skSum").innerHTML = "<b>" + spent + " of " + avail + "</b> points spent" + (spent > avail ? ' <span class="bad">(' + (spent - avail) + " over)</span>" : ", " + (avail - spent) + " left");
+    document.getElementById("skTabs").innerHTML = SKT.map(function (t) {
+      return '<button type="button" class="chip" data-action="skTree" data-t="' + t + '" aria-pressed="' + (t === skTree ? "true" : "false") + '">' + t + " (" + skSum(skBuild, skTreeNames(t)) + ")</button>";
     }).join("");
-    document.getElementById("skSum").innerHTML = "<b>" + spent + " of " + avail + "</b> points spent" + (spent > avail ? ' <span class="bad">(' + (spent - avail) + " over)</span>" : ", " + (avail - spent) + " left") + (warns ? " &middot; " + warns + " problem" + (warns > 1 ? "s" : "") + " below" : "");
+    var P = skParts(skTree), h = "";
+    h += skNode(P.start, "root", "grid-column:3 / span 2");
+    [0, 1].forEach(function (r) { P.early.forEach(function (c, i) { h += skNode(c[r], "", "grid-column:" + (i ? 4 : 1) + " / span 3"); }); });
+    h += '<div class="skdia"><span class="lbl">10 points &middot; pick 1</span>' + P.ln1.map(function (n) { return skNode(n, "big"); }).join("") + "</div>";
+    [0, 1].forEach(function (r) { P.mid.forEach(function (c, i) { h += skNode(c[r], "", "grid-column:" + (i * 2 + 1) + " / span 2"); }); });
+    h += '<div class="skdia"><span class="lbl">30 and 40 points &middot; pick up to 2</span>' + P.ln2.map(function (n) { return skNode(n, "big"); }).join("") + "</div>";
+    out.innerHTML = '<div class="sktree">' + h + "</div>";
+    var info = document.getElementById("skInfo"), k = SKBY[skSel];
+    if (!k || k[1] !== skTree) { info.innerHTML = skMsgTxt ? '<span class="bad">' + esc(skMsgTxt) + "</span>" : '<span class="muted">Tap a skill to add a point and see what it does.</span>'; return; }
+    var v = skPts(skBuild, skSel), lock = skLock(skBuild, skSel);
+    info.innerHTML = '<div class="ph"><b>' + esc(k[0]) + ' <span class="muted">' + v + " / " + skMax(skSel) + "</span></b>" +
+      '<span style="display:flex;gap:6px;"><button class="btn ghost" type="button" data-action="skMinus" aria-label="Remove a point from ' + esc(k[0]) + '">&minus;</button><button class="btn" type="button" data-action="skPlus" aria-label="Add a point to ' + esc(k[0]) + '">+</button></span></div>' +
+      "<div>" + esc(k[4]) + "</div>" + (lock && v < skMax(skSel) && lock !== skMsgTxt ? '<div class="muted">' + esc(lock) + "</div>" : "") + (skMsgTxt ? '<div class="bad">' + esc(skMsgTxt) + "</div>" : "");
   }
-  function skSet(name, v) {
-    var k = SKILLS.filter(function (x) { return x[0] === name; })[0];
-    if (!k) { return; }
-    v = Math.max(0, Math.min(skMax(k), parseInt(v, 10) || 0));
-    if (v) { skBuild[name] = v; } else { delete skBuild[name]; }
-    save("arcHubSkills", skBuild);
+  function skAdd(n) {
+    var lock = skLock(skBuild, n);
+    if (lock) { return lock; }
+    if (skSpent() >= skAvail()) { return "No points left. Add Expedition bonus points or take points out elsewhere."; }
+    skBuild[n] = skPts(skBuild, n) + 1; save("arcHubSkills", skBuild); return "";
+  }
+  function skRemove(n) {
+    if (!skPts(skBuild, n)) { return ""; }
+    var b = {}; Object.keys(skBuild).forEach(function (x) { b[x] = skBuild[x]; });
+    b[n]--; if (!b[n]) { delete b[n]; }
+    if (!skSame(skRebuild(b), b)) { return "Take points out of the skills after " + n + " first, or the tree drops below a large node's points."; }
+    skBuild = b; save("arcHubSkills", skBuild); return "";
   }
   function skApply(arg) {
-    skBuild = {}; skOpen = { Conditioning: true, Mobility: true, Survival: true };
-    arg.split("~").forEach(function (x) { var i = x.lastIndexOf("*"); if (i > 0) { skSet(x.slice(0, i), x.slice(i + 1)); } });
+    var want = {};
+    arg.split("~").forEach(function (x) { var i = x.lastIndexOf("*"); if (i > 0 && SKBY[x.slice(0, i)]) { want[x.slice(0, i)] = parseInt(x.slice(i + 1), 10) || 0; } });
+    skBuild = skRebuild(want); save("arcHubSkills", skBuild);
+    var first = SKT.filter(function (t) { return skSum(skBuild, skTreeNames(t)); })[0]; if (first) { skTree = first; }
     toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("skillTool")));
     renderSkills();
   }
+  if (!skSame(skRebuild(skBuild), skBuild)) { skBuild = skRebuild(skBuild); save("arcHubSkills", skBuild); }
   function renderKeep() {
     var box = document.getElementById("keepOut");
     if (!box) { return; }
@@ -3767,6 +3850,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         clearTimeout(window.__rst); window.__rst = setTimeout(function () { t.setAttribute("data-armed", "0"); t.textContent = "Reset everything to default"; }, 5000);
       }
     } else if (a === "toolTab") { toolShow(t.getAttribute("data-ti"));
+    } else if (a === "skTap") {
+      skSel = t.getAttribute("data-sk"); skMsgTxt = skPts(skBuild, skSel) >= skMax(skSel) ? "" : skAdd(skSel); renderSkills();
+    } else if (a === "skPlus") {
+      skMsgTxt = skAdd(skSel); renderSkills();
+    } else if (a === "skMinus") {
+      skMsgTxt = skRemove(skSel); renderSkills();
+    } else if (a === "skTree") {
+      skTree = t.getAttribute("data-t"); skSel = ""; skMsgTxt = ""; renderSkills();
     } else if (a === "skLink") {
       var skm = document.getElementById("skMsg");
       copyText(window.location.href.split("#")[0] + "#tools/sk=" + encodeURIComponent(Object.keys(skBuild).map(function (n) { return n + "*" + skBuild[n]; }).join("~")), function (ok) { skm.textContent = ok ? "Link copied" : "Copy failed"; });
@@ -3993,11 +4084,6 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     ["lvSort", "lvGear"].forEach(function (id) { document.getElementById(id).addEventListener("change", function () { save("arcHubLoot", { s: document.getElementById("lvSort").value, g: document.getElementById("lvGear").checked }); renderLoot(); }); });
     document.getElementById("skExp").value = skExp;
     document.getElementById("skExp").addEventListener("input", function () { skExp = Math.max(0, parseInt(this.value, 10) || 0); save("arcHubSkillExp", skExp); renderSkills(); });
-    document.getElementById("skOut").addEventListener("toggle", function (e) { var tr = e.target.getAttribute && e.target.getAttribute("data-tree"); if (tr) { skOpen[tr] = e.target.open; } }, true);
-    document.getElementById("skOut").addEventListener("change", function (e) {
-      var n = e.target.getAttribute("data-sk");
-      if (n) { skSet(n, e.target.type === "checkbox" ? (e.target.checked ? 1 : 0) : e.target.value); renderSkills(); }
-    });
     var lv = load("arcHubLoot", null);
     if (lv) { if (/^(kg|slot|price)$/.test(lv.s)) { document.getElementById("lvSort").value = lv.s; } document.getElementById("lvGear").checked = !!lv.g; }
   })();

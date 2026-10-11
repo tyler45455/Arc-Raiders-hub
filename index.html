@@ -1099,6 +1099,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <div id="rlStats"></div>
       <div id="rlList"></div>
     </div>
+
+    <div class="tool" id="worthTool">
+      <h3>Stash worth</h3>
+      <p class="muted">What the items in your tracker would sell for, and which spare ones to sell first. Spare means more than your active quests, projects, workshop upgrades and goals need (the same needs as the Shopping list). Items you tagged Keep are never listed.</p>
+      <div class="stashgrid">
+        <div><label for="swSort">Sell first</label><select id="swSort"><option value="slots">What frees the most slots</option><option value="coins">What brings in the most coins</option></select></div>
+      </div>
+      <div id="swOut" aria-live="polite"></div>
+    </div>
   </section>
 
   <!-- MAPS -->
@@ -1656,7 +1665,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   function renderTracker() {
     var shopRows = [], sm = {};
-    try { shopRows = shopData(); shopRows.forEach(function (r) { sm[r.n] = r; }); renderShop(); renderPlanner(); } catch (e0) {}
+    try { shopRows = shopData(); shopRows.forEach(function (r) { sm[r.n] = r; }); renderShop(); renderPlanner(); renderWorth(); } catch (e0) {}
     histSoon();
     var set = {};
     Object.keys(tracker).concat(Object.keys(goals)).forEach(function (k) { set[k] = true; });
@@ -3796,6 +3805,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else if (a === "install") {
       if (deferredInstall) { deferredInstall.prompt(); } else { document.getElementById("installNote").hidden = false; window.scrollTo(0, 0); }
     } else if (a === "installClose") { document.getElementById("installNote").hidden = true;
+    } else if (a === "swPlan") {
+      var sp = parseInt(t.getAttribute("data-n"), 10) || 0;
+      stash.plan = sp; save("arcHubStash", stash); document.getElementById("stashPlan").value = sp; stashUpdate();
+      toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("stashTool")));
+      document.getElementById("stashTool").scrollIntoView({ behavior: "smooth", block: "start" });
     } else if (a === "stashTags") {
       var sc = Object.keys(itemTags).filter(function (n) { return itemTags[n] === "sell"; }).length;
       stash.plan = sc; save("arcHubStash", stash); document.getElementById("stashPlan").value = sc; stashUpdate();
@@ -4082,7 +4096,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var tn = t.getAttribute("data-item"), order = ["", "sell", "keep", "craft"], cur2 = itemTags[tn] || "";
       var nx = order[(order.indexOf(cur2) + 1) % order.length];
       if (nx) { itemTags[tn] = nx; } else { delete itemTags[tn]; }
-      save("arcHubTags", itemTags); renderResults();
+      save("arcHubTags", itemTags); renderResults(); renderWorth();
     } else if (a === "rchkAdd") {
       var rt = document.getElementById("rcNew").value.trim();
       if (rt) { rchk.push({ t: rt.slice(0, 80), p: document.getElementById("rcPer").value === "weekly" ? "weekly" : "daily", d: false, k: pKey(document.getElementById("rcPer").value) }); document.getElementById("rcNew").value = ""; save("arcHubRepeat", rchk); renderRepeat(); }
@@ -4506,6 +4520,48 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   /* ---------- stash planner ---------- */
   var stash = load("arcHubStash", {});
+  /* Stash worth: tracker counts x sell price, and the spare items (beyond Shopping list needs) to sell first. */
+  function swSlots(n, st) { return n > 0 ? Math.ceil(n / st) : 0; }
+  function worthData() {
+    var needs = {}, rows = [], tot = { coins: 0, slots: 0, unpriced: 0, spareCoins: 0, spareSlots: 0 };
+    shopData(true).forEach(function (r) { needs[r.n] = r.need; });
+    Object.keys(tracker).forEach(function (n) {
+      var have = tracker[n] || 0;
+      if (!(have > 0)) { return; }
+      var f = ITEMINFO[n], price = f && f[0] != null ? f[0] : null, st = (f && f[2]) || 1;
+      tot.slots += swSlots(have, st);
+      if (price === null) { tot.unpriced++; } else { tot.coins += price * have; }
+      if (itemTags[n] === "keep") { return; }
+      var spare = Math.max(0, have - (needs[n] || 0));
+      if (!spare) { return; }
+      var r = { n: n, have: have, spare: spare, price: price, coins: price === null ? 0 : price * spare, slots: swSlots(have, st) - swSlots(have - spare, st), sell: itemTags[n] === "sell" };
+      tot.spareCoins += r.coins; tot.spareSlots += r.slots;
+      rows.push(r);
+    });
+    return { rows: rows, tot: tot };
+  }
+  function renderWorth() {
+    var out = document.getElementById("swOut");
+    if (!out) { return; }
+    var sel = document.getElementById("swSort");
+    if (stash && stash.wsort && sel.value !== stash.wsort) { sel.value = stash.wsort; }
+    var by = sel.value === "coins" ? "coins" : "slots", d = worthData(), t = d.tot;
+    if (!Object.keys(tracker).some(function (n) { return tracker[n] > 0; })) {
+      out.innerHTML = '<div class="empty-line">Nothing in your tracker yet. Add what you have in the Tracker tab to see what it is worth.</div>';
+      return;
+    }
+    d.rows.sort(function (a, b) { return (b[by] - a[by]) || (by === "slots" ? b.coins - a.coins : b.slots - a.slots) || a.n.localeCompare(b.n); });
+    var shown = d.rows.slice(0, 40);
+    out.innerHTML = '<p style="margin:10px 0 4px;">Everything you track sells for <b>' + coins(t.coins) + "</b> coins and fills about <b>" + t.slots + "</b> slots" +
+      (t.unpriced ? ' <span class="muted">(' + t.unpriced + " item" + (t.unpriced === 1 ? " has" : "s have") + " no known sell price)</span>" : "") + ".</p>" +
+      (d.rows.length ? '<p style="margin:0 0 8px;">Spare items: <b>' + coins(t.spareCoins) + "</b> coins, freeing about <b>" + t.spareSlots + "</b> slots. " +
+        '<button class="btn ghost" type="button" data-action="swPlan" data-n="' + t.spareSlots + '">Use ' + t.spareSlots + " slots in the Stash space planner</button></p>" +
+        shown.map(function (r) {
+          return '<div class="krow"><b>' + esc(r.n) + "</b>" + (r.sell ? '<span class="ktag">Sell</span>' : "") + '<span class="muted">sell ' + r.spare + " of " + r.have +
+            " &middot; " + (r.price === null ? "no known price" : "<b>" + coins(r.coins) + "</b> coins") + " &middot; frees " + r.slots + " slot" + (r.slots === 1 ? "" : "s") + "</span></div>";
+        }).join("") + (d.rows.length > shown.length ? '<div class="muted">and ' + (d.rows.length - shown.length) + " more.</div>" : "")
+        : '<div class="empty-line">Nothing spare: your quests, projects, workshop upgrades and goals need everything you track.</div>');
+  }
   function stashUpdate() {
     var cap = parseInt(stash.cap, 10) || 0, used = parseInt(stash.used, 10) || 0, plan = parseInt(stash.plan, 10) || 0;
     var o = document.getElementById("stashOut"), f = document.getElementById("stashFill");
@@ -4524,6 +4580,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       el.addEventListener("input", function () { stash[map[id]] = el.value; save("arcHubStash", stash); stashUpdate(); });
     });
     stashUpdate();
+    var sw = document.getElementById("swSort");
+    if (sw) { sw.addEventListener("change", function () { stash.wsort = sw.value; save("arcHubStash", stash); renderWorth(); }); }
+    renderWorth();
   }
 
   /* ---------- reset countdowns ---------- */

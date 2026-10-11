@@ -26,6 +26,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Tools tab:** raid checklist, project helper with wiki presets (Expedition stages, Trophy Display and past projects) that compare what a project needs with your tracker and side-by-side item compare, weapon compare and a loadout builder that checks carried weight against your augment. Backups can be copied as a short transfer code, and the browser keeps automatic snapshots.
 - **Crafting planner (Tools tab):** pick a craftable item and a quantity to see every material it takes down to basic parts, checked against your tracker, with the workbenches needed. Save it as a project or share it as a link.
 - **Loot value (Tools tab):** ranks items by sell price per kg or per stash slot, and marks the ones your quests, projects or goals still need. Its Price changes list shows every sell price change the weekly sync has recorded since Oct 11, 2026; item pages show the latest one.
+- **Stash worth (Tools tab):** adds up the sell value of everything in your tracker and lists the spare items to sell first, by slots freed or coins earned.
 - **Skill build planner (Tools tab):** spend points across the three skill trees, check large-node gates and point totals, and share the build as a link.
 - **Raid log (Tools tab):** log each raid's map, result and haul to see your extract rate and average haul per map.
 - **Backup:** export and import your tracker, goals, stars, projects and checklist as text.

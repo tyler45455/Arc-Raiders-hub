@@ -10,7 +10,8 @@
    "mapId": "buried-city",
    "roomId": "hospital",
    "usedAt": "Opens a locked room in the North West corner of the Hospital, second floor.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "buried-city-jkv-employee-access-card",
@@ -18,7 +19,8 @@
    "mapId": "buried-city",
    "roomId": null,
    "usedAt": "Unlocks a door in the J Kozma Ventures company building.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "buried-city-residential-master-key",
@@ -26,7 +28,8 @@
    "mapId": "buried-city",
    "roomId": null,
    "usedAt": "Unlocks certain apartment doors.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "buried-city-town-hall-key",
@@ -34,7 +37,8 @@
    "mapId": "buried-city",
    "roomId": "town-hall",
    "usedAt": "Unlocks a door to the Town Hall.",
-   "questReward": null
+   "questReward": "Our Presence up There",
+   "foundIn": "Random loot; the wiki lists Security Lockers and Weapon Cases"
   },
   {
    "id": "dam-control-tower-key",
@@ -42,7 +46,8 @@
    "mapId": "dam-battlegrounds",
    "roomId": "control-tower",
    "usedAt": "Unlocks the door to the Control Tower.",
-   "questReward": null
+   "questReward": "The Trifecta",
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "dam-staff-room-key",
@@ -50,7 +55,8 @@
    "mapId": "dam-battlegrounds",
    "roomId": "research-administration",
    "usedAt": "Opens a locked door in the Research & Administration building, first floor.",
-   "questReward": "The Stench Of Corruption"
+   "questReward": "The Stench Of Corruption",
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "dam-surveillance-key",
@@ -58,7 +64,8 @@
    "mapId": "dam-battlegrounds",
    "roomId": "water-treatment-control",
    "usedAt": "Unlocks a door in the Water Treatment Control building.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "dam-testing-annex-key",
@@ -66,7 +73,8 @@
    "mapId": "dam-battlegrounds",
    "roomId": "testing-annex",
    "usedAt": "Unlocks a door in the Testing Annex.",
-   "questReward": null
+   "questReward": "A Lay Of The Land",
+   "foundIn": "Random loot; the wiki lists Lockers, Drawers and Filing Cabinets"
   },
   {
    "id": "dam-controlled-access-zone-key",
@@ -74,7 +82,8 @@
    "mapId": "dam-battlegrounds",
    "roomId": "controlled-access-zone",
    "usedAt": "Unlocks a door in the Controlled Access Zone.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot; the wiki lists Electrical Panels, Computers, Drawers and Filing Cabinets"
   },
   {
    "id": "power-rod",
@@ -82,7 +91,8 @@
    "mapId": "dam-battlegrounds",
    "roomId": "power-generation-complex",
    "usedAt": "Unlocks a door on the east side of the Power Generation Complex.",
-   "questReward": null
+   "questReward": "Groundbreaking",
+   "foundIn": "Crafted (recipe shown with the item)"
   },
   {
    "id": "spaceport-container-storage-key",
@@ -90,7 +100,8 @@
    "mapId": "spaceport",
    "roomId": "container-storage",
    "usedAt": "Unlocks a door in Container Storage.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "spaceport-control-tower-key",
@@ -98,7 +109,8 @@
    "mapId": "spaceport",
    "roomId": "control-tower-a6",
    "usedAt": "Unlocks a door to the Ground Control Tower.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "spaceport-trench-tower-key",
@@ -106,7 +118,8 @@
    "mapId": "spaceport",
    "roomId": "north-trench-tower",
    "usedAt": "Unlocks a door to the Trench Towers (there are a north and a south tower).",
-   "questReward": null
+   "questReward": "Switching The Supply",
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "spaceport-warehouse-key",
@@ -114,7 +127,8 @@
    "mapId": "spaceport",
    "roomId": "shipping-warehouse",
    "usedAt": "Unlocks a door in the Shipping Warehouse.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "blue-gate-cellar-key",
@@ -122,7 +136,8 @@
    "mapId": "the-blue-gate",
    "roomId": null,
    "usedAt": "Unlocks certain cellar doors near the Blue Gate.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "blue-gate-village-key",
@@ -130,7 +145,8 @@
    "mapId": "the-blue-gate",
    "roomId": "village",
    "usedAt": "Unlocks a door to one of the old village buildings.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "blue-gate-communication-tower-key",
@@ -138,7 +154,8 @@
    "mapId": "the-blue-gate",
    "roomId": null,
    "usedAt": "Unlocks a door by the Communication Tower.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "blue-gate-confiscation-room-key",
@@ -146,7 +163,8 @@
    "mapId": "the-blue-gate",
    "roomId": null,
    "usedAt": "Unlocks a door to the confiscated foods area in the Blue Gate tunnels.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "ancient-fort-security-code",
@@ -154,7 +172,8 @@
    "mapId": "the-blue-gate",
    "roomId": "ancient-fort",
    "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Any lootable container at Ancient Fort on The Blue Gate"
   },
   {
    "id": "pilgrim-s-peak-security-code",
@@ -162,7 +181,8 @@
    "mapId": "the-blue-gate",
    "roomId": "pilgrim-s-peak",
    "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Any lootable container at Pilgrim's Peak on The Blue Gate"
   },
   {
    "id": "raider-s-refuge-security-code",
@@ -170,7 +190,8 @@
    "mapId": "the-blue-gate",
    "roomId": "raider-s-refuge",
    "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Any lootable container at Raider's Refuge on The Blue Gate"
   },
   {
    "id": "reinforced-reception-security-code",
@@ -178,7 +199,8 @@
    "mapId": "the-blue-gate",
    "roomId": "reinforced-reception",
    "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Any lootable container, such as the bins, at Reinforced Reception on The Blue Gate; at least one spawns each round"
   },
   {
    "id": "patrol-car-key",
@@ -186,7 +208,8 @@
    "mapId": "the-blue-gate",
    "roomId": null,
    "usedAt": "Unlocks the rear door of a patrol car (found on The Blue Gate and Riven Tides).",
-   "questReward": null
+   "questReward": "A Prime Specimen",
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "stella-montis-archives-key",
@@ -194,7 +217,8 @@
    "mapId": "stella-montis",
    "roomId": null,
    "usedAt": "Unlocks a door in the Archives.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "stella-montis-assembly-admin-key",
@@ -202,7 +226,8 @@
    "mapId": "stella-montis",
    "roomId": null,
    "usedAt": "Unlocks a door in Assembly.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "stella-montis-medical-storage-key",
@@ -210,7 +235,8 @@
    "mapId": "stella-montis",
    "roomId": null,
    "usedAt": "Unlocks a door in Medical Research.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "stella-montis-security-checkpoint-key",
@@ -218,7 +244,8 @@
    "mapId": "stella-montis",
    "roomId": null,
    "usedAt": "Unlocks a door in the Security Checkpoint.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot; the wiki lists Box Lockers"
   },
   {
    "id": "riven-tides-crane-house-keycard",
@@ -226,7 +253,8 @@
    "mapId": "riven-tides",
    "roomId": null,
    "usedAt": "Unlocks a door in one of the Crane Houses.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-secure-storage-keycard",
@@ -234,7 +262,8 @@
    "mapId": "riven-tides",
    "roomId": "port-authority-building",
    "usedAt": "Unlocks the Secure Storage room in the Port Authority Building.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-classified-records-keycard",
@@ -242,7 +271,8 @@
    "mapId": "riven-tides",
    "roomId": "port-authority-building",
    "usedAt": "Unlocks the Classified Records room in the Port Authority Building.",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-hotel-keycard-no-102",
@@ -250,7 +280,8 @@
    "mapId": "riven-tides",
    "roomId": "hotel-panorama-azzurro",
    "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-hotel-keycard-no-107",
@@ -258,7 +289,8 @@
    "mapId": "riven-tides",
    "roomId": "hotel-panorama-azzurro",
    "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
-   "questReward": "Battening Down"
+   "questReward": "Battening Down",
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-hotel-keycard-no-113",
@@ -266,7 +298,8 @@
    "mapId": "riven-tides",
    "roomId": "hotel-panorama-azzurro",
    "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-hotel-keycard-no-205",
@@ -274,7 +307,8 @@
    "mapId": "riven-tides",
    "roomId": "hotel-panorama-azzurro",
    "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-hotel-keycard-no-208",
@@ -282,7 +316,8 @@
    "mapId": "riven-tides",
    "roomId": "hotel-panorama-azzurro",
    "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-hotel-keycard-no-311",
@@ -290,7 +325,8 @@
    "mapId": "riven-tides",
    "roomId": "hotel-panorama-azzurro",
    "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {
    "id": "riven-tides-hotel-keycard-no-404",
@@ -298,7 +334,8 @@
    "mapId": "riven-tides",
    "roomId": "hotel-panorama-azzurro",
    "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
-   "questReward": null
+   "questReward": null,
+   "foundIn": null
   }
  ]
 }

@@ -2978,8 +2978,8 @@
    ],
    "requires": [
     {
-     "id": "wire",
-     "name": "Wire",
+     "id": "wires",
+     "name": "Wires",
      "qty": 1
     }
    ],

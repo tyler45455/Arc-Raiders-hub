@@ -117,7 +117,7 @@ function keys() {
   var mapId = {}; MAPS.forEach(function (m) { mapId[m.name] = mapSlug(m); });
   var list = KEYS.map(function (k) {
     return { id: slug(k[0]), name: k[0], mapId: mapId[k[1]] || null, roomId: k[2] ? slug(k[2]) : null,
-      usedAt: k[3], questReward: k[4] || null };
+      usedAt: k[3], questReward: k[4] || null, foundIn: k[5] || null };
   });
   uniqueIds(list, "keys");
   return list;

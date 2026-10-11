@@ -1,0 +1,70 @@
+name: Weekly item data sync
+
+# Every Monday, re-reads sell prices, weights, stack sizes, recipes and the extra "where to find"
+# details from RaidTheory/arcraiders-data and opens (or updates) a pull request when anything changed.
+# Run it by hand from the Actions tab with "Run workflow".
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency: item-data-sync
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Download the RaidTheory data set
+        run: git clone --depth 1 https://github.com/RaidTheory/arcraiders-data "$RUNNER_TEMP/rt"
+      - name: Refresh item data
+        id: sync
+        run: |
+          node tools/sync-item-data.js "$RUNNER_TEMP/rt" --summary "$RUNNER_TEMP/summary.md"
+          if git diff --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Rebuild pages, sw.js and public JSON
+        if: steps.sync.outputs.changed == 'true'
+        run: node tools/build-pages.js && node tools/build-api.js
+      # Pull requests opened by this workflow do not start the Check workflow, so run the same checks here.
+      - name: Checks (same as the Check workflow)
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          node tools/build-pages.js --check
+          node tools/build-api.js --check
+          npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
+          node tools/smoke-test.js
+      - name: Open or update the pull request
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B data-sync
+          git add -A data item map api sitemap.xml sw.js
+          git commit -q -m "Weekly item data refresh from RaidTheory/arcraiders-data"
+          git push -f origin data-sync
+          {
+            cat "$RUNNER_TEMP/summary.md"
+            echo
+            echo "Made by the weekly item data sync workflow. The page, public JSON and smoke-test checks passed in that run; this pull request does not start the Check workflow on its own."
+          } > "$RUNNER_TEMP/body.md"
+          pr=$(gh pr list --head data-sync --state open --json number --jq '.[0].number')
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --body-file "$RUNNER_TEMP/body.md"
+          elif ! gh pr create --base main --head data-sync --title "Weekly item data refresh" --body-file "$RUNNER_TEMP/body.md" --assignee "${{ github.repository_owner }}"; then
+            # Happens when "Allow GitHub Actions to create and approve pull requests" is off in the repository settings.
+            { echo "The weekly item data refresh is on the data-sync branch, but this workflow could not open a pull request."; echo;
+              echo "Open it here: https://github.com/${{ github.repository }}/compare/main...data-sync?expand=1"; echo;
+              cat "$RUNNER_TEMP/body.md"; } > "$RUNNER_TEMP/issue.md"
+            [ -n "$(gh issue list --state open --search 'in:title "Weekly item data refresh is ready"' --json number --jq '.[0].number')" ] ||
+              gh issue create --title "Weekly item data refresh is ready" --body-file "$RUNNER_TEMP/issue.md" --assignee "${{ github.repository_owner }}"
+          fi

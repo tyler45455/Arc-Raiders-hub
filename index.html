@@ -563,7 +563,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .band .wrap{padding-block:14px 0}
   .toprow .eyebrow{display:none}
   .toprow{justify-content:flex-end}
-  .topbtns{flex-wrap:nowrap;gap:6px;align-items:center}
+  .topbtns{flex-wrap:wrap;gap:6px;align-items:center}
   .toprow .btn,.topbtns .btn{padding:6px 10px;font-size:13px;min-height:34px}
   .topbtns .btn{white-space:nowrap}
   .toolrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
@@ -602,6 +602,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   h1.brand { margin: 6px 0 10px; }
   .hint { padding: 8px 10px; font-size: 12.5px; gap: 8px; }
   main { padding-block: 12px 40px; }
+  /* iPhone zooms in on any field under 16px when it is tapped, and the page then pans sideways */
+  input, select, textarea { font-size: 16px !important; }
 }
 </style>
 </head>

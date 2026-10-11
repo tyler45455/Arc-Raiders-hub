@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-/* Regenerates item/, map/ and sitemap.xml from the data in index.html.
+/* Regenerates item/, map/ and sitemap.xml from the data in data/*.js, and
+   stamps the offline cache name in sw.js.
    Usage: node tools/build-pages.js          (writes the files)
           node tools/build-pages.js --check  (exits 1 if any file would change)
    No dependencies; needs Node 14.14 or newer. */
@@ -11,20 +12,14 @@ var vm = require("vm");
 var ROOT = path.join(__dirname, "..");
 var SITE = "https://tyler45455.github.io/Arc-Raiders-hub/";
 var CHECKED = "October 10, 2026";
-var SRC = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
-
-/* Read `var NAME = <literal>;` from index.html. The literal ends at the first
-   ";" closing a line where the text so far parses as a complete value. */
+/* Run the data files the way the site loads them and read window.ARC_DATA. */
+var DATA_FILES = fs.readdirSync(path.join(ROOT, "data")).filter(function (f) { return /\.js$/.test(f); }).sort();
+var SANDBOX = { window: {} };
+vm.createContext(SANDBOX);
+DATA_FILES.forEach(function (f) { vm.runInContext(fs.readFileSync(path.join(ROOT, "data", f), "utf8"), SANDBOX, { filename: "data/" + f }); });
 function grab(name) {
-  var start = SRC.indexOf("var " + name + " = ");
-  if (start === -1) { throw new Error("index.html has no var " + name); }
-  start += ("var " + name + " = ").length;
-  var re = /;[ \t]*(\r?\n|$)/g, m;
-  re.lastIndex = start;
-  while ((m = re.exec(SRC))) {
-    try { return vm.runInNewContext("(" + SRC.slice(start, m.index) + ")"); } catch (e) { /* keep looking */ }
-  }
-  throw new Error("Could not parse var " + name + " in index.html");
+  if (!(name in SANDBOX.window.ARC_DATA)) { throw new Error("data/*.js sets no ARC." + name); }
+  return SANDBOX.window.ARC_DATA[name];
 }
 
 var TABLES = grab("TABLES"), EXTRAS = grab("EXTRAS"), RARITY = grab("RARITY"), NO_RECYCLE = grab("NO_RECYCLE");
@@ -183,6 +178,16 @@ out["item/index.html"] = itemIndex(items);
 maps.forEach(function (m) { out["map/" + mapSlug(m) + "/index.html"] = mapPage(m); });
 out["sitemap.xml"] = sitemap(maps, items);
 
+/* sw.js: list the data files for offline use and name the cache after a hash of
+   everything it saves, so visitors get a fresh copy whenever the site changes. */
+var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"]
+  .concat(DATA_FILES.map(function (f) { return "data/" + f; }));
+var hash = require("crypto").createHash("sha1");
+CORE.slice(1).forEach(function (f) { hash.update(f + "\0"); hash.update(fs.readFileSync(path.join(ROOT, f))); });
+out["sw.js"] = fs.readFileSync(path.join(ROOT, "sw.js"), "utf8")
+  .replace(/^var CACHE = .*$/m, 'var CACHE = "arc-hub-' + hash.digest("hex").slice(0, 10) + '"; /* set by tools/build-pages.js */')
+  .replace(/^var CORE = .*$/m, "var CORE = " + JSON.stringify(CORE).replace(/","/g, '", "') + ";");
+
 var check = process.argv.indexOf("--check") !== -1, changed = [];
 Object.keys(out).forEach(function (rel) {
   var file = path.join(ROOT, rel), old = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
@@ -190,12 +195,12 @@ Object.keys(out).forEach(function (rel) {
   changed.push(rel);
   if (!check) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, out[rel]); }
 });
-/* Pages whose item or map is no longer in index.html. */
+/* Pages whose item or map is no longer in the data. */
 ["item", "map"].forEach(function (dir) {
   fs.readdirSync(path.join(ROOT, dir)).forEach(function (d) {
     var rel = dir + "/" + d + "/index.html";
     if (fs.existsSync(path.join(ROOT, rel)) && !out[rel]) {
-      changed.push(rel + " (no longer in index.html)");
+      changed.push(rel + " (no longer in the data)");
       if (!check) { fs.rmSync(path.join(ROOT, dir, d), { recursive: true }); }
     }
   });

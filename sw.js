@@ -1,12 +1,7 @@
 /* Offline support: always try the network first so visitors get the newest site,
    and fall back to the last saved copy when there is no connection. */
-<<<<<<< HEAD
-var CACHE = "arc-hub-1d78c0cb35"; /* set by tools/build-pages.js */
+var CACHE = "arc-hub-82a3104ad2"; /* set by tools/build-pages.js */
 var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "data/gear.js", "data/i18n.js", "data/items.js", "data/maps.js", "data/quests.js", "data/reference.js", "data/updates.js"];
-=======
-var CACHE = "arc-hub-v34";
-var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
->>>>>>> origin/main
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).then(function () { return self.skipWaiting(); }));
@@ -22,7 +17,8 @@ self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) { return; }
   e.respondWith(
-    fetch(req).then(function (res) {
+    /* no-cache: always revalidate with the server, so a page never pairs with older cached data files */
+    fetch(req, { cache: "no-cache" }).then(function (res) {
       if (res && res.ok) {
         var copy = res.clone();
         caches.open(CACHE).then(function (c) { c.put(req, copy); });

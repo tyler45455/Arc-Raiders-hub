@@ -13,6 +13,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: No leftover merge-conflict markers
+        run: "! grep -rnE '^(<<<<<<<|>>>>>>>)' --include=*.js --include=*.html --include=*.json --include=*.md --include=*.yml --exclude-dir=.git --exclude-dir=node_modules ."
       - name: Generated pages and sw.js are up to date (run node tools/build-pages.js if this fails)
         run: node tools/build-pages.js --check
       - name: Public JSON data is up to date (run node tools/build-api.js if this fails)

@@ -1722,7 +1722,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var STASH = ARC.STASH;
   var SKILLS = ARC.SKILLS;
   var BPS = ARC.BPS;
-  var AMPS = ARC.AMPS;
+  var AMPS = ARC.AMPS || [];
   var bpOwned = load("arcHubBP", {});
   var refSec = "enemies";
   var REF_SECS = [["enemies", "Enemies"], ["traders", "Traders"], ["workshop", "Workshop"], ["skills", "Skills"], ["amplification", "Amplification"], ["blueprints", "Blueprints"], ["trials", "Trials"]];
@@ -2118,7 +2118,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var gTargets = [];
   /* Small public surface for tools and a future sync source. IDs match api/v1/*.json. */
   window.ArcHub = { schema: 2, idOf: idOf, itemName: canonItem, questName: canonQuest, exportBackup: backupObj };
-  var KEYS = ARC.KEYS;
+  var KEYS = ARC.KEYS || [];
+  var CACHE_ZONES = ARC.CACHE_ZONES || {};
   function keyMapRoom(k) { var mi = -1, ri = -1; MAPS.forEach(function (m, i) { if (m.name === k[1]) { mi = i; } }); if (mi >= 0 && k[2]) { (ROOMS[mapSlug(MAPS[mi])] || { r: [] }).r.forEach(function (r, i) { if (r[0] === k[2]) { ri = i; } }); } return [mi, ri]; }
   function gSearch() {
     var q = document.getElementById("gq").value.trim().toLowerCase();
@@ -2169,7 +2170,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var czHits = [];
     if (q.length >= 3 && (/^(raider )?caches?( zones?)?$/.test(q) || "raider cache zones".indexOf(q) === 0)) {
       MAPS.forEach(function (mp, mi) {
-        var R = ROOMS[mapSlug(mp)], Z = ARC.CACHE_ZONES[mapSlug(mp)]; if (!R || !Z) { return; }
+        var R = ROOMS[mapSlug(mp)], Z = CACHE_ZONES[mapSlug(mp)]; if (!R || !Z) { return; }
         Z.forEach(function (z) { R.r.forEach(function (r, ri) { if (z[0] && r[0] === z[0]) { czHits.push({ l: r[0], s: mp.name + " \u00b7 " + z[1], go: ["room", mi, ri] }); } }); });
       });
     }
@@ -3000,7 +3001,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     var R = ROOMS[lb.slug], any = Object.keys(lb.types).some(function (k) { return lb.types[k]; });
     if (R && any) {
-      var czr = {}; (ARC.CACHE_ZONES[lb.slug] || []).forEach(function (z) { if (z[0]) { czr[z[0]] = z[1]; } });
+      var czr = {}; (CACHE_ZONES[lb.slug] || []).forEach(function (z) { if (z[0]) { czr[z[0]] = z[1]; } });
       R.r.forEach(function (r) {
         var isCz = lb.types["Raider Cache zones"] && czr[r[0]];
         if (!isCz && (!r[3] || !r[3].some(function (t) { return lb.types[t]; }))) { return; }
@@ -3022,7 +3023,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     lbEl("lbLayersBtn").hidden = !R;
     if (!R) { box.innerHTML = ""; return; }
     R.r.forEach(function (r) { (r[3] || []).forEach(function (t) { seen[t] = 1; }); });
-    var cz = ARC.CACHE_ZONES[lb.slug];
+    var cz = CACHE_ZONES[lb.slug];
     if (cz) { seen["Raider Cache zones"] = 1; }
     box.innerHTML = '<span>Show places by type:</span>' + Object.keys(seen).sort().map(function (t) {
       return '<button type="button" class="chip" data-action="lbType" data-t="' + esc(t) + '" aria-pressed="' + (lb.types[t] ? "true" : "false") + '">' + esc(t) + "</button>";

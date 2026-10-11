@@ -209,8 +209,10 @@ details.card summary { cursor: pointer; font-weight: 600; }
 .inv-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .inv {
   background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px;
-  display: grid; gap: 6px;
+  display: grid; gap: 6px; align-content: start;
 }
+.inv.farmopen { grid-column: 1 / -1; }
+.inv.farmopen .qin { max-width: 240px; }
 .inv .n { font-weight: 600; overflow-wrap: anywhere; }
 .inv .q { font-family: var(--font-display); font-weight: 700; font-size: 38px; line-height: 1; color: var(--warm); }
 .inv .ctl { display: flex; justify-content: space-between; align-items: end; }
@@ -310,6 +312,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .farmmap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
 .farmmap > b { min-width: 130px; }
 .farmmap .chip { padding: 4px 10px; font-size: 14px; }
+@media (max-width: 600px) { .farmmap > b { min-width: 0; flex-basis: 100%; } .farmmap .chip { padding: 3px 9px; font-size: 13px; } }
 .chglist { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; max-width: 75ch; }
 .chg { display: flex; flex-direction: column; gap: 2px; padding-left: 12px; border-left: 3px solid var(--line); }
 .chg > div { font-weight: 500; }
@@ -1566,7 +1569,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     box.innerHTML = '<div class="inv-grid">' + keys.map(function (k) {
       var ip = invParts(k), g = goals[k] || 0;
-      return '<div class="inv" data-inv="' + esc(k) + '"><div class="n">' + esc(k) + '</div><div class="ctl"><input class="qin" type="number" min="0" inputmode="numeric" data-invhave="' + esc(k) + '" value="' + (tracker[k] || 0) + '" aria-label="How many ' + esc(k) + ' you have"></div>' +
+      return '<div class="inv' + (shopWhereOpen[k] ? " farmopen" : "") + '" data-inv="' + esc(k) + '"><div class="n">' + esc(k) + '</div><div class="ctl"><input class="qin" type="number" min="0" inputmode="numeric" data-invhave="' + esc(k) + '" value="' + (tracker[k] || 0) + '" aria-label="How many ' + esc(k) + ' you have"></div>' +
         '<div class="invprog">' + ip.prog + '</div><div class="invneed">' + ip.need + '</div>' +
         '<div class="goalline"><label for="g-' + esc(k) + '">Goal</label><input type="number" min="0" id="g-' + esc(k) + '" data-goal="' + esc(k) + '" value="' + (g || "") + '" placeholder="none"></div>' +
         '<div class="acts"><button class="btn ghost" type="button" data-action="shopBump" data-m="' + esc(k) + '" data-n="1">+1</button><button class="btn ghost" type="button" data-action="shopBump" data-m="' + esc(k) + '" data-n="5">+5</button><button class="btn ghost" type="button" data-action="shopBump" data-m="' + esc(k) + '" data-n="10">+10</button><button class="btn ghost" type="button" data-action="shopWhere" data-m="' + esc(k) + '" aria-expanded="' + (shopWhereOpen[k] ? "true" : "false") + '">' + (shopWhereOpen[k] ? "Hide where to farm" : "Where to farm this") + "</button></div>" +

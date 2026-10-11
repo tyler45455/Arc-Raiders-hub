@@ -24,6 +24,8 @@ function grab(name) {
 
 var TABLES = grab("TABLES"), EXTRAS = grab("EXTRAS"), RARITY = grab("RARITY"), NO_RECYCLE = grab("NO_RECYCLE");
 var MAPS = grab("MAPS"), ROOMS = grab("ROOMS"), FARM = grab("FARM"), FARM2 = grab("FARM2");
+var ITEMINFO = grab("ITEMINFO"), CRAFTS_INTO = {};
+Object.keys(ITEMINFO).forEach(function (n) { var r = ITEMINFO[n][3]; if (r) { r[1].forEach(function (g) { (CRAFTS_INTO[g[0]] = CRAFTS_INTO[g[0]] || []).push(n); }); } });
 
 /* Same escaping as Python's html.escape, which the pages were first built with. */
 function esc(s) {
@@ -88,7 +90,8 @@ var ITEM_CSS = ":root{color-scheme:dark}*{box-sizing:border-box}\n" +
   ".m{color:#a8a08c;font-size:14px}.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0;list-style:none}\n" +
   ".chips li{border:1px solid #6c6554;border-radius:999px;padding:3px 12px;font-size:14px}\n" +
   ".btn{display:inline-block;background:#e6281c;color:#fff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:8px;margin:14px 8px 14px 0}\n" +
-  "ul.idx{columns:2 240px;padding-left:18px}\n";
+  "ul.idx{columns:2 240px;padding-left:18px}\n" +
+  ".stats{display:flex;flex-wrap:wrap;gap:6px 22px;color:#bdb49d;margin:12px 0;font-family:ui-monospace,Consolas,monospace;font-size:14px}.stats b{color:#f1e8d4}\n";
 
 var MAP_CSS = ":root{color-scheme:dark}\n*{box-sizing:border-box}\n" +
   "body{margin:0;background:#0a0a0a;color:#f1e8d4;font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}\n" +
@@ -110,22 +113,29 @@ function itemPage(it) {
   var F = FARM[it.name], G = FARM2[it.name], hasFarm = !!(F || G);
   F = F || {}; G = G || {};
   var qty = function (p) { return p[1] + "× " + p[0]; };
-  var body = chips("Recycles into", it.rec.map(qty)) + chips("Salvages into", it.sal.map(qty)) +
+  var I = ITEMINFO[it.name] || [], st = [];
+  if (I[0] != null) { st.push("Sells for <b>" + I[0].toLocaleString("en-US") + "</b> coins"); }
+  if (I[1] != null) { st.push("Weight <b>" + I[1] + " kg</b>"); }
+  if (I[2] != null) { st.push("Stacks to <b>" + I[2] + "</b>"); }
+  var stats = st.length ? '<p class="stats">' + st.map(function (x) { return "<span>" + x + "</span>"; }).join("") + "</p>\n" : "";
+  var body = (I[3] ? chips("Craft at " + I[3][0], I[3][1].map(function (g) { return g[1] + "× " + g[0]; })) : "") +
+    chips("Used to craft", CRAFTS_INTO[it.name]) + chips("Recycles into", it.rec.map(qty)) + chips("Salvages into", it.sal.map(qty)) +
     chips("Area types the wiki lists", F.t || G.t) + chips("Found in", G.s) + chips("Dropped by ARC", G.a) +
     chips("Sold by", G.v) + chips("Quests", G.q) + chips("Other", G.o) +
     (F.s ? "<h2>Also from the wiki</h2><p>" + esc(F.s) + ".</p>" : "");
   var url = SITE + "item/" + slug(it.name) + "/";
   return head({
     title: it.name + ": where to farm and what it recycles into | Arc Raiders Hub",
-    desc: hasFarm ? "Where to farm " + it.name + " in ARC Raiders: area types, sources, traders and quests, plus what it recycles into." :
-      it.name + " in ARC Raiders: what it recycles into",
+    desc: (hasFarm ? "Where to farm " + it.name + " in ARC Raiders: area types, sources, traders and quests, plus what it recycles into" :
+      it.name + " in ARC Raiders: what it recycles into") + (I[0] != null ? ". Sells for " + I[0].toLocaleString("en-US") + " coins." : (hasFarm ? "." : "")),
     url: url, image: SITE + "og-image.png", icon: "../../", css: ITEM_CSS
   }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Arc Raiders Hub</a> / <a href="../">Items</a></div>\n' +
     "<h1>" + esc(it.name) + "</h1>\n" +
     '<p class="m">Item' + (it.rarity ? " (" + esc(it.rarity) + ")" : "") + ". Fan-made reference, not affiliated with Embark Studios.</p>\n" +
+    stats +
     (body || "<p>The wiki lists no sources for this item yet.</p>") + "\n" +
     '<p><a class="btn" href="' + hashLink("recycle", it.name) + '">Open in Arc Raiders Hub</a></p>\n' +
-    '<p class="m">Sources from the ARC Raiders wiki, last checked ' + CHECKED + ". Double-check numbers in game.</p>\n</div>\n</body>\n</html>\n";
+    '<p class="m">Sources from the ARC Raiders wiki, last checked ' + CHECKED + "." + (I.length ? ' Price, weight and recipe from the wiki and <a href="https://github.com/RaidTheory/arcraiders-data">RaidTheory/arcraiders-data</a>.' : "") + " Double-check numbers in game.</p>\n</div>\n</body>\n</html>\n";
 }
 
 function itemIndex(items) {

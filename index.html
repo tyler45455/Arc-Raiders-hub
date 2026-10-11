@@ -362,6 +362,9 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .toolrow label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
 .toolrow .btn { padding: 5px 10px; font-size: 12px; }
 .help { grid-column: 1 / -1; font-size: 13px; color: var(--good); }
+.iinfo { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.iinfo b { color: var(--fg); }
+.iinfo .good { color: var(--good); }
 .help b { font-weight: 600; }
 .bar { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
 .bar > i { display: block; height: 100%; background: var(--warm); }
@@ -578,6 +581,28 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .chips.subtabs::-webkit-scrollbar,#qTraders::-webkit-scrollbar,#gearCats::-webkit-scrollbar,#refChips::-webkit-scrollbar,#mapChips::-webkit-scrollbar,#chips::-webkit-scrollbar{display:none}
   .chips.subtabs>*,#qTraders>*,#gearCats>*,#refChips>*,#mapChips>*,#chips>*{flex:none}
 }
+/* phone: bottom bar shows the main tabs plus a More menu */
+.topbtns .langsel { width: auto; }
+.tabbar { display: flex; align-items: stretch; }
+.tabbar .tabs { flex: 1 1 auto; min-width: 0; }
+.moretab, .moremenu { display: none; }
+@media (max-width: 600px) {
+  .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 14px rgba(0,0,0,.12); }
+  .tabbar .tabs { position: static; border-top: 0; box-shadow: none; padding-bottom: 0; overflow: visible; flex: 4 1 0; -webkit-mask-image: none; mask-image: none; }
+  .tabbar .tab { flex: 1 1 0; padding: 14px 2px; text-align: center; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .tabbar .tab.sec { display: none; }
+  .tabbar .moretab { display: block; position: relative; flex: 1 1 0; }
+  .moretab[aria-current="true"] { color: var(--fg); font-weight: 700; }
+  .moretab .newdot { position: absolute; top: 10px; right: 8px; margin: 0; }
+  .moremenu:not([hidden]) { display: grid; position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 210px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.3); padding: 6px; gap: 2px; }
+  .moremenu button { appearance: none; background: none; border: 0; border-radius: 6px; color: var(--fg); font: 600 15px var(--font-body); text-align: left; padding: 12px 14px; cursor: pointer; }
+  .moremenu button[aria-current="true"] { background: var(--surface2); color: var(--accent); }
+  .band .lede, #dataStamp { display: none !important; }
+  .band .stamp { margin: 0; }
+  h1.brand { margin: 6px 0 10px; }
+  .hint { padding: 8px 10px; font-size: 12.5px; gap: 8px; }
+  main { padding-block: 12px 40px; }
+}
 </style>
 </head>
 <body>
@@ -590,17 +615,21 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
     <p class="stamp"><span id="dataStamp"></span><span class="offstate" id="offState"></span></p>
     <div class="gsearch"><input type="search" id="gq" placeholder="Search everything" aria-label="Search everything" autocomplete="off"><div class="gres" id="gres" hidden></div></div>
+    <div class="tabbar">
     <div class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycle</button>
       <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Tracker<span class="count" id="trackerCount"></span></button>
-      <button class="tab" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Gear</button>
+      <button class="tab sec" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Gear</button>
       <button class="tab" role="tab" id="tab-quests" data-tab="quests" aria-selected="false">Quests</button>
-      <button class="tab" role="tab" id="tab-ref" data-tab="ref" aria-selected="false">Reference</button>
-      <button class="tab" role="tab" id="tab-tools" data-tab="tools" aria-selected="false">Tools</button>
+      <button class="tab sec" role="tab" id="tab-ref" data-tab="ref" aria-selected="false">Reference</button>
+      <button class="tab sec" role="tab" id="tab-tools" data-tab="tools" aria-selected="false">Tools</button>
       <button class="tab" role="tab" id="tab-maps" data-tab="maps" aria-selected="false">Maps</button>
-      <button class="tab" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail</button>
-      <button class="tab" role="tab" id="tab-updates" data-tab="updates" aria-selected="false">Updates<span class="newdot" id="newDot" hidden></span></button>
-      <button class="tab" role="tab" id="tab-site" data-tab="site" aria-selected="false">Site changes</button>
+      <button class="tab sec" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail</button>
+      <button class="tab sec" role="tab" id="tab-updates" data-tab="updates" aria-selected="false">Updates<span class="newdot" id="newDot" hidden></span></button>
+      <button class="tab sec" role="tab" id="tab-site" data-tab="site" aria-selected="false">Site changes</button>
+    </div>
+      <button class="tab moretab" type="button" id="moreBtn" data-action="moreTabs" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><span id="moreLbl">More</span><span class="newdot" id="moreDot" hidden></span></button>
+      <div class="moremenu" id="moreMenu" hidden></div>
     </div>
   </div>
 </header>
@@ -631,7 +660,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <div class="toolrow">
       <label id="favWrap" hidden><input type="checkbox" id="favOnly"> Only my starred items</label>
       <label id="tagWrap">Tag <select id="tagFilter" aria-label="Filter by your tag"><option value="all">All items</option><option value="sell">Sell</option><option value="keep">Keep</option><option value="craft">Craft</option><option value="none">Untagged</option></select></label>
-      <label>Sort <select id="rSort" aria-label="Sort the item list"><option value="name">A to Z</option><option value="rarity">Rarity, highest first</option><option value="yield">Most pieces</option></select></label>
+      <label>Sort <select id="rSort" aria-label="Sort the item list"><option value="name">A to Z</option><option value="rarity">Rarity, highest first</option><option value="yield">Most pieces</option><option value="sell">Sell price, highest first</option></select></label>
       <label>Rarity <select id="rRarity" aria-label="Filter by rarity"><option value="">Any rarity</option><option value="legendary">Legendary</option><option value="epic">Epic</option><option value="rare">Rare</option><option value="uncommon">Uncommon</option><option value="common">Common</option></select></label>
       <label id="goalWrap" hidden><input type="checkbox" id="goalOnly"> Only items that help my goals</label>
       <button class="btn ghost" type="button" data-action="copyLink" id="copyLink">Copy link to this search</button>
@@ -1100,6 +1129,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   /* Listed on the wiki as "Cannot be recycled". */
   var NO_RECYCLE = ARC.NO_RECYCLE;
+  var ITEMINFO = ARC.ITEMINFO || {};
+  var CRAFTS_INTO = {};
+  Object.keys(ITEMINFO).forEach(function (n) { var r = ITEMINFO[n][3]; if (r) { r[1].forEach(function (g) { (CRAFTS_INTO[g[0]] = CRAFTS_INTO[g[0]] || []).push(n); }); } });
 
   var MAPS = ARC.MAPS;
   var CONDITIONS = ARC.CONDITIONS;
@@ -1273,7 +1305,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
       (itemNotes[it.name] && noteEdit !== it.name ? '<div class="inote">' + esc(itemNotes[it.name]) + "</div>" : "") +
       (noteEdit === it.name ? '<div class="noted"><textarea data-notefor="' + esc(it.name) + '" rows="2" maxlength="300" placeholder="Your note, like: needed for Expedition 6" aria-label="Note for ' + esc(it.name) + '">' + esc(itemNotes[it.name] || "") + '</textarea><div><button class="btn" type="button" data-action="noteDone">Done</button></div></div>' : "") +
-      '<div class="detail">' + yieldChips(it, hl) + "</div>" + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
+      '<div class="detail">' + yieldChips(it, hl) + "</div>" + infoLine(it) + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
   }
 
   function need(m) { var g = goals[m]; return g ? Math.max(0, g - (tracker[m] || 0)) : 0; }
@@ -1289,6 +1321,29 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     try { pr = projNeeded(it.name); } catch (e2) { pr = []; }
     return (q.length ? '<div class="qwarn">Needed for quest: ' + q.map(esc).join(", ") + " (hand it in instead of recycling)</div>" : "") +
       (pr.length ? '<div class="qwarn">Needed for project: ' + pr.map(esc).join(", ") + "</div>" : "");
+  }
+  function coins(n) { return Number(n).toLocaleString("en-US"); }
+  function partsValue(it) {
+    var y = yieldsOf(it), tot = 0, ok = false;
+    for (var m in y) { if (!ITEMINFO[m] || ITEMINFO[m][0] == null) { return null; } tot += ITEMINFO[m][0] * y[m]; ok = true; }
+    return ok ? tot : null;
+  }
+  function infoLine(it) {
+    var f = ITEMINFO[it.name], bits = [], out = "", L = function (t) { return "<span>" + t + "</span>"; };
+    if (f) {
+      if (f[0] != null) { bits.push(L("Sells for") + " <b>" + coins(f[0]) + "</b> " + L("coins")); }
+      if (f[1] != null) { bits.push("<span>" + f[1] + "</span> kg"); }
+      if (f[2] != null) { bits.push(L("stacks to") + " <span>" + f[2] + "</span>"); }
+      var pv = partsValue(it);
+      if (pv !== null && f[0] != null) {
+        bits.push(L(mode === "rec" ? "recycled parts sell for" : "salvaged parts sell for") + " " + (it.confirmed ? "" : L("at least") + " ") + "<b>" + coins(pv) + "</b>" + (pv > f[0] ? ' <span class="good">' + L("(more than selling it)") + "</span>" : ""));
+      }
+      if (bits.length) { out += '<div class="iinfo">' + bits.join(" &middot; ") + "</div>"; }
+      if (f[3]) { out += '<div class="iinfo">' + L("Craft at") + " <span>" + esc(f[3][0]) + "</span>: " + f[3][1].map(function (g) { return "<span>" + g[1] + "&times; " + esc(g[0]) + "</span>"; }).join(", ") + "</div>"; }
+    }
+    var used = CRAFTS_INTO[it.name];
+    if (used) { out += '<div class="iinfo">' + L("Used to craft:") + " <span>" + used.slice(0, 6).map(esc).join(", ") + "</span>" + (used.length > 6 ? " " + L("and") + " <span>" + (used.length - 6) + "</span> " + L("more") : "") + "</div>"; }
+    return out;
   }
   function helpLine(it) {
     var h = goalHelp(it);
@@ -1338,7 +1393,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var sm = document.getElementById("rSort").value, RK = { legendary: 5, epic: 4, rare: 3, uncommon: 2, common: 1 };
       var tot = function (it) { var y = yieldsOf(it), n = 0; Object.keys(y).forEach(function (m) { n += y[m]; }); return n; };
       var flat = items.filter(keep).sort(function (a, b) {
-        var d = sm === "rarity" ? (RK[String(b.rarity || "").toLowerCase()] || 0) - (RK[String(a.rarity || "").toLowerCase()] || 0) : tot(b) - tot(a);
+        var sp = function (it) { var f = ITEMINFO[it.name]; return f && f[0] != null ? f[0] : -1; };
+        var d = sm === "rarity" ? (RK[String(b.rarity || "").toLowerCase()] || 0) - (RK[String(a.rarity || "").toLowerCase()] || 0) : sm === "sell" ? sp(b) - sp(a) : tot(b) - tot(a);
         return d || a.name.localeCompare(b.name);
       });
       az.innerHTML = "";
@@ -2570,6 +2626,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (i >= TOUR.length) { document.getElementById("tour").hidden = true; save("arcHubTour", true); tourI = -1; return; }
     if (TOUR[i][2] && curTab !== TOUR[i][2]) { showTab(TOUR[i][2], true); }
     var el = document.querySelector(TOUR[i][0]);
+    if (el && el.classList.contains("sec") && !el.offsetParent) { el = document.getElementById("moreBtn"); }
     if (el) { el.classList.add("tourhl"); try { el.scrollIntoView({ block: "center", behavior: "auto" }); } catch (e) {} }
     document.getElementById("tourText").textContent = TOUR[i][1];
     document.getElementById("tourStep").textContent = (i + 1) + " of " + TOUR.length;
@@ -3169,7 +3226,34 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
+    syncMore();
     if (!quiet) { writeHash(); }
+  }
+
+  document.addEventListener("click", function (e) {
+    var m = document.getElementById("moreMenu");
+    if (m && !m.hidden && !e.target.closest("#moreMenu, #moreBtn")) { syncMore(); }
+  });
+  document.addEventListener("keydown", function (e) {
+    var m = document.getElementById("moreMenu");
+    if (e.key === "Escape" && m && !m.hidden) { syncMore(); document.getElementById("moreBtn").focus(); }
+  });
+  // Phone bottom bar: tabs marked "sec" live in the More menu.
+  function syncMore(open) {
+    var menu = document.getElementById("moreMenu"), btn = document.getElementById("moreBtn");
+    if (!menu || !btn) { return; }
+    var names = { gear: "Gear", ref: "Reference", tools: "Tools", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
+    menu.innerHTML = Object.keys(names).map(function (name) {
+      var tb = document.getElementById("tab-" + name), on = tb.getAttribute("aria-selected") === "true", nd = tb.querySelector(".newdot");
+      if (on) { cur = name; }
+      if (nd && !nd.hidden) { dot = true; }
+      return '<button type="button" data-tab="' + name + '"' + (on ? ' aria-current="true"' : "") + ">" + names[name] + (nd && !nd.hidden ? ' <span class="newdot"></span>' : "") + "</button>";
+    }).join("");
+    menu.hidden = !open;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btn.setAttribute("aria-current", cur ? "true" : "false");
+    document.getElementById("moreLbl").textContent = cur ? names[cur] : "More";
+    document.getElementById("moreDot").hidden = !dot;
   }
 
   function setMode(m) {
@@ -3426,6 +3510,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else if (a === "hintClose") {
       save("arcHubHint", true);
       setHint(false);
+    } else if (a === "moreTabs") {
+      syncMore(document.getElementById("moreMenu").hidden);
     } else if (a === "hintToggle") {
       renderHint();
       setHint(document.getElementById("hint").hidden);
@@ -3684,11 +3770,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (gs && e.composedPath().indexOf(gs) === -1) { document.getElementById("gres").hidden = true; }
   });
   function updKey() { return UPDATES.length + ":" + UPDATES[0].title; }
-  function markUpdatesSeen() { save("arcHubSeenUpd", updKey()); document.getElementById("newDot").hidden = true; }
+  function markUpdatesSeen() { save("arcHubSeenUpd", updKey()); document.getElementById("newDot").hidden = true; syncMore(); }
   (function () {
     var seen = load("arcHubSeenUpd", null);
     if (seen === null) { save("arcHubSeenUpd", updKey()); }
-    else if (seen !== updKey()) { document.getElementById("newDot").hidden = false; }
+    else if (seen !== updKey()) { document.getElementById("newDot").hidden = false; syncMore(); }
   })();
   function offUpdate() {
     var el = document.getElementById("offState");

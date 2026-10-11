@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Sell price history: the weekly data sync now records every sell price change. Item pages and the item list show when a price last went up or down, and Loot value in the Tools tab has a Price changes list. Recording starts today, so older changes are not listed."],
     ["Oct 11, 2026", "New Data gaps list at the top of this tab shows what the site still does not know: items with no known source or sell price, quests with no objectives or rewards, and keys with no source or no spot on the map. Each list has a button to report what you know."],
     ["Oct 11, 2026", "New Raid log in the Tools tab: log each raid's map, whether you extracted or died, and your haul value, and see your extract rate, average and best haul per map and your extract streak. It is saved in your browser and included in backups."],
     ["Oct 11, 2026", "Skill build planner is now laid out like the in-game tree: a starting skill, two early paths, the first large node, three middle columns and the final large node. Tap a skill to add a point; skills stay locked until the one before them has a point, and you cannot take out a point that a later skill depends on. The final large node now allows two picks (the first at 30 points, the second at 40), and every skill now shows its max points."],

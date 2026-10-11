@@ -24,7 +24,9 @@ function grab(name) {
 
 var TABLES = grab("TABLES"), EXTRAS = grab("EXTRAS"), RARITY = grab("RARITY"), NO_RECYCLE = grab("NO_RECYCLE");
 var MAPS = grab("MAPS"), ROOMS = grab("ROOMS"), FARM = grab("FARM"), FARM2 = grab("FARM2");
-var ITEMINFO = grab("ITEMINFO"), CRAFTS_INTO = {};
+var ITEMINFO = grab("ITEMINFO"), PRICE_LOG = grab("PRICE_LOG"), CRAFTS_INTO = {};
+var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function isoDay(d) { var p = d.split("-"); return MON[+p[1] - 1] + " " + (+p[2]) + ", " + p[0]; }
 Object.keys(ITEMINFO).forEach(function (n) { var r = ITEMINFO[n][3]; if (r) { r[1].forEach(function (g) { (CRAFTS_INTO[g[0]] = CRAFTS_INTO[g[0]] || []).push(n); }); } });
 
 /* Same escaping as Python's html.escape, which the pages were first built with. */
@@ -114,11 +116,16 @@ function itemPage(it) {
   F = F || {}; G = G || {};
   var qty = function (p) { return p[1] + "× " + p[0]; };
   var I = ITEMINFO[it.name] || [], st = [];
-  if (I[0] != null) { st.push("Sells for <b>" + I[0].toLocaleString("en-US") + "</b> coins"); }
+  var PH = PRICE_LOG[it.name] || [], last = PH[PH.length - 1];
+  if (I[0] != null) {
+    st.push("Sells for <b>" + I[0].toLocaleString("en-US") + "</b> coins" +
+      (last && last[1] != null ? " (" + (last[2] > last[1] ? "up" : "down") + " from " + last[1].toLocaleString("en-US") + " on " + isoDay(last[0]) + ")" : ""));
+  }
   if (I[1] != null) { st.push("Weight <b>" + I[1] + " kg</b>"); }
   if (I[2] != null) { st.push("Stacks to <b>" + I[2] + "</b>"); }
   var stats = st.length ? '<p class="stats">' + st.map(function (x) { return "<span>" + x + "</span>"; }).join("") + "</p>\n" : "";
   var body = (I[3] ? chips("Craft at " + I[3][0], I[3][1].map(function (g) { return g[1] + "× " + g[0]; })) : "") +
+    chips("Sell price history", PH.slice().reverse().map(function (c) { return isoDay(c[0]) + ": " + (c[1] == null ? "none" : c[1].toLocaleString("en-US")) + " → " + (c[2] == null ? "none" : c[2].toLocaleString("en-US")); })) +
     chips("Used to craft", CRAFTS_INTO[it.name]) + chips("Recycles into", it.rec.map(qty)) + chips("Salvages into", it.sal.map(qty)) +
     chips("Area types the wiki lists", F.t || G.t) + chips("Found in", G.s) + chips("Dropped by ARC", G.a) +
     chips("Sold by", G.v) + chips("Quests", G.q) + chips("Other", G.o) +

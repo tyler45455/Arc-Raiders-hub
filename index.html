@@ -394,7 +394,8 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .help { grid-column: 1 / -1; font-size: 13px; color: var(--good); }
 .iinfo { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
 .iinfo b { color: var(--fg); }
-.iinfo .good { color: var(--good); }
+.iinfo .good, .krow .good { color: var(--good); }
+.iinfo .bad, .krow .bad { color: var(--danger); }
 .help b { font-weight: 600; }
 .bar { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
 .bar > i { display: block; height: 100%; background: var(--warm); }
@@ -1069,6 +1070,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       </div>
       <label class="crdeep"><input type="checkbox" id="lvGear"> Include weapons, augments and shields</label>
       <div id="lvOut"></div>
+      <details id="lvChanges" style="margin-top:12px;"><summary><b>Price changes</b> <span class="muted" id="lvChCount"></span></summary><div id="lvChOut"></div></details>
     </div>
 
     <div class="tool" id="skillTool">
@@ -1235,6 +1237,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   /* Listed on the wiki as "Cannot be recycled". */
   var NO_RECYCLE = ARC.NO_RECYCLE;
   var ITEMINFO = ARC.ITEMINFO || {};
+  /* Sell price changes recorded by the weekly sync: item -> [[YYYY-MM-DD, old, new], ...], oldest first. */
+  var PRICE_LOG = ARC.PRICE_LOG || {};
   var CRAFTS_INTO = {};
   Object.keys(ITEMINFO).forEach(function (n) { var r = ITEMINFO[n][3]; if (r) { r[1].forEach(function (g) { (CRAFTS_INTO[g[0]] = CRAFTS_INTO[g[0]] || []).push(n); }); } });
   /* Weapon tiers II to IV come from the "Upgrade from X at the Gunsmith (cost)" lines in FARM2/FARM3. */
@@ -1442,6 +1446,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       (pr.length ? '<div class="qwarn">Needed for project: ' + pr.map(esc).join(", ") + "</div>" : "");
   }
   function coins(n) { return Number(n).toLocaleString("en-US"); }
+  function isoDay(d) { var p = String(d).split("-"); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }); }
+  /* " (up from 640 on Oct 18, 2026)" for the latest recorded sell price change, or "". */
+  function priceWas(n) {
+    var h = PRICE_LOG[n], c = h && h[h.length - 1];
+    if (!c || c[1] == null || c[2] == null) { return ""; }
+    var up = c[2] > c[1];
+    return ' <span class="' + (up ? "good" : "bad") + '" title="' + esc(h.map(function (x) { return isoDay(x[0]) + ": " + coins(x[1]) + " to " + coins(x[2]); }).join("\n")) + '">(' +
+      (up ? "up" : "down") + " from " + coins(c[1]) + " on " + isoDay(c[0]) + ")</span>";
+  }
   function partsValue(it) {
     var y = yieldsOf(it), tot = 0, ok = false;
     for (var m in y) { if (!ITEMINFO[m] || ITEMINFO[m][0] == null) { return null; } tot += ITEMINFO[m][0] * y[m]; ok = true; }
@@ -1450,7 +1463,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function infoLine(it) {
     var f = ITEMINFO[it.name], bits = [], out = "", L = function (t) { return "<span>" + t + "</span>"; };
     if (f) {
-      if (f[0] != null) { bits.push(L("Sells for") + " <b>" + coins(f[0]) + "</b> " + L("coins")); }
+      if (f[0] != null) { bits.push(L("Sells for") + " <b>" + coins(f[0]) + "</b> " + L("coins") + priceWas(it.name)); }
       if (f[1] != null) { bits.push("<span>" + f[1] + "</span> kg"); }
       if (f[2] != null) { bits.push(L("stacks to") + " <span>" + f[2] + "</span>"); }
       var pv = partsValue(it);
@@ -2354,9 +2367,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       shown.map(function (r, i) {
         var k = kmap[r.n];
         return '<div class="krow"><b>' + (i + 1) + ". " + esc(r.n) + "</b>" + (k ? '<span class="ktag keep" title="' + esc(k.join("; ")) + '">Keep</span>' : "") +
-          '<span class="muted">' + coins(r.p) + " coins &middot; " + r.w + " kg &middot; <b>" + coins(Math.round(r.kg)) + "</b>/kg &middot; stacks to " + r.st + " &middot; <b>" + coins(r.slot) + "</b>/slot" +
+          '<span class="muted">' + coins(r.p) + " coins" + priceWas(r.n) + " &middot; " + r.w + " kg &middot; <b>" + coins(Math.round(r.kg)) + "</b>/kg &middot; stacks to " + r.st + " &middot; <b>" + coins(r.slot) + "</b>/slot" +
           (r.pv !== null && r.pv > r.p ? ' &middot; <span class="good">recycled parts sell for ' + coins(r.pv) + "</span>" : "") + (k ? " &middot; needed for " + k.map(esc).join("; ") : "") + "</span></div>";
       }).join("") : '<div class="empty-line">No item matches that.</div>';
+    var ch = [];
+    Object.keys(PRICE_LOG).forEach(function (n) { PRICE_LOG[n].forEach(function (c) { if (!q || n.toLowerCase().indexOf(q) !== -1) { ch.push([c[0], n, c[1], c[2]]); } }); });
+    ch.sort(function (a, b) { return a[0] < b[0] ? 1 : a[0] > b[0] ? -1 : (a[1] < b[1] ? -1 : 1); });
+    document.getElementById("lvChCount").textContent = ch.length ? "(" + ch.length + ")" : "";
+    document.getElementById("lvChOut").innerHTML = '<p class="muted">Sell price changes the weekly data sync has picked up, newest first. Recording started Oct 11, 2026, so older changes are not listed.</p>' +
+      (ch.length ? ch.slice(0, 100).map(function (c) {
+        var up = c[3] > c[2];
+        return '<div class="krow"><b>' + esc(c[1]) + '</b><span class="muted">' + isoDay(c[0]) + ' &middot; ' + coins(c[2]) + ' to <b>' + coins(c[3]) + '</b> <span class="' + (up ? "good" : "bad") + '">' + (up ? "+" : "") + coins(c[3] - c[2]) + "</span></span></div>";
+      }).join("") : '<div class="empty-line">' + (q ? "No recorded price changes match that." : "No price changes recorded yet.") + "</div>");
   }
   /* Skill build planner. SKILLS rows: [name, tree, max points, unlock note, effect]; SKILL_LAYOUT gives each tree's paths.
      Rules from the wiki: a skill needs a point in the one before it; large node 1 (pick 1 of 2) needs 10 points in the tree

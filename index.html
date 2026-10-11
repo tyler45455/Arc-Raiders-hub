@@ -549,6 +549,30 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tab[aria-selected="true"] { color: #fff; } }
 .tab.tourhl { outline-offset: -3px; }
 .tab:focus-visible { outline: 2px solid var(--fg); outline-offset: -3px; }
+
+.fbmob{display:none}
+@media (max-width: 600px) {
+  .band .wrap{padding-block:14px 0}
+  .toprow .eyebrow{display:none}
+  .toprow{justify-content:flex-end}
+  .topbtns{flex-wrap:nowrap;gap:6px;align-items:center}
+  .toprow .btn,.topbtns .btn{padding:6px 10px;font-size:13px;min-height:34px}
+  .topbtns .btn{white-space:nowrap}
+  .toolrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+  .toolrow label{display:flex;align-items:center;gap:6px;font-size:14px}
+  .toolrow select{font-size:14px;padding:6px 8px;min-height:36px;width:auto;max-width:130px;flex:none}
+  .toolrow label{width:auto;flex:none}
+  #fbBtn{display:none}
+  .fbmob{display:block}
+  .langsel{max-width:110px}
+  h1.brand{font-size:28px;gap:10px}
+  h1.brand .logo{width:36px;height:36px}
+  .band .lede{font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .stamp{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chips.subtabs,#qTraders,#gearCats,#refChips,#mapChips,#chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;-webkit-overflow-scrolling:touch}
+  .chips.subtabs::-webkit-scrollbar,#qTraders::-webkit-scrollbar,#gearCats::-webkit-scrollbar,#refChips::-webkit-scrollbar,#mapChips::-webkit-scrollbar,#chips::-webkit-scrollbar{display:none}
+  .chips.subtabs>*,#qTraders>*,#gearCats>*,#refChips>*,#mapChips>*,#chips>*{flex:none}
+}
 </style>
 </head>
 <body>
@@ -556,7 +580,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 <a class="skip" href="#main">Skip to content</a>
 <header class="band">
   <div class="wrap">
-    <div class="toprow"><p class="eyebrow">Fan-made field reference</p><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="install" id="installBtn" hidden>Install app</button><details class="dispmenu" id="dispMenu"><summary class="btn ghost">Display</summary><div class="dispbox"><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button><button class="btn ghost" type="button" data-action="contrast" id="contrastBtn">Contrast: Off</button><button class="btn ghost" type="button" data-action="raid" id="raidBtn" aria-pressed="false">Raid mode: Off</button><button class="btn ghost" type="button" data-action="textSize" id="textBtn">Text size: Normal</button><button class="btn ghost" type="button" data-action="motion" id="motionBtn">Motion: Normal</button></div></details><select class="btn ghost langsel" id="langSel" aria-label="Language"></select><button class="btn ghost" type="button" data-action="trReport" id="trReport" title="Highlight the text that looks wrong first, then press this to open a GitHub issue." hidden>Report a translation error</button></div></div>
+    <div class="toprow"><p class="eyebrow">Fan-made field reference</p><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="install" id="installBtn" hidden>Install app</button><details class="dispmenu" id="dispMenu"><summary class="btn ghost">Display</summary><div class="dispbox"><a class="btn ghost fbmob" target="_blank" rel="noopener" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button><button class="btn ghost" type="button" data-action="contrast" id="contrastBtn">Contrast: Off</button><button class="btn ghost" type="button" data-action="raid" id="raidBtn" aria-pressed="false">Raid mode: Off</button><button class="btn ghost" type="button" data-action="textSize" id="textBtn">Text size: Normal</button><button class="btn ghost" type="button" data-action="motion" id="motionBtn">Motion: Normal</button></div></details><select class="btn ghost langsel" id="langSel" aria-label="Language"></select><button class="btn ghost" type="button" data-action="trReport" id="trReport" title="Highlight the text that looks wrong first, then press this to open a GitHub issue." hidden>Report a translation error</button></div></div>
     <h1 class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="48" height="48"><span>Arc Raiders <em>Hub</em></span></h1>
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
     <p class="stamp"><span id="dataStamp"></span><span class="offstate" id="offState"></span></p>
@@ -2322,6 +2346,7 @@ Integrated Binoculars|Common`;
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
   var DATA_CHANGES = [
+    ["Oct 11, 2026", "Mobile: a much more compact header, and the filter and tab rows now scroll sideways in one line instead of wrapping into many rows. Feedback moved into the Display menu on phones."],
     ["Oct 10, 2026", "Quests: checked every quest's order against the wiki and fixed the Celeste chain (A Balanced Harvest, Untended Garden, After Rain Comes, The Root Of The Matter, Celeste's Journals, The Major's Footlocker, Water Troubles, Back On Top). Added Belly Of The Beast and Tracks Of The Beast. The quest list is now sorted so a quest always comes after the ones you need first."],
     ["Oct 10, 2026", "Fixed Celeste's Childhood Drawings showing as unlocked: it now requires Shoring Up Defenses first."],
     ["Oct 10, 2026", "Quests: a new button marks a quest and every quest before it as done in one go, with an extra press to confirm and an Undo."],

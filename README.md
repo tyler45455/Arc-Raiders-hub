@@ -12,7 +12,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Install as an app:** add the site to your phone's home screen. There is also a light/dark theme toggle.
 - **Weapons & gear:** stats for all 26 weapons plus augments, shields, healing, utility, grenades, traps and mines. Filter, sort weapons by damage, fire rate, range, weight or sell price, and open full stats for each.
 - **Lookup extras:** star items, build a recycle cart, typo-tolerant search, recent searches, and a note when an item is mentioned in an update.
-- **Quests:** all 107 trader quests with objectives, trader, location, required items and rewards. Search by any of those, filter by trader, and see how much of each required item your tracker already covers.
+- **Quests:** all 109 trader quests with objectives, trader, location, required items and rewards. Search by any of those, filter by trader, and see how much of each required item your tracker already covers.
 - **Quest planning:** quests stay hidden until the quest before them is done, can be sorted by how close your tracker is to covering them, set tracker goals from their required items, and be exported as a to-do list or a progress link. Items an active quest needs get a warning in the recycling lookup.
 - **Reference:** enemies (health, weak points, drops), trader stock and prices, workshop upgrade costs, the skill tree, and a blueprint tracker.
 - **Search everything:** one box at the top finds items, quests, enemies, blueprints, weapons and trader stock and jumps to the right tab.
@@ -29,7 +29,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Frozen Trail 2.0:** a summary of the latest update.
 - **Update history:** highlights for every major update from launch to now.
 - **Custom items:** add an item that is missing or fix a number locally in your browser.
-- **Languages:** Japanese, French and Spanish (picker in the header; `?lang=fr` also works). Item, quest and enemy names stay in English. In those languages a "Report a translation error" button opens a pre-filled GitHub issue; highlight the wrong text first and it is included.
+- **Languages:** English, Japanese, French, Spanish, German, Italian, Russian and Chinese (picker in the header; `?lang=fr` also works). Item, quest and enemy names stay in English. Outside English a "Report a translation error" button opens a pre-filled GitHub issue; highlight the wrong text first and it is included.
 - **Phone:** bottom tab bar, "Install app" button, reset countdowns, where-to-farm finder, stash planner, and Keep or Sell hints on each item.
 
 ## Report a wrong number

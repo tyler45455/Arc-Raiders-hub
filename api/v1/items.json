@@ -2,7 +2,7 @@
  "schema": 1,
  "kind": "items",
  "dataDate": "October 11, 2026",
- "count": 391,
+ "count": 396,
  "items": [
   {
    "id": "arc-alloy",
@@ -653,6 +653,107 @@
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/alien-duck/"
+  },
+  {
+   "id": "amplification-module-mk-i",
+   "name": "Amplification Module Mk. I",
+   "rarity": null,
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [],
+   "sources": {
+    "arcEnemies": [
+     "Fallen Emperor",
+     "ARC Frigate"
+    ],
+    "other": [
+     "Sell price 7,000 Coins. Weight 0.5. No crafting recipe.",
+     "Advanced ARC technology that unlocks common weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0.",
+     "The wiki page for Mk. I would not load when this was checked; its details are assumed to follow the other four modules, so double-check them."
+    ]
+   },
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-i/"
+  },
+  {
+   "id": "amplification-module-mk-ii",
+   "name": "Amplification Module Mk. II",
+   "rarity": null,
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [],
+   "sources": {
+    "arcEnemies": [
+     "Fallen Emperor",
+     "ARC Frigate"
+    ],
+    "other": [
+     "Sell price 7,000 Coins. Weight 0.5. No crafting recipe.",
+     "Advanced ARC technology that unlocks uncommon weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
+    ]
+   },
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-ii/"
+  },
+  {
+   "id": "amplification-module-mk-iii",
+   "name": "Amplification Module Mk. III",
+   "rarity": null,
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [],
+   "sources": {
+    "arcEnemies": [
+     "Fallen Emperor",
+     "ARC Frigate"
+    ],
+    "other": [
+     "Sell price 7,000 Coins. Weight 0.5. No crafting recipe.",
+     "Advanced ARC technology that unlocks rare weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
+    ]
+   },
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-iii/"
+  },
+  {
+   "id": "amplification-module-mk-iv",
+   "name": "Amplification Module Mk. IV",
+   "rarity": null,
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [],
+   "sources": {
+    "arcEnemies": [
+     "Fallen Emperor",
+     "ARC Frigate"
+    ],
+    "other": [
+     "Sell price 7,000 Coins. Weight 0.5. No crafting recipe.",
+     "Advanced ARC technology that unlocks epic weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
+    ]
+   },
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-iv/"
+  },
+  {
+   "id": "amplification-module-mk-v",
+   "name": "Amplification Module Mk. V",
+   "rarity": null,
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [],
+   "sources": {
+    "arcEnemies": [
+     "Fallen Emperor",
+     "ARC Frigate"
+    ],
+    "other": [
+     "Sell price 7,000 Coins. Weight 0.5. No crafting recipe.",
+     "Advanced ARC technology that unlocks legendary weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
+    ]
+   },
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-v/"
   },
   {
    "id": "angled-grip-i",

@@ -1179,7 +1179,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var p = l.split("|");
       get(p[0]).rec[p[1]] = parseInt(p[2], 10);
     });
-    NO_RECYCLE.forEach(function (n) { get(n); });
+    NO_RECYCLE.forEach(function (n) { get(n).confirmed = true; });
     Object.keys(rarityMap).forEach(function (n) { get(n); });
     customItems.forEach(function (c) {
       var it = get(c.name);
@@ -1231,7 +1231,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     if (mode === "rec") {
       if (Object.keys(it.sal).length) { return '<span class="empty-line">Not recycled. Salvage only (switch to Salvage above).</span>'; }
-      if (NO_RECYCLE.indexOf(it.name) !== -1) { return '<span class="empty-line">Cannot be recycled.</span>'; }
+      if (NO_RECYCLE.indexOf(it.name) !== -1) {
+        var fz = ARC.FARM2[it.name], extra = "";
+        if (fz) { extra = (fz.a ? " Dropped by ARC: " + fz.a.map(esc).join(", ") + "." : "") + (fz.o ? " " + fz.o.map(esc).join(" ") : ""); }
+        return '<span class="empty-line">Cannot be recycled.' + extra + "</span>";
+      }
       return '<span class="empty-line">No recycle data yet.</span>';
     }
     return '<span class="empty-line">No salvage data for this item.</span>';
@@ -1718,9 +1722,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var STASH = ARC.STASH;
   var SKILLS = ARC.SKILLS;
   var BPS = ARC.BPS;
+  var AMPS = ARC.AMPS;
   var bpOwned = load("arcHubBP", {});
   var refSec = "enemies";
-  var REF_SECS = [["enemies", "Enemies"], ["traders", "Traders"], ["workshop", "Workshop"], ["skills", "Skills"], ["blueprints", "Blueprints"], ["trials", "Trials"]];
+  var REF_SECS = [["enemies", "Enemies"], ["traders", "Traders"], ["workshop", "Workshop"], ["skills", "Skills"], ["amplification", "Amplification"], ["blueprints", "Blueprints"], ["trials", "Trials"]];
   function bpHas(n) { for (var i = 0; i < BPS.length; i++) { if (BPS[i][0] === n) { return true; } } return false; }
   function matSet() { var m = {}; allMaterials().forEach(function (x) { m[x] = true; }); return m; }
   function renderRef() {
@@ -1796,6 +1801,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         }).join("");
       });
       if (n) { out += '<p class="muted">Per-skill prerequisites and most max-point values are not on the wiki; it gives general tree rules instead, and its numbers come from player testing.</p>'; }
+    } else if (refSec === "amplification") {
+      total = AMPS.length;
+      AMPS.forEach(function (u) {
+        if (!ok(u.join(" "))) { return; }
+        n++;
+        out += '<div class="qcard"><div class="qh"><a href="' + esc(qWiki("Amplification")) + '" target="_blank" rel="noopener">' + esc(u[0]) + '</a><span class="qmeta">' + (u[2] !== "-" ? "Research: " + esc(u[2]) : "Research not listed") + "</span></div>" +
+          '<div class="refgrid"><div>' + esc(u[1]) + "</div></div>" +
+          '<div class="qrow"><span class="lbl">Weapons</span>' + u[3].split(", ").map(function (w) { return '<span class="y">' + esc(w) + "</span>"; }).join("") + "</div></div>";
+      });
+      if (n) { out += '<p class="muted">Amplification permanently changes a weapon and cannot be undone. You need the Outpost unlocked and your Gunsmith and Research Stations at Level 4. Each weapon rarity needs the matching Amplification Module (Mk. I common up to Mk. V legendary), which drops from the Fallen Emperor and ARC Frigate. The wiki does not list research costs or how many modules each upgrade uses.</p>'; }
     } else {
       total = BPS.length;
       var sf = document.getElementById("bpStatus").value;
@@ -2117,6 +2132,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     grp("Quests", QUESTS.filter(function (x) { return m(x.name) || m(x.trader || ""); }).slice(0, 5).map(function (x) { return { l: x.name, s: x.trader || "", go: ["quests", x.name] }; }));
     grp("Enemies", ENEMIES.filter(function (e) { return m(e[0]); }).slice(0, 4).map(function (e) { return { l: e[0], s: e[1], go: ["enemies", e[0]] }; }));
     grp("Blueprints", BPS.filter(function (b) { return m(b[0]); }).slice(0, 5).map(function (b) { return { l: b[0], s: b[1], go: ["blueprints", b[0]] }; }));
+    var ampAll = q.length >= 4 && ("amplification".indexOf(q) === 0 || "amplify".indexOf(q) === 0 || "upgrade".indexOf(q) === 0);
+    grp("Amplification", AMPS.filter(function (u) { return ampAll || m(u[0]) || m(u[3]); }).slice(0, ampAll ? 6 : 4).map(function (u) { return { l: u[0], s: u[3], go: ["amplification", ampAll ? "" : u[0]] }; }));
     grp("Weapons", GEARDATA.weapons.filter(function (w) { return m(w[0]); }).slice(0, 4).map(function (w) { return { l: w[0], s: w[1], go: ["gear", w[0]] }; }));
     grp("Trader stock", TRADERS.filter(function (t) { return m(t[1]); }).slice(0, 4).map(function (t) { return { l: t[1], s: t[0], go: ["traders", t[1]] }; }));
     var AT = ["ARC", "Commercial", "Electrical", "Exodus", "Industrial", "Mechanical", "Medical", "Nature", "Old World", "Residential", "Security", "Technological"];

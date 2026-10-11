@@ -343,6 +343,11 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .need { display: grid; gap: 3px; font-size: 13px; }
 .cmp { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 10px; }
 .cmp .card { margin-top: 0; }
+.crdeep { display: flex; gap: 8px; align-items: center; margin-top: 8px; font-size: 14px; }
+.crtree, .crtree ul { list-style: none; margin: 0; padding: 0; }
+.crtree ul { padding-left: 18px; border-left: 1px solid var(--line); margin-left: 6px; }
+.crtree li { padding: 3px 0; }
+.crtree .st { color: var(--muted); font-size: 13px; }
 .cmp-grid { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 10px; }
 .gearrow { display: grid; gap: 12px; grid-template-columns: 1fr auto; align-items: center; margin-top: 14px; }
 .gearrow select { width: auto; }
@@ -1020,6 +1025,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <div id="sbShared"></div>
       <div id="sbOut"></div>
     </div>
+
+    <div class="tool" id="craftTool">
+      <h3>Crafting planner</h3>
+      <p class="muted">Pick something to craft and how many. It works out every part down to basic materials, uses components your tracker already has, and lists the workbenches you need.</p>
+      <div class="stashgrid">
+        <div><label for="crItem">Item to craft</label><input type="text" id="crItem" list="craftList" placeholder="Like: Rattler I" autocomplete="off"></div>
+        <div><label for="crQty">How many</label><input type="number" min="1" max="99" inputmode="numeric" id="crQty" value="1"></div>
+      </div>
+      <label class="crdeep"><input type="checkbox" id="crDeep" checked> Craft the components too (Mechanical Components, Gun Parts and so on)</label>
+      <datalist id="craftList"></datalist>
+      <div id="crOut"></div>
+    </div>
   </section>
 
   <!-- MAPS -->
@@ -1364,7 +1381,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         bits.push(L(mode === "rec" ? "recycled parts sell for" : "salvaged parts sell for") + " " + (it.confirmed ? "" : L("at least") + " ") + "<b>" + coins(pv) + "</b>" + (pv > f[0] ? ' <span class="good">' + L("(more than selling it)") + "</span>" : ""));
       }
       if (bits.length) { out += '<div class="iinfo">' + bits.join(" &middot; ") + "</div>"; }
-      if (f[3]) { out += '<div class="iinfo">' + L("Craft at") + " <span>" + esc(f[3][0]) + "</span>: " + f[3][1].map(function (g) { return "<span>" + g[1] + "&times; " + esc(g[0]) + "</span>"; }).join(", ") + "</div>"; }
+      if (f[3]) { out += '<div class="iinfo">' + L("Craft at") + " <span>" + esc(f[3][0]) + "</span>: " + f[3][1].map(function (g) { return "<span>" + g[1] + "&times; " + esc(g[0]) + "</span>"; }).join(", ") + ' <a href="#tools/craft=' + encodeURIComponent(it.name + "*1") + '" data-action="crOpen" data-n="' + esc(it.name) + '">' + L("Plan this craft") + "</a></div>"; }
     }
     var used = CRAFTS_INTO[it.name];
     if (used) { out += '<div class="iinfo">' + L("Used to craft:") + " <span>" + used.slice(0, 6).map(esc).join(", ") + "</span>" + (used.length > 6 ? " " + L("and") + " <span>" + (used.length - 6) + "</span> " + L("more") : "") + "</div>"; }
@@ -2812,6 +2829,67 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         '<button class="btn danger" type="button" data-action="projDel" data-i="' + i + '">Delete</button></div>' + rows + "</div>";
     }).join("");
   }
+  /* Crafting planner: recipes come from ITEMINFO (each craft is counted as making one). */
+  var craftNames = Object.keys(ITEMINFO).filter(function (n) { return ITEMINFO[n][3]; }).sort();
+  function craftFind(v) {
+    v = (v || "").trim().toLowerCase();
+    for (var i = 0; i < craftNames.length; i++) { if (craftNames[i].toLowerCase() === v) { return craftNames[i]; } }
+    return null;
+  }
+  function craftCalc(name, qty, deep) {
+    var pool = {}, leaf = {}, made = {}, stations = {}, order = [];
+    function need(n, q, depth) {
+      var r = ITEMINFO[n] && ITEMINFO[n][3];
+      if (depth > 0 && r && deep) {
+        if (!(n in pool)) { pool[n] = tracker[n] || 0; }
+        var use = Math.min(pool[n], q); pool[n] -= use; q -= use;
+        if (!q) { return; }
+      }
+      if (r && (depth === 0 || deep) && depth < 8) {
+        made[n] = (made[n] || 0) + q;
+        r[0].split(" / ").forEach(function (st) { if (!stations[st]) { stations[st] = 1; order.push(st); } });
+        r[1].forEach(function (g) { need(g[0], g[1] * q, depth + 1); });
+      } else { leaf[n] = (leaf[n] || 0) + q; }
+    }
+    need(name, qty, 0);
+    return { leaf: leaf, made: made, stations: order };
+  }
+  function craftTree(n, q, depth, deep) {
+    var r = ITEMINFO[n] && ITEMINFO[n][3], have = tracker[n] || 0;
+    var line = "<b>" + q + "&times;</b> " + esc(n) + (depth && have ? ' <span class="st">(you have ' + have + ")</span>" : "");
+    if (!r || depth > 7 || (depth > 0 && !deep)) { return "<li>" + line + "</li>"; }
+    return "<li>" + line + ' <span class="st">&middot; ' + esc(r[0]) + "</span><ul>" + r[1].map(function (g) { return craftTree(g[0], g[1] * q, depth + 1, deep); }).join("") + "</ul></li>";
+  }
+  function renderCraft() {
+    var out = document.getElementById("crOut");
+    if (!out) { return; }
+    var name = craftFind(document.getElementById("crItem").value);
+    var qty = Math.max(1, Math.min(99, parseInt(document.getElementById("crQty").value, 10) || 1));
+    var deep = document.getElementById("crDeep").checked;
+    if (!name) { out.innerHTML = '<p class="muted" style="margin-top:10px;">Choose one of the ' + craftNames.length + " craftable items from the list.</p>"; return; }
+    save("arcHubCraft", { n: name, q: qty, d: deep });
+    var c = craftCalc(name, qty, deep), keys = Object.keys(c.leaf).sort(function (a, b) { return c.leaf[b] - c.leaf[a]; }), ready = 0;
+    var rows = keys.map(function (m) {
+      var q = c.leaf[m], have = tracker[m] || 0, ok = have >= q;
+      if (ok) { ready++; }
+      return '<div class="need"><div>' + esc(m) + ": <b>" + Math.min(have, q) + " / " + q + "</b>" + (ok ? " &#10003;" : " (" + (q - have) + " to go)") + '</div><div class="bar' + (ok ? " done" : "") + '"><i style="width:' + Math.min(100, Math.round(have * 100 / q)) + '%"></i></div></div>';
+    }).join("");
+    var made = Object.keys(c.made).filter(function (m) { return m !== name; });
+    out.innerHTML = '<div class="proj"><div class="ph"><b>' + qty + "&times; " + esc(name) + ' <span class="muted">' + ready + " of " + keys.length + " materials ready</span></b></div>" +
+      '<div class="muted">Workbenches: ' + c.stations.map(esc).join(", ") + "</div>" +
+      (made.length ? '<div class="muted">You will also craft: ' + made.map(function (m) { return c.made[m] + "&times; " + esc(m); }).join(", ") + "</div>" : "") +
+      rows +
+      '<div class="acts" style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="crProj">Save as project</button><button class="btn ghost" type="button" data-action="crLink">Copy link</button><span class="muted" id="crMsg" role="status"></span></div></div>' +
+      '<details style="margin-top:10px;"><summary>Recipe tree</summary><ul class="crtree" style="margin-top:6px;">' + craftTree(name, qty, 0, deep) + "</ul></details>";
+  }
+  function craftApply(arg) {
+    var i = arg.lastIndexOf("*"), n = craftFind(i < 0 ? arg : arg.slice(0, i)), q = i < 0 ? 1 : parseInt(arg.slice(i + 1), 10) || 1;
+    if (!n) { return; }
+    document.getElementById("crItem").value = n; document.getElementById("crQty").value = Math.max(1, Math.min(99, q));
+    toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("craftTool")));
+    renderCraft();
+  }
+
   function renderCompare() {
     var a = findItemCI(document.getElementById("cmpA").value), b = findItemCI(document.getElementById("cmpB").value);
     var out = document.getElementById("cmpOut");
@@ -2894,6 +2972,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     renderPresets();
     renderProjects();
     renderCompare();
+    document.getElementById("craftList").innerHTML = craftNames.map(function (n) { return '<option value="' + esc(n) + '"></option>'; }).join("");
+    renderCraft();
     document.getElementById("itemList").innerHTML = items.map(function (it) { return '<option value="' + esc(it.name) + '"></option>'; }).join("");
   }
 
@@ -3070,6 +3150,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var mparts = r.arg.split("~");
       for (var i = 0; i < MAPS.length; i++) { if (MAPS[i].name === mparts[0]) { curMap = i; renderMaps(); if (mparts.length > 1 && ROOMS[mapSlug(MAPS[i])]) { lb.pend = lbParseShared(mparts); lbOpen(mapDetailSrc(MAPS[i]), MAPS[i].name); } } }
     }
+    if (r.tab === "tools" && /^craft=/.test(r.arg)) { craftApply(r.arg.slice(6)); }
     if (r.tab === "tools" && /^sb=/.test(r.arg)) {
       toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("sbTool")));
       sbShared = r.arg.slice(3).split("~").map(function (x) { var g = x.split("|"); return { w: (g[0] || "").slice(0, 20), t: (g[1] || "").slice(0, 40), d: g[2] === "1" }; }).filter(function (x) { return x.t; }).slice(0, 40); renderSb();
@@ -3319,7 +3400,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "gear") { renderGear(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); }
+    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); }
     if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
@@ -3565,6 +3646,19 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         clearTimeout(window.__rst); window.__rst = setTimeout(function () { t.setAttribute("data-armed", "0"); t.textContent = "Reset everything to default"; }, 5000);
       }
     } else if (a === "toolTab") { toolShow(t.getAttribute("data-ti"));
+    } else if (a === "crOpen") {
+      e.preventDefault(); showTab("tools", true); craftApply(t.getAttribute("data-n") + "*1"); writeHash();
+      var crt = document.getElementById("craftTool"); if (crt && crt.scrollIntoView) { crt.scrollIntoView({ block: "start" }); }
+    } else if (a === "crProj" || a === "crLink") {
+      var crn = craftFind(document.getElementById("crItem").value), crq = Math.max(1, Math.min(99, parseInt(document.getElementById("crQty").value, 10) || 1)), crm = document.getElementById("crMsg");
+      if (crn && a === "crProj") {
+        var crc = craftCalc(crn, crq, document.getElementById("crDeep").checked);
+        projects.push({ name: "Craft " + crq + "\u00d7 " + crn, needs: Object.keys(crc.leaf).map(function (m) { return [m, crc.leaf[m]]; }) });
+        save("arcHubProjects", projects); renderProjects();
+        crm.textContent = "Saved. It now feeds the shopping list in the Tracker tab.";
+      } else if (crn) {
+        copyText(window.location.href.split("#")[0] + "#tools/craft=" + encodeURIComponent(crn + "*" + crq), function (ok) { crm.textContent = ok ? "Link copied" : "Copy failed"; });
+      }
     } else if (a === "lbIn") { var lc = lbCenter(); lbZoomAt(lc[0], lc[1], 1.6);
     } else if (a === "lbOut") { var lc2 = lbCenter(); lbZoomAt(lc2[0], lc2[1], 1 / 1.6);
     } else if (a === "lbFit") { lbFitView();
@@ -3763,6 +3857,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   document.getElementById("gearSort").addEventListener("change", renderGear);
   document.getElementById("cmpA").addEventListener("input", renderCompare);
   document.getElementById("cmpB").addEventListener("input", renderCompare);
+  (function () {
+    var cs = load("arcHubCraft", null);
+    if (cs && cs.n) { document.getElementById("crItem").value = cs.n; document.getElementById("crQty").value = cs.q || 1; document.getElementById("crDeep").checked = cs.d !== false; }
+    ["crItem", "crQty"].forEach(function (id) { document.getElementById(id).addEventListener("input", renderCraft); });
+    document.getElementById("crDeep").addEventListener("change", renderCraft);
+  })();
   document.getElementById("chkNew").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); document.querySelector('[data-action="chkAdd"]').click(); } });
   document.addEventListener("change", function (e) {
     var ci = e.target && e.target.getAttribute && e.target.getAttribute("data-chk");

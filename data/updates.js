@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Search everything now finds keys and keycards (from the wiki key list). Pick one to open the detailed map at the building it opens, with the wiki wording for the floor or corner. Type key and a map name to list that map's keys."],
     ["Oct 11, 2026", "Search everything: type a loot type and a map together (for example industrial spaceport or nature dam) to list the matching rooms on that map."],
     ["Oct 11, 2026", "Search everything now finds loot area types (Industrial, Electrical, Nature, Technological and so on, also electronic or plants). Pick one to see its rooms on every map and the items the wiki lists for it."],
     ["Oct 11, 2026", "Recycle: the partial tag on an item is now a button. Press it to see why the item is marked partial."],

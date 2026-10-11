@@ -2098,6 +2098,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   /* ---------- global search ---------- */
   var gTargets = [];
+  var KEYS = ARC.KEYS;
+  function keyMapRoom(k) { var mi = -1, ri = -1; MAPS.forEach(function (m, i) { if (m.name === k[1]) { mi = i; } }); if (mi >= 0 && k[2]) { (ROOMS[mapSlug(MAPS[mi])] || { r: [] }).r.forEach(function (r, i) { if (r[0] === k[2]) { ri = i; } }); } return [mi, ri]; }
   function gSearch() {
     var q = document.getElementById("gq").value.trim().toLowerCase();
     var box = document.getElementById("gres");
@@ -2134,6 +2136,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (hits.length) { groups.push([combo.ts.join(" / ") + " rooms on " + combo.mp.name, hits.slice(0, 12)]); }
     }
     grp("Loot areas", atHit.map(function (t) { var n = areaItems(t).length; return { l: t + " loot areas", s: n + " items", go: ["area", t] }; }));
+    var keyWord = /^(keys?|keycards?|cards?|codes?)$/;
+    var kq = wd.filter(function (w) { return !keyWord.test(w); }).join(" "), kAny = wd.some(function (w) { return keyWord.test(w); });
+    var keyHits = [];
+    KEYS.forEach(function (k, ki) {
+      var hit = m(k[0]) || (kAny && !kq) || (kAny && kq && (k[1].toLowerCase().indexOf(kq) !== -1 || (k[2] || "").toLowerCase().indexOf(kq) !== -1)) || (k[2] && q.length > 3 && k[2].toLowerCase().indexOf(q) === 0);
+      if (hit) { keyHits.push({ l: k[0], s: k[1] + (k[2] ? " \u00b7 " + k[2] : ""), go: ["key", ki] }); }
+    });
+    grp("Keys", keyHits.slice(0, 8));
     var roomHits = [];
     MAPS.forEach(function (mp, mi) {
       var R = ROOMS[mapSlug(mp)]; if (!R) { return; }
@@ -2183,6 +2193,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function gGo(i) {
     var r = gTargets[i]; if (!r) { return; }
     var k = r.go[0], v = r.go[1];
+    if (k === "key") {
+      var kk = KEYS[v], mr = keyMapRoom(kk); if (mr[0] < 0) { return; }
+      curMap = mr[0]; showTab("maps"); renderMaps(); writeHash();
+      lbOpen(mapDetailSrc(MAPS[mr[0]]), MAPS[mr[0]].name, mr[1] >= 0 ? mr[1] : undefined, kk[0] + ": " + kk[3] + (kk[4] ? " Quest reward: " + kk[4] + "." : "") + (mr[1] < 0 ? " The wiki does not name a spot on the map for this one." : ""));
+      document.getElementById("gres").hidden = true; document.getElementById("gq").value = "";
+      return;
+    }
     if (k === "back") { gSearch(); return; }
     if (k === "area") { gArea(v); return; }
     if (k === "room") {
@@ -2960,8 +2977,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     lbEl("lbPinBox").hidden = !on;
     if (on) { var inp = lbEl("lbPinLabel"); inp.value = label || ""; lbEl("lbPinDel").hidden = !canDel; inp.focus(); }
   }
-  function lbSay(t) { lbEl("lbHint").textContent = t; clearTimeout(lb.ht); lb.ht = setTimeout(function () { lbEl("lbHint").textContent = "Drag to move, pinch or scroll to zoom, double-tap to zoom in."; }, 2500); }
-  function lbOpen(src, name, roomIdx) {
+  function lbSay(t, ms) { lbEl("lbHint").textContent = t; clearTimeout(lb.ht); lb.ht = setTimeout(function () { lbEl("lbHint").textContent = "Drag to move, pinch or scroll to zoom, double-tap to zoom in."; }, ms || 2500); }
+  function lbOpen(src, name, roomIdx, note) {
     lbReturn = document.activeElement;
     var img = lbEl("lbImg");
     var mi = -1; MAPS.forEach(function (m, i) { if (m.name === name) { mi = i; } });
@@ -2980,6 +2997,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (lb.view) { var st0 = lbEl("lbStage"); lb.s = Math.min(lb.max, Math.max(lb.fit, lb.fit * lb.view[0])); lb.x = st0.clientWidth / 2 - lb.view[1] * lb.nw * lb.s; lb.y = st0.clientHeight / 2 - lb.view[2] * lb.nh * lb.s; lbApply(); }
       lbRenderMarks();
       if (roomIdx !== undefined && ROOMS[lb.slug] && ROOMS[lb.slug].r[roomIdx]) { lbFocusRoom(ROOMS[lb.slug].r[roomIdx]); }
+      if (note) { lbSay(note, 20000); }
     };
     img.src = src;
     lbEl("lbClose").focus();

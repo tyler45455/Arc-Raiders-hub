@@ -21,6 +21,8 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Items now show their sell price, weight and stack size, the recipe and workbench if you can craft them, and what they are used to craft. Each item also says what its recycled or salvaged parts sell for, so you can see when recycling beats selling. The lookup can sort by sell price, and item pages and api/v1/items.json carry the same numbers. Prices, weights and recipes come from RaidTheory/arcraiders-data (MIT) and were spot-checked against the wiki."],
+    ["Oct 11, 2026", "Phones: the bottom bar now fits Recycle, Tracker, Quests and Maps plus a More menu for the other tabs, and the header is shorter so the page content starts higher up."],
     ["Oct 11, 2026", "New logo: the whole triangle is made of the four colours, in equal parts around its sides."],
     ["Oct 11, 2026", "The colour stripes at the top of the site and in the logo now run blue, green, yellow, red."],
     ["Oct 11, 2026", "Added the five Amplification Modules (Mk. I to V) with where they drop, and a new Amplification section in Reference listing every weapon upgrade, its effect, research project and compatible weapons. Search everything finds both. The Mk. I wiki page would not load, so its details follow the other four."],

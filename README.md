@@ -41,6 +41,8 @@ Use the **Report** button on any item to open a pre-filled GitHub issue, or [ope
 
 Recycling data comes from the [ARC Raiders Wiki](https://arcraiders.wiki) (CC BY-SA 4.0), using the "Recycled from" tables on the material pages. Weapon and gear stats come from the wiki's weapon and equipment pages; a dash means the wiki has no value yet. Only nine materials are loaded (Metal Parts, Plastic Parts, Rubber Parts, Chemicals, Fabric, Wires, ARC Alloy, Oil and Canister), so items that also break into other materials are marked **partial**. Wiki pages are dated April to October 2026, so numbers can lag behind the game.
 
+Sell prices, weights, stack sizes and crafting recipes come from [RaidTheory/arcraiders-data](https://github.com/RaidTheory/arcraiders-data) (MIT, also behind arctracker.io) and were spot-checked against the wiki's Loot table. They are in `ITEMINFO` at the bottom of `data/items.js`.
+
 ## Contributing
 
 1. Fork the repo. Game data is in `data/` (one file per area) and the page is `index.html`. There is no build step; open `index.html` in a browser to test. See [CONTRIBUTING.md](CONTRIBUTING.md) for the one command to run before a pull request.

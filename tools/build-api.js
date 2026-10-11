@@ -26,6 +26,7 @@ function grab(name) {
 }
 var TABLES = grab("TABLES"), EXTRAS = grab("EXTRAS"), RARITY = grab("RARITY"), NO_RECYCLE = grab("NO_RECYCLE");
 var FARM = grab("FARM"), FARM2 = grab("FARM2"), MAPS = grab("MAPS"), ROOMS = grab("ROOMS"), KEYS = grab("KEYS");
+var ITEMINFO = grab("ITEMINFO");
 var QRAW = grab("QRAW"), QOBJ = grab("QOBJ"), QPREV = grab("QPREV"), DATA_UPDATED = grab("DATA_UPDATED");
 
 /* The ID of anything is its name as a lowercase slug. Same as slug() in build-pages.js. */
@@ -67,6 +68,11 @@ function items() {
     if (G.q) { src.questRewards = G.q; }
     if (G.o) { src.other = G.o; }
     o.sources = src;
+    var f = ITEMINFO[n];
+    if (f) {
+      o.sellPrice = f[0]; o.weightKg = f[1]; o.stackSize = f[2];
+      if (f[3]) { o.craft = { at: f[3][0], ingredients: mats(f[3][1]) }; }
+    }
     o.page = SITE + "item/" + o.id + "/";
     return o;
   });

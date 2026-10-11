@@ -29,6 +29,9 @@
    "sources": {
     "foundIn": "ARC enemies"
    },
+   "sellPrice": 200,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-alloy/"
   },
   {
@@ -65,6 +68,19 @@
      "Surveyor"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.3,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "arc-alloy",
+      "name": "ARC Alloy",
+      "qty": 8
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-circuitry/"
   },
   {
@@ -82,6 +98,9 @@
      "Harvester Payload"
     ]
    },
+   "sellPrice": 100,
+   "weightKg": null,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-conductive-coupler/"
   },
   {
@@ -117,6 +136,9 @@
      "Vaporizer"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-coolant/"
   },
   {
@@ -156,6 +178,9 @@
      "Vaporizer"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-flex-rubber/"
   },
   {
@@ -173,6 +198,9 @@
      "Harvester Payload"
     ]
    },
+   "sellPrice": 100,
+   "weightKg": null,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-insulated-coupler/"
   },
   {
@@ -209,6 +237,19 @@
      "Sentinel",
      "Surveyor",
      "Turbine"
+    ]
+   },
+   "sellPrice": 1000,
+   "weightKg": 0.3,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "arc-alloy",
+      "name": "ARC Alloy",
+      "qty": 8
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-motion-core/"
@@ -248,6 +289,9 @@
      "Turbine"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-performance-steel/"
   },
   {
@@ -280,6 +324,9 @@
    "sources": {
     "foundIn": "Found inside ARC enemies"
    },
+   "sellPrice": 270,
+   "weightKg": 0.5,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-powercell/"
   },
   {
@@ -322,6 +369,9 @@
      "Wasp"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-synthetic-resin/"
   },
   {
@@ -362,6 +412,9 @@
      "Wasp"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arc-thermo-lining/"
   },
   {
@@ -394,6 +447,9 @@
      "Shani"
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 1,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/acoustic-guitar/"
   },
   {
@@ -434,6 +490,24 @@
      "Trash Into Treasure"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.2,
+   "stackSize": 5,
+   "craft": {
+    "at": "In raid / Medical Lab 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 3
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/adrenaline-shot/"
   },
   {
@@ -461,6 +535,9 @@
    "sources": {
     "foundIn": "ARC: Bastion, Bombardier, Comet, Courier, Leaper, Matriarch, Queen, Rocketeer, Rocketeer Husk, Sentinel, Surveyor, Vaporizer"
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/advanced-arc-powercell/"
   },
   {
@@ -478,6 +555,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": null,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/advanced-camera/"
   },
   {
@@ -518,6 +598,24 @@
      "Paving The Way"
     ]
    },
+   "sellPrice": 1750,
+   "weightKg": 1,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/advanced-electrical-components/"
   },
   {
@@ -550,6 +648,24 @@
    "sources": {
     "foundIn": "Industrial Cleaner, Control Panel; ARC: Matriarch, Queen"
    },
+   "sellPrice": 1750,
+   "weightKg": 1,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/advanced-mechanical-components/"
   },
   {
@@ -579,6 +695,9 @@
      "Wicker Baskets"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.2,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/agave/"
   },
   {
@@ -590,6 +709,24 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1800,
+   "weightKg": 0.2,
+   "stackSize": 5,
+   "craft": {
+    "at": "In raid",
+    "ingredients": [
+     {
+      "id": "agave",
+      "name": "Agave",
+      "qty": 1
+     },
+     {
+      "id": "empty-wine-bottle",
+      "name": "Empty Wine Bottle",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/agave-juice/"
   },
   {
@@ -607,6 +744,9 @@
      "The Stench Of Corruption"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 0.3,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/air-freshener/"
   },
   {
@@ -637,6 +777,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/alarm-clock/"
   },
   {
@@ -652,6 +795,9 @@
      "Chimneys (while Bird City is active)"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.3,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/alien-duck/"
   },
   {
@@ -673,6 +819,9 @@
      "The wiki page for Mk. I would not load when this was checked; its details are assumed to follow the other four modules, so double-check them."
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-i/"
   },
   {
@@ -693,6 +842,9 @@
      "Advanced ARC technology that unlocks uncommon weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-ii/"
   },
   {
@@ -713,6 +865,9 @@
      "Advanced ARC technology that unlocks rare weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-iii/"
   },
   {
@@ -733,6 +888,9 @@
      "Advanced ARC technology that unlocks epic weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-iv/"
   },
   {
@@ -753,6 +911,9 @@
      "Advanced ARC technology that unlocks legendary weapon Amplification (used to upgrade the Gunsmith). Added in Frozen Trail 2.0."
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/amplification-module-mk-v/"
   },
   {
@@ -778,6 +939,24 @@
    "sources": {
     "sellers": [
      "Tian Wen"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 1
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/angled-grip-i/"
@@ -808,6 +987,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 3
+     },
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/angled-grip-ii/"
   },
   {
@@ -836,6 +1033,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 5
+     },
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/angled-grip-iii/"
   },
   {
@@ -867,6 +1082,24 @@
      "After Rain Comes"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 10
+     },
+     {
+      "id": "great-mullein",
+      "name": "Great Mullein",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/antiseptic/"
   },
   {
@@ -889,6 +1122,9 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/anvil-ii/"
   },
   {
@@ -911,6 +1147,9 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/anvil-iii/"
   },
   {
@@ -932,6 +1171,9 @@
      "A Rising Tide"
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/anvil-splitter/"
   },
   {
@@ -960,6 +1202,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 27500,
+   "weightKg": 14,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "complex-gun-parts",
+      "name": "Complex Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 3
+     },
+     {
+      "id": "matriarch-reactor",
+      "name": "Matriarch Reactor",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/aphelion/"
   },
   {
@@ -994,6 +1259,9 @@
      "Recycles into 3× Assorted Seeds"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.2,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/apricot/"
   },
   {
@@ -1005,6 +1273,9 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": null,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arcade-duck/"
   },
   {
@@ -1033,6 +1304,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5500,
+   "weightKg": 7,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 6
+     },
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arpeggio-i/"
   },
   {
@@ -1061,6 +1350,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 8000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arpeggio-ii/"
   },
   {
@@ -1089,6 +1381,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 11500,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arpeggio-iii/"
   },
   {
@@ -1117,6 +1412,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 15000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/arpeggio-iv/"
   },
   {
@@ -1151,6 +1449,9 @@
      "Assessor"
     ]
    },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/assessor-matrix/"
   },
   {
@@ -1166,6 +1467,9 @@
    "sources": {
     "foundIn": "Fridge, Green Locker, Red Locker, Seed Drawer Box, Seed Vault, Wicker Basket"
    },
+   "sellPrice": 100,
+   "weightKg": 0.05,
+   "stackSize": 100,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/assorted-seeds/"
   },
   {
@@ -1191,6 +1495,19 @@
    "sources": {
     "sellers": [
      "Lance"
+    ]
+   },
+   "sellPrice": 250,
+   "weightKg": 0.1,
+   "stackSize": 5,
+   "craft": {
+    "at": "In raid / Medical Lab 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "fabric",
+      "name": "Fabric",
+      "qty": 5
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bandage/"
@@ -1287,6 +1604,19 @@
      "Shoring Up Defenses"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.4,
+   "stackSize": 3,
+   "craft": {
+    "at": "Utility Station 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/barricade-kit/"
   },
   {
@@ -1304,6 +1634,9 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": null,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/basic-camera/"
   },
   {
@@ -1344,6 +1677,9 @@
      "Settled in Full"
     ]
    },
+   "sellPrice": 3000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bastion-cell/"
   },
   {
@@ -1359,6 +1695,9 @@
      "Pendola Pass"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": null,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/battered-paperback/"
   },
   {
@@ -1402,6 +1741,9 @@
      "Trash Into Treasure"
     ]
    },
+   "sellPrice": 250,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/battery/"
   },
   {
@@ -1430,6 +1772,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 8000,
+   "weightKg": 11,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 3
+     },
+     {
+      "id": "canister",
+      "name": "Canister",
+      "qty": 3
+     },
+     {
+      "id": "heavy-gun-parts",
+      "name": "Heavy Gun Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bettina-i/"
   },
   {
@@ -1458,6 +1823,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 11000,
+   "weightKg": 11,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bettina-ii/"
   },
   {
@@ -1486,6 +1854,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 14000,
+   "weightKg": 11,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bettina-iii/"
   },
   {
@@ -1514,6 +1885,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 18000,
+   "weightKg": 11,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bettina-iv/"
   },
   {
@@ -1548,6 +1922,9 @@
      "The League"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bicycle-pump/"
   },
   {
@@ -1591,6 +1968,24 @@
      "Trash Into Treasure"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 8
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/binoculars/"
   },
   {
@@ -1624,6 +2019,24 @@
      "What Goes Around (quantity: 3×)"
     ]
    },
+   "sellPrice": 1600,
+   "weightKg": 0.2,
+   "stackSize": 5,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "explosive-compound",
+      "name": "Explosive Compound",
+      "qty": 1
+     },
+     {
+      "id": "oil",
+      "name": "Oil",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/blaze-grenade/"
   },
   {
@@ -1640,6 +2053,24 @@
      "3× from Decks: Raider Deck AR/RD 001: Ryder & Voyager, on Page 2, \"IMPROVISATION PACK\""
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.3,
+   "stackSize": 3,
+   "craft": {
+    "at": "In raid / Workbench",
+    "ingredients": [
+     {
+      "id": "blaze-grenade",
+      "name": "Blaze Grenade",
+      "qty": 1
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/blaze-grenade-trap/"
   },
   {
@@ -1654,6 +2085,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.2,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bloated-tuna-can/"
   },
   {
@@ -1691,6 +2125,19 @@
      "The Clean Dream"
     ]
    },
+   "sellPrice": 150,
+   "weightKg": 0.75,
+   "stackSize": 5,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/blue-light-stick/"
   },
   {
@@ -1719,6 +2166,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 7,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "exodus-modules",
+      "name": "Exodus Modules",
+      "qty": 2
+     },
+     {
+      "id": "light-gun-parts",
+      "name": "Light Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bobcat-i/"
   },
   {
@@ -1747,6 +2217,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bobcat-ii/"
   },
   {
@@ -1775,6 +2248,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 22000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bobcat-iii/"
   },
   {
@@ -1803,6 +2279,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 27000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bobcat-iv/"
   },
   {
@@ -1835,6 +2314,9 @@
      "Bombardier"
     ]
    },
+   "sellPrice": 3000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bombardier-cell/"
   },
   {
@@ -1865,6 +2347,9 @@
     "Security"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/broken-flashlight/"
   },
   {
@@ -1888,6 +2373,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/broken-guidance-system/"
   },
   {
@@ -1920,6 +2408,9 @@
      "Security"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/broken-handheld-radio/"
   },
   {
@@ -1952,6 +2443,9 @@
      "Security"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/broken-taser/"
   },
   {
@@ -1980,6 +2474,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2900,
+   "weightKg": 4,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 3
+     },
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/burletta-i/"
   },
   {
@@ -2008,6 +2520,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 4,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/burletta-ii/"
   },
   {
@@ -2036,6 +2551,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 4,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/burletta-iii/"
   },
   {
@@ -2064,6 +2582,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 4,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/burletta-iv/"
   },
   {
@@ -2175,6 +2696,9 @@
     "Security"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/camera-lens/"
   },
   {
@@ -2204,6 +2728,9 @@
      "Residential loot containers at Dam Battlegrounds (Pale Apartments, Ruby Residence) and Buried City (Plaza Rosa, Grandioso Apartments); commonly found"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/candle-holder/"
   },
   {
@@ -2221,6 +2748,9 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 460,
+   "weightKg": 0.5,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/candleberries/"
   },
   {
@@ -2253,6 +2783,9 @@
      "Untended Garden (quantity: 5×)"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/canister/"
   },
   {
@@ -2281,6 +2814,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 6.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "magnet",
+      "name": "Magnet",
+      "qty": 5
+     },
+     {
+      "id": "medium-gun-parts",
+      "name": "Medium Gun Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/canto-i/"
   },
   {
@@ -2316,6 +2872,24 @@
      "Down to Earth"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 2,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 1",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/combat-mk-1/"
   },
   {
@@ -2344,6 +2918,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 2",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "magnet",
+      "name": "Magnet",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/combat-mk-2/"
   },
   {
@@ -2372,6 +2964,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/combat-mk-3-aggressive/"
   },
   {
@@ -2400,6 +3010,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/combat-mk-3-flanking/"
   },
   {
@@ -2428,6 +3056,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/comet-igniter/"
   },
   {
@@ -2456,6 +3087,24 @@
     ],
     "questRewards": [
      "Market Correction"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 6
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/compensator-i/"
@@ -2493,6 +3142,24 @@
      "Broken Monument"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/compensator-ii/"
   },
   {
@@ -2521,6 +3188,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 8
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/compensator-iii/"
   },
   {
@@ -2544,6 +3229,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1,
+   "stackSize": 3,
+   "craft": {
+    "at": "Refiner 3",
+    "ingredients": [
+     {
+      "id": "heavy-gun-parts",
+      "name": "Heavy Gun Parts",
+      "qty": 2
+     },
+     {
+      "id": "light-gun-parts",
+      "name": "Light Gun Parts",
+      "qty": 2
+     },
+     {
+      "id": "medium-gun-parts",
+      "name": "Medium Gun Parts",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/complex-gun-parts/"
   },
   {
@@ -2572,6 +3280,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/coolant/"
   },
   {
@@ -2612,6 +3323,9 @@
      "Red Locker"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/cooling-coil/"
   },
   {
@@ -2640,6 +3354,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/cooling-fan/"
   },
   {
@@ -2668,6 +3385,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/cracked-bioscanner/"
   },
   {
@@ -2696,6 +3416,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1200,
+   "weightKg": 0.6,
+   "stackSize": 5,
+   "craft": {
+    "at": "Utility Station 2",
+    "ingredients": [
+     {
+      "id": "durable-cloth",
+      "name": "Durable Cloth",
+      "qty": 1
+     },
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/crash-mat/"
   },
   {
@@ -2731,6 +3469,19 @@
      "Sparks Fly"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.5,
+   "stackSize": 10,
+   "craft": {
+    "at": "Refiner 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/crude-explosives/"
   },
   {
@@ -2756,6 +3507,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 270,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/crumpled-plastic-bottle/"
   },
   {
@@ -2784,6 +3538,9 @@
      "Courier"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-arc-motion-core/"
   },
   {
@@ -2811,6 +3568,9 @@
      "Baron Husk"
     ]
    },
+   "sellPrice": 293,
+   "weightKg": 0.25,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-arc-powercell/"
   },
   {
@@ -2834,6 +3594,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 270,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-fireball-burner/"
   },
   {
@@ -2868,6 +3631,9 @@
      "Scavenging: Server Rack"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-heat-sink/"
   },
   {
@@ -2898,6 +3664,9 @@
      "ARC"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-hornet-driver/"
   },
   {
@@ -2951,6 +3720,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.25,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-rocketeer-driver/"
   },
   {
@@ -2982,6 +3754,9 @@
      "ARC Courier"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.083,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-tick-pod/"
   },
   {
@@ -3013,6 +3788,9 @@
      "ARC"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.25,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-wasp-driver/"
   },
   {
@@ -3041,6 +3819,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 6000,
+   "weightKg": 1,
+   "stackSize": 1,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "arc-circuitry",
+      "name": "ARC Circuitry",
+      "qty": 2
+     },
+     {
+      "id": "comet-igniter",
+      "name": "Comet Igniter",
+      "qty": 1
+     },
+     {
+      "id": "explosive-compound",
+      "name": "Explosive Compound",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/deadline/"
   },
   {
@@ -3083,6 +3884,24 @@
      "The Trifecta"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.75,
+   "stackSize": 3,
+   "craft": {
+    "at": "Medical Lab 2",
+    "ingredients": [
+     {
+      "id": "moss",
+      "name": "Moss",
+      "qty": 1
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 9
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/defibrillator/"
   },
   {
@@ -3111,6 +3930,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/deflated-football/"
   },
   {
@@ -3139,6 +3961,9 @@
      "Baron Husk"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/degraded-arc-rubber/"
   },
   {
@@ -3181,6 +4006,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/diving-goggles/"
   },
   {
@@ -3211,6 +4039,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/dog-collar/"
   },
   {
@@ -3234,6 +4065,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 27500,
+   "weightKg": 8,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 3
+     },
+     {
+      "id": "shredder-gyro",
+      "name": "Shredder Gyro",
+      "qty": 3
+     },
+     {
+      "id": "vaporizer-regulator",
+      "name": "Vaporizer Regulator",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/dolabra/"
   },
   {
@@ -3266,6 +4120,24 @@
      "Reduced to Rubble"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 3
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/door-blocker/"
   },
   {
@@ -3294,6 +4166,9 @@
      "Baron Husk"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/dried-out-arc-resin/"
   },
   {
@@ -3330,6 +4205,9 @@
      "Source Of The Contamination"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/duct-tape/"
   },
   {
@@ -3358,6 +4236,19 @@
    "sources": {
     "questRewards": [
      "After Rain Comes"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 10,
+   "craft": {
+    "at": "Refiner 1",
+    "ingredients": [
+     {
+      "id": "fabric",
+      "name": "Fabric",
+      "qty": 14
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/durable-cloth/"
@@ -3397,6 +4288,24 @@
     ],
     "questRewards": [
      "Greasing Her Palms"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 10,
+   "craft": {
+    "at": "Refiner 1",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 8
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 4
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/electrical-components/"
@@ -3450,6 +4359,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 27500,
+   "weightKg": 14,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "complex-gun-parts",
+      "name": "Complex Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 3
+     },
+     {
+      "id": "queen-reactor",
+      "name": "Queen Reactor",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/equalizer/"
   },
   {
@@ -3478,6 +4410,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2750,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/exodus-modules/"
   },
   {
@@ -3508,6 +4443,9 @@
     "Medical"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/expired-respirator/"
   },
   {
@@ -3531,6 +4469,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.3,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 2
+     },
+     {
+      "id": "oil",
+      "name": "Oil",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/explosive-compound/"
   },
   {
@@ -3563,6 +4519,24 @@
      "Building A Library (quantity: 1×)"
     ]
    },
+   "sellPrice": 1500,
+   "weightKg": 0.5,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "explosive-compound",
+      "name": "Explosive Compound",
+      "qty": 1
+     },
+     {
+      "id": "sensors",
+      "name": "Sensors",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/explosive-mine/"
   },
   {
@@ -3586,6 +4560,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": null,
+   "stackSize": null,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 6
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-barrel-i/"
   },
   {
@@ -3614,6 +4606,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": null,
+   "stackSize": null,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 3
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-barrel-ii/"
   },
   {
@@ -3644,6 +4654,24 @@
    "sources": {
     "questRewards": [
      "A Rising Tide"
+    ]
+   },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 8
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-barrel-iii/"
@@ -3677,6 +4705,24 @@
      "The Right Tool"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-light-mag-i/"
   },
   {
@@ -3705,6 +4751,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-light-mag-ii/"
   },
   {
@@ -3733,6 +4797,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 5
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-light-mag-iii/"
   },
   {
@@ -3758,6 +4840,24 @@
    "sources": {
     "sellers": [
      "Tian Wen"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-medium-mag-i/"
@@ -3788,6 +4888,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-medium-mag-ii/"
   },
   {
@@ -3816,6 +4934,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 5
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-medium-mag-iii/"
   },
   {
@@ -3841,6 +4977,24 @@
    "sources": {
     "sellers": [
      "Tian Wen"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-shotgun-mag-i/"
@@ -3871,6 +5025,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-shotgun-mag-ii/"
   },
   {
@@ -3899,6 +5071,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 5
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/extended-shotgun-mag-iii/"
   },
   {
@@ -3927,6 +5117,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 475,
+   "weightKg": 8,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 5
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ferro-i/"
   },
   {
@@ -3955,6 +5163,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ferro-ii/"
   },
   {
@@ -3983,6 +5194,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ferro-iii/"
   },
   {
@@ -4011,6 +5225,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2900,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ferro-iv/"
   },
   {
@@ -4034,6 +5251,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.4,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/fertilizer/"
   },
   {
@@ -4067,6 +5287,9 @@
      "Fireball"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/fireball-burner/"
   },
   {
@@ -4096,6 +5319,24 @@
     "questRewards": [
      "Combat Recon",
      "The League"
+    ]
+   },
+   "sellPrice": 270,
+   "weightKg": 0.05,
+   "stackSize": 5,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 2
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 4
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/firecracker/"
@@ -4130,6 +5371,9 @@
      "Firefly"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.75,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/firefly-burner/"
   },
   {
@@ -4153,6 +5397,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Explosives Station 2",
+    "ingredients": [
+     {
+      "id": "explosive-compound",
+      "name": "Explosive Compound",
+      "qty": 1
+     },
+     {
+      "id": "pop-trigger",
+      "name": "Pop Trigger",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/fireworks-box/"
   },
   {
@@ -4176,6 +5438,24 @@
     ],
     "questRewards": [
      "Keeping an Eye Out"
+    ]
+   },
+   "sellPrice": 2000,
+   "weightKg": 1,
+   "stackSize": 1,
+   "craft": {
+    "at": "In raid",
+    "ingredients": [
+     {
+      "id": "air-freshener",
+      "name": "Air Freshener",
+      "qty": 1
+     },
+     {
+      "id": "fireball-burner",
+      "name": "Fireball Burner",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/flame-spray/"
@@ -4206,6 +5486,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/flow-controller/"
   },
   {
@@ -4229,6 +5512,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 4000,
+   "weightKg": 0.25,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/fossilized-lightning/"
   },
   {
@@ -4255,6 +5541,9 @@
      "Free Loadout deployment (received at no cost)"
     ]
    },
+   "sellPrice": 660,
+   "weightKg": 1,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/free-loadout-augment/"
   },
   {
@@ -4283,6 +5572,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/frequency-modulation-box/"
   },
   {
@@ -4318,6 +5610,9 @@
      "Recording Panel"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/fried-motherboard/"
   },
   {
@@ -4360,6 +5655,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/frying-pan/"
   },
   {
@@ -4386,6 +5684,9 @@
     "Commercial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/garlic-press/"
   },
   {
@@ -4416,6 +5717,24 @@
    "sources": {
     "sellers": [
      "Apollo"
+    ]
+   },
+   "sellPrice": 270,
+   "weightKg": 0.2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 4
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 2
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/gas-grenade/"
@@ -4454,6 +5773,24 @@
      "Cold Storage"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.25,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 4
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/gas-mine/"
   },
   {
@@ -4482,6 +5819,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3500,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/geiger-counter/"
   },
   {
@@ -4514,6 +5854,9 @@
      "Snitch"
     ]
    },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/glitched-arc-circuitry/"
   },
   {
@@ -4543,6 +5886,9 @@
      "Erratic Wasp"
     ]
    },
+   "sellPrice": 3000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/glitched-arc-light-ring/"
   },
   {
@@ -4572,6 +5918,9 @@
      "Erratic Wasp"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/glitched-arc-phased-array/"
   },
   {
@@ -4599,6 +5948,9 @@
      "Pop"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/glitched-arc-power-converter/"
   },
   {
@@ -4628,6 +5980,9 @@
      "Erratic Wasp"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/glitched-arc-transmitter/"
   },
   {
@@ -4692,6 +6047,9 @@
      "Recycles into 2× Assorted Seeds"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/great-mullein/"
   },
   {
@@ -4726,6 +6084,19 @@
      "In My Image"
     ]
    },
+   "sellPrice": 150,
+   "weightKg": 0.15,
+   "stackSize": 5,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/green-light-stick/"
   },
   {
@@ -4754,6 +6125,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 450,
+   "weightKg": 3,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 2
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 5
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hairpin-i/"
   },
   {
@@ -4782,6 +6171,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 3,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hairpin-ii/"
   },
   {
@@ -4810,6 +6202,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hairpin-iii/"
   },
   {
@@ -4838,6 +6233,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2900,
+   "weightKg": 3,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hairpin-iv/"
   },
   {
@@ -4895,6 +6293,9 @@
     "Commercial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/headphones/"
   },
   {
@@ -4929,6 +6330,24 @@
      "The Clean Dream"
     ]
    },
+   "sellPrice": 1600,
+   "weightKg": 0.2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "canister",
+      "name": "Canister",
+      "qty": 2
+     },
+     {
+      "id": "explosive-compound",
+      "name": "Explosive Compound",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/heavy-fuze-grenade/"
   },
   {
@@ -4952,6 +6371,19 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 700,
+   "weightKg": 0.5,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/heavy-gun-parts/"
   },
   {
@@ -4987,6 +6419,24 @@
      "Prescriptions of the Past"
     ]
    },
+   "sellPrice": 5500,
+   "weightKg": 9,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 2",
+    "ingredients": [
+     {
+      "id": "power-rod",
+      "name": "Power Rod",
+      "qty": 1
+     },
+     {
+      "id": "voltage-converter",
+      "name": "Voltage Converter",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/heavy-shield/"
   },
   {
@@ -5019,6 +6469,24 @@
      "Lance"
     ]
    },
+   "sellPrice": 900,
+   "weightKg": 0.15,
+   "stackSize": 5,
+   "craft": {
+    "at": "In raid / Medical Lab 1",
+    "ingredients": [
+     {
+      "id": "durable-cloth",
+      "name": "Durable Cloth",
+      "qty": 1
+     },
+     {
+      "id": "great-mullein",
+      "name": "Great Mullein",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/herbal-bandage/"
   },
   {
@@ -5047,6 +6515,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/horizontal-grip/"
   },
   {
@@ -5083,6 +6554,9 @@
      "Courier"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.75,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hornet-driver/"
   },
   {
@@ -5108,6 +6582,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/household-cleaner/"
   },
   {
@@ -5136,6 +6613,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 7,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "exodus-modules",
+      "name": "Exodus Modules",
+      "qty": 1
+     },
+     {
+      "id": "heavy-gun-parts",
+      "name": "Heavy Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hullcracker-i/"
   },
   {
@@ -5164,6 +6664,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hullcracker-ii/"
   },
   {
@@ -5192,6 +6695,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hullcracker-iii/"
   },
   {
@@ -5220,6 +6726,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 22000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hullcracker-iv/"
   },
   {
@@ -5254,6 +6763,9 @@
      "Buried City: Red Tower lockers (guaranteed to appear)"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/humidifier/"
   },
   {
@@ -5279,6 +6791,9 @@
     "Commercial"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ice-cream-scooper/"
   },
   {
@@ -5307,6 +6822,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 8,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 5
+     },
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/il-toro-i/"
   },
   {
@@ -5335,6 +6868,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/il-toro-ii/"
   },
   {
@@ -5363,6 +6899,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/il-toro-iii/"
   },
   {
@@ -5391,6 +6930,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/il-toro-iv/"
   },
   {
@@ -5421,6 +6963,9 @@
      "ARC"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.33,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/impure-arc-coolant/"
   },
   {
@@ -5457,6 +7002,9 @@
      "Car Hood"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/industrial-battery/"
   },
   {
@@ -5487,6 +7035,9 @@
     "Industrial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/industrial-charger/"
   },
   {
@@ -5517,6 +7068,9 @@
     "Industrial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/industrial-magnet/"
   },
   {
@@ -5556,6 +7110,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 6000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ion-sputter/"
   },
   {
@@ -5596,6 +7153,24 @@
      "Our Presence up There"
     ]
    },
+   "sellPrice": 850,
+   "weightKg": 0.2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 2",
+    "ingredients": [
+     {
+      "id": "battery",
+      "name": "Battery",
+      "qty": 1
+     },
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/jolt-mine/"
   },
   {
@@ -5624,6 +7199,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 27500,
+   "weightKg": 9,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "complex-gun-parts",
+      "name": "Complex Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 3
+     },
+     {
+      "id": "queen-reactor",
+      "name": "Queen Reactor",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/jupiter/"
   },
   {
@@ -5652,6 +7250,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 840,
+   "weightKg": 7,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 6
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 8
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/kettle-i/"
   },
   {
@@ -5680,6 +7296,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/kettle-ii/"
   },
   {
@@ -5708,6 +7327,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/kettle-iii/"
   },
   {
@@ -5736,6 +7358,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/kettle-iv/"
   },
   {
@@ -5764,6 +7389,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 0.75,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/kinetic-converter/"
   },
   {
@@ -5792,6 +7420,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/laboratory-reagents/"
   },
   {
@@ -5850,6 +7481,9 @@
      "Leaper"
     ]
    },
+   "sellPrice": 3000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/leaper-pulse-unit/"
   },
   {
@@ -5884,6 +7518,9 @@
      "Recycles into 3× Assorted Seeds"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.2,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/lemon/"
   },
   {
@@ -5920,6 +7557,24 @@
      "Safe Passage"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.15,
+   "stackSize": 5,
+   "craft": {
+    "at": "In raid / Utility Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 5
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/li-l-smoke-grenade/"
   },
   {
@@ -5943,6 +7598,19 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 700,
+   "weightKg": 0.3,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/light-gun-parts/"
   },
   {
@@ -5978,6 +7646,24 @@
      "Safe Passage"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.1,
+   "stackSize": 5,
+   "craft": {
+    "at": "Explosives Station 1 / In raid / Workbench",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 3
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/light-impact-grenade/"
   },
   {
@@ -6008,6 +7694,24 @@
      "Clearer Skies"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "arc-alloy",
+      "name": "ARC Alloy",
+      "qty": 2
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/light-shield/"
   },
   {
@@ -6036,6 +7740,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 5
+     },
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/lightweight-stock/"
   },
   {
@@ -6068,6 +7790,24 @@
      "Lance"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 1,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/looting-mk-1/"
   },
   {
@@ -6096,6 +7836,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 2,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 2",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "magnet",
+      "name": "Magnet",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/looting-mk-2/"
   },
   {
@@ -6124,6 +7882,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 3,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/looting-mk-3-cautious/"
   },
   {
@@ -6152,6 +7928,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/looting-mk-3-safekeeper/"
   },
   {
@@ -6180,6 +7974,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 4,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/looting-mk-3-survivor/"
   },
   {
@@ -6203,6 +8015,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.4,
+   "stackSize": 3,
+   "craft": {
+    "at": "Utility Station 2",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 1
+     },
+     {
+      "id": "speaker-component",
+      "name": "Speaker Component",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/lure-grenade/"
   },
   {
@@ -6236,6 +8066,9 @@
      "Tribute To Toledo (5x)"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/magnet/"
   },
   {
@@ -6264,6 +8097,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5500,
+   "weightKg": 1,
+   "stackSize": 3,
+   "craft": {
+    "at": "Refiner 3",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "arc-motion-core",
+      "name": "ARC Motion Core",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/magnetic-accelerator/"
   },
   {
@@ -6292,6 +8143,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 6000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/magnetron/"
   },
   {
@@ -6320,6 +8174,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 11000,
+   "weightKg": 10,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/matriarch-reactor/"
   },
   {
@@ -6363,6 +8220,24 @@
      "Water Troubles (3x)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 10,
+   "craft": {
+    "at": "Refiner 1",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 7
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/mechanical-components/"
   },
   {
@@ -6386,6 +8261,19 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 700,
+   "weightKg": 0.4,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/medium-gun-parts/"
   },
   {
@@ -6424,6 +8312,24 @@
      "With A Trace"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 7,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 1",
+    "ingredients": [
+     {
+      "id": "arc-circuitry",
+      "name": "ARC Circuitry",
+      "qty": 1
+     },
+     {
+      "id": "battery",
+      "name": "Battery",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/medium-shield/"
   },
   {
@@ -6450,6 +8356,9 @@
     "Electrical"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/metal-brackets/"
   },
   {
@@ -6478,6 +8387,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/microscope/"
   },
   {
@@ -6506,6 +8418,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/mini-centrifuge/"
   },
   {
@@ -6567,6 +8482,24 @@
     "Security"
    ],
    "sources": {},
+   "sellPrice": 1750,
+   "weightKg": 1,
+   "stackSize": 5,
+   "craft": {
+    "at": "Refiner 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/mod-components/"
   },
   {
@@ -6590,6 +8523,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 500,
+   "weightKg": 0.3,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/moss/"
   },
   {
@@ -6625,6 +8561,9 @@
      "Scavenging: Car Hoods"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/motor/"
   },
   {
@@ -6650,6 +8589,24 @@
    "sources": {
     "sellers": [
      "Tian Wen (1,920 coins, 5 per day)"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 6
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/muzzle-brake-i/"
@@ -6686,6 +8643,24 @@
      "What We Left Behind (1x)"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/muzzle-brake-ii/"
   },
   {
@@ -6714,6 +8689,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 8
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/muzzle-brake-iii/"
   },
   {
@@ -6737,6 +8730,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.3,
+   "stackSize": 3,
+   "craft": {
+    "at": "In raid",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 2
+     },
+     {
+      "id": "speaker-component",
+      "name": "Speaker Component",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/noisemaker/"
   },
   {
@@ -6762,6 +8773,9 @@
     "Mechanical"
    ],
    "sources": {},
+   "sellPrice": 270,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/number-plate/"
   },
   {
@@ -6794,6 +8808,9 @@
      "Power Out (5x)"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/oil/"
   },
   {
@@ -6828,6 +8845,9 @@
      "Recycles into 2× Assorted Seeds"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.2,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/olives/"
   },
   {
@@ -6856,6 +8876,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 7,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "medium-gun-parts",
+      "name": "Medium Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 7
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/osprey-i/"
   },
   {
@@ -6884,6 +8927,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/osprey-ii/"
   },
   {
@@ -6912,6 +8958,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/osprey-iii/"
   },
   {
@@ -6940,6 +8989,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 7,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/osprey-iv/"
   },
   {
@@ -6968,6 +9020,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 5
+     },
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/padded-stock/"
   },
   {
@@ -6996,6 +9066,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 3,
+   "stackSize": 1,
+   "craft": {
+    "at": "Utility Station 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "speaker-component",
+      "name": "Speaker Component",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/photoelectric-cloak/"
   },
   {
@@ -7026,6 +9114,9 @@
     "Industrial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/polluted-air-filter/"
   },
   {
@@ -7062,6 +9153,9 @@
      "Pop (listed as ARC source; drop not explicitly stated)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/pop-trigger/"
   },
   {
@@ -7099,6 +9193,9 @@
      "Movie Night (quest listed; reward/location not stated)"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/portable-tv/"
   },
   {
@@ -7131,6 +9228,9 @@
     "Commercial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/power-bank/"
   },
   {
@@ -7158,6 +9258,9 @@
     "Commercial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/power-cable/"
   },
   {
@@ -7186,6 +9289,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Refiner 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "arc-circuitry",
+      "name": "ARC Circuitry",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/power-rod/"
   },
   {
@@ -7214,6 +9335,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Utility Station 3",
+    "ingredients": [
+     {
+      "id": "power-rod",
+      "name": "Power Rod",
+      "qty": 1
+     },
+     {
+      "id": "turbine-compressor",
+      "name": "Turbine Compressor",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/powered-descender/"
   },
   {
@@ -7248,6 +9387,9 @@
      "Recycles into 3× Assorted Seeds"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.2,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/prickly-pear/"
   },
   {
@@ -7292,6 +9434,9 @@
      "Sparks Fly (2x)"
     ]
    },
+   "sellPrice": 500,
+   "weightKg": 0.2,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/processor/"
   },
   {
@@ -7322,6 +9467,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/projector/"
   },
   {
@@ -7353,6 +9501,24 @@
      "Keeping an Eye Out (5x)"
     ]
    },
+   "sellPrice": 470,
+   "weightKg": 0.25,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 1",
+    "ingredients": [
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 1
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/pulse-mine/"
   },
   {
@@ -7381,6 +9547,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 11000,
+   "weightKg": 10,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/queen-reactor/"
   },
   {
@@ -7432,6 +9601,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/radio/"
   },
   {
@@ -7460,6 +9632,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/radio-relay/"
   },
   {
@@ -7488,6 +9663,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 4,
+   "stackSize": null,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "canister",
+      "name": "Canister",
+      "qty": 5
+     },
+     {
+      "id": "heavy-gun-parts",
+      "name": "Heavy Gun Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rascal-i/"
   },
   {
@@ -7516,6 +9714,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 4,
+   "stackSize": null,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rascal-ii/"
   },
   {
@@ -7544,6 +9745,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 4,
+   "stackSize": null,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rascal-iii/"
   },
   {
@@ -7572,6 +9776,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 4,
+   "stackSize": null,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rascal-iv/"
   },
   {
@@ -7595,6 +9802,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1750,
+   "weightKg": 6,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 16
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 12
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rattler-i/"
   },
   {
@@ -7618,6 +9843,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 6,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rattler-ii/"
   },
   {
@@ -7646,6 +9874,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 6,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rattler-iii/"
   },
   {
@@ -7674,6 +9905,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 6,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rattler-iv/"
   },
   {
@@ -7704,6 +9938,9 @@
      "Shani (50 Cred, 3 per day)"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.2,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/recorder/"
   },
   {
@@ -7736,6 +9973,19 @@
      "What Goes Around (5x)"
     ]
    },
+   "sellPrice": 150,
+   "weightKg": 0.15,
+   "stackSize": 5,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/red-light-stick/"
   },
   {
@@ -7764,6 +10014,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/remote-control/"
   },
   {
@@ -7801,6 +10054,24 @@
      "The Trifecta (3x)"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 2
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/remote-raider-flare/"
   },
   {
@@ -7829,6 +10100,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 10,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "medium-gun-parts",
+      "name": "Medium Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "oil",
+      "name": "Oil",
+      "qty": 5
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/renegade-i/"
   },
   {
@@ -7857,6 +10151,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 10,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/renegade-ii/"
   },
   {
@@ -7885,6 +10182,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 10,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/renegade-iii/"
   },
   {
@@ -7913,6 +10213,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 10,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/renegade-iv/"
   },
   {
@@ -7943,6 +10246,9 @@
     "Industrial"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ripped-safety-vest/"
   },
   {
@@ -7978,6 +10284,9 @@
      "Scavenging: Spaceport (Rocket Assembly)"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rocket-thruster/"
   },
   {
@@ -8017,6 +10326,9 @@
      "Out of the Shadows (1x; reward/requirement not stated)"
     ]
    },
+   "sellPrice": 3000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rocketeer-driver/"
   },
   {
@@ -8040,6 +10352,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.2,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/roots/"
   },
   {
@@ -8073,6 +10388,9 @@
      "Celeste"
     ]
    },
+   "sellPrice": 500,
+   "weightKg": 0.3,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rope/"
   },
   {
@@ -8101,6 +10419,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rotary-encoder/"
   },
   {
@@ -8126,6 +10447,9 @@
     "Electrical"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rubber-pad/"
   },
   {
@@ -8156,6 +10480,9 @@
     "Residential"
    ],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ruined-accordion/"
   },
   {
@@ -8188,6 +10515,9 @@
      "Knocked-out Raiders (only obtainable via looting)"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ruined-augment/"
   },
   {
@@ -8218,6 +10548,9 @@
     "Security"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ruined-baton/"
   },
   {
@@ -8243,6 +10576,9 @@
     "Security"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ruined-handcuffs/"
   },
   {
@@ -8268,6 +10604,9 @@
     "Exodus"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ruined-parachute/"
   },
   {
@@ -8298,6 +10637,9 @@
     "Security"
    ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ruined-riot-shield/"
   },
   {
@@ -8328,6 +10670,9 @@
     "Security"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/ruined-tactical-vest/"
   },
   {
@@ -8351,6 +10696,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rusted-bolts/"
   },
   {
@@ -8391,6 +10739,9 @@
      "Industrial Drawers"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rusted-gear/"
   },
   {
@@ -8419,6 +10770,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rusted-shut-medical-kit/"
   },
   {
@@ -8456,6 +10810,9 @@
      "Metal Crate"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rusted-tools/"
   },
   {
@@ -8483,6 +10840,9 @@
      "Scavenging (ARC husks)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/rusty-arc-steel/"
   },
   {
@@ -8511,6 +10871,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/sample-cleaner/"
   },
   {
@@ -8543,6 +10906,24 @@
      "Shoring Up Defenses (6x)",
      "Stable Housing (5x)",
      "Test Case (3x)"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.2,
+   "stackSize": 5,
+   "craft": {
+    "at": "Explosives Station 1",
+    "ingredients": [
+     {
+      "id": "arc-alloy",
+      "name": "ARC Alloy",
+      "qty": 2
+     },
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/seeker-grenade/"
@@ -8591,6 +10972,9 @@
      "Bees! (3x)"
     ]
    },
+   "sellPrice": 500,
+   "weightKg": 0.3,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/sensors/"
   },
   {
@@ -8624,6 +11008,9 @@
      "Scavenging (ARC): Sentinel (scavenged from destroyed Sentinels)"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/sentinel-firing-core/"
   },
   {
@@ -8656,6 +11043,24 @@
      "On Deaf Ears"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.2,
+   "stackSize": 1,
+   "craft": {
+    "at": "In raid",
+    "ingredients": [
+     {
+      "id": "assorted-seeds",
+      "name": "Assorted Seeds",
+      "qty": 7
+     },
+     {
+      "id": "canister",
+      "name": "Canister",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shaker/"
   },
   {
@@ -8681,6 +11086,24 @@
    "sources": {
     "sellers": [
      "Lance (1,560 coins)"
+    ]
+   },
+   "sellPrice": 520,
+   "weightKg": 0.15,
+   "stackSize": 5,
+   "craft": {
+    "at": "In raid / Medical Lab 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "arc-powercell",
+      "name": "ARC Powercell",
+      "qty": 1
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 5
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shield-recharger/"
@@ -8711,6 +11134,24 @@
     ],
     "sellers": [
      "Tian Wen (1,920 coins, limit 5 per day)"
+    ]
+   },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 6
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shotgun-choke-i/"
@@ -8752,6 +11193,24 @@
      "Unexpected Initiative (1x)"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shotgun-choke-ii/"
   },
   {
@@ -8782,6 +11241,24 @@
    "sources": {
     "foundIn": [
      "Scavenging (no specific containers listed)"
+    ]
+   },
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 8
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shotgun-choke-iii/"
@@ -8816,6 +11293,24 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 8
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shotgun-silencer/"
   },
   {
@@ -8844,6 +11339,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2100,
+   "weightKg": 0.4,
+   "stackSize": 5,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 1
+     },
+     {
+      "id": "hornet-driver",
+      "name": "Hornet Driver",
+      "qty": 1
+     },
+     {
+      "id": "voltage-converter",
+      "name": "Voltage Converter",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/showstopper/"
   },
   {
@@ -8878,6 +11396,24 @@
     "questRewards": [
      "A First Foothold (3x)",
      "Safe Passage (3x)"
+    ]
+   },
+   "sellPrice": 800,
+   "weightKg": 0.15,
+   "stackSize": 5,
+   "craft": {
+    "at": "Explosives Station 2",
+    "ingredients": [
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 1
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 2
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shrapnel-grenade/"
@@ -8915,6 +11451,9 @@
      "Shredder"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/shredder-gyro/"
   },
   {
@@ -8943,6 +11482,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/signal-amplifier/"
   },
   {
@@ -8977,6 +11519,24 @@
     "sellers": [
      "Shani (100 Cred, 1 per day)",
      "Tian Wen (6,000 coins, 1 per day)"
+    ]
+   },
+   "sellPrice": 2000,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 4
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/silencer-i/"
@@ -9016,6 +11576,24 @@
      "Snap And Salvage (1x)"
     ]
    },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 8
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/silencer-ii/"
   },
   {
@@ -9048,6 +11626,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 7000,
+   "weightKg": 0.75,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/silencer-iii/"
   },
   {
@@ -9093,6 +11674,9 @@
      "Recycling: Anvil, Arpeggio, Burletta, Il Toro, Unusable Weapon"
     ]
    },
+   "sellPrice": 330,
+   "weightKg": 0.3,
+   "stackSize": 10,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/simple-gun-parts/"
   },
   {
@@ -9153,6 +11737,24 @@
      "Decks: 8 total, 3 from Raider Deck AR/RD 001 (Ryder & Voyager, Page 1, MAYHEM PACK), 5 from Raider Deck AR/RD 003 (Surgeon, Page 3)"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.2,
+   "stackSize": 5,
+   "craft": {
+    "at": "Utility Station 2",
+    "ingredients": [
+     {
+      "id": "canister",
+      "name": "Canister",
+      "qty": 1
+     },
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 14
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/smoke-grenade/"
   },
   {
@@ -9193,6 +11795,24 @@
      "Sparks Fly (2x)"
     ]
    },
+   "sellPrice": 800,
+   "weightKg": 0.2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 2",
+    "ingredients": [
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 2
+     },
+     {
+      "id": "magnet",
+      "name": "Magnet",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/snap-blast-grenade/"
   },
   {
@@ -9221,6 +11841,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 14000,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Utility Station 3",
+    "ingredients": [
+     {
+      "id": "exodus-modules",
+      "name": "Exodus Modules",
+      "qty": 1
+     },
+     {
+      "id": "power-rod",
+      "name": "Power Rod",
+      "qty": 2
+     },
+     {
+      "id": "rope",
+      "name": "Rope",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/snap-hook/"
   },
   {
@@ -9256,6 +11899,9 @@
      "Snitch"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.75,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/snitch-scanner/"
   },
   {
@@ -9300,6 +11946,9 @@
      "Recycling from Frequency Modulation Box, Headphones, Lure Grenade, Noisemaker, Photoelectric Cloak, Radio, Radio Relay"
     ]
    },
+   "sellPrice": 500,
+   "weightKg": 0.3,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/speaker-component/"
   },
   {
@@ -9328,6 +11977,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/spectrometer/"
   },
   {
@@ -9356,6 +12008,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3500,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/spectrum-analyzer/"
   },
   {
@@ -9392,6 +12047,9 @@
      "Spotter"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/spotter-relay/"
   },
   {
@@ -9420,6 +12078,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/spring-cushion/"
   },
   {
@@ -9453,6 +12114,24 @@
      "A Better Use (1x)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 1
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 7
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stable-stock-i/"
   },
   {
@@ -9481,6 +12160,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 3
+     },
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stable-stock-ii/"
   },
   {
@@ -9509,6 +12206,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 5
+     },
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stable-stock-iii/"
   },
   {
@@ -9572,6 +12287,9 @@
      "Recycling: Advanced Mechanical Components, Cooling Coil, Spring Cushion, Turbo Pump (salvage only), several Extended Mag and Mod Components"
     ]
    },
+   "sellPrice": 300,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/steel-spring/"
   },
   {
@@ -9616,6 +12334,24 @@
     ],
     "other": [
      "Raider Deck AR/RD 003 (Surgeon), Page 1 (5x)"
+    ]
+   },
+   "sellPrice": 2000,
+   "weightKg": 0.2,
+   "stackSize": 3,
+   "craft": {
+    "at": "Medical Lab 2",
+    "ingredients": [
+     {
+      "id": "antiseptic",
+      "name": "Antiseptic",
+      "qty": 1
+     },
+     {
+      "id": "durable-cloth",
+      "name": "Durable Cloth",
+      "qty": 2
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/sterilized-bandage/"
@@ -9734,6 +12470,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 800,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1 / Workbench",
+    "ingredients": [
+     {
+      "id": "metal-parts",
+      "name": "Metal Parts",
+      "qty": 8
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stitcher-i/"
   },
   {
@@ -9762,6 +12516,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stitcher-ii/"
   },
   {
@@ -9790,6 +12547,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stitcher-iii/"
   },
   {
@@ -9818,6 +12578,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stitcher-iv/"
   },
   {
@@ -9846,6 +12609,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2100,
+   "weightKg": 0,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 1
+     },
+     {
+      "id": "hornet-driver",
+      "name": "Hornet Driver",
+      "qty": 1
+     },
+     {
+      "id": "sensors",
+      "name": "Sensors",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/surge-coil/"
   },
   {
@@ -9888,6 +12674,24 @@
      "Crafting; Raider Deck AR/RD 001 (Ryder & Voyager), page 4, MEDIC PACK (3x); Raider Deck AR/RD 003 (Surgeon), page 2 (5x)"
     ]
    },
+   "sellPrice": 1200,
+   "weightKg": 0.2,
+   "stackSize": 5,
+   "craft": {
+    "at": "Medical Lab 2",
+    "ingredients": [
+     {
+      "id": "advanced-arc-powercell",
+      "name": "Advanced ARC Powercell",
+      "qty": 1
+     },
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/surge-shield-recharger/"
   },
   {
@@ -9927,6 +12731,9 @@
      "Mixed Signals (1x) - page does not say whether it rewards the item"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/surveyor-vault/"
   },
   {
@@ -9971,6 +12778,9 @@
      "Recycling: Rocket Thruster yields 2 (1 when salvaged)"
     ]
    },
+   "sellPrice": 700,
+   "weightKg": 0.5,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/synthesized-fuel/"
   },
   {
@@ -10012,6 +12822,9 @@
      "Required (not rewarded) by Doctor's Orders"
     ]
    },
+   "sellPrice": 500,
+   "weightKg": 0.3,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/syringe/"
   },
   {
@@ -10050,6 +12863,24 @@
      "Trash Into Treasure (1x)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 2,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 1",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     },
+     {
+      "id": "rubber-parts",
+      "name": "Rubber Parts",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tactical-mk-1/"
   },
   {
@@ -10078,6 +12909,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 2,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 2",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "magnet",
+      "name": "Magnet",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tactical-mk-2/"
   },
   {
@@ -10106,6 +12955,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tactical-mk-3-defensive/"
   },
   {
@@ -10134,6 +13001,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 4,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tactical-mk-3-healing/"
   },
   {
@@ -10162,6 +13047,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 3,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tactical-mk-3-revival/"
   },
   {
@@ -10190,6 +13093,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 4,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gear Bench 3",
+    "ingredients": [
+     {
+      "id": "advanced-electrical-components",
+      "name": "Advanced Electrical Components",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tactical-mk-3-smoke/"
   },
   {
@@ -10228,6 +13149,24 @@
     ],
     "other": [
      "Raider Deck AR/RD 001 (Ryder & Voyager), page 1, SCOUT PACK (5x)"
+    ]
+   },
+   "sellPrice": 1000,
+   "weightKg": 0.4,
+   "stackSize": 3,
+   "craft": {
+    "at": "Utility Station 3",
+    "ingredients": [
+     {
+      "id": "electrical-components",
+      "name": "Electrical Components",
+      "qty": 1
+     },
+     {
+      "id": "sensors",
+      "name": "Sensors",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tagging-grenade/"
@@ -10286,6 +13225,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.8,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tattered-clothes/"
   },
   {
@@ -10314,6 +13256,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 1.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/telemetry-transceiver/"
   },
   {
@@ -10342,6 +13287,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 11,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "exodus-modules",
+      "name": "Exodus Modules",
+      "qty": 2
+     },
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 1
+     },
+     {
+      "id": "medium-gun-parts",
+      "name": "Medium Gun Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tempest-i/"
   },
   {
@@ -10370,6 +13338,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 11,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tempest-ii/"
   },
   {
@@ -10398,6 +13369,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 22000,
+   "weightKg": 11,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tempest-iii/"
   },
   {
@@ -10426,6 +13400,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 27000,
+   "weightKg": 11,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tempest-iv/"
   },
   {
@@ -10458,6 +13435,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/thermostat/"
   },
   {
@@ -10493,6 +13473,9 @@
      "Tick"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tick-pod/"
   },
   {
@@ -10527,6 +13510,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/toaster/"
   },
   {
@@ -10557,6 +13543,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/torn-blanket/"
   },
   {
@@ -10585,6 +13574,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 12,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "medium-gun-parts",
+      "name": "Medium Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "steel-spring",
+      "name": "Steel Spring",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/torrente-i/"
   },
   {
@@ -10613,6 +13625,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 12,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/torrente-ii/"
   },
   {
@@ -10641,6 +13656,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 12,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/torrente-iii/"
   },
   {
@@ -10669,6 +13687,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 12,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/torrente-iv/"
   },
   {
@@ -10692,6 +13713,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2200,
+   "weightKg": 1,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 2
+     },
+     {
+      "id": "firefly-burner",
+      "name": "Firefly Burner",
+      "qty": 1
+     },
+     {
+      "id": "synthesized-fuel",
+      "name": "Synthesized Fuel",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/trailblazer/"
   },
   {
@@ -10727,6 +13771,24 @@
      "Sparks Fly (6x)"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.4,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 2",
+    "ingredients": [
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 2
+     },
+     {
+      "id": "processor",
+      "name": "Processor",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/trigger-nade/"
   },
   {
@@ -10755,6 +13817,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/turbine-compressor/"
   },
   {
@@ -10789,6 +13854,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/turbo-pump/"
   },
   {
@@ -10823,6 +13891,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 2000,
+   "weightKg": 3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/unusable-weapon/"
   },
   {
@@ -10851,6 +13922,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 6000,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vaporizer-regulator/"
   },
   {
@@ -10879,6 +13953,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 7000,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "advanced-mechanical-components",
+      "name": "Advanced Mechanical Components",
+      "qty": 2
+     },
+     {
+      "id": "magnet",
+      "name": "Magnet",
+      "qty": 5
+     },
+     {
+      "id": "medium-gun-parts",
+      "name": "Medium Gun Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/venator-i/"
   },
   {
@@ -10907,6 +14004,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/venator-ii/"
   },
   {
@@ -10935,6 +14035,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/venator-iii/"
   },
   {
@@ -10963,6 +14066,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/venator-iv/"
   },
   {
@@ -10993,6 +14099,24 @@
      "Tian Wen (1,920 coins, limit 5 per day)"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 1
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 6
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vertical-grip-i/"
   },
   {
@@ -11021,6 +14145,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 2",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 3
+     },
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vertical-grip-ii/"
   },
   {
@@ -11049,6 +14191,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 5000,
+   "weightKg": 0.75,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "duct-tape",
+      "name": "Duct Tape",
+      "qty": 5
+     },
+     {
+      "id": "mod-components",
+      "name": "Mod Components",
+      "qty": 2
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vertical-grip-iii/"
   },
   {
@@ -11089,6 +14249,24 @@
      "Raider Deck (listed on page)"
     ]
    },
+   "sellPrice": 2200,
+   "weightKg": 0.4,
+   "stackSize": 3,
+   "craft": {
+    "at": "Medical Lab 3",
+    "ingredients": [
+     {
+      "id": "antiseptic",
+      "name": "Antiseptic",
+      "qty": 2
+     },
+     {
+      "id": "syringe",
+      "name": "Syringe",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vita-shot/"
   },
   {
@@ -11126,6 +14304,29 @@
     "other": [
      "Project: Trophy Display (Project Part 1, Stage 2, 3x)",
      "Raider Deck AR/RD 001 (Ryder & Voyager), page 4, MEDIC PACK"
+    ]
+   },
+   "sellPrice": 3400,
+   "weightKg": 1,
+   "stackSize": 1,
+   "craft": {
+    "at": "Medical Lab 3",
+    "ingredients": [
+     {
+      "id": "antiseptic",
+      "name": "Antiseptic",
+      "qty": 3
+     },
+     {
+      "id": "canister",
+      "name": "Canister",
+      "qty": 1
+     },
+     {
+      "id": "tick-pod",
+      "name": "Tick Pod",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vita-spray/"
@@ -11168,6 +14369,9 @@
      "Recycling from Heavy Shield, Industrial Charger, Ion Sputter, Showstopper, Signal Amplifier"
     ]
    },
+   "sellPrice": 500,
+   "weightKg": 0.3,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/voltage-converter/"
   },
   {
@@ -11196,6 +14400,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 10000,
+   "weightKg": 8,
+   "stackSize": 1,
+   "craft": {
+    "at": "Gunsmith 3",
+    "ingredients": [
+     {
+      "id": "exodus-modules",
+      "name": "Exodus Modules",
+      "qty": 1
+     },
+     {
+      "id": "heavy-gun-parts",
+      "name": "Heavy Gun Parts",
+      "qty": 3
+     },
+     {
+      "id": "magnetic-accelerator",
+      "name": "Magnetic Accelerator",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vulcano-i/"
   },
   {
@@ -11224,6 +14451,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 13000,
+   "weightKg": 9.25,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vulcano-ii/"
   },
   {
@@ -11252,6 +14482,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 17000,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vulcano-iii/"
   },
   {
@@ -11280,6 +14513,9 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 22000,
+   "weightKg": 8,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/vulcano-iv/"
   },
   {
@@ -11316,6 +14552,9 @@
      "Wasp"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.6,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/wasp-driver/"
   },
   {
@@ -11353,6 +14592,9 @@
      "Not obtainable through salvaging or recycling"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/water-filter/"
   },
   {
@@ -11388,6 +14630,9 @@
      "Metal Crate (industrial loot containers); carts and shelves; Dam Battlegrounds Research and Administration (west tunnels) and Power Generation Complex; Spaceport Shipping Warehouse"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 2,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/water-pump/"
   },
   {
@@ -11416,6 +14661,24 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.2,
+   "stackSize": 5,
+   "craft": {
+    "at": "Medical Lab 1 / In raid",
+    "ingredients": [
+     {
+      "id": "fabric",
+      "name": "Fabric",
+      "qty": 10
+     },
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/white-flag/"
   },
   {
@@ -11460,6 +14723,9 @@
      "Recycling from 28 item types, incl. Acoustic Guitar, Cooling Fan, Portable TV, Power Cable, Toaster, Voltage Converter"
     ]
    },
+   "sellPrice": 200,
+   "weightKg": 0.25,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/wires/"
   },
   {
@@ -11488,6 +14754,29 @@
    ],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 6000,
+   "weightKg": 1,
+   "stackSize": 1,
+   "craft": {
+    "at": "Explosives Station 3",
+    "ingredients": [
+     {
+      "id": "arc-motion-core",
+      "name": "ARC Motion Core",
+      "qty": 2
+     },
+     {
+      "id": "explosive-compound",
+      "name": "Explosive Compound",
+      "qty": 1
+     },
+     {
+      "id": "rocketeer-driver",
+      "name": "Rocketeer Driver",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/wolfpack/"
   },
   {
@@ -11545,6 +14834,19 @@
      "Raider Deck AR/RD 001 (Ryder & Voyager), SCOUT PACK (5x)"
     ]
    },
+   "sellPrice": 150,
+   "weightKg": 0.15,
+   "stackSize": 5,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "qty": 3
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/yellow-light-stick/"
   },
   {
@@ -11578,6 +14880,24 @@
     "other": [
      "Raider Deck AR/RD 001 (Ryder & Voyager), SCOUT PACK (3x)",
      "Raider Deck AR/RD 002 (Goalie), page 4 (3x)"
+    ]
+   },
+   "sellPrice": 1000,
+   "weightKg": 0.4,
+   "stackSize": 3,
+   "craft": {
+    "at": "Utility Station 2",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 1
+     },
+     {
+      "id": "rope",
+      "name": "Rope",
+      "qty": 1
+     }
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/zipline/"

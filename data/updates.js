@@ -21,6 +21,8 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Search everything now finds map rooms by name or by area type (Industrial, Electrical, Medical and so on) and opens the detailed map at that room."],
+    ["Oct 11, 2026", "Recycle: removed the long note under the filters that listed the wiki pages loaded and explained the partial badge."],
     ["Oct 11, 2026", "Mobile: a much more compact header, and the filter and tab rows now scroll sideways in one line instead of wrapping into many rows. Feedback moved into the Display menu on phones."],
     ["Oct 10, 2026", "Quests: checked every quest's order against the wiki and fixed the Celeste chain (A Balanced Harvest, Untended Garden, After Rain Comes, The Root Of The Matter, Celeste's Journals, The Major's Footlocker, Water Troubles, Back On Top). Added Belly Of The Beast and Tracks Of The Beast. The quest list is now sorted so a quest always comes after the ones you need first."],
     ["Oct 10, 2026", "Fixed Celeste's Childhood Drawings showing as unlocked: it now requires Shoring Up Defenses first."],
@@ -71,4 +73,4 @@ ARC.DATA_CHANGES = [
     ["Oct 9, 2026", "Expanded the update history with highlights for each update."],
     ["Oct 9, 2026", "Wrong-number reports now go to GitHub Issues."],
     ["Oct 9, 2026", "Rebuilt the site: all 238 items from the wiki material pages, a recycle/salvage toggle, a materials tracker and a Frozen Trail 2.0 summary."]
-  ];
+  ]

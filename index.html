@@ -1305,11 +1305,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var loaded = Object.keys(TABLES);
     var withRec = items.filter(function (i) { return Object.keys(i.rec).length; }).length;
     var withSal = items.filter(function (i) { return Object.keys(i.sal).length; }).length;
-    document.getElementById("coverage").innerHTML =
-      "<b>" + items.length + " items</b> (" + withRec + " with recycle amounts, " + withSal + " with salvage amounts). " +
-      "Loaded from the wiki pages for " + loaded.join(", ") + ". " +
-      "Items marked <b>partial</b> might also give materials from pages not loaded yet. " +
-      "Wiki pages were last edited between April and October 2026, so double-check numbers in game.";
+    var cv = document.getElementById("coverage"); cv.textContent = ""; cv.hidden = true;
   }
 
   function renderChips() {
@@ -1953,8 +1949,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var loadouts = load("arcHubLoadouts", []);
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
-  var DATA_CHANGES = ARC.DATA_CHANGES;
-  var itemNotes = load("arcHubNotes", {});
+  var DATA_CHANGES = ARC.DATA_CHANGES;  var itemNotes = load("arcHubNotes", {});
   var trials = load("arcHubTrials", {});
   var cueOn = load("arcHubCue", false);
   var hist = load("arcHubHist", []);
@@ -2111,6 +2106,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     grp("Blueprints", BPS.filter(function (b) { return m(b[0]); }).slice(0, 5).map(function (b) { return { l: b[0], s: b[1], go: ["blueprints", b[0]] }; }));
     grp("Weapons", GEARDATA.weapons.filter(function (w) { return m(w[0]); }).slice(0, 4).map(function (w) { return { l: w[0], s: w[1], go: ["gear", w[0]] }; }));
     grp("Trader stock", TRADERS.filter(function (t) { return m(t[1]); }).slice(0, 4).map(function (t) { return { l: t[1], s: t[0], go: ["traders", t[1]] }; }));
+    var roomHits = [];
+    MAPS.forEach(function (mp, mi) {
+      var R = ROOMS[mapSlug(mp)]; if (!R) { return; }
+      R.r.forEach(function (r, ri) {
+        var ty = r[3] || [], tm = ty.some(function (x) { return x.toLowerCase().indexOf(q) === 0; });
+        if (m(r[0]) || tm) { roomHits.push({ l: r[0], s: mp.name + (ty.length ? " \u00b7 " + ty.join(", ") : ""), go: ["room", mi, ri], w: m(r[0]) ? 0 : 1 }); }
+      });
+    });
+    roomHits.sort(function (a, b) { return a.w - b.w; });
+    grp("Map rooms", roomHits.slice(0, 8));
     if (!groups.length) { box.innerHTML = '<div class="gnone">Nothing found for &ldquo;' + esc(q) + "&rdquo;.</div>"; box.hidden = false; return; }
     box.innerHTML = groups.map(function (g) {
       return '<div class="gh">' + g[0] + "</div>" + g[1].map(function (r) {
@@ -2123,6 +2128,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function gGo(i) {
     var r = gTargets[i]; if (!r) { return; }
     var k = r.go[0], v = r.go[1];
+    if (k === "room") {
+      curMap = v; showTab("maps"); renderMaps(); writeHash();
+      lbOpen(mapDetailSrc(MAPS[v]), MAPS[v].name, r.go[2]);
+      document.getElementById("gres").hidden = true; document.getElementById("gq").value = "";
+      return;
+    }
     if (k === "recycle") { showTab("recycle"); document.getElementById("searchBox").value = v; renderResults(); writeHash(); }
     else if (k === "quests") { showTab("quests"); document.getElementById("qQ").value = v; renderQuests(); }
     else if (k === "gear") { showTab("gear"); document.getElementById("gearQ").value = v; renderGear(); }

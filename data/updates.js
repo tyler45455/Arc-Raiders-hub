@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "The colour stripes at the top of the site and in the logo now run blue, green, yellow, red."],
     ["Oct 11, 2026", "Added the five Amplification Modules (Mk. I to V) with where they drop, and a new Amplification section in Reference listing every weapon upgrade, its effect, research project and compatible weapons. Search everything finds both. The Mk. I wiki page would not load, so its details follow the other four."],
     ["Oct 11, 2026", "Backups: new Download file and Import from file buttons. The backup file is versioned and includes item and quest IDs, and importing understands IDs as well as names. New read-only data files for items, quests, maps and keys are published under api/v1/ with stable IDs."],
     ["Oct 11, 2026", "Search everything now finds keys and keycards (from the wiki key list). Pick one to open the detailed map at the building it opens, with the wiki wording for the floor or corner. Type key and a map name to list that map's keys."],

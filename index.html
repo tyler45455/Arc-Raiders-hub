@@ -385,6 +385,16 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .qrow .lbl { color: var(--muted); min-width: 64px; }
 .qcard.qlock { border-style: dashed; }
 .qcard.qdone { opacity: .6; }
+.mapkeys { margin: 12px 0; }
+.mapkeys summary { cursor: pointer; font-weight: 600; }
+.mapkeys ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 10px; }
+.mapkeys li { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
+.mapkeys .btn { margin-top: 6px; }
+.qnext .qnlist { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 8px; }
+.qnext .qnlist li { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
+.qnext .qnlist .qstat { display: inline; }
+.linkbtn { appearance: none; background: none; border: 0; padding: 0; color: var(--accent); font: inherit; font-weight: 600; cursor: pointer; text-align: left; }
+.linkbtn:hover { text-decoration: underline; }
 .qcard.qdone .qh a { text-decoration: line-through; }
 .qchk { margin-right: auto; font-size: 13px; font-weight: 600; display: flex; gap: 6px; align-items: center; }
 .qobj summary { cursor: pointer; font-size: 13px; font-weight: 600; }
@@ -851,6 +861,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       </div>
     </div>
     <div id="qBanner"></div>
+    <details class="card qnext" id="qNextCard" open><summary id="qNextSum">Next up</summary><div id="qNext"></div></details>
     <details class="card" id="qNeedsCard"><summary>Materials my unlocked quests need</summary>
       <div id="qNeeds"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn" type="button" data-action="qGoalsAll">Set tracker goals for all of these</button></div>
@@ -1177,6 +1188,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       '<p class="muted">' + esc(CONDITIONS) + "</p>" +
       '<div class="mapnote"><label for="mapNote" class="muted">Your notes for this map (saved in this browser)</label><textarea id="mapNote" rows="3" maxlength="2000" placeholder="Good loot rooms, spawns to avoid...">' + esc(mapNotes[m.name] || "") + "</textarea></div>" +
       roomsHtml(m) +
+      keysHtml(m) +
       prepHtml(m.name) +
       '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
     document.getElementById("mapTable").innerHTML = MAPS.map(function (x) {
@@ -1720,6 +1732,41 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var n = t.filter(function (r) { return (tracker[r.n] || 0) >= r.q; }).length, ok = n === t.length;
     return { t: t, ok: ok, txt: ok ? "Tracker covers all " + t.length + " tracked item" + (t.length > 1 ? "s" : "") : n + " of " + t.length + " tracked items covered" };
   }
+  /* Next up: quests you can start now (not done, not locked), closest to ready first. Follows the trader and map filters. */
+  var qNextAll = false;
+  function renderNextUp(mats) {
+    var mapSel = document.getElementById("qMap").value;
+    var list = qActive().filter(function (q) {
+      return (!qTrader || q.trader === qTrader) && (!mapSel || q.loc.indexOf(mapSel) !== -1 || q.loc.indexOf("Any") !== -1);
+    }).map(function (q, i) {
+      /* Items only found during the quest itself (not in the item list) are picked up on the way, not brought along. */
+      var bring = q.req.filter(function (r) { return !!ITEMINFO[r.n] || items.some(function (it) { return it.name === r.n; }); });
+      var miss = bring.filter(function (r) { return (tracker[r.n] || 0) < r.q; });
+      var pick = q.req.filter(function (r) { return bring.indexOf(r) === -1; });
+      return { q: q, i: i, miss: miss, pick: pick, n: bring.length, r: bring.length ? 1 - miss.length / bring.length : 1 };
+    }).sort(function (a, b) { return b.r - a.r || a.i - b.i; });
+    document.getElementById("qNextSum").textContent = "Next up: " + list.length + " quest" + (list.length === 1 ? "" : "s") + " you can do now";
+    if (!list.length) {
+      document.getElementById("qNext").innerHTML = '<p class="muted">' + (qActive().length ? "No unlocked quests match the trader or map filter." : "You have finished every quest. Nice work.") + "</p>";
+      return;
+    }
+    var shown = qNextAll ? list : list.slice(0, 6);
+    document.getElementById("qNext").innerHTML = '<ul class="qnlist">' + shown.map(function (x) {
+      var q = x.q, need;
+      if (!x.n) { need = '<span class="qstat ok">Nothing to bring</span>'; }
+      else if (!x.miss.length) { need = '<span class="qstat ok">You have everything to bring</span>'; }
+      else {
+        need = '<span class="muted">Still need:</span> ' + x.miss.map(function (r) {
+          var have = tracker[r.n] || 0;
+          return "<span>" + (have ? have + "/" : "") + r.q + "&times; " + esc(r.n) + "</span>";
+        }).join(", ");
+      }
+      if (x.pick.length) { need += '<div class="muted"><span>Found during the quest:</span> ' + x.pick.map(function (r) { return "<span>" + esc(r.n) + "</span>"; }).join(", ") + "</div>"; }
+      return '<li><button type="button" class="linkbtn" data-action="qFocus" data-q="' + esc(q.name) + '">' + esc(q.name) + '</button> <span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span><div>" + need + "</div></li>";
+    }).join("") + "</ul>" +
+      (list.length > 6 ? '<button class="btn ghost" type="button" data-action="qNextMore">' + (qNextAll ? "Show fewer" : "Show all " + list.length) + "</button>" : "") +
+      '<p class="muted">Counts come from your Tracker. Tap a quest to see its objectives and rewards.</p>';
+  }
   function renderQuests() {
     var mats = {};
     allMaterials().forEach(function (m) { mats[m] = true; });
@@ -1759,6 +1806,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var have = tracker[k] || 0;
       return "<div>" + esc(k) + ": <b>" + Math.min(have, tot[k]) + " / " + tot[k] + "</b>" + (have >= tot[k] ? " &#10003;" : " (" + (tot[k] - have) + " to go)") + "</div>";
     }).join("") + "</div>" : '<p class="muted" style="margin-top:8px;">No tracked materials are needed by your unlocked quests right now.</p>';
+    renderNextUp(mats);
     var nd = QUESTS.filter(function (q) { return qDone[q.name]; }).length;
     document.getElementById("qProg").textContent = nd + " of " + QUESTS.length + " completed, " + QUESTS.filter(qLocked).length + " locked";
     document.getElementById("qCount").textContent = list.length + " of " + QUESTS.length + " quests";
@@ -2201,6 +2249,27 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   /* Small public surface for tools and a future sync source. IDs match api/v1/*.json. */
   window.ArcHub = { schema: 2, idOf: idOf, itemName: canonItem, questName: canonQuest, exportBackup: backupObj };
   var KEYS = ARC.KEYS || [];
+  function keyGet(k) {
+    var out = [];
+    if (k[4]) { out.push("Quest reward: " + k[4]); }
+    if (k[5]) { out.push(k[5]); }
+    return out.length ? out.join(". ") + "." : "The wiki does not say where to find it yet.";
+  }
+  function keyOpen(ki) {
+    var kk = KEYS[ki], mr = keyMapRoom(kk); if (mr[0] < 0) { return; }
+    curMap = mr[0]; showTab("maps"); renderMaps(); writeHash();
+    lbOpen(mapDetailSrc(MAPS[mr[0]]), MAPS[mr[0]].name, mr[1] >= 0 ? mr[1] : undefined, kk[0] + ": " + kk[3] + " How to get it: " + keyGet(kk) + (mr[1] < 0 ? " The wiki does not name a spot on the map for this door." : ""));
+  }
+  function keysHtml(m) {
+    var list = [];
+    KEYS.forEach(function (k, ki) { if (k[1] === m.name) { list.push([k, ki]); } });
+    if (!list.length) { return ""; }
+    return '<details class="mapkeys"><summary>Keys for ' + esc(m.name) + " (" + list.length + ")</summary><ul>" + list.map(function (x) {
+      var k = x[0], has = keyMapRoom(k)[1] >= 0;
+      return "<li><b>" + esc(k[0]) + "</b><div>" + esc(k[3]) + "</div><div class=\"muted\">How to get it: " + esc(keyGet(k)) + "</div>" +
+        (has ? '<button class="btn ghost" type="button" data-action="keyShow" data-k="' + x[1] + '">Show the door on the map</button>' : "") + "</li>";
+    }).join("") + "</ul></details>";
+  }
   function keyMapRoom(k) { var mi = -1, ri = -1; MAPS.forEach(function (m, i) { if (m.name === k[1]) { mi = i; } }); if (mi >= 0 && k[2]) { (ROOMS[mapSlug(MAPS[mi])] || { r: [] }).r.forEach(function (r, i) { if (r[0] === k[2]) { ri = i; } }); } return [mi, ri]; }
   function gSearch() {
     var q = document.getElementById("gq").value.trim().toLowerCase();
@@ -2298,9 +2367,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var r = gTargets[i]; if (!r) { return; }
     var k = r.go[0], v = r.go[1];
     if (k === "key") {
-      var kk = KEYS[v], mr = keyMapRoom(kk); if (mr[0] < 0) { return; }
-      curMap = mr[0]; showTab("maps"); renderMaps(); writeHash();
-      lbOpen(mapDetailSrc(MAPS[mr[0]]), MAPS[mr[0]].name, mr[1] >= 0 ? mr[1] : undefined, kk[0] + ": " + kk[3] + (kk[4] ? " Quest reward: " + kk[4] + "." : "") + (mr[1] < 0 ? " The wiki does not name a spot on the map for this one." : ""));
+      keyOpen(v);
       document.getElementById("gres").hidden = true; document.getElementById("gq").value = "";
       return;
     }
@@ -3395,6 +3462,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       projects.push({ name: wi[0] + " level " + wi[1], needs: qItems(wi[2]).map(function (r) { return [r.n, r.q]; }) });
       save("arcHubProjects", projects); renderProjects();
       var wol = t.textContent; t.textContent = "Added to Tools"; setTimeout(function () { t.textContent = wol; }, 1500);
+    } else if (a === "keyShow") {
+      keyOpen(parseInt(t.getAttribute("data-k"), 10));
+    } else if (a === "qNextMore") {
+      qNextAll = !qNextAll; renderQuests();
+    } else if (a === "qFocus") {
+      document.getElementById("qQ").value = t.getAttribute("data-q"); renderQuests();
+      try { document.getElementById("qOut").scrollIntoView({ block: "start" }); } catch (eF) {}
     } else if (a === "qTrader") {
       qTrader = t.getAttribute("data-t") || ""; renderQuests();
     } else if (a === "presetAdd") {

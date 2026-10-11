@@ -15,8 +15,6 @@ Done so far: backup files with IDs, stable item and quest IDs, and public JSON d
 
 ## Site improvements
 - **Data audit page** listing items with no sources, quests missing details and keys with no spot on the map.
-- **"Next up" list on Quests** showing quests you can start now and what each one needs.
-- **Key sources.** Read the remaining wiki key pages and add where each key is found. Only two keys have quest rewards so far.
 - **Weekly wiki check.** A scheduled job that notices wiki changes so data is re-checked automatically.
 - **Tests in CI.** Add search, tracker and import/export checks next to the existing smoke test.
 - **Accessibility pass.** Keyboard use in the map viewer and in the new popovers (partial note, search results).

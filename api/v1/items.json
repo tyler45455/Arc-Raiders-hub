@@ -122,7 +122,9 @@
      "qty": 9
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "Baron Husk",
@@ -160,7 +162,9 @@
      "qty": 9
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Destroyed ARC machines"
@@ -646,7 +650,10 @@
     "Mechanical"
    ],
    "sources": {
-    "foundIn": "Industrial Cleaner, Control Panel; ARC: Matriarch, Queen"
+    "foundIn": "Industrial Cleaner, Control Panel; ARC: Matriarch, Queen",
+    "other": [
+     "Craft it (Refiner; recipe shown with the item)"
+    ]
    },
    "sellPrice": 1750,
    "weightKg": 1,
@@ -708,7 +715,11 @@
    "recycle": [],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (in raid; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 1800,
    "weightKg": 0.2,
    "stackSize": 5,
@@ -986,7 +997,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani (100 Cred, 2 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -1032,7 +1047,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (15,000 coins, 1 per day)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -1121,7 +1140,11 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Anvil I at the Gunsmith"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 5,
    "stackSize": 1,
@@ -1146,7 +1169,11 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Anvil II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 5,
    "stackSize": 1,
@@ -1201,7 +1228,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 27500,
    "weightKg": 14,
    "stackSize": 1,
@@ -1303,7 +1334,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5500,
    "weightKg": 7,
    "stackSize": 1,
@@ -1349,7 +1384,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Arpeggio I at the Gunsmith"
+    ]
+   },
    "sellPrice": 8000,
    "weightKg": 7,
    "stackSize": 1,
@@ -1380,7 +1419,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Arpeggio II at the Gunsmith (4 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 11500,
    "weightKg": 7,
    "stackSize": 1,
@@ -1411,7 +1454,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Arpeggio III at the Gunsmith (5 Mechanical Components, 1 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 15000,
    "weightKg": 7,
    "stackSize": 1,
@@ -1771,7 +1818,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 8000,
    "weightKg": 11,
    "stackSize": 1,
@@ -1822,7 +1873,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bettina I at the Gunsmith"
+    ]
+   },
    "sellPrice": 11000,
    "weightKg": 11,
    "stackSize": 1,
@@ -1853,7 +1908,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bettina II at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 14000,
    "weightKg": 11,
    "stackSize": 1,
@@ -1884,7 +1943,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bettina III at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 18000,
    "weightKg": 11,
    "stackSize": 1,
@@ -2165,7 +2228,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 7,
    "stackSize": 1,
@@ -2216,7 +2283,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bobcat I at the Gunsmith"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 7,
    "stackSize": 1,
@@ -2247,7 +2318,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bobcat II at the Gunsmith (2 Advanced Mechanical Components, 1 Light Gun Parts)"
+    ]
+   },
    "sellPrice": 22000,
    "weightKg": 7,
    "stackSize": 1,
@@ -2278,7 +2353,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bobcat III at the Gunsmith (2 Advanced Mechanical Components, 3 Light Gun Parts)"
+    ]
+   },
    "sellPrice": 27000,
    "weightKg": 7,
    "stackSize": 1,
@@ -2308,7 +2387,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "Bombardier"
@@ -2371,7 +2452,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 2000,
    "weightKg": 3,
@@ -2402,7 +2485,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Security"
+   ],
    "sources": {
     "foundIn": [
      "Security"
@@ -2437,7 +2522,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Security"
+   ],
    "sources": {
     "foundIn": [
      "Security"
@@ -2473,7 +2560,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (8,700 coins, 3 per day)"
+    ]
+   },
    "sellPrice": 2900,
    "weightKg": 4,
    "stackSize": 1,
@@ -2519,7 +2610,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Burletta I at the Gunsmith"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 4,
    "stackSize": 1,
@@ -2550,7 +2645,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Burletta II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 4,
    "stackSize": 1,
@@ -2581,7 +2680,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Burletta III at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 4,
    "stackSize": 1,
@@ -2746,7 +2849,9 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
+   "areaTypes": [
+    "Nature"
+   ],
    "sources": {},
    "sellPrice": 460,
    "weightKg": 0.5,
@@ -2813,7 +2918,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 6.5,
    "stackSize": 1,
@@ -2917,7 +3026,12 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani (100 Cred, 2 per day)",
+     "Lance (6,000 coins, 1 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 3,
    "stackSize": 1,
@@ -2963,7 +3077,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 5,
    "stackSize": 1,
@@ -3009,7 +3127,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 5,
    "stackSize": 1,
@@ -3054,7 +3176,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 1,
@@ -3187,7 +3311,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -3227,8 +3355,14 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Security"
+   ],
+   "sources": {
+    "sellers": [
+     "Celeste (60 Assorted Seeds, 1 per day)"
+    ]
+   },
    "sellPrice": 3000,
    "weightKg": 1,
    "stackSize": 3,
@@ -3278,7 +3412,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Mechanical"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 2,
@@ -3352,7 +3488,9 @@
      "qty": 4
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Technological"
+   ],
    "sources": {},
    "sellPrice": 2000,
    "weightKg": 3,
@@ -3383,7 +3521,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Medical"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 2,
@@ -3415,7 +3555,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Utility Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 1200,
    "weightKg": 0.6,
    "stackSize": 5,
@@ -3531,7 +3675,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "Baron Husk",
@@ -3562,7 +3708,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "Baron Husk"
@@ -3592,7 +3740,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {},
    "sellPrice": 270,
    "weightKg": 1,
@@ -3655,7 +3805,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "picking up used Hornet Drivers"
@@ -3718,7 +3870,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 0.25,
@@ -3744,7 +3898,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "scavenging old ARC husks"
@@ -3778,7 +3934,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "scavenging old ARC husks",
@@ -3818,7 +3976,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Apollo (18,000 coins, 1 per day)"
+    ]
+   },
    "sellPrice": 6000,
    "weightKg": 1,
    "stackSize": 1,
@@ -3928,7 +4090,9 @@
      "qty": 9
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Residential"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 0.8,
@@ -3954,7 +4118,9 @@
      "qty": 5
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "ARC",
@@ -4064,7 +4230,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 27500,
    "weightKg": 8,
    "stackSize": 1,
@@ -4159,7 +4329,9 @@
      "qty": 4
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "ARC",
@@ -4358,7 +4530,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 27500,
    "weightKg": 14,
    "stackSize": 1,
@@ -4408,8 +4584,14 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Exodus"
+   ],
+   "sources": {
+    "sellers": [
+     "Celeste (55 Assorted Seeds, 1 per day)"
+    ]
+   },
    "sellPrice": 2750,
    "weightKg": 1,
    "stackSize": 3,
@@ -4467,8 +4649,15 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Industrial",
+    "Security"
+   ],
+   "sources": {
+    "other": [
+     "Craft it (Refiner; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 1000,
    "weightKg": 0.3,
    "stackSize": 5,
@@ -4559,7 +4748,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 1000,
    "weightKg": null,
    "stackSize": null,
@@ -4605,7 +4798,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 3000,
    "weightKg": null,
    "stackSize": null,
@@ -4750,7 +4947,12 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani (100 Cred, 2 per day)",
+     "Tian Wen (6,000 coins, 3 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -4796,7 +4998,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -4887,7 +5093,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani (100 Cred, 2 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -4933,7 +5143,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -5024,7 +5238,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -5070,7 +5288,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -5116,7 +5338,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (1,425 coins)"
+    ]
+   },
    "sellPrice": 475,
    "weightKg": 8,
    "stackSize": 1,
@@ -5162,7 +5388,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Ferro I at the Gunsmith"
+    ]
+   },
    "sellPrice": 1000,
    "weightKg": 8,
    "stackSize": 1,
@@ -5193,7 +5423,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Ferro II at the Gunsmith (7 Metal Parts)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 8,
    "stackSize": 1,
@@ -5224,7 +5458,14 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (8,700 coins, 1 per day)"
+    ],
+    "other": [
+     "Upgrade from Ferro III at the Gunsmith (9 Metal Parts, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 2900,
    "weightKg": 8,
    "stackSize": 1,
@@ -5249,7 +5490,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Nature"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 0.4,
@@ -5280,7 +5523,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "Courier",
@@ -5365,7 +5610,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "arcEnemies": [
      "Firefly"
@@ -5396,7 +5643,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani (60 Cred, 3 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -5484,7 +5735,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -5510,7 +5763,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Nature"
+   ],
    "sources": {},
    "sellPrice": 4000,
    "weightKg": 0.25,
@@ -5570,7 +5825,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -5817,7 +6074,9 @@
      "qty": 3
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3500,
    "weightKg": 1.5,
@@ -5842,7 +6101,9 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC)"
@@ -5877,7 +6138,9 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC)"
@@ -5909,7 +6172,9 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC)"
@@ -5936,7 +6201,9 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC)"
@@ -5971,7 +6238,9 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC)"
@@ -6124,7 +6393,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (1,350 coins)"
+    ]
+   },
    "sellPrice": 450,
    "weightKg": 3,
    "stackSize": 1,
@@ -6170,7 +6443,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Hairpin I at the Gunsmith"
+    ]
+   },
    "sellPrice": 1000,
    "weightKg": 3,
    "stackSize": 1,
@@ -6201,7 +6478,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Hairpin II at the Gunsmith (8 Metal Parts)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 3,
    "stackSize": 1,
@@ -6232,7 +6513,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Hairpin III at the Gunsmith (9 Metal Parts, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 2900,
    "weightKg": 3,
    "stackSize": 1,
@@ -6369,8 +6654,15 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Security",
+    "Raider"
+   ],
+   "sources": {
+    "sellers": [
+     "Celeste (15 Assorted Seeds, 3 per day)"
+    ]
+   },
    "sellPrice": 700,
    "weightKg": 0.5,
    "stackSize": 5,
@@ -6544,7 +6836,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (destroyed Hornets)"
@@ -6612,7 +6906,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (30,000 coins, 1 per day)"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 7,
    "stackSize": 1,
@@ -6663,7 +6961,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Hullcracker I at the Gunsmith"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 7,
    "stackSize": 1,
@@ -6694,7 +6996,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Hullcracker II at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 7,
    "stackSize": 1,
@@ -6725,7 +7031,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Hullcracker III at the Gunsmith (2 Advanced Mechanical Components, 1 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 22000,
    "weightKg": 7,
    "stackSize": 1,
@@ -6821,7 +7131,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (15,000 coins, 3 per day)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 8,
    "stackSize": 1,
@@ -6867,7 +7181,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Il Toro I at the Gunsmith"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 8,
    "stackSize": 1,
@@ -6898,7 +7216,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Il Toro II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 8,
    "stackSize": 1,
@@ -6929,7 +7251,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Il Toro III at the Gunsmith (1 Heavy Gun Parts, 4 Mechanical Components)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 8,
    "stackSize": 1,
@@ -6954,7 +7280,9 @@
      "qty": 5
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (old ARC husks)"
@@ -7108,7 +7436,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 6000,
    "weightKg": 1.5,
@@ -7198,7 +7528,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 27500,
    "weightKg": 9,
    "stackSize": 1,
@@ -7249,7 +7583,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (2,520 coins)"
+    ]
+   },
    "sellPrice": 840,
    "weightKg": 7,
    "stackSize": 1,
@@ -7295,7 +7633,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Kettle I at the Gunsmith"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 7,
    "stackSize": 1,
@@ -7326,7 +7668,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Kettle II at the Gunsmith (8 Metal Parts, 10 Plastic Parts)"
+    ]
+   },
    "sellPrice": 3000,
    "weightKg": 7,
    "stackSize": 1,
@@ -7357,7 +7703,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Kettle III at the Gunsmith (10 Metal Parts, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 7,
    "stackSize": 1,
@@ -7418,7 +7768,9 @@
      "qty": 3
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Medical"
+   ],
    "sources": {},
    "sellPrice": 2000,
    "weightKg": 3,
@@ -7472,7 +7824,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (destroyed Leapers)"
@@ -7596,8 +7950,15 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Raider",
+    "Security"
+   ],
+   "sources": {
+    "sellers": [
+     "Celeste (15 Assorted Seeds, 3 per day)"
+    ]
+   },
    "sellPrice": 700,
    "weightKg": 0.3,
    "stackSize": 5,
@@ -7739,7 +8100,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.25,
    "stackSize": 1,
@@ -7835,7 +8200,12 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Lance (6,000 coins, 1 per day)",
+     "Shani (100 Cred, 2 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 2,
    "stackSize": 1,
@@ -7881,7 +8251,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 3,
    "stackSize": 1,
@@ -7927,7 +8301,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 5,
    "stackSize": 1,
@@ -7973,7 +8351,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 4,
    "stackSize": 1,
@@ -8014,7 +8396,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Utility Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 1000,
    "weightKg": 0.4,
    "stackSize": 3,
@@ -8095,8 +8481,14 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Exodus"
+   ],
+   "sources": {
+    "other": [
+     "Craft it (Refiner; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5500,
    "weightKg": 1,
    "stackSize": 3,
@@ -8141,7 +8533,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 6000,
    "weightKg": 1.5,
@@ -8259,8 +8653,15 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Raider",
+    "Security"
+   ],
+   "sources": {
+    "sellers": [
+     "Celeste (15 Assorted Seeds, 3 per day)"
+    ]
+   },
    "sellPrice": 700,
    "weightKg": 0.4,
    "stackSize": 5,
@@ -8385,7 +8786,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -8416,7 +8819,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -8481,7 +8886,11 @@
    "areaTypes": [
     "Security"
    ],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Refiner; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 1750,
    "weightKg": 1,
    "stackSize": 5,
@@ -8521,8 +8930,14 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Nature"
+   ],
+   "sources": {
+    "sellers": [
+     "Celeste (10 Assorted Seeds, 5 per day)"
+    ]
+   },
    "sellPrice": 500,
    "weightKg": 0.3,
    "stackSize": 10,
@@ -8688,7 +9103,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -8729,7 +9148,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Apollo (1,920 coins, 6 per day)"
+    ]
+   },
    "sellPrice": 640,
    "weightKg": 0.3,
    "stackSize": 3,
@@ -8875,7 +9298,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 7,
    "stackSize": 1,
@@ -8926,7 +9353,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Osprey I at the Gunsmith"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 7,
    "stackSize": 1,
@@ -8957,7 +9388,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Osprey II at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 7,
    "stackSize": 1,
@@ -8988,7 +9423,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Osprey III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 7,
    "stackSize": 1,
@@ -9019,7 +9458,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (15,000 coins, 1 per day)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -9065,7 +9508,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Utility Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 3,
    "stackSize": 1,
@@ -9143,7 +9590,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging destroyed Pops"
@@ -9287,8 +9736,14 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "Exodus"
+   ],
+   "sources": {
+    "other": [
+     "Craft it (Refiner; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 2,
    "stackSize": 3,
@@ -9334,7 +9789,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Utility Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 5,
    "stackSize": 1,
@@ -9545,7 +10004,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {},
    "sellPrice": 11000,
    "weightKg": 10,
@@ -9599,7 +10060,10 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Commercial",
+    "Residential"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 2,
@@ -9630,7 +10094,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -9662,7 +10128,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 4,
    "stackSize": null,
@@ -9801,7 +10271,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 1750,
    "weightKg": 6,
    "stackSize": 1,
@@ -9842,7 +10316,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Rattler I at the Gunsmith"
+    ]
+   },
    "sellPrice": 3000,
    "weightKg": 6,
    "stackSize": 1,
@@ -9873,7 +10351,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Rattler II at the Gunsmith (10 Metal Parts, 10 Rubber Parts)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 6,
    "stackSize": 1,
@@ -9904,7 +10386,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Rattler III at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 6,
    "stackSize": 1,
@@ -10012,7 +10498,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Residential"
+   ],
    "sources": {},
    "sellPrice": 1000,
    "weightKg": 0.8,
@@ -10099,7 +10587,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (21,000 coins, 1 per day)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 10,
    "stackSize": 1,
@@ -10150,7 +10642,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Renegade I at the Gunsmith"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 10,
    "stackSize": 1,
@@ -10181,7 +10677,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Renegade II at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 10,
    "stackSize": 1,
@@ -10212,7 +10712,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Renegade III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 10,
    "stackSize": 1,
@@ -10313,7 +10817,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC): Rocketeer Husk",
@@ -10350,7 +10856,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Nature"
+   ],
    "sources": {},
    "sellPrice": 640,
    "weightKg": 0.2,
@@ -10417,7 +10925,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -10509,7 +11019,9 @@
      "qty": 3
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Knocked-out Raiders (only obtainable via looting)"
@@ -10694,7 +11206,10 @@
      "qty": 4
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Industrial",
+    "Mechanical"
+   ],
    "sources": {},
    "sellPrice": 640,
    "weightKg": 0.8,
@@ -10768,7 +11283,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Medical"
+   ],
    "sources": {},
    "sellPrice": 2000,
    "weightKg": 3,
@@ -10834,7 +11351,9 @@
      "qty": 3
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC husks)"
@@ -10869,7 +11388,9 @@
      "qty": 12
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -11001,7 +11522,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (ARC): Courier",
@@ -11338,7 +11861,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Explosives Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 2100,
    "weightKg": 0.4,
    "stackSize": 5,
@@ -11442,7 +11969,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging from destroyed Shredders (listed under ARC)"
@@ -11480,7 +12009,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -11840,7 +12371,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Utility Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 14000,
    "weightKg": 5,
    "stackSize": 1,
@@ -11890,7 +12425,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenged from destroyed Snitches"
@@ -11975,7 +12512,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -12006,7 +12545,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3500,
    "weightKg": 1.5,
@@ -12037,7 +12578,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging from destroyed ARC enemies (Courier, Spotter)"
@@ -12076,7 +12619,10 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Residential",
+    "Commercial"
+   ],
    "sources": {},
    "sellPrice": 2000,
    "weightKg": 2,
@@ -12159,7 +12705,12 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani (100 Cred, 2 per day)",
+     "Tian Wen (6,000 coins, 2 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -12205,7 +12756,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -12469,7 +13024,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Tian Wen (2,400 coins)"
+    ]
+   },
    "sellPrice": 800,
    "weightKg": 5,
    "stackSize": 1,
@@ -12515,7 +13074,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Stitcher I at the Gunsmith"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 5,
    "stackSize": 1,
@@ -12546,7 +13109,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Stitcher II at the Gunsmith (8 Metal Parts, 12 Rubber Parts)"
+    ]
+   },
    "sellPrice": 3000,
    "weightKg": 5,
    "stackSize": 1,
@@ -12577,7 +13144,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Stitcher III at the Gunsmith (10 Metal Parts, 1 Simple Gun Parts)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 5,
    "stackSize": 1,
@@ -12608,7 +13179,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Explosives Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 2100,
    "weightKg": 0,
    "stackSize": 3,
@@ -12718,7 +13293,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenged from destroyed Surveyors"
@@ -12908,7 +13485,12 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Lance (6,000 coins, 1 per day)",
+     "Shani (100 Cred, 2 per day)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 2,
    "stackSize": 1,
@@ -12954,7 +13536,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 5,
    "stackSize": 1,
@@ -13000,7 +13586,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 4,
    "stackSize": 1,
@@ -13046,7 +13636,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 3,
    "stackSize": 1,
@@ -13092,7 +13686,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gear Bench; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 4,
    "stackSize": 1,
@@ -13254,7 +13852,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Exodus"
+   ],
    "sources": {},
    "sellPrice": 3000,
    "weightKg": 1.5,
@@ -13286,7 +13886,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 11,
    "stackSize": 1,
@@ -13337,7 +13941,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Tempest I at the Gunsmith"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 11,
    "stackSize": 1,
@@ -13368,7 +13976,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Tempest II at the Gunsmith (2 Advanced Mechanical Components, 1 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 22000,
    "weightKg": 11,
    "stackSize": 1,
@@ -13399,7 +14011,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Tempest III at the Gunsmith (2 Advanced Mechanical Components, 3 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 27000,
    "weightKg": 11,
    "stackSize": 1,
@@ -13429,7 +14045,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Residential"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging (no specific containers listed)"
@@ -13464,7 +14082,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenged from destroyed Ticks"
@@ -13573,7 +14193,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 12,
    "stackSize": 1,
@@ -13624,7 +14248,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Torrente I at the Gunsmith"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 12,
    "stackSize": 1,
@@ -13655,7 +14283,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Torrente II at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 12,
    "stackSize": 1,
@@ -13686,7 +14318,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Torrente III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 12,
    "stackSize": 1,
@@ -13712,7 +14348,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Apollo (6,600 coins, 3 per day)"
+    ]
+   },
    "sellPrice": 2200,
    "weightKg": 1,
    "stackSize": 3,
@@ -13815,7 +14455,9 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {},
    "sellPrice": 5000,
    "weightKg": 0.5,
@@ -13952,7 +14594,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 5,
    "stackSize": 1,
@@ -14003,7 +14649,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Venator I at the Gunsmith"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 5,
    "stackSize": 1,
@@ -14034,7 +14684,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Venator II at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 5,
    "stackSize": 1,
@@ -14065,7 +14719,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Venator III at the Gunsmith (1 Advanced Mechanical Components, 2 Medium Gun Parts)"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 5,
    "stackSize": 1,
@@ -14144,7 +14802,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 2000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -14190,7 +14852,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 5000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -14399,7 +15065,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Gunsmith; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 8,
    "stackSize": 1,
@@ -14450,7 +15120,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Vulcano I at the Gunsmith"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 9.25,
    "stackSize": 1,
@@ -14481,7 +15155,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Vulcano II at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 8,
    "stackSize": 1,
@@ -14512,7 +15190,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Vulcano III at the Gunsmith (2 Advanced Mechanical Components, 1 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 22000,
    "weightKg": 8,
    "stackSize": 1,
@@ -14542,7 +15224,9 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "ARC"
+   ],
    "sources": {
     "foundIn": [
      "Scavenging from Courier, Wasp, Wasp Husk"
@@ -14660,7 +15344,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Medical Lab or in raid; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 640,
    "weightKg": 0.2,
    "stackSize": 5,
@@ -14753,7 +15441,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Craft it (Explosives Station; recipe shown with the item)"
+    ]
+   },
    "sellPrice": 6000,
    "weightKg": 1,
    "stackSize": 1,

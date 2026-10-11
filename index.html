@@ -1113,6 +1113,19 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       </div>
       <div id="swOut" aria-live="polite"></div>
     </div>
+
+    <div class="tool" id="upTool">
+      <h3>Weapon upgrade path</h3>
+      <p class="muted">Pick a weapon, the tier you have and the tier you want. You get every Gunsmith step, the total materials and what your tracker still needs.</p>
+      <div class="stashgrid">
+        <div><label for="upW">Weapon</label><select id="upW"></select></div>
+        <div><label for="upFrom">I have</label><select id="upFrom"></select></div>
+        <div><label for="upTo">Upgrade to</label><select id="upTo"></select></div>
+      </div>
+      <label class="crdeep"><input type="checkbox" id="upDeep"> Break components down to basic materials (uses components your tracker already has)</label>
+      <div id="upOut" aria-live="polite"></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="upProj">Add the materials to my projects</button><span class="muted" id="upMsg" role="status"></span></div>
+    </div>
   </section>
 
   <!-- MAPS -->
@@ -3406,8 +3419,63 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     document.getElementById("loItems").addEventListener("input", renderLoadout);
     renderWeaponCompare(); renderLoadout();
   }
+  /* Weapon upgrade path: tier I is crafted (ITEMINFO), II to IV are Gunsmith upgrades (UPGRADES, from the FARM2/FARM3 lines). */
+  var UP_T = ["I", "II", "III", "IV"], upSet = load("arcHubUp", {});
+  var UP_W = Object.keys(ITEMINFO).filter(function (n) { return / I$/.test(n) && UPGRADES[n.replace(/ I$/, " II")]; }).map(function (n) { return n.replace(/ I$/, ""); }).sort();
+  function upTiers(w) { return UP_T.filter(function (t, i) { return !i || UPGRADES[w + " " + t]; }); }
+  function upCalc(w, from, to, deep) {
+    var tiers = upTiers(w), steps = [], tot = {};
+    for (var i = from; i <= to; i++) {
+      var n = w + " " + tiers[i], r = i ? UPGRADES[n] : (ITEMINFO[n] && ITEMINFO[n][3]);
+      var parts = r ? r[1].filter(function (g) { return !i || g[0] !== w + " " + tiers[i - 1]; }) : null;
+      steps.push({ n: n, at: r ? r[0].replace(" (upgrade)", "") : "", up: i > 0, parts: parts });
+      (parts || []).forEach(function (g) { tot[g[0]] = (tot[g[0]] || 0) + g[1]; });
+    }
+    if (deep) {
+      var leaf = {};
+      Object.keys(tot).forEach(function (m) {
+        var q = Math.max(0, tot[m] - (tracker[m] || 0));
+        if (q && recipeOf(m)) { var c = craftCalc(m, q, true); Object.keys(c.leaf).forEach(function (x) { leaf[x] = (leaf[x] || 0) + c.leaf[x]; }); }
+        else if (q) { leaf[m] = (leaf[m] || 0) + q; }
+      });
+      tot = leaf;
+    }
+    return { steps: steps, tot: tot };
+  }
+  function upFill() {
+    var ws = document.getElementById("upW"), fs = document.getElementById("upFrom"), ts = document.getElementById("upTo");
+    if (!ws.options.length) {
+      ws.innerHTML = UP_W.map(function (w) { return "<option>" + esc(w) + "</option>"; }).join("");
+      if (upSet.w && UP_W.indexOf(upSet.w) !== -1) { ws.value = upSet.w; }
+      document.getElementById("upDeep").checked = !!upSet.d;
+    }
+    var tiers = upTiers(ws.value), f = Math.min(parseInt(upSet.f, 10) || 0, tiers.length - 1), t = Math.min(Math.max(parseInt(upSet.t, 10) || tiers.length, f + 1), tiers.length);
+    fs.innerHTML = '<option value="0">Nothing yet</option>' + tiers.slice(0, -1).map(function (x, i) { return '<option value="' + (i + 1) + '">' + esc(ws.value + " " + x) + "</option>"; }).join("");
+    fs.value = String(f);
+    ts.innerHTML = tiers.map(function (x, i) { return i + 1 > f ? '<option value="' + (i + 1) + '">' + esc(ws.value + " " + x) + "</option>" : ""; }).join("");
+    ts.value = String(t);
+  }
+  function renderUpgrade() {
+    var out = document.getElementById("upOut");
+    if (!out) { return; }
+    if (!UP_W.length) { out.innerHTML = '<div class="empty-line">No weapon upgrade data.</div>'; return; }
+    upFill();
+    var w = document.getElementById("upW").value, f = parseInt(document.getElementById("upFrom").value, 10) || 0, t = parseInt(document.getElementById("upTo").value, 10) || 1;
+    var deep = document.getElementById("upDeep").checked, c = upCalc(w, f, t - 1, deep), mats = Object.keys(c.tot).sort(function (a, b) { return c.tot[b] - c.tot[a] || a.localeCompare(b); });
+    var worth = 0, priced = true, miss = 0, last = ITEMINFO[w + " " + upTiers(w)[t - 1]];
+    mats.forEach(function (m) { var f2 = ITEMINFO[m]; if (f2 && f2[0] != null) { worth += f2[0] * c.tot[m]; } else { priced = false; } if ((tracker[m] || 0) < c.tot[m]) { miss++; } });
+    out.innerHTML = '<ol class="mapnotes" style="margin-top:10px;">' + c.steps.map(function (st) {
+      return "<li><b>" + (st.up ? "Upgrade to " : "Craft ") + esc(st.n) + "</b>" + (st.at ? ' <span class="muted">at ' + esc(st.at) + "</span>" : "") + ": " +
+        (st.parts ? st.parts.map(function (g) { return g[1] + "&times; " + esc(g[0]); }).join(", ") : '<span class="muted">no crafting recipe listed; find it or use a blueprint</span>') + "</li>";
+    }).join("") + "</ol>" +
+      (mats.length ? '<div class="tablewrap"><table class="rltab"><thead><tr><th>' + (deep ? "Basic material" : "Material") + '</th><th class="n">Need</th><th class="n">Have</th><th class="n">Missing</th></tr></thead><tbody>' +
+        mats.map(function (m) { var h = tracker[m] || 0, mi = Math.max(0, c.tot[m] - h); return "<tr><td>" + esc(m) + '</td><td class="n">' + c.tot[m] + '</td><td class="n">' + h + '</td><td class="n">' + (mi ? "<b>" + mi + "</b>" : "&#10003;") + "</td></tr>"; }).join("") +
+        "</tbody></table></div>" : "") +
+      '<p class="muted">' + (mats.length ? (miss ? miss + " of " + mats.length + " materials still short. " : "Your tracker covers everything. ") + "The materials sell for " + (priced ? "" : "at least ") + coins(worth) + " coins. " : "") +
+      (last && last[0] != null ? esc(w + " " + upTiers(w)[t - 1]) + " sells for " + coins(last[0]) + " coins." : "") + "</p>";
+  }
   function renderTools() {
-    renderRepeat(); renderLoSaved();
+    renderRepeat(); renderLoSaved(); renderUpgrade();
     renderKeep();
     renderChecklist();
     renderPresets();
@@ -4127,6 +4195,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else if (a === "crOpen") {
       e.preventDefault(); showTab("tools", true); craftApply(t.getAttribute("data-n") + "*1"); writeHash();
       var crt = document.getElementById("craftTool"); if (crt && crt.scrollIntoView) { crt.scrollIntoView({ block: "start" }); }
+    } else if (a === "upProj") {
+      var uw = document.getElementById("upW").value, uf = parseInt(document.getElementById("upFrom").value, 10) || 0, ut = parseInt(document.getElementById("upTo").value, 10) || 1;
+      var uc = upCalc(uw, uf, ut - 1, false), un = Object.keys(uc.tot);
+      if (un.length) {
+        projects.push({ name: "Upgrade to " + uw + " " + upTiers(uw)[ut - 1], needs: un.map(function (m) { return [m, uc.tot[m]]; }) });
+        save("arcHubProjects", projects); renderProjects();
+        document.getElementById("upMsg").textContent = "Saved. It now feeds the shopping list in the Tracker tab.";
+      }
     } else if (a === "crProj" || a === "crLink") {
       var crn = craftFind(document.getElementById("crItem").value), crq = Math.max(1, Math.min(99, parseInt(document.getElementById("crQty").value, 10) || 1)), crm = document.getElementById("crMsg");
       if (crn && a === "crProj") {
@@ -4715,6 +4791,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     stashUpdate();
     var sw = document.getElementById("swSort");
     if (sw) { sw.addEventListener("change", function () { stash.wsort = sw.value; save("arcHubStash", stash); renderWorth(); }); }
+    ["upW", "upFrom", "upTo", "upDeep"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) { el.addEventListener("change", function () {
+        if (id === "upW") { upSet.f = 0; upSet.t = 0; }
+        upSet.w = document.getElementById("upW").value; upSet.d = document.getElementById("upDeep").checked;
+        if (id === "upFrom") { upSet.f = parseInt(el.value, 10) || 0; }
+        if (id === "upTo") { upSet.t = parseInt(el.value, 10) || 0; }
+        save("arcHubUp", upSet); document.getElementById("upMsg").textContent = ""; renderUpgrade();
+      }); }
+    });
     renderWorth();
   }
 

@@ -193,7 +193,9 @@ out["sitemap.xml"] = sitemap(maps, items);
 var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"]
   .concat(DATA_FILES.map(function (f) { return "data/" + f; }));
 var hash = require("crypto").createHash("sha1");
-CORE.slice(1).forEach(function (f) { hash.update(f + "\0"); hash.update(fs.readFileSync(path.join(ROOT, f))); });
+/* Translation files load only when picked, so they are cached on first use rather than up front, but still change the cache name. */
+var LANG_FILES = fs.readdirSync(path.join(ROOT, "data", "i18n")).filter(function (f) { return /\.js$/.test(f); }).sort().map(function (f) { return "data/i18n/" + f; });
+CORE.slice(1).concat(LANG_FILES).forEach(function (f) { hash.update(f + "\0"); hash.update(fs.readFileSync(path.join(ROOT, f))); });
 out["sw.js"] = fs.readFileSync(path.join(ROOT, "sw.js"), "utf8")
   .replace(/^var CACHE = .*$/m, 'var CACHE = "arc-hub-' + hash.digest("hex").slice(0, 10) + '"; /* set by tools/build-pages.js */')
   .replace(/^var CORE = .*$/m, "var CORE = " + JSON.stringify(CORE).replace(/","/g, '", "') + ";");

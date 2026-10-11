@@ -348,6 +348,11 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .crtree ul { padding-left: 18px; border-left: 1px solid var(--line); margin-left: 6px; }
 .crtree li { padding: 3px 0; }
 .crtree .st { color: var(--muted); font-size: 13px; }
+.rltab { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+.rltab th, .rltab td { text-align: left; padding: 5px 6px; border-top: 1px solid var(--line); }
+.rltab td.n, .rltab th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.rlrow { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+.rlrow .muted { font-size: 13px; }
 .sktree { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px 6px; margin-top: 12px; }
 .sknode { position: relative; min-height: 56px; padding: 6px 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: inherit; font: inherit; font-size: 12px; line-height: 1.25; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .sknode::before { content: ""; position: absolute; left: 50%; top: -15px; height: 14px; border-left: 2px solid var(--line); }
@@ -1077,6 +1082,20 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <div id="skOut"></div>
       <div id="skInfo" class="proj" aria-live="polite"></div>
       <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="skLink">Copy build link</button><button class="btn ghost" type="button" data-action="skReset">Clear build</button><span class="muted" id="skMsg" role="status"></span></div>
+    </div>
+
+    <div class="tool" id="raidTool">
+      <h3>Raid log</h3>
+      <p class="muted">Log each raid in a few taps to see your extract rate and average haul on every map. Saved in this browser and included in backups.</p>
+      <div class="stashgrid">
+        <div><label for="rlMap">Map</label><select id="rlMap"></select></div>
+        <div><label for="rlOut">Result</label><select id="rlOut"><option value="x">Extracted</option><option value="d">Died</option></select></div>
+        <div><label for="rlVal">Haul value (coins, optional)</label><input type="number" min="0" max="10000000" inputmode="numeric" id="rlVal"></div>
+        <div><label for="rlNote">Note (optional)</label><input type="text" id="rlNote" maxlength="60" autocomplete="off" placeholder="Like: Matriarch, duo"></div>
+      </div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn" type="button" data-action="rlAdd">Log raid</button><span class="muted" id="rlMsg" role="status"></span></div>
+      <div id="rlStats"></div>
+      <div id="rlList"></div>
     </div>
   </section>
 
@@ -2446,6 +2465,40 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     renderSkills();
   }
   if (!skSame(skRebuild(skBuild), skBuild)) { skBuild = skRebuild(skBuild); save("arcHubSkills", skBuild); }
+  /* Raid log: [{ t: time ms, m: map, o: "x" extracted or "d" died, v: haul coins or null, n: note }], newest last. */
+  var raids = rlClean(load("arcHubRaids", []));
+  function rlClean(list) {
+    return (Array.isArray(list) ? list : []).filter(function (r) { return r && typeof r.m === "string" && r.m.length < 60 && (r.o === "x" || r.o === "d") && r.t > 0; }).map(function (r) {
+      var v = parseInt(r.v, 10); return { t: +r.t, m: r.m, o: r.o, v: v >= 0 ? Math.min(v, 1e7) : null, n: typeof r.n === "string" ? r.n.slice(0, 60) : "" };
+    }).slice(-500);
+  }
+  function renderRaids() {
+    var st = document.getElementById("rlStats"), li = document.getElementById("rlList");
+    if (!st) { return; }
+    var sel = document.getElementById("rlMap");
+    if (!sel.options.length) { sel.innerHTML = MAPS.filter(function (m) { return !/practice/i.test(m.name); }).map(function (m) { return '<option value="' + esc(m.name) + '">' + esc(m.name) + "</option>"; }).join(""); var lm = load("arcHubRaidMap", ""); if (lm) { sel.value = lm; } }
+    if (!raids.length) { st.innerHTML = '<p class="muted" style="margin-top:10px;">No raids logged yet.</p>'; li.innerHTML = ""; return; }
+    function agg(list) {
+      var x = list.filter(function (r) { return r.o === "x"; }), hv = x.filter(function (r) { return r.v !== null; });
+      var tot = hv.reduce(function (a, r) { return a + r.v; }, 0);
+      return { n: list.length, x: x.length, rate: Math.round(x.length * 100 / list.length), avg: hv.length ? Math.round(tot / hv.length) : null, best: hv.length ? Math.max.apply(null, hv.map(function (r) { return r.v; })) : null, tot: tot };
+    }
+    var all = agg(raids), streak = 0;
+    for (var i = raids.length - 1; i >= 0 && raids[i].o === "x"; i--) { streak++; }
+    var maps = {}; raids.forEach(function (r) { (maps[r.m] = maps[r.m] || []).push(r); });
+    var cell = function (v) { return v === null ? "&ndash;" : coins(v); };
+    st.innerHTML = '<div class="proj"><div><b>' + all.n + "</b> raids &middot; <b>" + all.rate + "%</b> extracted &middot; average haul <b>" + cell(all.avg) + "</b> &middot; total <b>" + coins(all.tot) + "</b> coins" + (streak > 1 ? " &middot; " + streak + " extracts in a row" : "") + "</div>" +
+      '<div class="tablewrap"><table class="rltab"><thead><tr><th>Map</th><th class="n">Raids</th><th class="n">Extract</th><th class="n">Avg</th><th class="n">Best</th></tr></thead><tbody>' +
+      Object.keys(maps).sort(function (a, b) { return maps[b].length - maps[a].length; }).map(function (m) {
+        var g = agg(maps[m]); return "<tr><td>" + esc(m) + '</td><td class="n">' + g.n + '</td><td class="n">' + g.rate + '%</td><td class="n">' + cell(g.avg) + '</td><td class="n">' + cell(g.best) + "</td></tr>";
+      }).join("") + "</tbody></table></div><div class=\"muted\">Average and best count extracted raids with a haul value.</div></div>";
+    li.innerHTML = "<h4 style=\"margin:12px 0 4px;\">Recent raids</h4>" + raids.slice(-15).reverse().map(function (r) {
+      var d = new Date(r.t), idx = raids.indexOf(r);
+      return '<div class="rlrow"><div><b>' + esc(r.m) + "</b> &middot; " + (r.o === "x" ? "Extracted" : "Died") + (r.v !== null ? " &middot; " + coins(r.v) + " coins" : "") +
+        '<div class="muted">' + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + (r.n ? " &middot; " + esc(r.n) : "") + "</div></div>" +
+        '<button type="button" class="btn ghost" style="padding:3px 8px;" data-action="rlDel" data-i="' + idx + '" aria-label="Delete this raid">&times;</button></div>';
+    }).join("") + '<div class="acts" style="margin-top:8px;"><button class="btn ghost" type="button" data-action="rlClear">Clear raid log</button></div>';
+  }
   function renderKeep() {
     var box = document.getElementById("keepOut");
     if (!box) { return; }
@@ -3176,7 +3229,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     renderProjects();
     renderCompare();
     document.getElementById("craftList").innerHTML = craftNames.map(function (n) { return '<option value="' + esc(n) + '"></option>'; }).join("");
-    renderCraft();
+    renderCraft(); renderRaids();
     document.getElementById("itemList").innerHTML = items.map(function (it) { return '<option value="' + esc(it.name) + '"></option>'; }).join("");
   }
 
@@ -3188,7 +3241,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -3308,6 +3361,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
     oo = objOf(d.inotes); if (oo) { itemNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 80) { itemNotes[k] = oo[k].slice(0, 300); } }); save("arcHubNotes", itemNotes); }
     oo = objOf(d.trials); if (oo) { trials = {}; Object.keys(oo).forEach(function (k) { var x = oo[k]; if (x && typeof x === "object" && k.length < 20) { trials[k] = { d: !!x.d, p: Math.max(0, parseInt(x.p, 10) || 0) }; } }); save("arcHubTrials", trials); }
+    if (Array.isArray(d.raids)) { raids = rlClean(d.raids); save("arcHubRaids", raids); }
     if (Array.isArray(d.hist)) { hist = d.hist.filter(function (h) { return h && typeof h.d === "string" && h.d.length < 12 && h.v && typeof h.v === "object"; }).map(function (h) { return { d: h.d, v: numMap(h.v) }; }).slice(-90); save("arcHubHist", hist); }
     if (Array.isArray(d.repeat)) { rchk = d.repeat.filter(function (c) { return c && typeof c.t === "string"; }).map(function (c) { return { t: c.t.slice(0, 80), p: c.p === "weekly" ? "weekly" : "daily", d: !!c.d, k: typeof c.k === "string" ? c.k : "" }; }).slice(0, 50); save("arcHubRepeat", rchk); }
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubFavs", favs);
@@ -3604,7 +3658,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "gear") { renderGear(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); }
+    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); renderRaids(); }
     if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { markUpdatesSeen(); }
@@ -3850,6 +3904,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         clearTimeout(window.__rst); window.__rst = setTimeout(function () { t.setAttribute("data-armed", "0"); t.textContent = "Reset everything to default"; }, 5000);
       }
     } else if (a === "toolTab") { toolShow(t.getAttribute("data-ti"));
+    } else if (a === "rlAdd") {
+      var rlm = document.getElementById("rlMap").value, rlv = document.getElementById("rlVal").value.trim();
+      raids.push({ t: Date.now(), m: rlm, o: document.getElementById("rlOut").value === "d" ? "d" : "x", v: rlv === "" ? null : Math.max(0, Math.min(1e7, parseInt(rlv, 10) || 0)), n: document.getElementById("rlNote").value.trim().slice(0, 60) });
+      raids = raids.slice(-500); save("arcHubRaids", raids); save("arcHubRaidMap", rlm);
+      document.getElementById("rlVal").value = ""; document.getElementById("rlNote").value = "";
+      document.getElementById("rlMsg").textContent = "Logged."; renderRaids();
+    } else if (a === "rlDel") {
+      var rli = parseInt(t.getAttribute("data-i"), 10);
+      if (raids[rli]) { raids.splice(rli, 1); save("arcHubRaids", raids); renderRaids(); }
+    } else if (a === "rlClear") {
+      if (t.getAttribute("data-armed") === "1") { raids = []; save("arcHubRaids", raids); renderRaids(); }
+      else { t.setAttribute("data-armed", "1"); t.textContent = "Press again to clear every raid"; }
     } else if (a === "skTap") {
       skSel = t.getAttribute("data-sk"); skMsgTxt = skPts(skBuild, skSel) >= skMax(skSel) ? "" : skAdd(skSel); renderSkills();
     } else if (a === "skPlus") {

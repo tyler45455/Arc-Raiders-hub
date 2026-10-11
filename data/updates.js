@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "New Quest route planner in the Tools tab: groups your active quests into as few raids as possible (busiest map first, any-map quests fill the gaps), lists each quest's objectives and the items they need, and updates as you tick quests off."],
     ["Oct 11, 2026", "New Weapon upgrade path tool in the Tools tab: pick a weapon, the tier you have and the tier you want to see every Gunsmith step, the total materials (or basic materials), what your tracker still needs, and add it all to your projects in one tap."],
     ["Oct 11, 2026", "Blueprint wishlist: tick On my wishlist on any blueprint in Reference > Blueprints to get a Blueprint hunt list of which containers, conditions, quests and ARC to go after. The Raid prep on the Maps tab also lists wishlist blueprints you can find on that map. Included in backups."],
     ["Oct 11, 2026", "Share as image now works for your skill build, your loadout and your raid log, as well as materials and quest progress. On a phone it opens the share sheet; on a computer it saves a PNG."],

@@ -165,6 +165,14 @@ function replaceOnce(s, re, fn, what) {
   return s.replace(re, fn);
 }
 src = replaceOnce(src, /^ARC\.ITEMINFO = .*;$/m, function () { return "ARC.ITEMINFO = " + json(NEW) + ";"; }, "ARC.ITEMINFO");
+/* Keep a dated record of every sell price change for the price history on item pages. */
+var LOG = JSON.parse(JSON.stringify(ARC.PRICE_LOG || {})), iso = today.toISOString().slice(0, 10);
+Object.keys(NEW).forEach(function (n) {
+  if (OLD[n] && OLD[n][0] !== NEW[n][0]) { (LOG[n] = LOG[n] || []).push([iso, OLD[n][0], NEW[n][0]]); }
+});
+var LOG_SORTED = {};
+Object.keys(LOG).sort().forEach(function (n) { LOG_SORTED[n] = LOG[n]; });
+src = replaceOnce(src, /^ARC\.PRICE_LOG = .*;$/m, function () { return "ARC.PRICE_LOG = " + json(LOG_SORTED) + ";"; }, "ARC.PRICE_LOG");
 src = replaceOnce(src, /^ARC\.FARM3 = .*;$/m, function () { return "ARC.FARM3 = " + json(F3_SORTED) + ";"; }, "ARC.FARM3");
 src = src.replace(/(spot-checked against the wiki Loot table\. Items missing there use the wiki price with weight null\. )Checked [A-Z][a-z]+ \d+, \d{4}\./,
   "$1Checked " + longDate + ".");

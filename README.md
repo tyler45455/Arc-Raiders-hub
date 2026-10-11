@@ -24,6 +24,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Public data files:** read-only JSON for items, quests, maps and keys under `api/v1/` (start at `api/v1/index.json`), with stable IDs. See CONTRIBUTING.md.
 - **Extras:** a dot on the Updates tab when there is something new, an offline indicator, and a Feedback button.
 - **Tools tab:** raid checklist, project helper with wiki presets (Expedition stages, Trophy Display and past projects) that compare what a project needs with your tracker and side-by-side item compare, weapon compare and a loadout builder that checks carried weight against your augment. Backups can be copied as a short transfer code, and the browser keeps automatic snapshots.
+- **Crafting planner (Tools tab):** pick a craftable item and a quantity to see every material it takes down to basic parts, checked against your tracker, with the workbenches needed. Save it as a project or share it as a link.
 - **Backup:** export and import your tracker, goals, stars, projects and checklist as text.
 - **Offline:** after one visit the site keeps working without a connection.
 - **Maps:** difficulty, unlock requirement, conditions and update notes for each map.

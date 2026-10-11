@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Faster loading: the site now downloads only the language you use (English visitors skip about 320 KB of translations), draws the item list in batches so the page appears sooner, and builds the Gear tab when you open it."],
     ["Oct 11, 2026", "Items now show their sell price, weight and stack size, the recipe and workbench if you can craft them, and what they are used to craft. Each item also says what its recycled or salvaged parts sell for, so you can see when recycling beats selling. The lookup can sort by sell price, and item pages and api/v1/items.json carry the same numbers. Prices, weights and recipes come from RaidTheory/arcraiders-data (MIT) and were spot-checked against the wiki."],
     ["Oct 11, 2026", "Phones: the bottom bar now fits Recycle, Tracker, Quests and Maps plus a More menu for the other tabs, and the header is shorter so the page content starts higher up."],
     ["Oct 11, 2026", "New logo: the whole triangle is made of the four colours, in equal parts around its sides."],

@@ -24,10 +24,15 @@ var chromium = require("playwright").chromium;
     var shown = await page.isVisible("#panel-" + tabs[i]);
     if (!shown) { errors.push("Tab " + tabs[i] + " did not show its panel"); }
   }
+  /* Translations load on demand: picking a language must fetch its file and translate the tabs. */
+  await page.selectOption("#langSel", "fr");
+  await page.waitForFunction(function () { return document.documentElement.lang === "fr" && /Ressources|Recyclage/.test(document.getElementById("tabs").textContent); }, null, { timeout: 5000 })
+    .catch(function () { errors.push("Picking French did not translate the page"); });
+  await page.selectOption("#langSel", "en");
   await browser.close();
   if (errors.length) {
     console.error("Smoke test failed:\n  " + errors.join("\n  "));
     process.exit(1);
   }
-  console.log("Smoke test passed: " + tabs.length + " tabs, no JavaScript errors.");
+  console.log("Smoke test passed: " + tabs.length + " tabs and a language switch, no JavaScript errors.");
 })();

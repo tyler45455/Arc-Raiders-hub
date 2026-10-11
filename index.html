@@ -1093,7 +1093,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 <script src="data/quests.js"></script>
 <script src="data/reference.js"></script>
 <script src="data/updates.js"></script>
-<script src="data/i18n.js"></script>
+<script>
+/* Translations: load only the picked language's file, before the main script runs, so the page never shows English first. */
+(function () {
+  var L = ["ja", "fr", "es", "de", "it", "ru", "zh"], l = null, q = /[?&]lang=(ja|fr|es|de|it|ru|zh|en)\b/.exec(location.search);
+  try { l = q ? q[1] : JSON.parse(window.localStorage.getItem("arcHubLang")); } catch (e) {}
+  if (!l) { l = String((navigator.languages && navigator.languages[0]) || navigator.language || "").slice(0, 2).toLowerCase(); }
+  if (L.indexOf(l) !== -1) { document.write('<script src="data/i18n/' + l + '.js"><\/script>'); }
+})();
+</script>
 <script>
 (function () {
   "use strict";
@@ -1382,7 +1390,23 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }).join("");
   }
 
+  /* Long lists: draw the first rows now and the rest in small batches, so the page shows sooner. */
+  var rowJob = 0, rowRest = null;
+  function paintRows(out, parts) {
+    var job = ++rowJob, i = 24;
+    out.innerHTML = parts.slice(0, i).join("");
+    rowRest = function (all) {
+      if (job !== rowJob) { return; }
+      var n = all ? parts.length : i + 60;
+      if (i < n) { out.insertAdjacentHTML("beforeend", parts.slice(i, n).join("")); i = n; }
+      if (i >= parts.length) { rowRest = null; return; }
+      if (!all) { setTimeout(rowRest, 30); }
+    };
+    if (i < parts.length) { setTimeout(rowRest, 30); } else { rowRest = null; }
+  }
+  function finishRows() { if (rowRest) { rowRest(true); } }
   function renderResults() {
+    rowJob++; rowRest = null;
     var q = document.getElementById("searchBox").value.trim().toLowerCase();
     var out = document.getElementById("results");
     var az = document.getElementById("azbar");
@@ -1398,25 +1422,25 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         return d || a.name.localeCompare(b.name);
       });
       az.innerHTML = "";
-      out.innerHTML = flat.length ? flat.map(function (it) { return itemRow(it, ""); }).join("") : '<div class="empty-line">Nothing matches.</div>';
+      if (flat.length) { paintRows(out, flat.map(function (it) { return itemRow(it, ""); })); } else { out.innerHTML = '<div class="empty-line">Nothing matches.</div>'; }
       return;
     }
 
     if (!q) {
-      var letters = {};
+      var letters = {}, parts = [];
       var cur = "";
       items.filter(keep).forEach(function (it) {
         var L = it.name.charAt(0).toUpperCase();
         if (L !== cur) {
           cur = L; letters[L] = true;
-          html += '<div class="group-title" id="L-' + L + '"><b>' + L + "</b></div>";
+          parts.push('<div class="group-title" id="L-' + L + '"><b>' + L + "</b></div>");
         }
-        html += itemRow(it, "");
+        parts.push(itemRow(it, ""));
       });
       az.innerHTML = Object.keys(letters).map(function (L) {
         return '<button type="button" data-action="jump" data-l="' + L + '" aria-label="Jump to ' + L + '">' + L + "</button>";
       }).join("");
-      out.innerHTML = html;
+      paintRows(out, parts);
       return;
     }
 
@@ -3220,6 +3244,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
     });
+    if (name === "gear") { renderGear(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
     if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); }
@@ -3281,6 +3306,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       writeHash();
       addRecent(t.getAttribute("data-q"));
     } else if (a === "jump") {
+      finishRows();
       var el = document.getElementById("L-" + t.getAttribute("data-l"));
       if (el) { el.scrollIntoView(); }
     } else if (a === "addItem") {
@@ -3801,7 +3827,6 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   renderRecent();
   renderCart();
   renderTools();
-  renderGear();
   renderQuests();
   initLoadout();
   takeSnapshot();
@@ -4054,7 +4079,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
 
   /*I18N-START*/
-  var I18N = ARC.I18N;
+  var I18N = ARC.I18N = ARC.I18N || {};
   /*I18N-RUNTIME*/
   var LANGS = [["en", "English"], ["ja", "日本語"], ["fr", "Français"], ["es", "Español"], ["de", "Deutsch"], ["it", "Italiano"], ["ru", "Русский"], ["zh", "中文"]];
   var LANG_NAMES = { ja: "Japanese", fr: "French", es: "Spanish", de: "German", it: "Italian", ru: "Russian", zh: "Chinese" };
@@ -4154,8 +4179,17 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       "\nBetter wording:\n";
     return REPORT_ISSUES_URL + "?title=" + encodeURIComponent("[" + lang + "] Translation error") + "&labels=translation&body=" + encodeURIComponent(body);
   }
+  function hasLang(l) { return LANGS.some(function (p) { return p[0] === l; }); }
   function applyLang(l, quiet) {
-    if (!I18N[l]) { l = "en"; }
+    if (!hasLang(l)) { l = "en"; }
+    if (l !== "en" && !I18N[l]) {
+      var tag = document.createElement("script");
+      tag.src = "data/i18n/" + l + ".js";
+      tag.onload = function () { applyLang(I18N[l] ? l : "en", quiet); };
+      tag.onerror = function () { applyLang("en", true); };
+      document.head.appendChild(tag);
+      return;
+    }
     lang = l;
     document.documentElement.setAttribute("lang", l);
     var sel = document.getElementById("langSel");
@@ -4189,12 +4223,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         if (s) { lastSel = s.slice(0, 300); }
       } catch (e) {}
     });
-    var q = /[?&]lang=(ja|fr|es|en)\b/.exec(location.search);
+    var q = /[?&]lang=(ja|fr|es|de|it|ru|zh|en)\b/.exec(location.search);
     var saved = load("arcHubLang", null);
     var pick = q ? q[1] : saved;
     if (!pick) {
       var nl = String((navigator.languages && navigator.languages[0]) || navigator.language || "en").slice(0, 2).toLowerCase();
-      pick = I18N[nl] ? nl : "en";
+      pick = hasLang(nl) ? nl : "en";
       applyLang(pick, true);
     } else { applyLang(pick, !!q); }
     if (q) { save("arcHubLang", q[1]); }

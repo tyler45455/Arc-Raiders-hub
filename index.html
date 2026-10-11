@@ -183,7 +183,11 @@ input::placeholder { color: var(--muted); }
 }
 .badge.Common { color: var(--r-common); } .badge.Uncommon { color: var(--r-uncommon); }
 .badge.Rare { color: var(--r-rare); } .badge.Epic { color: var(--r-epic); } .badge.Legendary { color: var(--r-legendary); }
-.badge.partial { color: var(--warm); }
+.badge.partial { color: var(--warm); cursor: pointer; background: none; }
+.badge.partial:hover, .badge.partial:focus-visible { text-decoration: underline; }
+.tipx { position: absolute; top: 2px; right: 2px; width: 34px; height: 34px; border: 0; background: none; color: var(--fg); font-size: 22px; line-height: 1; cursor: pointer; border-radius: 6px; }
+.tipx:hover, .tipx:focus-visible { background: var(--line); }
+.parttip { grid-column: 1 / -1; position: relative; padding-right: 40px !important; margin: 6px 0 2px; padding: 8px 10px; border: 1px solid var(--warm); border-radius: 8px; font-size: 13.5px; color: var(--fg); background: var(--surface); max-width: 60ch; }
 .badge.custom { color: var(--accent); }
 .azbar { display: flex; flex-wrap: wrap; gap: 4px; margin: 14px 0 0; }
 .azbar button {
@@ -521,6 +525,7 @@ html[data-text="larger"] body { zoom: 1.28; }
 html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-motion="reduced"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 .gres button.gadd { display: inline-block; width: auto; margin: 0 12px 6px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 12px; }
+.gres button.chip { display: inline-block; width: auto; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; }
 .lb-layers { position: relative; z-index: 3; margin: 0 12px 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(17,22,28,.94); border: 1px solid #5a6572; border-radius: 8px; padding: 8px; color: #f1e8d4; font-size: 13px; }
 .lb-layers[hidden] { display: none !important; }
 .lb-layers .chip { background: #11161c; color: #f1e8d4; border-color: #5a6572; }
@@ -1249,7 +1254,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var badges = "";
     if (it.rarity) { badges += '<span class="badge ' + esc(it.rarity) + '">' + esc(it.rarity) + "</span>"; }
     if (it.custom) { badges += '<span class="badge custom">yours</span>'; }
-    else if (!it.confirmed) { badges += '<span class="badge partial" title="Built from the material pages loaded so far. This item may give more materials than shown.">partial</span>'; }
+    else if (!it.confirmed) { badges += '<button type="button" class="badge partial" data-action="partialTip" aria-expanded="false" title="Why is this marked partial? Click to find out."><span>partial</span> <span aria-hidden="true">&#9432;</span></button>'; }
     return '<div class="row"><div class="head"><span class="name">' + esc(it.name) + "</span>" + badges + verdictChip(it) + "</div>" +
       '<div class="acts">' +
       '<button class="btn ghost star" type="button" data-action="fav" data-item="' + esc(it.name) + '" aria-pressed="' + (favs.indexOf(it.name) !== -1) + '" aria-label="Star ' + esc(it.name) + '" title="Star this item">' + (favs.indexOf(it.name) !== -1 ? "\u2605" : "\u2606") + "</button>" +
@@ -1949,7 +1954,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var loadouts = load("arcHubLoadouts", []);
   var DEFAULT_REPEAT = [{ t: "Check trader stock", p: "daily", d: false, k: "" }, { t: "Do a quick raid for daily materials", p: "daily", d: false, k: "" }, { t: "Check the weekly store update", p: "weekly", d: false, k: "" }, { t: "Finish weekly quests or events", p: "weekly", d: false, k: "" }];
   var rchk = load("arcHubRepeat", null) || DEFAULT_REPEAT.map(function (c) { return { t: c.t, p: c.p, d: false, k: "" }; });
-  var DATA_CHANGES = ARC.DATA_CHANGES;  var itemNotes = load("arcHubNotes", {});
+  var DATA_CHANGES = ARC.DATA_CHANGES;
+  var itemNotes = load("arcHubNotes", {});
   var trials = load("arcHubTrials", {});
   var cueOn = load("arcHubCue", false);
   var hist = load("arcHubHist", []);
@@ -2106,6 +2112,28 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     grp("Blueprints", BPS.filter(function (b) { return m(b[0]); }).slice(0, 5).map(function (b) { return { l: b[0], s: b[1], go: ["blueprints", b[0]] }; }));
     grp("Weapons", GEARDATA.weapons.filter(function (w) { return m(w[0]); }).slice(0, 4).map(function (w) { return { l: w[0], s: w[1], go: ["gear", w[0]] }; }));
     grp("Trader stock", TRADERS.filter(function (t) { return m(t[1]); }).slice(0, 4).map(function (t) { return { l: t[1], s: t[0], go: ["traders", t[1]] }; }));
+    var AT = ["ARC", "Commercial", "Electrical", "Exodus", "Industrial", "Mechanical", "Medical", "Nature", "Old World", "Residential", "Security", "Technological"];
+    var ALIAS = { electronic: ["Electrical", "Technological"], electronics: ["Electrical", "Technological"], tech: ["Technological"], plant: ["Nature"], plants: ["Nature"], herb: ["Nature"], military: ["Security"], old: ["Old World"], house: ["Residential"], shop: ["Commercial"] };
+    function atFor(w) { return AT.filter(function (t) { return t.toLowerCase().indexOf(w) === 0 || (ALIAS[w] || []).indexOf(t) !== -1; }); }
+    var atHit = atFor(q);
+    var wd = q.split(/\s+/), combo = null;
+    for (var ci = 1; ci < wd.length && !combo; ci++) {
+      var pa = wd.slice(0, ci).join(" "), pb = wd.slice(ci).join(" ");
+      [[pa, pb], [pb, pa]].forEach(function (pr) {
+        if (combo) { return; }
+        var ts = atFor(pr[0]), mm = MAPS.filter(function (mp) { return mp.name.toLowerCase().indexOf(pr[1]) !== -1 && ROOMS[mapSlug(mp)]; });
+        if (ts.length && mm.length) { combo = { ts: ts, mp: mm[0] }; }
+      });
+    }
+    if (combo) {
+      var mi0 = MAPS.indexOf(combo.mp), hits = [];
+      ROOMS[mapSlug(combo.mp)].r.forEach(function (r, ri) {
+        var ov = (r[3] || []).filter(function (x) { return combo.ts.indexOf(x) !== -1; });
+        if (ov.length) { hits.push({ l: r[0], s: (r[3] || []).join(", "), go: ["room", mi0, ri] }); }
+      });
+      if (hits.length) { groups.push([combo.ts.join(" / ") + " rooms on " + combo.mp.name, hits.slice(0, 12)]); }
+    }
+    grp("Loot areas", atHit.map(function (t) { var n = areaItems(t).length; return { l: t + " loot areas", s: n + " items", go: ["area", t] }; }));
     var roomHits = [];
     MAPS.forEach(function (mp, mi) {
       var R = ROOMS[mapSlug(mp)]; if (!R) { return; }
@@ -2125,9 +2153,38 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }).join("");
     box.hidden = false;
   }
+  function areaItems(t) {
+    var seen = {}, out = [];
+    Object.keys(FARM).concat(Object.keys(FARM2)).forEach(function (n) {
+      if (seen[n]) { return; } seen[n] = 1;
+      var T = (FARM[n] && FARM[n].t) || (FARM2[n] && FARM2[n].t) || [];
+      if (T.indexOf(t) !== -1) { out.push(n); }
+    });
+    return out.sort();
+  }
+  function gArea(t) {
+    var box = document.getElementById("gres"), html = "";
+    gTargets = [];
+    function btn(r, cls) { gTargets.push(r); return '<button type="button" class="' + (cls || "") + '" data-action="gGo" data-i="' + (gTargets.length - 1) + '">'; }
+    html += btn({ go: ["back"] }, "gadd") + "&larr; Back</button>";
+    html += '<div class="gh">' + esc(t) + " areas: rooms on the maps</div>";
+    MAPS.forEach(function (mp, mi) {
+      var R = ROOMS[mapSlug(mp)]; if (!R) { return; }
+      var hits = []; R.r.forEach(function (r, ri) { if (r[3] && r[3].indexOf(t) !== -1) { hits.push([r[0], ri]); } });
+      if (!hits.length) { return; }
+      html += '<div class="gs" style="padding:4px 12px 0;"><b>' + esc(mp.name) + "</b></div><div class=\"ffchips\" style=\"padding:2px 12px 6px;\">" +
+        hits.map(function (h) { return btn({ go: ["room", mi, h[1]] }, "chip") + esc(h[0]) + "</button>"; }).join("") + "</div>";
+    });
+    var its = areaItems(t);
+    html += '<div class="gh">Items the wiki lists for ' + esc(t) + " areas (" + its.length + ")</div><div class=\"ffchips\" style=\"padding:2px 12px 10px;\">" +
+      its.map(function (n) { return btn({ go: ["recycle", n] }, "chip") + esc(n) + "</button>"; }).join("") + "</div>";
+    box.innerHTML = html; box.hidden = false;
+  }
   function gGo(i) {
     var r = gTargets[i]; if (!r) { return; }
     var k = r.go[0], v = r.go[1];
+    if (k === "back") { gSearch(); return; }
+    if (k === "area") { gArea(v); return; }
     if (k === "room") {
       curMap = v; showTab("maps"); renderMaps(); writeHash();
       lbOpen(mapDetailSrc(MAPS[v]), MAPS[v].name, r.go[2]);
@@ -3247,6 +3304,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else if (a === "lbPinSave") { lbPinSave();
     } else if (a === "lbPinDel") { lbPinDelete();
     } else if (a === "lbPinCancel") { lb.tmp = null; lb.edit = -1; lbPinBox(false); lbRenderMarks();
+    } else if (a === "partialTip") {
+      var prow = t.closest(".row"), old = prow && prow.querySelector(".parttip"), bdg = prow && prow.querySelector(".badge.partial");
+      if (old) { old.remove(); if (bdg) { bdg.setAttribute("aria-expanded", "false"); } if (bdg && t !== bdg) { bdg.focus(); } }
+      else if (prow) {
+        var tip = document.createElement("div"); tip.className = "parttip"; tip.setAttribute("role", "note");
+        var tx = document.createElement("span"); tx.textContent = "Partial means this item's recycle list was built from the wiki pages loaded so far, so it may also give materials that are not shown here. Check it in game before you scrap something you need.";
+        var cx = document.createElement("button"); cx.type = "button"; cx.className = "tipx"; cx.setAttribute("data-action", "partialTip"); cx.setAttribute("aria-label", "Close"); cx.textContent = "\u00d7"; tip.appendChild(tx); tip.appendChild(cx);
+        var hd = prow.querySelector(".head"); hd.parentNode.insertBefore(tip, hd.nextSibling); t.setAttribute("aria-expanded", "true");
+      }
     } else if (a === "openRoom") {
       var om = parseInt(t.getAttribute("data-mapi"), 10); curMap = om; renderMaps(); writeHash();
       lbOpen(mapDetailSrc(MAPS[om]), MAPS[om].name, parseInt(t.getAttribute("data-room"), 10));
@@ -3527,7 +3593,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   });
   document.addEventListener("click", function (e) {
     var gs = document.querySelector(".gsearch");
-    if (gs && !gs.contains(e.target)) { document.getElementById("gres").hidden = true; }
+    if (gs && e.composedPath().indexOf(gs) === -1) { document.getElementById("gres").hidden = true; }
   });
   function updKey() { return UPDATES.length + ":" + UPDATES[0].title; }
   function markUpdatesSeen() { save("arcHubSeenUpd", updKey()); document.getElementById("newDot").hidden = true; }

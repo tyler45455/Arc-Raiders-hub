@@ -1,7 +1,12 @@
 /* Offline support: always try the network first so visitors get the newest site,
    and fall back to the last saved copy when there is no connection. */
-var CACHE = "arc-hub-bafd7cf7c7"; /* set by tools/build-pages.js */
+<<<<<<< HEAD
+var CACHE = "arc-hub-723acdf8f7"; /* set by tools/build-pages.js */
 var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "data/gear.js", "data/i18n.js", "data/items.js", "data/maps.js", "data/quests.js", "data/reference.js", "data/updates.js"];
+=======
+var CACHE = "arc-hub-v34";
+var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
+>>>>>>> origin/main
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).then(function () { return self.skipWaiting(); }));

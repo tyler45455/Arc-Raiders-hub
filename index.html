@@ -919,7 +919,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <p class="muted">Enemies, trader stock, workshop upgrades, the skill tree and blueprints. A dash means the wiki lists no value.</p>
     <div class="chips" id="refChips" role="group" aria-label="Section"></div>
     <div class="qtools"><input type="text" id="refQ" placeholder="Search this section" aria-label="Search this section" autocomplete="off">
-      <div class="gearrow" id="bpTools" hidden><select id="bpStatus" aria-label="Blueprint filter"><option value="all">Show: all blueprints</option><option value="missing">Show: ones I do not have</option><option value="owned">Show: ones I have</option></select><span class="muted" id="bpProg" role="status"></span></div>
+      <div class="gearrow" id="bpTools" hidden><select id="bpStatus" aria-label="Blueprint filter"><option value="all">Show: all blueprints</option><option value="missing">Show: ones I do not have</option><option value="owned">Show: ones I have</option><option value="wanted">Show: my wishlist</option></select><span class="muted" id="bpProg" role="status"></span></div>
     </div>
     <div class="muted" id="refCount" role="status"></div>
     <div id="refOut"></div>
@@ -1979,6 +1979,56 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var BPS = ARC.BPS;
   var AMPS = ARC.AMPS || [];
   var bpOwned = load("arcHubBP", {});
+  var bpWant = load("arcHubBPWant", {});
+  /* Splits a BPS "how to get it" line into where to look: maps, conditions, containers, quests, ARC and Trials. */
+  function bpWhere(t) {
+    var w = { maps: [], all: /on all maps|Scavengable \(/.test(t), conds: [], boxes: [], quests: [], arc: [], trial: /Trial reward/.test(t) && !/not a Trial reward|Trial reward: Trophy only/.test(t) };
+    var m = /on ([A-Z][\w ]+?) only/.exec(t); if (m) { w.maps.push(m[1]); }
+    m = /during ([^;(]+?)(?: from| \(|;|$)/.exec(t);
+    if (m) { m[1].replace(/ conditions?$/, "").replace(/^the /, "").split(/, | or /).forEach(function (c) { if (c) { w.conds.push(c); } }); }
+    m = /from ([\w ]+?) Containers?/.exec(t); if (m) { m[1].split(" or ").forEach(function (b) { w.boxes.push(b + " Containers"); }); }
+    if (/First Wave Cache/.test(t)) { w.boxes.push("First Wave Cache"); }
+    if (/\(any container\)/.test(t)) { w.boxes.push("Any container"); }
+    var qr = /Quest reward: ([^;]+)/.exec(t); if (qr) { w.quests.push(qr[1].replace(/; .*$/, "")); }
+    var ar = /Dropped by the ([\w ]+?) during/.exec(t); if (ar) { w.arc.push(ar[1]); }
+    return w;
+  }
+  /* Wishlist blueprints you can scavenge on this map (on all maps, or this map only), with where to look. */
+  function bpForMap(map) {
+    return BPS.filter(function (b) { return bpWant[b[0]] && !bpOwned[b[0]]; }).map(function (b) { return [b, bpWhere(b[3])]; })
+      .filter(function (x) { return !x[1].arc.length && (x[1].maps.length ? x[1].maps.indexOf(map) !== -1 : (x[1].all || x[1].conds.length > 0)); });
+  }
+  function bpHuntHtml() {
+    var want = BPS.filter(function (b) { return bpWant[b[0]] && !bpOwned[b[0]]; });
+    if (!want.length) { return ""; }
+    var g = {}, order = [];
+    function add(sec, key, name) { var k = sec + "|" + key; if (!g[k]) { g[k] = []; order.push(k); } if (g[k].indexOf(name) === -1) { g[k].push(name); } }
+    want.forEach(function (b) {
+      var w = bpWhere(b[3]);
+      var onMap = w.maps.length ? " on " + w.maps.join(", ") : "";
+      if (w.arc.length) { w.conds = []; }
+      if (w.conds.length) {
+        w.conds.forEach(function (x) { add("Condition", x, b[0] + (w.boxes.length ? " (" + w.boxes.join(" or ").replace(/ Containers/g, "") + ")" : "")); });
+      } else {
+        w.boxes.forEach(function (x) { add("Loot", x + onMap, b[0]); });
+        if (!w.boxes.length && (w.all || w.maps.length)) { add("Loot", "Any container" + (onMap || " on any map"), b[0]); }
+      }
+      w.quests.forEach(function (x) { add("Quest", x + (qDone[x] ? " (done)" : ""), b[0]); });
+      w.arc.forEach(function (x) { add("ARC", x, b[0]); });
+      if (w.trial) { add("Trial", "Trials", b[0]); }
+    });
+    var label = { Loot: "Loot", Condition: "Only during", Quest: "Quest reward", ARC: "Dropped by", Trial: "Also a reward from" };
+    var secs = ["Loot", "Condition", "Quest", "ARC", "Trial"];
+    return '<div class="card" id="bpHunt" style="margin-bottom:12px;"><b>Blueprint hunt</b> <span class="muted">' + want.length + " on your wishlist</span>" +
+      secs.map(function (sec) {
+        var ks = order.filter(function (k) { return k.split("|")[0] === sec; });
+        if (!ks.length) { return ""; }
+        ks.sort(function (a, b) { return g[b].length - g[a].length || a.localeCompare(b); });
+        return ks.map(function (k) {
+          return '<div class="qrow"><span class="lbl">' + label[sec] + " " + esc(k.split("|")[1]) + "</span>" + g[k].map(function (n) { return '<span class="y">' + esc(n) + "</span>"; }).join("") + "</div>";
+        }).join("");
+      }).join("") + '<p class="muted" style="margin:6px 0 0;">Where to look comes from each blueprint&rsquo;s wiki notes below. The Raid prep on the Maps tab also lists the ones you can find on that map.</p></div>';
+  }
   var refSec = "enemies";
   var REF_SECS = [["enemies", "Enemies"], ["traders", "Traders"], ["workshop", "Workshop"], ["skills", "Skills"], ["amplification", "Amplification"], ["blueprints", "Blueprints"], ["trials", "Trials"]];
   function bpHas(n) { for (var i = 0; i < BPS.length; i++) { if (BPS[i][0] === n) { return true; } } return false; }
@@ -2073,14 +2123,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         var own = !!bpOwned[b[0]];
         if (sf === "owned" && !own) { return; }
         if (sf === "missing" && own) { return; }
+        if (sf === "wanted" && (own || !bpWant[b[0]])) { return; }
         if (!ok(b.join(" "))) { return; }
         n++;
         out += '<div class="qcard' + (own ? " qdone" : "") + '"><div class="qh"><a href="' + esc(qWiki(b[0])) + '" target="_blank" rel="noopener">' + esc(b[0]) + '</a><span class="qmeta"><span class="badge ' + esc(b[2]) + '">' + esc(b[2]) + "</span> " + esc(b[1]) + "</span></div>" +
           '<div class="refgrid"><div><span class="k">How to get it: </span>' + esc(b[3]) + "</div></div>" +
-          '<label class="qchk"><input type="checkbox" data-bp="' + esc(b[0]) + '"' + (own ? " checked" : "") + "> I have this blueprint</label></div>";
+          '<label class="qchk"><input type="checkbox" data-bp="' + esc(b[0]) + '"' + (own ? " checked" : "") + "> I have this blueprint</label>" +
+          (own ? "" : '<label class="qchk"><input type="checkbox" data-bpwant="' + esc(b[0]) + '"' + (bpWant[b[0]] ? " checked" : "") + "> On my wishlist</label>") + "</div>";
       });
       var no = BPS.filter(function (b) { return bpOwned[b[0]]; }).length;
-      document.getElementById("bpProg").textContent = no + " of " + BPS.length + " owned";
+      var nw = BPS.filter(function (b) { return bpWant[b[0]] && !bpOwned[b[0]]; }).length;
+      document.getElementById("bpProg").textContent = no + " of " + BPS.length + " owned" + (nw ? ", " + nw + " on your wishlist" : "");
+      if (n && sf !== "owned") { out = bpHuntHtml() + out; }
       if (n) { out += '<p class="muted">Rarity is the rarity of the item the blueprint unlocks. Quest and project sources are also shown on the Quests tab.</p>'; }
     }
     document.getElementById("refCount").textContent = refSec === "trials" ? "Season 6" : n + (refSec === "workshop" ? " entries" : " of " + total + " shown");
@@ -3056,7 +3110,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   /* ---------- undo ---------- */
   function undoSnap() {
-    return JSON.stringify({ tracker: tracker, goals: goals, qDone: qDone, projects: projects, wsDone: wsDone, wsPlan: wsPlan, itemTags: itemTags, checklist: checklist, rchk: rchk, loadouts: loadouts, itemNotes: itemNotes, trials: trials, favs: favs, bpOwned: bpOwned });
+    return JSON.stringify({ tracker: tracker, goals: goals, qDone: qDone, projects: projects, wsDone: wsDone, wsPlan: wsPlan, itemTags: itemTags, checklist: checklist, rchk: rchk, loadouts: loadouts, itemNotes: itemNotes, trials: trials, favs: favs, bpOwned: bpOwned, bpWant: bpWant });
   }
   function pushUndo(label) {
     var now = Date.now();
@@ -3074,9 +3128,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var u = undoStack.pop(); if (!u) { return; }
     var d = JSON.parse(u.s);
     tracker = d.tracker; goals = d.goals; qDone = d.qDone; projects = d.projects; wsDone = d.wsDone; wsPlan = d.wsPlan; itemTags = d.itemTags;
-    checklist = d.checklist; rchk = d.rchk; loadouts = d.loadouts; itemNotes = d.itemNotes; trials = d.trials; favs = d.favs; bpOwned = d.bpOwned;
+    checklist = d.checklist; rchk = d.rchk; loadouts = d.loadouts; itemNotes = d.itemNotes; trials = d.trials; favs = d.favs; bpOwned = d.bpOwned; bpWant = d.bpWant || {};
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubQuestsDone", qDone); save("arcHubProjects", projects); save("arcHubWs", wsDone); save("arcHubWsPlan", wsPlan);
-    save("arcHubTags", itemTags); save("arcHubCheck", checklist); save("arcHubRepeat", rchk); save("arcHubLoadouts", loadouts); save("arcHubNotes", itemNotes); save("arcHubTrials", trials); save("arcHubFavs", favs); save("arcHubBP", bpOwned);
+    save("arcHubTags", itemTags); save("arcHubCheck", checklist); save("arcHubRepeat", rchk); save("arcHubLoadouts", loadouts); save("arcHubNotes", itemNotes); save("arcHubTrials", trials); save("arcHubFavs", favs); save("arcHubBP", bpOwned); save("arcHubBPWant", bpWant);
     lastUndoAt = 0;
     refresh(); renderTools(); renderQuests(); renderRef(); renderMaps(); updateFavToggle(); updateGoalToggle();
     document.getElementById("undoText").textContent = "Undone";
@@ -3172,6 +3226,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     else {
       h += '<p class="muted">' + here.length + " active quest" + (here.length === 1 ? "" : "s") + " here" + (anyN ? " (plus " + anyN + " that work on any map)" : "") + ":</p><ul class=\"mapnotes\">" + here.slice(0, 12).map(function (q) { return "<li>" + esc(q.name) + " <span class=\"muted\">(" + esc(q.trader) + ")</span></li>"; }).join("") + "</ul>";
       if (bk.length) { h += '<p class="muted">Bring:</p><div class="chips">' + bk.map(function (n) { var ok = (tracker[n] || 0) >= bring[n]; return '<span class="y' + (ok ? " ok" : "") + '"><b>' + bring[n] + "&times;</b> " + esc(n) + (ok ? " &#10003;" : "") + "</span>"; }).join("") + "</div>"; }
+    }
+    var bw = bpForMap(map);
+    if (bw.length) {
+      h += '<p class="muted">Blueprints on your wishlist you can find here:</p><ul class="mapnotes">' + bw.map(function (x) {
+        var w = x[1], where = w.boxes.join(" or ") + (w.conds.length ? (w.boxes.length ? ", " : "") + "only during " + w.conds.join(", ") : "");
+        return "<li><b>" + esc(x[0][0]) + "</b>" + (where ? ": " + esc(where) : "") + "</li>";
+      }).join("") + "</ul>";
     }
     return h + "</div>";
   }
@@ -3365,7 +3426,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -3477,6 +3538,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     bpOwned = {};
     if (d.blueprints && typeof d.blueprints === "object" && !Array.isArray(d.blueprints)) { Object.keys(d.blueprints).forEach(function (k) { if (d.blueprints[k] && k.length < 80) { bpOwned[k] = 1; } }); }
     save("arcHubBP", bpOwned);
+    bpWant = {};
+    if (d.bpWant && typeof d.bpWant === "object" && !Array.isArray(d.bpWant)) { Object.keys(d.bpWant).forEach(function (k) { if (d.bpWant[k] && k.length < 80) { bpWant[k] = 1; } }); }
+    save("arcHubBPWant", bpWant);
     function objOf(o) { return o && typeof o === "object" && !Array.isArray(o) ? o : null; }
     var oo = objOf(d.ws); if (oo) { wsDone = {}; Object.keys(oo).forEach(function (k) { var n = parseInt(oo[k], 10); if (n > 0 && n < 20 && k.length < 40) { wsDone[k] = n; } }); save("arcHubWs", wsDone); }
     oo = objOf(d.plan); if (oo) { wsPlan = {}; Object.keys(oo).forEach(function (k) { if (oo[k] === false && k.length < 40) { wsPlan[k] = false; } }); save("arcHubWsPlan", wsPlan); }
@@ -4257,6 +4321,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (!b) { return; }
     if (e.target.checked) { bpOwned[b] = 1; } else { delete bpOwned[b]; }
     save("arcHubBP", bpOwned); renderRef(); renderQuests();
+  });
+  document.addEventListener("change", function (e) {
+    var b = e.target && e.target.getAttribute && e.target.getAttribute("data-bpwant");
+    if (!b) { return; }
+    if (e.target.checked) { bpWant[b] = 1; } else { delete bpWant[b]; }
+    save("arcHubBPWant", bpWant); renderRef();
   });
   document.getElementById("qReady").addEventListener("change", renderQuests);
   document.getElementById("qLocked").addEventListener("change", renderQuests);

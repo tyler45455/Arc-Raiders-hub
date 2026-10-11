@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Blueprint wishlist: tick On my wishlist on any blueprint in Reference > Blueprints to get a Blueprint hunt list of which containers, conditions, quests and ARC to go after. The Raid prep on the Maps tab also lists wishlist blueprints you can find on that map. Included in backups."],
     ["Oct 11, 2026", "Share as image now works for your skill build, your loadout and your raid log, as well as materials and quest progress. On a phone it opens the share sheet; on a computer it saves a PNG."],
     ["Oct 11, 2026", "Raid log charts: a bar chart of your last 30 raids (haul value, deaths in red, your average as a dashed line), a bar for each map's extract rate, and how your last 10 raids compare with your overall extract rate."],
     ["Oct 11, 2026", "New Stash worth tool in the Tools tab: adds up what everything in your tracker sells for, and lists the spare items (beyond your quests, projects, workshop upgrades and goals) that free the most slots or bring in the most coins. One tap sends the freed slots to the Stash space planner."],

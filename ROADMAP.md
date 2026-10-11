@@ -15,7 +15,7 @@ Done so far: backup files with IDs, stable item and quest IDs, and public JSON d
 
 ## Site improvements
 - **Data audit page** listing items with no sources, quests missing details and keys with no spot on the map.
-- **Weekly wiki check.** A scheduled job that notices wiki changes so data is re-checked automatically.
+- **Weekly wiki check.** Item prices, recipes and sources from RaidTheory now refresh weekly; recycling tables, quests and keys from the wiki still do not.
 - **Tests in CI.** Add search, tracker and import/export checks next to the existing smoke test.
 - **Accessibility pass.** Keyboard use in the map viewer and in the new popovers (partial note, search results).
 - **Wiki gaps.** About 40 items have no sources; Wires Crossed and Disrupting The Frigate are not on the wiki; Broken Monument's prerequisite is ambiguous.

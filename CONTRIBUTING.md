@@ -36,6 +36,17 @@ node tools/build-api.js
 
 `node tools/build-api.js --check` only reports files that are out of date, and every pull request runs it. The build stops if two names would share an ID or a quest points at an unknown quest. The data comes from the wiki (CC BY-SA 4.0), so anyone reusing these files has to credit the wiki.
 
+## Weekly item data refresh
+`ITEMINFO` and `FARM3` in `data/items.js` are generated from [RaidTheory/arcraiders-data](https://github.com/RaidTheory/arcraiders-data), so do not edit them by hand except for items that data set lacks (those entries are kept as they are). Every Monday `.github/workflows/sync-item-data.yml` re-reads it, adds a line to the Site changes tab, rebuilds the pages and opens or updates a pull request from the `data-sync` branch listing each change. It refuses to sync if prices disappear or more than half of them move at once. To run it by hand:
+
+```
+git clone --depth 1 https://github.com/RaidTheory/arcraiders-data /tmp/rt
+node tools/sync-item-data.js /tmp/rt
+node tools/build-pages.js && node tools/build-api.js
+```
+
+If the workflow opens an issue instead of a pull request, turn on "Allow GitHub Actions to create and approve pull requests" under Settings > Actions > General.
+
 ## Map images
 Add or replace images in `maps/` using the file names in `maps/README.md`, under 1 MB each.
 

@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "Sell prices, weights, recipes and the extra where to find details are now re-checked against the RaidTheory data set every week, so they keep up with game patches. Each refresh adds a line here listing what changed."],
     ["Oct 11, 2026", "Quests: a new Next up list shows the quests you can start right now and what each one still needs from your Tracker, closest to ready first. It follows the trader and map filters, and items you only pick up during a quest are listed separately. Fixed Exploring Pendola Pass asking for \"Wire\" instead of Wires."],
     ["Oct 11, 2026", "Keys: every key now says how to get it, from its wiki page and the quest data. 8 keys are quest rewards (up from 2), the Blue Gate security codes name the area to search, and a few keys name the containers they drop from. Each map has a Keys list with a button that shows the door on the map."],
     ["Oct 11, 2026", "Where to find items: 205 items gained details the wiki was missing, such as area types (85 items), traders with price and daily limit (28), and how to get weapon tiers II to IV by upgrading at the Gunsmith, with the upgrade cost. Items with no source at all dropped from 190 to 27. The extra details come from RaidTheory/arcraiders-data and only fill gaps the wiki leaves."],

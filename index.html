@@ -1184,6 +1184,19 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var ITEMINFO = ARC.ITEMINFO || {};
   var CRAFTS_INTO = {};
   Object.keys(ITEMINFO).forEach(function (n) { var r = ITEMINFO[n][3]; if (r) { r[1].forEach(function (g) { (CRAFTS_INTO[g[0]] = CRAFTS_INTO[g[0]] || []).push(n); }); } });
+  /* Weapon tiers II to IV come from the "Upgrade from X at the Gunsmith (cost)" lines in FARM2/FARM3. */
+  var UPGRADES = {};
+  [ARC.FARM2 || {}, ARC.FARM3 || {}].forEach(function (F) {
+    Object.keys(F).forEach(function (n) {
+      (F[n].o || []).forEach(function (line) {
+        var m = /^Upgrade from (.+?) at the (\w+) \((.+)\)$/.exec(line), parts;
+        if (!m || UPGRADES[n]) { return; }
+        parts = m[3].split(", ").map(function (x) { var g = /^(\d+) (.+)$/.exec(x); return g ? [g[2], parseInt(g[1], 10)] : null; });
+        if (parts.every(Boolean)) { UPGRADES[n] = [m[2] + " (upgrade)", [[m[1], 1]].concat(parts)]; }
+      });
+    });
+  });
+  function recipeOf(n) { return (ITEMINFO[n] && ITEMINFO[n][3]) || UPGRADES[n] || null; }
 
   var MAPS = ARC.MAPS;
   var CONDITIONS = ARC.CONDITIONS;
@@ -1392,7 +1405,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         bits.push(L(mode === "rec" ? "recycled parts sell for" : "salvaged parts sell for") + " " + (it.confirmed ? "" : L("at least") + " ") + "<b>" + coins(pv) + "</b>" + (pv > f[0] ? ' <span class="good">' + L("(more than selling it)") + "</span>" : ""));
       }
       if (bits.length) { out += '<div class="iinfo">' + bits.join(" &middot; ") + "</div>"; }
-      if (f[3]) { out += '<div class="iinfo">' + L("Craft at") + " <span>" + esc(f[3][0]) + "</span>: " + f[3][1].map(function (g) { return "<span>" + g[1] + "&times; " + esc(g[0]) + "</span>"; }).join(", ") + ' <a href="#tools/craft=' + encodeURIComponent(it.name + "*1") + '" data-action="crOpen" data-n="' + esc(it.name) + '">' + L("Plan this craft") + "</a></div>"; }
+      var rc = f[3] || UPGRADES[it.name];
+      if (rc) { out += '<div class="iinfo">' + L(f[3] ? "Craft at" : "Upgrade at") + " <span>" + esc(rc[0].replace(" (upgrade)", "")) + "</span>: " + rc[1].map(function (g) { return "<span>" + g[1] + "&times; " + esc(g[0]) + "</span>"; }).join(", ") + ' <a href="#tools/craft=' + encodeURIComponent(it.name + "*1") + '" data-action="crOpen" data-n="' + esc(it.name) + '">' + L("Plan this craft") + "</a></div>"; }
     }
     var used = CRAFTS_INTO[it.name];
     if (used) { out += '<div class="iinfo">' + L("Used to craft:") + " <span>" + used.slice(0, 6).map(esc).join(", ") + "</span>" + (used.length > 6 ? " " + L("and") + " <span>" + (used.length - 6) + "</span> " + L("more") : "") + "</div>"; }
@@ -2878,7 +2892,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }).join("");
   }
   /* Crafting planner: recipes come from ITEMINFO (each craft is counted as making one). */
-  var craftNames = Object.keys(ITEMINFO).filter(function (n) { return ITEMINFO[n][3]; }).sort();
+  var craftNames = Object.keys(ITEMINFO).concat(Object.keys(UPGRADES)).filter(function (n, i, a) { return a.indexOf(n) === i && recipeOf(n); }).sort();
   function craftFind(v) {
     v = (v || "").trim().toLowerCase();
     for (var i = 0; i < craftNames.length; i++) { if (craftNames[i].toLowerCase() === v) { return craftNames[i]; } }
@@ -2887,7 +2901,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function craftCalc(name, qty, deep) {
     var pool = {}, leaf = {}, made = {}, stations = {}, order = [];
     function need(n, q, depth) {
-      var r = ITEMINFO[n] && ITEMINFO[n][3];
+      var r = recipeOf(n);
       if (depth > 0 && r && deep) {
         if (!(n in pool)) { pool[n] = tracker[n] || 0; }
         var use = Math.min(pool[n], q); pool[n] -= use; q -= use;
@@ -2903,7 +2917,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     return { leaf: leaf, made: made, stations: order };
   }
   function craftTree(n, q, depth, deep) {
-    var r = ITEMINFO[n] && ITEMINFO[n][3], have = tracker[n] || 0;
+    var r = recipeOf(n), have = tracker[n] || 0;
     var line = "<b>" + q + "&times;</b> " + esc(n) + (depth && have ? ' <span class="st">(you have ' + have + ")</span>" : "");
     if (!r || depth > 7 || (depth > 0 && !deep)) { return "<li>" + line + "</li>"; }
     return "<li>" + line + ' <span class="st">&middot; ' + esc(r[0]) + "</span><ul>" + r[1].map(function (g) { return craftTree(g[0], g[1] * q, depth + 1, deep); }).join("") + "</ul></li>";

@@ -989,7 +989,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       </div>
       <div id="loItems" style="display:grid;gap:6px;margin-top:8px;"></div>
       <div id="loOut"></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="loShare">Copy loadout link</button><span class="muted" id="loMsg" role="status"></span></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="loShare">Copy loadout link</button><button class="btn ghost" type="button" data-action="shareLoadout">Share as image</button><span class="muted" id="loMsg" role="status"></span></div>
       <div class="rcadd" style="grid-template-columns:1fr auto;"><input type="text" id="loName" placeholder="Name this loadout" aria-label="Loadout name" maxlength="40"><button class="btn" type="button" data-action="loSave">Save loadout</button></div>
       <div id="loSaved"></div>
     </div>
@@ -1088,7 +1088,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <div class="chips" id="skTabs" role="group" aria-label="Skill tree" style="margin-top:8px;"></div>
       <div id="skOut"></div>
       <div id="skInfo" class="proj" aria-live="polite"></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="skLink">Copy build link</button><button class="btn ghost" type="button" data-action="skReset">Clear build</button><span class="muted" id="skMsg" role="status"></span></div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="skLink">Copy build link</button><button class="btn ghost" type="button" data-action="shareSkills">Share as image</button><button class="btn ghost" type="button" data-action="skReset">Clear build</button><span class="muted" id="skMsg" role="status"></span></div>
     </div>
 
     <div class="tool" id="raidTool">
@@ -2537,7 +2537,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       return '<div class="rlrow"><div><b>' + esc(r.m) + "</b> &middot; " + (r.o === "x" ? "Extracted" : "Died") + (r.v !== null ? " &middot; " + coins(r.v) + " coins" : "") +
         '<div class="muted">' + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + (r.n ? " &middot; " + esc(r.n) : "") + "</div></div>" +
         '<button type="button" class="btn ghost" style="padding:3px 8px;" data-action="rlDel" data-i="' + idx + '" aria-label="Delete this raid">&times;</button></div>';
-    }).join("") + '<div class="acts" style="margin-top:8px;"><button class="btn ghost" type="button" data-action="rlClear">Clear raid log</button></div>';
+    }).join("") + '<div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="shareRaids">Share as image</button><button class="btn ghost" type="button" data-action="rlClear">Clear raid log</button></div>';
   }
   /* Raid log chart: the last 30 raids as bars (haul value; deaths as red marks) with the average haul as a dashed line. */
   function rlChart() {
@@ -2741,7 +2741,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       g.fillStyle = "#f1e8d4"; g.font = "26px 'IBM Plex Sans', Arial, sans-serif"; g.fillText(r.l, 56, y + 24);
       g.textAlign = "right"; g.fillStyle = "#f6b81a"; g.fillText(r.v, W - 56, y + 24); g.textAlign = "left";
       g.fillStyle = "#36322a"; g.fillRect(56, y + 36, W - 112, 10);
-      g.fillStyle = r.f >= 1 ? "#3fd68a" : "#e5271c"; g.fillRect(56, y + 36, Math.max(0, Math.min(1, r.f)) * (W - 112), 10);
+      g.fillStyle = r.c || (r.f >= 1 ? "#3fd68a" : "#e5271c"); g.fillRect(56, y + 36, Math.max(0, Math.min(1, r.f)) * (W - 112), 10);
     });
     var cols = ["#e5271c", "#f6b81a", "#1fb86a", "#7be8e4"];
     cols.forEach(function (k, i) { g.fillStyle = k; g.fillRect(i * W / 4, H - 24, W / 4, 24); });
@@ -2766,6 +2766,35 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     });
     if (!rows.length) { rows = [{ l: "Nothing tracked yet", v: "", f: 0 }]; }
     shareImage("My materials", names.length + " tracked" + (names.length > 14 ? " (top 14 shown)" : ""), rows, "arc-raiders-materials.png");
+  }
+  function shareSkills() {
+    var rows = [], used = 0;
+    SKT.forEach(function (t) {
+      var names = skTreeNames(t).filter(function (n) { return skBuild[n] > 0; }), pts = skSum(skBuild, skTreeNames(t));
+      used += pts;
+      if (!pts) { return; }
+      rows.push({ l: t.toUpperCase(), v: pts + (pts === 1 ? " point" : " points"), f: pts / skAvail(), c: "#f6b81a" });
+      names.forEach(function (n) { rows.push({ l: "   " + n, v: skBuild[n] + " / " + skMax(n), f: skBuild[n] / skMax(n), c: skBuild[n] >= skMax(n) ? "#3fd68a" : "#7be8e4" }); });
+    });
+    if (!rows.length) { rows = [{ l: "No skill points spent yet", v: "", f: 0 }]; }
+    shareImage("My skill build", used + " of " + skAvail() + " points spent", rows.slice(0, 40), "arc-raiders-skills.png");
+  }
+  var loLast = null;
+  function shareLoadout() {
+    if (!loLast) { return; }
+    var L = loLast, over = L.total > L.limit;
+    var rows = L.lines.map(function (l) { return { l: l[0], v: (Math.round(l[1] * 100) / 100) + " kg", f: L.limit ? l[1] / L.limit : 0, c: "#7be8e4" }; });
+    rows.push({ l: "Carried weight", v: (Math.round(L.total * 100) / 100) + " / " + L.limit + " kg", f: L.limit ? L.total / L.limit : 0, c: over ? "#e5271c" : "#3fd68a" });
+    shareImage("My loadout", L.aug + (L.shield ? " with " + L.shield : "") + (over ? ", over the weight limit" : ""), rows, "arc-raiders-loadout.png");
+  }
+  function shareRaids() {
+    if (!raids.length) { return; }
+    var maps = {}, x = 0; raids.forEach(function (r) { (maps[r.m] = maps[r.m] || []).push(r); if (r.o === "x") { x++; } });
+    var rows = Object.keys(maps).sort(function (a, b) { return maps[b].length - maps[a].length; }).slice(0, 14).map(function (m) {
+      var n = maps[m].length, k = maps[m].filter(function (r) { return r.o === "x"; }).length;
+      return { l: m, v: Math.round(k * 100 / n) + "% of " + n, f: k / n, c: "#3fd68a" };
+    });
+    shareImage("My raids", raids.length + " raids, " + Math.round(x * 100 / raids.length) + "% extracted", rows, "arc-raiders-raids.png");
   }
   function shareQuests() {
     var by = {}, order = [], total = 0, done = 0;
@@ -3290,6 +3319,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (nm && q > 0) { var w = numOf((GPROPS[nm] || [])[1]); if (w >= 0) { total += w * q; lines.push([q + " x " + nm, w * q]); } }
     });
     var limit = aug[1], over = total > limit, msg = "";
+    loLast = { aug: aug[0], shield: shName, lines: lines, total: total, limit: limit };
     var shClass = shName ? shName.split(" ")[0] : "";
     if (shClass && aug[2].indexOf(shClass) === -1) { msg += '<div class="qwarn">The ' + esc(shName) + " is not compatible with the " + esc(aug[0]) + " (it works with: " + esc(aug[2]) + ").</div>"; }
     document.getElementById("loOut").innerHTML = '<div class="refgrid" style="margin-top:10px;">' + lines.map(function (l) { return "<div>" + esc(l[0]) + ": <b>" + (Math.round(l[1] * 100) / 100) + "</b></div>"; }).join("") + "</div>" +
@@ -4161,6 +4191,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else if (a === "gGo") { gGo(parseInt(t.getAttribute("data-i"), 10));
     } else if (a === "shareTracker") { shareTracker();
     } else if (a === "shareQuests") { shareQuests();
+    } else if (a === "shareSkills") { shareSkills();
+    } else if (a === "shareLoadout") { shareLoadout();
+    } else if (a === "shareRaids") { shareRaids();
     } else if (a === "loShare") {
       var lk = window.location.href.split("#")[0] + "#tools/" + encodeURIComponent(loCode()), lm = document.getElementById("loMsg");
       try { window.navigator.clipboard.writeText(lk).then(function () { lm.textContent = "Link copied."; }, function () { lm.textContent = "Copy failed. Use the address bar."; }); } catch (e4) { lm.textContent = "Copy failed."; }

@@ -6,7 +6,7 @@ Thanks for helping keep the numbers right.
 Open an [issue](https://github.com/tyler45455/Arc-Raiders-hub/issues/new/choose) with the item, what the site shows, what it should say, and a source (game version, wiki page or screenshot).
 
 ## Editing the data yourself
-Everything is in `index.html`. There is no build step.
+Everything is in `index.html`. The site itself has no build step; the SEO pages under `item/` and `map/` and `sitemap.xml` are generated from it (see below).
 
 1. Fork the repo, or press the pencil icon on `index.html` on GitHub.
 2. Find the material block in `TABLES` (for example `Metal Parts`). Each line is `Item|recycledQty|salvagedQty`, and `-` means none.
@@ -15,6 +15,15 @@ Everything is in `index.html`. There is no build step.
 5. New updates go at the top of `UPDATES` (date, title, version, summary and highlight points).
 6. Change `DATA_UPDATED` to today's date when you refresh the numbers.
 7. Open a pull request and say where each number came from. Wiki numbers should match the wiki; in-game screenshots win when the two disagree.
+
+## Item and map pages
+The pages under `item/` and `map/` and `sitemap.xml` are built from the data in `index.html` (`TABLES`, `EXTRAS`, `RARITY`, `NO_RECYCLE`, `FARM`, `FARM2`, `MAPS` and `ROOMS`). After changing that data, run:
+
+```
+node tools/build-pages.js
+```
+
+It needs Node 14.14 or newer and nothing else. `node tools/build-pages.js --check` only reports pages that are out of date.
 
 ## Map images
 Add or replace images in `maps/` using the file names in `maps/README.md`, under 1 MB each.

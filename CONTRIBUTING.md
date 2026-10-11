@@ -25,6 +25,8 @@ node tools/build-pages.js
 
 It needs Node 14.14 or newer and nothing else. `node tools/build-pages.js --check` only reports pages that are out of date.
 
+Every pull request runs that check plus `tools/smoke-test.js`, which opens the site in headless Chromium, clicks every tab and fails on any JavaScript error. To run it locally: `npm install --no-save playwright && npx playwright install chromium && node tools/smoke-test.js`.
+
 ## Map images
 Add or replace images in `maps/` using the file names in `maps/README.md`, under 1 MB each.
 

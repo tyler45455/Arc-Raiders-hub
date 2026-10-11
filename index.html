@@ -707,10 +707,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <details class="card" id="backupCard">
       <summary>Back up or move your data</summary>
       <p class="muted" style="margin-top:8px;"><b>Reset everything to default</b> (the red button above) clears quests, tracker, goals, projects, checklists, notes, pins, loadouts and every other saved setting back to zero. It keeps your language, theme and contrast choices. Export a backup first if you might want it back.</p>
-      <p class="muted" style="margin-top:8px;">Your tracker, goals, starred items, projects and checklist are saved only in this browser. Press Export to get a block of text you can keep, then paste it here on another device and press Import.</p>
+      <p class="muted" style="margin-top:8px;">Your tracker, goals, starred items, projects and checklist are saved only in this browser. Press Download file to save a backup, then use Import from file on another device. You can also press Export to get the same backup as text and paste it here.</p>
       <textarea id="backup" rows="5" aria-label="Backup text" placeholder="Export creates text here. Paste a backup here to import it."></textarea>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
         <button class="btn" type="button" data-action="exportData">Export</button>
+        <button class="btn ghost" type="button" data-action="downloadBackup">Download file</button>
+        <button class="btn ghost" type="button" data-action="pickBackup">Import from file</button>
+        <input type="file" id="backupFile" accept=".json,application/json" hidden>
         <button class="btn ghost" type="button" data-action="importData">Import</button>
         <button class="btn ghost" type="button" data-action="makeCode">Copy transfer code</button>
       </div>
@@ -2098,6 +2101,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   /* ---------- global search ---------- */
   var gTargets = [];
+  /* Small public surface for tools and a future sync source. IDs match api/v1/*.json. */
+  window.ArcHub = { schema: 2, idOf: idOf, itemName: canonItem, questName: canonQuest, exportBackup: backupObj };
   var KEYS = ARC.KEYS;
   function keyMapRoom(k) { var mi = -1, ri = -1; MAPS.forEach(function (m, i) { if (m.name === k[1]) { mi = i; } }); if (mi >= 0 && k[2]) { (ROOMS[mapSlug(MAPS[mi])] || { r: [] }).r.forEach(function (r, i) { if (r[0] === k[2]) { ri = i; } }); } return [mi, ri]; }
   function gSearch() {
@@ -2723,8 +2728,17 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
 
   /* ---------- backup ---------- */
+  /* IDs: the English name as a lowercase slug, the same as the item/ and map/ page paths and api/v1/*.json. */
+  function idOf(name) { return String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+  function backupObj() {
+    var ids = { items: {}, quests: {} };
+    [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
+    favs.forEach(function (n) { ids.items[n] = idOf(n); });
+    Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist };
+  }
   function snapText() {
-    return JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist });
+    return JSON.stringify(backupObj());
   }
   var snaps = load("arcHubSnaps", []);
   function takeSnapshot() {
@@ -2770,16 +2784,49 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     importData();
   }
   function exportData() {
-    var txt = JSON.stringify({ app: "arc-raiders-hub", v: 1, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist });
+    var txt = snapText();
     var ta = document.getElementById("backup"), msg = document.getElementById("backupMsg");
     ta.value = txt; ta.focus(); ta.select();
     msg.textContent = "Export ready. Copy this text and keep it somewhere safe.";
     try { window.navigator.clipboard.writeText(txt).then(function () { msg.textContent = "Export ready and copied. Paste it somewhere safe."; }, function () {}); } catch (e) {}
   }
+  /* A backup or another tool may name things by ID (such as "metal-parts"); turn that back into the item or quest name. */
+  function canonItem(k) {
+    if (k.length >= 80) { return k; }
+    var names = allMaterials().concat(items.map(function (it) { return it.name; })), hit = null;
+    if (names.indexOf(k) !== -1) { return k; }
+    names.forEach(function (n) { if (!hit && idOf(n) === k) { hit = n; } });
+    return hit || k;
+  }
+  function canonQuest(k) {
+    var hit = null; QUESTS.forEach(function (q) { if (q.name === k) { hit = q.name; } });
+    if (hit) { return hit; }
+    QUESTS.forEach(function (q) { if (!hit && idOf(q.name) === k) { hit = q.name; } });
+    return hit || k;
+  }
+  function downloadBackup() {
+    var msg = document.getElementById("backupMsg");
+    try {
+      var blob = new window.Blob([JSON.stringify(backupObj(), null, 1)], { type: "application/json" }), url = window.URL.createObjectURL(blob), a = document.createElement("a");
+      a.href = url; a.download = "arc-raiders-hub-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      window.setTimeout(function () { window.URL.revokeObjectURL(url); }, 2000);
+      msg.textContent = "Backup file saved. Keep it somewhere safe; Import from file loads it back.";
+    } catch (e) { msg.textContent = "Could not save a file here. Use Export and copy the text instead."; }
+  }
+  function backupFileChosen(ev) {
+    var f = ev.target.files && ev.target.files[0], msg = document.getElementById("backupMsg");
+    if (!f) { return; }
+    if (f.size > 5 * 1024 * 1024) { msg.textContent = "That file is too big to be a backup."; ev.target.value = ""; return; }
+    var rd = new window.FileReader();
+    rd.onload = function () { document.getElementById("backup").value = String(rd.result); importAny(); ev.target.value = ""; };
+    rd.onerror = function () { msg.textContent = "Could not read that file."; };
+    rd.readAsText(f);
+  }
   function numMap(o) {
     var out = {};
     if (o && typeof o === "object" && !Array.isArray(o)) {
-      Object.keys(o).forEach(function (k) { var v = parseInt(o[k], 10); if (v > 0 && k.length < 80) { out[k] = v; } });
+      Object.keys(o).forEach(function (k) { var v = parseInt(o[k], 10), c = canonItem(k); if (v > 0 && c.length < 80) { out[c] = (out[c] || 0) + v; } });
     }
     return out;
   }
@@ -2787,14 +2834,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var msg = document.getElementById("backupMsg"), d;
     try { d = JSON.parse(document.getElementById("backup").value); } catch (e) { msg.textContent = "That does not look like an Arc Raiders Hub backup."; return; }
     if (!d || d.app !== "arc-raiders-hub") { msg.textContent = "That does not look like an Arc Raiders Hub backup."; return; }
+    if (d.v > 2) { msg.textContent = "This backup is from a newer version of the site. Importing what this version understands."; }
     pushUndo("Imported a backup");
     tracker = numMap(d.tracker); goals = numMap(d.goals);
-    favs = Array.isArray(d.favs) ? d.favs.filter(function (x) { return typeof x === "string"; }).slice(0, 500) : [];
+    favs = Array.isArray(d.favs) ? d.favs.filter(function (x) { return typeof x === "string"; }).map(canonItem).slice(0, 500) : [];
     customItems = Array.isArray(d.custom) ? d.custom.filter(function (c) { return c && typeof c.name === "string" && Array.isArray(c.yields); }).slice(0, 200) : [];
     projects = Array.isArray(d.projects) ? d.projects.filter(function (p) { return p && typeof p.name === "string" && Array.isArray(p.needs); }).slice(0, 50) : [];
     if (Array.isArray(d.checklist)) { checklist = d.checklist.filter(function (c) { return c && typeof c.t === "string"; }).map(function (c) { return { t: c.t, d: !!c.d }; }).slice(0, 100); }
     qDone = {};
-    if (d.quests && typeof d.quests === "object" && !Array.isArray(d.quests)) { Object.keys(d.quests).forEach(function (k) { if (d.quests[k] && k.length < 80) { qDone[k] = 1; } }); }
+    if (d.quests && typeof d.quests === "object" && !Array.isArray(d.quests)) { Object.keys(d.quests).forEach(function (k) { if (d.quests[k] && k.length < 80) { qDone[canonQuest(k)] = 1; } }); }
     save("arcHubQuestsDone", qDone);
     bpOwned = {};
     if (d.blueprints && typeof d.blueprints === "object" && !Array.isArray(d.blueprints)) { Object.keys(d.blueprints).forEach(function (k) { if (d.blueprints[k] && k.length < 80) { bpOwned[k] = 1; } }); }
@@ -3229,6 +3277,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       exportData();
     } else if (a === "importData") {
       importAny();
+    } else if (a === "downloadBackup") {
+      downloadBackup();
+    } else if (a === "pickBackup") {
+      document.getElementById("backupFile").click();
     } else if (a === "makeCode") {
       makeCode();
     } else if (a === "snapRestore") {
@@ -3605,6 +3657,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   })();
   renderChanges();
   document.getElementById("gq").addEventListener("input", gSearch);
+  document.getElementById("backupFile").addEventListener("change", backupFileChosen);
   document.getElementById("gq").addEventListener("keydown", function (e) {
     if (e.key === "Escape") { document.getElementById("gres").hidden = true; }
     if (e.key === "Enter" && gTargets.length) { e.preventDefault(); gGo(0); }

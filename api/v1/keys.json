@@ -1,0 +1,304 @@
+{
+ "schema": 1,
+ "kind": "keys",
+ "dataDate": "October 11, 2026",
+ "count": 37,
+ "keys": [
+  {
+   "id": "buried-city-hospital-key",
+   "name": "Buried City Hospital Key",
+   "mapId": "buried-city",
+   "roomId": "hospital",
+   "usedAt": "Opens a locked room in the North West corner of the Hospital, second floor.",
+   "questReward": null
+  },
+  {
+   "id": "buried-city-jkv-employee-access-card",
+   "name": "Buried City JKV Employee Access Card",
+   "mapId": "buried-city",
+   "roomId": null,
+   "usedAt": "Unlocks a door in the J Kozma Ventures company building.",
+   "questReward": null
+  },
+  {
+   "id": "buried-city-residential-master-key",
+   "name": "Buried City Residential Master Key",
+   "mapId": "buried-city",
+   "roomId": null,
+   "usedAt": "Unlocks certain apartment doors.",
+   "questReward": null
+  },
+  {
+   "id": "buried-city-town-hall-key",
+   "name": "Buried City Town Hall Key",
+   "mapId": "buried-city",
+   "roomId": "town-hall",
+   "usedAt": "Unlocks a door to the Town Hall.",
+   "questReward": null
+  },
+  {
+   "id": "dam-control-tower-key",
+   "name": "Dam Control Tower Key",
+   "mapId": "dam-battlegrounds",
+   "roomId": "control-tower",
+   "usedAt": "Unlocks the door to the Control Tower.",
+   "questReward": null
+  },
+  {
+   "id": "dam-staff-room-key",
+   "name": "Dam Staff Room Key",
+   "mapId": "dam-battlegrounds",
+   "roomId": "research-administration",
+   "usedAt": "Opens a locked door in the Research & Administration building, first floor.",
+   "questReward": "The Stench Of Corruption"
+  },
+  {
+   "id": "dam-surveillance-key",
+   "name": "Dam Surveillance Key",
+   "mapId": "dam-battlegrounds",
+   "roomId": "water-treatment-control",
+   "usedAt": "Unlocks a door in the Water Treatment Control building.",
+   "questReward": null
+  },
+  {
+   "id": "dam-testing-annex-key",
+   "name": "Dam Testing Annex Key",
+   "mapId": "dam-battlegrounds",
+   "roomId": "testing-annex",
+   "usedAt": "Unlocks a door in the Testing Annex.",
+   "questReward": null
+  },
+  {
+   "id": "dam-controlled-access-zone-key",
+   "name": "Dam Controlled Access Zone Key",
+   "mapId": "dam-battlegrounds",
+   "roomId": "controlled-access-zone",
+   "usedAt": "Unlocks a door in the Controlled Access Zone.",
+   "questReward": null
+  },
+  {
+   "id": "power-rod",
+   "name": "Power Rod",
+   "mapId": "dam-battlegrounds",
+   "roomId": "power-generation-complex",
+   "usedAt": "Unlocks a door on the east side of the Power Generation Complex.",
+   "questReward": null
+  },
+  {
+   "id": "spaceport-container-storage-key",
+   "name": "Spaceport Container Storage Key",
+   "mapId": "spaceport",
+   "roomId": "container-storage",
+   "usedAt": "Unlocks a door in Container Storage.",
+   "questReward": null
+  },
+  {
+   "id": "spaceport-control-tower-key",
+   "name": "Spaceport Control Tower Key",
+   "mapId": "spaceport",
+   "roomId": "control-tower-a6",
+   "usedAt": "Unlocks a door to the Ground Control Tower.",
+   "questReward": null
+  },
+  {
+   "id": "spaceport-trench-tower-key",
+   "name": "Spaceport Trench Tower Key",
+   "mapId": "spaceport",
+   "roomId": "north-trench-tower",
+   "usedAt": "Unlocks a door to the Trench Towers (there are a north and a south tower).",
+   "questReward": null
+  },
+  {
+   "id": "spaceport-warehouse-key",
+   "name": "Spaceport Warehouse Key",
+   "mapId": "spaceport",
+   "roomId": "shipping-warehouse",
+   "usedAt": "Unlocks a door in the Shipping Warehouse.",
+   "questReward": null
+  },
+  {
+   "id": "blue-gate-cellar-key",
+   "name": "Blue Gate Cellar Key",
+   "mapId": "the-blue-gate",
+   "roomId": null,
+   "usedAt": "Unlocks certain cellar doors near the Blue Gate.",
+   "questReward": null
+  },
+  {
+   "id": "blue-gate-village-key",
+   "name": "Blue Gate Village Key",
+   "mapId": "the-blue-gate",
+   "roomId": "village",
+   "usedAt": "Unlocks a door to one of the old village buildings.",
+   "questReward": null
+  },
+  {
+   "id": "blue-gate-communication-tower-key",
+   "name": "Blue Gate Communication Tower Key",
+   "mapId": "the-blue-gate",
+   "roomId": null,
+   "usedAt": "Unlocks a door by the Communication Tower.",
+   "questReward": null
+  },
+  {
+   "id": "blue-gate-confiscation-room-key",
+   "name": "Blue Gate Confiscation Room Key",
+   "mapId": "the-blue-gate",
+   "roomId": null,
+   "usedAt": "Unlocks a door to the confiscated foods area in the Blue Gate tunnels.",
+   "questReward": null
+  },
+  {
+   "id": "ancient-fort-security-code",
+   "name": "Ancient Fort Security Code",
+   "mapId": "the-blue-gate",
+   "roomId": "ancient-fort",
+   "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
+   "questReward": null
+  },
+  {
+   "id": "pilgrim-s-peak-security-code",
+   "name": "Pilgrim's Peak Security Code",
+   "mapId": "the-blue-gate",
+   "roomId": "pilgrim-s-peak",
+   "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
+   "questReward": null
+  },
+  {
+   "id": "raider-s-refuge-security-code",
+   "name": "Raider's Refuge Security Code",
+   "mapId": "the-blue-gate",
+   "roomId": "raider-s-refuge",
+   "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
+   "questReward": null
+  },
+  {
+   "id": "reinforced-reception-security-code",
+   "name": "Reinforced Reception Security Code",
+   "mapId": "the-blue-gate",
+   "roomId": "reinforced-reception",
+   "usedAt": "Temporary security code that unlocks the main gate (Locked Gate).",
+   "questReward": null
+  },
+  {
+   "id": "patrol-car-key",
+   "name": "Patrol Car Key",
+   "mapId": "the-blue-gate",
+   "roomId": null,
+   "usedAt": "Unlocks the rear door of a patrol car (found on The Blue Gate and Riven Tides).",
+   "questReward": null
+  },
+  {
+   "id": "stella-montis-archives-key",
+   "name": "Stella Montis Archives Key",
+   "mapId": "stella-montis",
+   "roomId": null,
+   "usedAt": "Unlocks a door in the Archives.",
+   "questReward": null
+  },
+  {
+   "id": "stella-montis-assembly-admin-key",
+   "name": "Stella Montis Assembly Admin Key",
+   "mapId": "stella-montis",
+   "roomId": null,
+   "usedAt": "Unlocks a door in Assembly.",
+   "questReward": null
+  },
+  {
+   "id": "stella-montis-medical-storage-key",
+   "name": "Stella Montis Medical Storage Key",
+   "mapId": "stella-montis",
+   "roomId": null,
+   "usedAt": "Unlocks a door in Medical Research.",
+   "questReward": null
+  },
+  {
+   "id": "stella-montis-security-checkpoint-key",
+   "name": "Stella Montis Security Checkpoint Key",
+   "mapId": "stella-montis",
+   "roomId": null,
+   "usedAt": "Unlocks a door in the Security Checkpoint.",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-crane-house-keycard",
+   "name": "Riven Tides Crane House Keycard",
+   "mapId": "riven-tides",
+   "roomId": null,
+   "usedAt": "Unlocks a door in one of the Crane Houses.",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-secure-storage-keycard",
+   "name": "Riven Tides Secure Storage Keycard",
+   "mapId": "riven-tides",
+   "roomId": "port-authority-building",
+   "usedAt": "Unlocks the Secure Storage room in the Port Authority Building.",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-classified-records-keycard",
+   "name": "Riven Tides Classified Records Keycard",
+   "mapId": "riven-tides",
+   "roomId": "port-authority-building",
+   "usedAt": "Unlocks the Classified Records room in the Port Authority Building.",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-hotel-keycard-no-102",
+   "name": "Riven Tides Hotel Keycard No. 102",
+   "mapId": "riven-tides",
+   "roomId": "hotel-panorama-azzurro",
+   "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-hotel-keycard-no-107",
+   "name": "Riven Tides Hotel Keycard No. 107",
+   "mapId": "riven-tides",
+   "roomId": "hotel-panorama-azzurro",
+   "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
+   "questReward": "Battening Down"
+  },
+  {
+   "id": "riven-tides-hotel-keycard-no-113",
+   "name": "Riven Tides Hotel Keycard No. 113",
+   "mapId": "riven-tides",
+   "roomId": "hotel-panorama-azzurro",
+   "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-hotel-keycard-no-205",
+   "name": "Riven Tides Hotel Keycard No. 205",
+   "mapId": "riven-tides",
+   "roomId": "hotel-panorama-azzurro",
+   "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-hotel-keycard-no-208",
+   "name": "Riven Tides Hotel Keycard No. 208",
+   "mapId": "riven-tides",
+   "roomId": "hotel-panorama-azzurro",
+   "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-hotel-keycard-no-311",
+   "name": "Riven Tides Hotel Keycard No. 311",
+   "mapId": "riven-tides",
+   "roomId": "hotel-panorama-azzurro",
+   "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
+   "questReward": null
+  },
+  {
+   "id": "riven-tides-hotel-keycard-no-404",
+   "name": "Riven Tides Hotel Keycard No. 404",
+   "mapId": "riven-tides",
+   "roomId": "hotel-panorama-azzurro",
+   "usedAt": "Unlocks the door to one of Panorama Azzurro's many suites (the wiki does not say which one).",
+   "questReward": null
+  }
+ ]
+}

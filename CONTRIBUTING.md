@@ -27,6 +27,15 @@ It needs Node 14.14 or newer and nothing else. `node tools/build-pages.js --chec
 
 Every pull request runs that check plus `tools/smoke-test.js`, which opens the site in headless Chromium, clicks every tab and fails on any JavaScript error. To run it locally: `npm install --no-save playwright && npx playwright install chromium && node tools/smoke-test.js`.
 
+## Public JSON data
+Read-only JSON files built from the same `data/` files live in `api/v1/` (`index.json`, `items.json`, `quests.json`, `maps.json`, `keys.json`). Every item, quest, map, room and key has an `id`, which is its English name as a lowercase slug (the same slug the `item/` and `map/` pages use). After changing anything in `data/`, run:
+
+```
+node tools/build-api.js
+```
+
+`node tools/build-api.js --check` only reports files that are out of date, and every pull request runs it. The build stops if two names would share an ID or a quest points at an unknown quest. The data comes from the wiki (CC BY-SA 4.0), so anyone reusing these files has to credit the wiki.
+
 ## Map images
 Add or replace images in `maps/` using the file names in `maps/README.md`, under 1 MB each.
 

@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 11, 2026", "New Stash worth tool in the Tools tab: adds up what everything in your tracker sells for, and lists the spare items (beyond your quests, projects, workshop upgrades and goals) that free the most slots or bring in the most coins. One tap sends the freed slots to the Stash space planner."],
     ["Oct 11, 2026", "Sell price history: the weekly data sync now records every sell price change. Item pages and the item list show when a price last went up or down, and Loot value in the Tools tab has a Price changes list. Recording starts today, so older changes are not listed."],
     ["Oct 11, 2026", "New Data gaps list at the top of this tab shows what the site still does not know: items with no known source or sell price, quests with no objectives or rewards, and keys with no source or no spot on the map. Each list has a button to report what you know."],
     ["Oct 11, 2026", "New Raid log in the Tools tab: log each raid's map, whether you extracted or died, and your haul value, and see your extract rate, average and best haul per map and your extract streak. It is saved in your browser and included in backups."],

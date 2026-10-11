@@ -2166,6 +2166,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (hit) { keyHits.push({ l: k[0], s: k[1] + (k[2] ? " \u00b7 " + k[2] : ""), go: ["key", ki] }); }
     });
     grp("Keys", keyHits.slice(0, 8));
+    var czHits = [];
+    if (q.length >= 3 && (/^(raider )?caches?( zones?)?$/.test(q) || "raider cache zones".indexOf(q) === 0)) {
+      MAPS.forEach(function (mp, mi) {
+        var R = ROOMS[mapSlug(mp)], Z = ARC.CACHE_ZONES[mapSlug(mp)]; if (!R || !Z) { return; }
+        Z.forEach(function (z) { R.r.forEach(function (r, ri) { if (z[0] && r[0] === z[0]) { czHits.push({ l: r[0], s: mp.name + " \u00b7 " + z[1], go: ["room", mi, ri] }); } }); });
+      });
+    }
+    grp("Raider Cache zones", czHits.slice(0, 10));
     var roomHits = [];
     MAPS.forEach(function (mp, mi) {
       var R = ROOMS[mapSlug(mp)]; if (!R) { return; }
@@ -2992,9 +3000,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     var R = ROOMS[lb.slug], any = Object.keys(lb.types).some(function (k) { return lb.types[k]; });
     if (R && any) {
+      var czr = {}; (ARC.CACHE_ZONES[lb.slug] || []).forEach(function (z) { if (z[0]) { czr[z[0]] = z[1]; } });
       R.r.forEach(function (r) {
-        if (!r[3] || !r[3].some(function (t) { return lb.types[t]; })) { return; }
-        html += '<div class="lb-rm" style="left:' + (r[1] * 100) + "%;top:" + (r[2] * 100) + '%"><i></i><span>' + esc(r[0]) + "</span></div>";
+        var isCz = lb.types["Raider Cache zones"] && czr[r[0]];
+        if (!isCz && (!r[3] || !r[3].some(function (t) { return lb.types[t]; }))) { return; }
+        html += '<div class="lb-rm" title="' + esc(isCz ? "Raider Cache zone: " + czr[r[0]] : r[0]) + '" style="left:' + (r[1] * 100) + "%;top:" + (r[2] * 100) + '%"><i></i><span>' + esc(r[0]) + (isCz ? " (cache)" : "") + "</span></div>";
       });
     }
     (lb.shared || []).forEach(function (p) {
@@ -3012,9 +3022,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     lbEl("lbLayersBtn").hidden = !R;
     if (!R) { box.innerHTML = ""; return; }
     R.r.forEach(function (r) { (r[3] || []).forEach(function (t) { seen[t] = 1; }); });
+    var cz = ARC.CACHE_ZONES[lb.slug];
+    if (cz) { seen["Raider Cache zones"] = 1; }
     box.innerHTML = '<span>Show places by type:</span>' + Object.keys(seen).sort().map(function (t) {
       return '<button type="button" class="chip" data-action="lbType" data-t="' + esc(t) + '" aria-pressed="' + (lb.types[t] ? "true" : "false") + '">' + esc(t) + "</button>";
-    }).join("") + '<button type="button" class="chip" data-action="lbRouteTog" aria-pressed="' + (lb.route ? "true" : "false") + '">Route through my pins</button>';
+    }).join("") + '<button type="button" class="chip" data-action="lbRouteTog" aria-pressed="' + (lb.route ? "true" : "false") + '">Route through my pins</button>' +
+      (cz && lb.types["Raider Cache zones"] ? '<div class="muted" style="flex-basis:100%;">Raider Cache zones are approximate and come from a community guide to the Hurricane event. Caches use the regular cache spawn points and can turn up in different places each raid; they are not on Stella Montis.' +
+        (cz.some(function (z) { return !z[0]; }) ? " Also reported, with no matching room on this map: " + cz.filter(function (z) { return !z[0]; }).map(function (z) { return esc(z[1]); }).join(" ") : "") + "</div>" : "");
   }
   function lbViewLink() {
     var st = lbEl("lbStage"), cx = ((st.clientWidth / 2 - lb.x) / lb.s) / lb.nw, cy = ((st.clientHeight / 2 - lb.y) / lb.s) / lb.nh;

@@ -308,6 +308,16 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
   .undobar { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
 }
 .subtabs { margin: 14px 0 12px; }
+.homegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 12px; }
+.homecard h3 { margin: 0; font-size: 17px; }
+.homecard p { margin: 0; }
+.homecard .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.homelist { margin: 0; padding-left: 18px; }
+.homeg { display: grid; gap: 3px; font-size: 14px; }
+.homeform { display: flex; gap: 4px; }
+.homeform i { width: 14px; height: 14px; border-radius: 3px; background: var(--good); }
+.homeform i.d { background: var(--danger); }
+@media (max-width: 600px) { .homegrid { grid-template-columns: 1fr; } .tabbar .tab { font-size: 13.5px; position: relative; } .tabbar .tab .count { position: absolute; top: 5px; right: 3px; font-size: 10px; margin: 0; } }
 .farmbox { margin: 8px 0 4px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .farmmap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
 .farmmap > b { min-width: 130px; }
@@ -634,7 +644,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .moretab, .moremenu { display: none; }
 @media (max-width: 600px) {
   .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 14px rgba(0,0,0,.12); }
-  .tabbar .tabs { position: static; border-top: 0; box-shadow: none; padding-bottom: 0; overflow: visible; flex: 4 1 0; -webkit-mask-image: none; mask-image: none; }
+  .tabbar .tabs { position: static; border-top: 0; box-shadow: none; padding-bottom: 0; overflow: visible; flex: 5 1 0; -webkit-mask-image: none; mask-image: none; }
   .tabbar .tab { flex: 1 1 0; padding: 14px 2px; text-align: center; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .tabbar .tab.sec { display: none; }
   .tabbar .moretab { display: block; position: relative; flex: 1 1 0; }
@@ -665,6 +675,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <div class="gsearch"><input type="search" id="gq" placeholder="Search everything" aria-label="Search everything" autocomplete="off"><div class="gres" id="gres" hidden></div></div>
     <div class="tabbar">
     <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" id="tab-home" data-tab="home" aria-selected="false">Home</button>
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycle</button>
       <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Tracker<span class="count" id="trackerCount"></span></button>
       <button class="tab sec" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Gear</button>
@@ -690,6 +701,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <div id="hintText"></div>
     <button class="btn ghost" type="button" data-action="tourStart">Take a tour</button><button class="btn ghost" type="button" data-action="hintClose">Got it</button>
   </div>
+
+  <!-- HOME -->
+  <section class="panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" hidden>
+    <h2>Home</h2>
+    <p class="muted">Your next raid, the closest workshop upgrade, goals and raid stats at a glance. Tap any card's button to open the full tool.</p>
+    <div class="homegrid" id="homeOut"></div>
+    <label class="qchk" style="margin-top:14px;"><input type="checkbox" id="homeStart"> Open the site on this screen</label>
+  </section>
 
   <!-- RECYCLING -->
   <section class="panel" id="panel-recycle" role="tabpanel" aria-labelledby="tab-recycle">
@@ -3177,6 +3196,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var TOUR = [
     ["#gq", "Search everything here: items, quests, enemies, blueprints and weapons.", "recycle"],
     ["#searchBox", "Recycle: type an item to see what it breaks down into, or a material to see every item that gives it.", "recycle"],
+    ["#tab-home", "Home: your next raid, the workshop upgrade you are closest to, goals, raid stats and stash worth on one screen.", "home"],
     ["#tab-tracker", "Tracker: type how many materials you have. The shopping list builds itself from your quests and workshop upgrades.", "tracker"],
     ["#shopOut", "In the shopping list, press Where to farm this on any item to see its area types, matching places on the maps, ARC drops, traders and quests.", "tracker"],
     ["#resetEverythingBtn", "Reset everything to default clears your missions, counts and saved data back to zero. It asks you to press twice.", "tracker"],
@@ -3524,6 +3544,77 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       }).join("") +
       (next.length ? '<p class="muted" style="margin-top:8px;">Finishing these unlocks ' + next.length + " more: " + next.slice(0, 8).map(function (q) { return esc(q.name); }).join(", ") + (next.length > 8 ? " and others" : "") + ".</p>" : "");
   }
+  /* Home dashboard: a summary card per area, each linking to its full tool. */
+  var homeStart = load("arcHubHomeStart", true);
+  function homeHasData() {
+    function any(o) { return Object.keys(o || {}).some(function (k) { return o[k]; }); }
+    return any(tracker) || any(qDone) || any(wsDone) || any(goals) || any(bpWant) || raids.length > 0 || projects.length > 0 || weekly.length > 0;
+  }
+  function homeWs() {
+    var best = null;
+    wsStations().forEach(function (st) {
+      if (wsPlan[st[0]] === false) { return; }
+      var next = st[1][Math.min(wsDone[st[0]] || 0, st[1].length)];
+      if (!next) { return; }
+      var need = qItems(next[2]), got = 0, tot = 0, miss = [];
+      need.forEach(function (r) { var h = Math.min(tracker[r.n] || 0, r.q); got += h; tot += r.q; if (h < r.q) { miss.push([r.n, r.q - h]); } });
+      var pct = tot ? Math.round(got * 100 / tot) : 100;
+      if (!best || pct > best.pct || (pct === best.pct && miss.length < best.miss.length)) { best = { n: st[0], lvl: next[1], pct: pct, miss: miss }; }
+    });
+    return best;
+  }
+  function homeCard(title, body, btn) { return '<div class="proj homecard"><h3>' + title + "</h3>" + body + (btn ? '<div class="acts">' + btn + "</div>" : "") + "</div>"; }
+  function homeBar(pct) { return '<div class="bar' + (pct >= 100 ? " done" : "") + '"><i style="width:' + Math.min(100, pct) + '%"></i></div>'; }
+  function renderHome() {
+    var out = document.getElementById("homeOut");
+    if (!out) { return; }
+    var html = "", per = parseInt(qrSet.per, 10) || 4, route = qrPlan(per), nq = qActive().length;
+    if (route.length) {
+      var r0 = route[0], mi = -1; MAPS.forEach(function (m, k) { if (m.name === r0.map) { mi = k; } });
+      html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" +
+        '<p class="muted">' + nq + " active quest" + (nq === 1 ? "" : "s") + " in " + route.length + " raid" + (route.length === 1 ? "" : "s") + ".</p>",
+        (mi >= 0 ? '<button class="btn" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>');
+    } else {
+      html += homeCard("Quests", '<p class="muted">No active quests right now.</p>', '<button class="btn ghost" type="button" data-tab="quests">Open Quests</button>');
+    }
+    var w = homeWs();
+    html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> level " + esc(w.lvl) + ": <b>" + w.pct + "%</b> of the materials</p>" + homeBar(w.pct) +
+      (w.miss.length ? '<p class="muted">Still need ' + w.miss.slice(0, 4).map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") + (w.miss.length > 4 ? " and " + (w.miss.length - 4) + " more" : "") + ".</p>" : '<p class="muted">You have everything. Upgrade it in game, then raise the level in the planner.</p>')
+      : '<p class="muted">Every workshop station in your plan is done.</p>', '<button class="btn ghost" type="button" data-action="homeWs">Workshop planner</button>');
+    var gk = Object.keys(goals).filter(function (k) { return goals[k] > 0; }), gmet = gk.filter(function (k) { return (tracker[k] || 0) >= goals[k]; }).length;
+    var gopen = gk.filter(function (k) { return (tracker[k] || 0) < goals[k]; }).map(function (k) { return [k, Math.round((tracker[k] || 0) * 100 / goals[k])]; }).sort(function (a, b) { return b[1] - a[1] || a[0].localeCompare(b[0]); });
+    var gb = "";
+    if (gk.length) {
+      gb += "<p><b>" + gmet + "</b> of " + gk.length + " material goal" + (gk.length === 1 ? "" : "s") + " met.</p>" + gopen.slice(0, 3).map(function (g) { return '<div class="homeg"><span>' + esc(g[0]) + " " + (tracker[g[0]] || 0) + " / " + goals[g[0]] + "</span>" + homeBar(g[1]) + "</div>"; }).join("");
+    }
+    weekly.slice(0, 3).forEach(function (wk) {
+      var got = Math.max(0, (tracker[wk.m] || 0) - wk.b), left = Math.ceil((wk.s + 7 * 86400000 - Date.now()) / 86400000);
+      gb += '<div class="homeg"><span>This week: ' + esc(wk.m) + " " + got + " / " + wk.t + (left > 0 ? ", " + left + " day" + (left === 1 ? "" : "s") + " left" : ", week ended") + "</span>" + homeBar(Math.round(got * 100 / wk.t)) + "</div>";
+    });
+    rchkRoll();
+    var todo = rchk.filter(function (c) { return !c.d; }).length;
+    if (todo) { gb += '<p class="muted">' + todo + " daily or weekly task" + (todo === 1 ? "" : "s") + " left to tick off.</p>"; }
+    html += homeCard("Goals", gb || '<p class="muted">No goals yet. Set a goal on any material in the Tracker to see progress here.</p>', '<button class="btn ghost" type="button" data-tab="tracker">Tracker</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="weekTool">Weekly goals</button>');
+    var rb = "";
+    if (raids.length) {
+      var x = raids.filter(function (r) { return r.o === "x"; }), hv = x.filter(function (r) { return r.v !== null; }), streak = 0;
+      for (var i = raids.length - 1; i >= 0 && raids[i].o === "x"; i--) { streak++; }
+      var lr = raids[raids.length - 1];
+      rb = "<p><b>" + raids.length + "</b> raid" + (raids.length === 1 ? "" : "s") + " &middot; <b>" + Math.round(x.length * 100 / raids.length) + "%</b> extracted" + (hv.length ? " &middot; average haul <b>" + coins(Math.round(hv.reduce(function (a, r) { return a + r.v; }, 0) / hv.length)) + "</b>" : "") + "</p>" +
+        '<p class="muted">Last raid: ' + esc(lr.m) + ", " + (lr.o === "x" ? "extracted" : "died") + (lr.v !== null ? " with " + coins(lr.v) + " coins" : "") + "." + (streak > 1 ? " " + streak + " extracts in a row." : "") + "</p>" +
+        '<div class="homeform" aria-hidden="true">' + raids.slice(-10).map(function (r) { return '<i class="' + (r.o === "x" ? "x" : "d") + '"></i>'; }).join("") + "</div>";
+    }
+    html += homeCard("Raids", rb || '<p class="muted">No raids logged yet. Log each raid to see your extract rate and average haul.</p>', '<button class="btn ghost" type="button" data-action="homeTool" data-tool="raidTool">Raid log</button>');
+    var sb = "";
+    if (Object.keys(tracker).some(function (n) { return tracker[n] > 0; })) {
+      var wd = worthData();
+      sb += "<p>Your tracked items sell for <b>" + coins(wd.tot.coins) + "</b> coins.</p>" + (wd.rows.length ? '<p class="muted">Spare items: ' + coins(wd.tot.spareCoins) + " coins, about " + wd.tot.spareSlots + " slot" + (wd.tot.spareSlots === 1 ? "" : "s") + ".</p>" : "");
+    }
+    var bw = BPS.filter(function (b) { return bpWant[b[0]] && !bpOwned[b[0]]; }).length;
+    if (bw) { sb += '<p class="muted">' + bw + " blueprint" + (bw === 1 ? "" : "s") + " on your wishlist.</p>"; }
+    html += homeCard("Stash", sb || '<p class="muted">Add what you have in the Tracker to see what it is worth.</p>', '<button class="btn ghost" type="button" data-action="homeTool" data-tool="worthTool">Stash worth</button>' + (bw ? '<button class="btn ghost" type="button" data-tab="ref">Blueprints</button>' : ""));
+    out.innerHTML = html;
+  }
   function renderTools() {
     renderRepeat(); renderLoSaved(); renderUpgrade(); renderRoute();
     renderKeep();
@@ -3693,7 +3784,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
   function applyHash() {
     var r = readHash();
-    if (["recycle", "tracker", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].indexOf(r.tab) === -1) { return; }
+    if (["home", "recycle", "tracker", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].indexOf(r.tab) === -1) { return; }
     showTab(r.tab, true);
     if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
     if (r.tab === "quests" && /^p=/.test(r.arg)) {
@@ -3729,6 +3820,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
 
   var HINTS = {
+    home: "<b>Home.</b> A summary of your progress: the next raid from the Quest route planner, the workshop upgrade you are closest to, your goals, raid log stats and what your stash is worth. Each card has a button that opens the full tool.",
     recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set a goal in the Tracker and items that help it show a green &ldquo;Helps your goals&rdquo; line.",
     tracker: "<b>Material tracker.</b> Add a material and how many you have, plus an optional goal to get a progress bar. Type in the box on each card to keep counts up to date, or press &ldquo;Add to tracker&rdquo; on any item in the lookup to add everything it recycles into. Everything is saved in this browser only.",
     gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
@@ -3956,11 +4048,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function showTab(name, quiet) {
     curTab = name;
     renderHint();
-    ["recycle", "tracker", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].forEach(function (t) {
+    ["home", "recycle", "tracker", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
     });
+    if (name === "home") { renderHome(); }
     if (name === "gear") { renderGear(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
@@ -4245,6 +4338,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else if (a === "crOpen") {
       e.preventDefault(); showTab("tools", true); craftApply(t.getAttribute("data-n") + "*1"); writeHash();
       var crt = document.getElementById("craftTool"); if (crt && crt.scrollIntoView) { crt.scrollIntoView({ block: "start" }); }
+    } else if (a === "homeTool") {
+      showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById(t.getAttribute("data-tool")))); window.scrollTo(0, 0);
+    } else if (a === "homeWs") {
+      showTab("tracker"); var hws = document.getElementById("wsPlanner"); if (hws && hws.scrollIntoView) { hws.scrollIntoView({ block: "start" }); }
     } else if (a === "qrMap") {
       curMap = parseInt(t.getAttribute("data-i"), 10) || 0; showTab("maps"); renderMaps(); writeHash(); window.scrollTo(0, 0);
     } else if (a === "upProj") {
@@ -5096,6 +5193,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);
   applyHash();
+  if (!readHash().tab && homeStart && homeHasData()) { showTab("home", true); }
+  document.getElementById("homeStart").checked = homeStart;
+  document.getElementById("homeStart").addEventListener("change", function (e) { homeStart = e.target.checked; save("arcHubHomeStart", homeStart); });
   whatsNew(); offlineBadge();
   try {
     if ("serviceWorker" in window.navigator && /^https?:$/.test(window.location.protocol)) { window.navigator.serviceWorker.register("sw.js"); }

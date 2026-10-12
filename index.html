@@ -234,6 +234,10 @@ details.card summary { cursor: pointer; font-weight: 600; }
 }
 .tl-item.latest::before { border-color: var(--accent); background: var(--accent); }
 .tl-date { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.tl-new { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); font-size: 11px; font-weight: 700; }
+.tl-you { margin: 6px 0; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 13px; }
+.tl-points li.tl-mine::marker { color: var(--good); }
+mark.tl-hit { background: none; color: inherit; font-weight: 700; box-shadow: inset 0 -2px 0 var(--good); }
 .tl-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
 .tl-body { color: var(--fg); max-width: 70ch; font-weight: 500; }
 .mapcard { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 16px; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 10px; }
@@ -1188,6 +1192,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <section class="panel" id="panel-updates" role="tabpanel" aria-labelledby="tab-updates" hidden>
     <h2>Update history</h2>
     <p class="muted">Major content updates, newest first. Weekly store updates and hotfixes are left out.</p>
+    <p class="muted" id="updYou"></p>
     <div class="tl" id="timeline"></div>
   </section>
 
@@ -1782,13 +1787,52 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     document.getElementById("matList").innerHTML = all.filter(function (m) { if (seenN[m]) { return false; } seenN[m] = 1; return true; }).map(function (m) { return '<option value="' + esc(m) + '"></option>'; }).join("");
   }
 
+  /* Patch notes for you: names of things you track or use, matched as whole words in each update's notes. */
+  function updYou() {
+    var t = {};
+    function add(n, why) { if (n && typeof n === "string" && n.length > 2 && !t[n]) { t[n] = why; } }
+    Object.keys(tracker).forEach(function (n) { if (tracker[n] > 0) { add(n, "tracked"); } });
+    Object.keys(goals).forEach(function (n) { if (goals[n] > 0) { add(n, "goal"); } });
+    favs.forEach(function (n) { add(n, "favorite"); });
+    Object.keys(bpWant).forEach(function (n) { if (bpWant[n] && !bpOwned[n]) { add(n, "wishlist"); } });
+    Object.keys(bpOwned).forEach(function (n) { if (bpOwned[n]) { add(n, "blueprint you have"); } });
+    if (upSet && upSet.w) { add(upSet.w, "upgrading"); }
+    qActive().forEach(function (q) { add(q.name, "active quest"); });
+    raids.forEach(function (r) { add(r.m, "map you raid"); });
+    return t;
+  }
+  function updHits(u, you) {
+    var txt = u.title + " " + u.body + " " + u.points.join(" "), out = [];
+    Object.keys(you).forEach(function (n) {
+      var i = txt.indexOf(n);
+      while (i !== -1) {
+        if (!/[A-Za-z0-9]/.test(i ? txt.charAt(i - 1) : " ") && !/[A-Za-z0-9]/.test(txt.charAt(i + n.length) || " ")) { out.push(n); return; }
+        i = txt.indexOf(n, i + 1);
+      }
+    });
+    return out.sort();
+  }
+  function updMark(p, hits) {
+    var h = esc(p);
+    hits.forEach(function (n) { if (p.indexOf(n) !== -1) { h = h.split(esc(n)).join('<mark class="tl-hit">' + esc(n) + "</mark>"); } });
+    return h;
+  }
   function renderTimeline() {
-    document.getElementById("timeline").innerHTML = UPDATES.map(function (u) {
+    var you = updYou(), anyHit = 0;
+    var html = UPDATES.map(function (u, i) {
+      var hits = updHits(u, you), isNew = i < updNew;
+      if (hits.length) { anyHit++; }
       return '<div class="tl-item' + (u.latest ? " latest" : "") + '"><div class="tl-date">' + esc(u.date) +
-        (u.ver ? " &middot; v" + esc(u.ver) : "") + (u.latest ? " &middot; latest" : "") + "</div>" +
+        (u.ver ? " &middot; v" + esc(u.ver) : "") + (u.latest ? " &middot; latest" : "") + (isNew ? ' <span class="tl-new">New since your last visit</span>' : "") + "</div>" +
         '<div class="tl-title">' + esc(u.title) + '</div><div class="tl-body">' + esc(u.body) + "</div>" +
-        '<ul class="tl-points">' + u.points.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul></div>";
+        (hits.length ? '<div class="tl-you"><span class="muted">Mentions your:</span> ' + hits.map(function (n) { return '<span class="y hl">' + esc(n) + ' <span class="muted">(' + esc(you[n]) + ")</span></span>"; }).join(" ") + "</div>" : "") +
+        '<ul class="tl-points">' + u.points.map(function (p) { var ph = hits.filter(function (n) { return p.indexOf(n) !== -1; }); return "<li" + (ph.length ? ' class="tl-mine"' : "") + ">" + updMark(p, ph) + "</li>"; }).join("") + "</ul></div>";
     }).join("");
+    document.getElementById("timeline").innerHTML = html;
+    var sum = document.getElementById("updYou");
+    if (sum) {
+      sum.innerHTML = Object.keys(you).length ? (anyHit ? "Notes that mention things you track, use or are working on are marked." : "None of these notes mention the items, quests, blueprints or maps you track yet.") : "Track items, quests, blueprints or raids and the notes that mention them get marked here.";
+    }
   }
 
   function refresh() {
@@ -3647,6 +3691,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else {
       html += homeCard("Quests", '<p class="muted">No active quests right now.</p>', '<button class="btn ghost" type="button" data-tab="quests">Open Quests</button>');
     }
+    if (updNew > 0 && !document.getElementById("newDot").hidden) {
+      var nu = UPDATES[0], nh = updHits(nu, updYou());
+      html = homeCard("New game update: " + esc(nu.title), "<p>" + esc(nu.date) + (nu.ver ? " &middot; v" + esc(nu.ver) : "") + ". " + esc(nu.body) + "</p>" +
+        (nh.length ? '<p class="muted">Mentions your ' + nh.slice(0, 5).map(esc).join(", ") + (nh.length > 5 ? " and " + (nh.length - 5) + " more" : "") + ".</p>" : ""), '<button class="btn" type="button" data-tab="updates">Read the patch notes</button>') + html;
+    }
     var w = homeWs();
     html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> level " + esc(w.lvl) + ": <b>" + w.pct + "%</b> of the materials</p>" + homeBar(w.pct) +
       (w.miss.length ? '<p class="muted">Still need ' + w.miss.slice(0, 4).map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") + (w.miss.length > 4 ? " and " + (w.miss.length - 4) + " more" : "") + ".</p>" : '<p class="muted">You have everything. Upgrade it in game, then raise the level in the planner.</p>')
@@ -4131,7 +4180,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); renderRaids(); }
     if (name === "maps") { renderMaps(); }
     if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
-    if (name === "updates") { markUpdatesSeen(); }
+    if (name === "updates") { renderTimeline(); markUpdatesSeen(); }
     if (name === "site") { try { renderAudit(); } catch (eA) {} }
     syncMore();
     if (!quiet) { writeHash(); }
@@ -4777,11 +4826,19 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (gs && e.composedPath().indexOf(gs) === -1) { document.getElementById("gres").hidden = true; }
   });
   function updKey() { return UPDATES.length + ":" + UPDATES[0].title; }
+  /* How many updates are newer than your last visit to the Updates tab (kept for this page load so they stay marked). */
+  var updNew = 0;
   function markUpdatesSeen() { save("arcHubSeenUpd", updKey()); document.getElementById("newDot").hidden = true; syncMore(); }
   (function () {
     var seen = load("arcHubSeenUpd", null);
     if (seen === null) { save("arcHubSeenUpd", updKey()); }
-    else if (seen !== updKey()) { document.getElementById("newDot").hidden = false; syncMore(); }
+    else if (seen !== updKey()) {
+      var sn = parseInt(String(seen).split(":")[0], 10) || 0, st = String(seen).slice(String(seen).indexOf(":") + 1);
+      updNew = UPDATES.length > sn ? UPDATES.length - sn : 1;
+      for (var ui = 0; ui < UPDATES.length; ui++) { if (UPDATES[ui].title === st) { updNew = ui; break; } }
+      updNew = Math.max(1, Math.min(updNew, UPDATES.length));
+      document.getElementById("newDot").hidden = false; syncMore();
+    }
   })();
   function offUpdate() {
     var el = document.getElementById("offState");

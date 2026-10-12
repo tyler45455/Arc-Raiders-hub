@@ -29,6 +29,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Stash worth (Tools tab):** adds up the sell value of everything in your tracker and lists the spare items to sell first, by slots freed or coins earned.
 - **Weapon upgrade path (Tools tab):** every Gunsmith step from the tier you have to the one you want, with total materials and what your tracker still needs.
 - **ARC enemy cards (Reference tab):** threat, health, armor, attack, XP, maps, needed drops and related quests for every ARC enemy, with type and map filters. Report a sighting sends the map you saw an enemy on, so missing maps get filled in.
+- **Patch notes for you (Updates tab):** new game updates are marked, and notes that mention your tracked items, quests, blueprints and maps are highlighted; Home shows a card when one is new.
 - **Home tab:** a start screen with your next raid, the closest workshop upgrade, goals, raid stats and stash worth.
 - **Quest route planner (Tools tab):** groups your active quests into raids by map so you can finish several per trip.
 - **Blueprint wishlist (Reference tab):** mark the blueprints you want and get a hunt list of the containers, conditions, quests and ARC that drop them; Raid prep shows the ones on each map.

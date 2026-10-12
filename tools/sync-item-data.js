@@ -189,6 +189,8 @@ var note = "Daily item data refresh from the RaidTheory data set: updated " + (p
 var up = fs.readFileSync(UPDATES_JS, "utf8");
 up = replaceOnce(up, /^ARC\.DATA_CHANGES = \[\n/m, function (m) { return m + "    [" + JSON.stringify(shortDate) + ", " + JSON.stringify(note) + "],\n"; }, "ARC.DATA_CHANGES");
 up = up.replace(/^ARC\.DATA_UPDATED = ".*";$/m, "ARC.DATA_UPDATED = " + JSON.stringify(longDate) + ";");
+/* The first Data freshness row is this sync's own. */
+up = replaceOnce(up, /^(ARC\.FRESHNESS = \[\n\s*\["[^"]*", )"[^"]*"/m, function (m, head) { return head + JSON.stringify(longDate); }, "the first ARC.FRESHNESS row");
 fs.writeFileSync(UPDATES_JS, up);
 
 var md = note + "\n\n" + lines.join("\n") + "\n";

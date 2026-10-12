@@ -434,6 +434,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .qrow { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 13px; }
 .qrow .lbl { color: var(--muted); min-width: 64px; }
 .qcard.qlock { border-style: dashed; }
+.ensee select { width: auto; max-width: 170px; font-size: 16px; padding: 4px 8px; min-height: 36px; }
 .enlv { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
 .enlv.l0 { color: var(--muted); } .enlv.l1 { color: var(--good); } .enlv.l2 { color: var(--warm); } .enlv.l3, .enlv.l4 { color: var(--danger); }
 #enTools { grid-template-columns: 1fr 1fr auto; gap: 8px 12px; }
@@ -2077,6 +2078,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
   /* ARC enemy cards: ENEMIES rows [name, type, HP, weak points, drops, found on, notes] plus ENEMY_INFO from each wiki page. */
   var ENEMY_INFO = ARC.ENEMY_INFO || {};
+  /* Maps you said you saw each enemy on: { enemy: [map, ...] }. Reporting one also opens a prefilled GitHub issue. */
+  var enSeen = load("arcHubEnSeen", {});
+  function enSeenClean(o) {
+    var out = {};
+    if (o && typeof o === "object" && !Array.isArray(o)) { Object.keys(o).forEach(function (k) { if (k.length < 60 && Array.isArray(o[k])) { var l = o[k].filter(function (m) { return typeof m === "string" && m.length < 60; }).slice(0, 20); if (l.length) { out[k] = l; } } }); }
+    return out;
+  }
+  enSeen = enSeenClean(enSeen);
+  function enSightUrl(name, map) {
+    var body = "Enemy: " + name + "\nMap: " + map + "\n\nWhere on the map (area or room, optional):\n\nMap condition, if any (for example Night Raid or Hurricane):\n\nAnything else:\n";
+    return REPORT_ISSUES_URL + "?title=" + encodeURIComponent("Enemy sighting: " + name + " on " + map) + "&labels=enemy-sighting&body=" + encodeURIComponent(body);
+  }
   var EN_ITEM = /^ (Burner|Driver|Scanner|Pulse Unit|Cell|Relay|Regulator|Compressor|Pod|Husk|Core|Shell)\b/;
   function enInfo(e) {
     var f = ENEMY_INFO[e[0]] || {}, maps = (f.maps || []).slice();
@@ -2085,7 +2098,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var lv = e[1] === "Container" ? null : e[1] === "Boss" ? 4 : hp >= 2000 ? 3 : hp >= 400 ? 2 : hp >= 100 ? 1 : hp > 0 ? 0 : null;
     if (lv !== null && lv < 3 && /heavy/i.test(armor || "")) { lv++; }
     if (lv !== null && /^none$/i.test(f.attack || "")) { lv = 0; }
-    return { maps: maps, hp: hp, armor: armor, attack: f.attack || null, xp: f.xp || null, note: f.mapNote || null, lv: lv };
+    var rep = (f.reported || []).filter(function (m) { return maps.indexOf(m) === -1; });
+    var all = maps.concat(rep); (enSeen[e[0]] || []).forEach(function (m) { if (all.indexOf(m) === -1) { all.push(m); } });
+    return { maps: maps, rep: rep, all: all, hp: hp, armor: armor, attack: f.attack || null, xp: f.xp || null, note: f.mapNote || null, lv: lv };
   }
   function enQuests(name) {
     var out = [];
@@ -2095,6 +2110,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     return out;
   }
   var EN_LV = ["Low", "Medium", "High", "Very high", "Boss"];
+  var enPick = "";
   function enCard(e, f, drops, miss) {
     var qs = enQuests(e[0]), act = {}; qActive().forEach(function (q) { act[q.name] = 1; });
     var meta = [e[1] === "Container" ? "Husk or container" : e[1]];
@@ -2106,9 +2122,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       '<div class="refgrid">' + (f.attack ? '<div><span class="k">Attack: </span>' + (/^none$/i.test(f.attack) ? "None (unarmed)" : esc(f.attack)) + "</div>" : "") + '<div><span class="k">Weak points: </span>' + esc(e[3]) + "</div>" + (e[6] && e[6] !== "-" ? "<div>" + esc(e[6]) + "</div>" : "") + "</div>" +
       '<div class="qrow"><span class="lbl">Maps</span>' + (f.maps.length ? f.maps.map(function (m) { var mi = -1; MAPS.forEach(function (x, k) { if (x.name === m) { mi = k; } }); return mi >= 0 ? '<button type="button" class="chip" data-action="qrMap" data-i="' + mi + '">' + esc(m) + "</button>" : '<span class="y">' + esc(m) + "</span>"; }).join("") : '<span class="muted">The wiki does not list maps.</span>') +
       (f.note ? '<span class="muted">' + esc(f.note) + "</span>" : "") + "</div>" +
+      (f.rep.length ? '<div class="qrow"><span class="lbl">Players saw it</span>' + f.rep.map(function (m) { return '<span class="y">' + esc(m) + "</span>"; }).join("") + '<span class="muted">from sighting reports</span></div>' : "") +
+      (e[1] !== "Container" ? '<div class="qrow ensee"><span class="lbl">Seen it?</span><select data-ensel="' + esc(e[0]) + '" aria-label="Map you saw ' + esc(e[0]) + ' on">' + MAPS.filter(function (m) { return !/practice/i.test(m.name); }).map(function (m) { return '<option value="' + esc(m.name) + '"' + (m.name === enPick ? " selected" : "") + ">" + esc(m.name) + "</option>"; }).join("") + '</select><button type="button" class="btn ghost" data-action="enSeen" data-n="' + esc(e[0]) + '">Report a sighting</button>' +
+        ((enSeen[e[0]] || []).length ? '<span class="muted">You reported: ' + enSeen[e[0]].map(esc).join(", ") + "</span>" : "") + "</div>" : "") +
       (drops.length ? '<div class="qrow"><span class="lbl">Drops</span>' + drops.map(function (d) { return '<span class="y' + (miss[d] ? " hl" : "") + '">' + esc(d) + (miss[d] ? " <b>(need " + miss[d] + ")</b>" : "") + "</span>"; }).join("") + "</div>" : "") +
       (qs.length ? '<div class="qrow"><span class="lbl">Quests</span>' + qs.map(function (q) { return '<span class="y' + (act[q.name] ? " hl" : "") + '">' + esc(q.name) + (qDone[q.name] ? " &#10003;" : act[q.name] ? " (active)" : "") + "</span>"; }).join("") + "</div>" : "") +
-      '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(e[0])) + '">Report</a></div></div>';
+      '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(e[0])) + '">Report a mistake</a></div></div>';
   }
   var refSec = "enemies";
   var REF_SECS = [["enemies", "Enemies"], ["traders", "Traders"], ["workshop", "Workshop"], ["skills", "Skills"], ["amplification", "Amplification"], ["blueprints", "Blueprints"], ["trials", "Trials"]];
@@ -2129,18 +2148,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       total = ENEMIES.length;
       var enT = document.getElementById("enType").value, enM = document.getElementById("enMap").value, enN = document.getElementById("enNeed").checked, enMiss = {};
       shopData(false).forEach(function (r) { enMiss[r.n] = r.miss; });
-      var enRows = [];
+      var enRows = []; enPick = enM;
       ENEMIES.forEach(function (e) {
         if (!ok(e.join(" "))) { return; }
         var f = enInfo(e), drops = e[4] !== "-" ? e[4].split(", ") : [], k = drops.filter(function (d) { return enMiss[d]; }).length;
         if (enT !== "all" && e[1] !== enT) { return; }
-        if (enM && f.maps.indexOf(enM) === -1) { return; }
+        if (enM && f.all.indexOf(enM) === -1) { return; }
         if (enN && !k) { return; }
         enRows.push([e, f, drops, k]);
       });
       if (enN) { enRows.sort(function (a, b) { return b[3] - a[3]; }); }
       enRows.forEach(function (r) { n++; out += enCard(r[0], r[1], r[2], enMiss); });
-      if (n) { out += '<p class="muted">Threat is this site&rsquo;s rough rating from health and armor. Health, armor, attacks, XP and maps come from each enemy&rsquo;s wiki page; a map list can be incomplete when the wiki only names some maps.</p>'; }
+      if (n) { out += '<p class="muted">Saw an enemy on a map its card does not list? Pick the map and press Report a sighting. It opens a short GitHub issue, and maps with enough reports are added to the card under Players saw it. Threat is this site&rsquo;s rough rating from health and armor. Health, armor, attacks, XP and maps come from each enemy&rsquo;s wiki page; a map list can be incomplete when the wiki only names some maps.</p>'; }
     } else if (refSec === "traders") {
       total = TRADERS.length;
       var by = {}, order = [];
@@ -3200,7 +3219,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   /* ---------- undo ---------- */
   function undoSnap() {
-    return JSON.stringify({ tracker: tracker, goals: goals, qDone: qDone, projects: projects, wsDone: wsDone, wsPlan: wsPlan, itemTags: itemTags, checklist: checklist, rchk: rchk, loadouts: loadouts, itemNotes: itemNotes, trials: trials, favs: favs, bpOwned: bpOwned, bpWant: bpWant });
+    return JSON.stringify({ tracker: tracker, goals: goals, qDone: qDone, projects: projects, wsDone: wsDone, wsPlan: wsPlan, itemTags: itemTags, checklist: checklist, rchk: rchk, loadouts: loadouts, itemNotes: itemNotes, trials: trials, favs: favs, bpOwned: bpOwned, bpWant: bpWant, enSeen: enSeen });
   }
   function pushUndo(label) {
     var now = Date.now();
@@ -3218,9 +3237,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var u = undoStack.pop(); if (!u) { return; }
     var d = JSON.parse(u.s);
     tracker = d.tracker; goals = d.goals; qDone = d.qDone; projects = d.projects; wsDone = d.wsDone; wsPlan = d.wsPlan; itemTags = d.itemTags;
-    checklist = d.checklist; rchk = d.rchk; loadouts = d.loadouts; itemNotes = d.itemNotes; trials = d.trials; favs = d.favs; bpOwned = d.bpOwned; bpWant = d.bpWant || {};
+    checklist = d.checklist; rchk = d.rchk; loadouts = d.loadouts; itemNotes = d.itemNotes; trials = d.trials; favs = d.favs; bpOwned = d.bpOwned; bpWant = d.bpWant || {}; enSeen = d.enSeen || {};
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubQuestsDone", qDone); save("arcHubProjects", projects); save("arcHubWs", wsDone); save("arcHubWsPlan", wsPlan);
-    save("arcHubTags", itemTags); save("arcHubCheck", checklist); save("arcHubRepeat", rchk); save("arcHubLoadouts", loadouts); save("arcHubNotes", itemNotes); save("arcHubTrials", trials); save("arcHubFavs", favs); save("arcHubBP", bpOwned); save("arcHubBPWant", bpWant);
+    save("arcHubTags", itemTags); save("arcHubCheck", checklist); save("arcHubRepeat", rchk); save("arcHubLoadouts", loadouts); save("arcHubNotes", itemNotes); save("arcHubTrials", trials); save("arcHubFavs", favs); save("arcHubBP", bpOwned); save("arcHubBPWant", bpWant); save("arcHubEnSeen", enSeen);
     lastUndoAt = 0;
     refresh(); renderTools(); renderQuests(); renderRef(); renderMaps(); updateFavToggle(); updateGoalToggle();
     document.getElementById("undoText").textContent = "Undone";
@@ -3318,7 +3337,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       h += '<p class="muted">' + here.length + " active quest" + (here.length === 1 ? "" : "s") + " here" + (anyN ? " (plus " + anyN + " that work on any map)" : "") + ":</p><ul class=\"mapnotes\">" + here.slice(0, 12).map(function (q) { return "<li>" + esc(q.name) + " <span class=\"muted\">(" + esc(q.trader) + ")</span></li>"; }).join("") + "</ul>";
       if (bk.length) { h += '<p class="muted">Bring:</p><div class="chips">' + bk.map(function (n) { var ok = (tracker[n] || 0) >= bring[n]; return '<span class="y' + (ok ? " ok" : "") + '"><b>' + bring[n] + "&times;</b> " + esc(n) + (ok ? " &#10003;" : "") + "</span>"; }).join("") + "</div>"; }
     }
-    var en = ENEMIES.filter(function (e) { return e[1] !== "Container" && enInfo(e).maps.indexOf(map) !== -1; });
+    var en = ENEMIES.filter(function (e) { return e[1] !== "Container" && enInfo(e).all.indexOf(map) !== -1; });
     if (en.length) { h += '<p class="muted">ARC seen here (tap for its card):</p><div class="chips">' + en.map(function (e) { var f = enInfo(e); return '<button type="button" class="chip" data-action="enOpen" data-n="' + esc(e[0]) + '">' + esc(e[0]) + (f.lv !== null && f.lv >= 3 ? " &#9888;" : "") + "</button>"; }).join("") + "</div>"; }
     var bw = bpForMap(map);
     if (bw.length) {
@@ -3686,7 +3705,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -3801,6 +3820,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     bpWant = {};
     if (d.bpWant && typeof d.bpWant === "object" && !Array.isArray(d.bpWant)) { Object.keys(d.bpWant).forEach(function (k) { if (d.bpWant[k] && k.length < 80) { bpWant[k] = 1; } }); }
     save("arcHubBPWant", bpWant);
+    if (d.enSeen) { enSeen = enSeenClean(d.enSeen); save("arcHubEnSeen", enSeen); }
     function objOf(o) { return o && typeof o === "object" && !Array.isArray(o) ? o : null; }
     var oo = objOf(d.ws); if (oo) { wsDone = {}; Object.keys(oo).forEach(function (k) { var n = parseInt(oo[k], 10); if (n > 0 && n < 20 && k.length < 40) { wsDone[k] = n; } }); save("arcHubWs", wsDone); }
     oo = objOf(d.plan); if (oo) { wsPlan = {}; Object.keys(oo).forEach(function (k) { if (oo[k] === false && k.length < 40) { wsPlan[k] = false; } }); save("arcHubWsPlan", wsPlan); }
@@ -4394,6 +4414,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById(t.getAttribute("data-tool")))); window.scrollTo(0, 0);
     } else if (a === "homeWs") {
       showTab("tracker"); var hws = document.getElementById("wsPlanner"); if (hws && hws.scrollIntoView) { hws.scrollIntoView({ block: "start" }); }
+    } else if (a === "enSeen") {
+      var esn = t.getAttribute("data-n"), ess = document.querySelector('[data-ensel="' + CSS.escape(esn) + '"]'), esm = ess ? ess.value : "";
+      if (esm) {
+        if (!enSeen[esn]) { enSeen[esn] = []; }
+        if (enSeen[esn].indexOf(esm) === -1) { enSeen[esn].push(esm); save("arcHubEnSeen", enSeen); }
+        window.open(enSightUrl(esn, esm), "_blank", "noopener");
+        renderRef();
+      }
     } else if (a === "enOpen") {
       refSec = "enemies"; document.getElementById("refQ").value = t.getAttribute("data-n"); document.getElementById("enType").value = "all"; document.getElementById("enMap").value = ""; document.getElementById("enNeed").checked = false;
       showTab("ref"); renderRef(); window.scrollTo(0, 0);

@@ -50,6 +50,9 @@ If the workflow opens an issue instead of a pull request, turn on "Allow GitHub 
 ## Daily wiki check
 The wiki blocks scripted downloads, so a scheduled Claude routine (not a GitHub workflow) reads the wiki's recent changes each day around 07:03 UTC. When a quest, key or skill page the site uses has changed in a way that affects the data (requirements, objectives, rewards, where a key is found, skill effects), it fixes `data/quests.js`, `data/maps.js` or `data/reference.js` in a pull request. Changes it can't settle are reported in the project instead. Both daily checks also set the matching row's date in `ARC.FRESHNESS` (data/updates.js) and `ARC.DATA_UPDATED` when they change something, which feeds the Data freshness table and the date at the bottom of the site.
 
+## Enemy sightings
+Each enemy card in Reference > Enemies has a Report a sighting button. It opens a GitHub issue titled `Enemy sighting: <enemy> on <map>` (label `enemy-sighting`). Maps from the wiki's Locations sections live in `maps` under `ARC.ENEMY_INFO` in `data/reference.js`. When two or more separate people report the same enemy on a map the wiki does not list, add that map to the enemy's `reported` list (for example `"reported": ["Riven Tides"]`), then close the issues. The card shows those maps under "Players saw it".
+
 ## Map images
 Add or replace images in `maps/` using the file names in `maps/README.md`, under 1 MB each.
 

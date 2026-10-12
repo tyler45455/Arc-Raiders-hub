@@ -430,6 +430,10 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .qrow { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 13px; }
 .qrow .lbl { color: var(--muted); min-width: 64px; }
 .qcard.qlock { border-style: dashed; }
+.enlv { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.enlv.l0 { color: var(--muted); } .enlv.l1 { color: var(--good); } .enlv.l2 { color: var(--warm); } .enlv.l3, .enlv.l4 { color: var(--danger); }
+#enTools { grid-template-columns: 1fr 1fr auto; gap: 8px 12px; }
+@media (max-width: 560px) { #enTools { grid-template-columns: 1fr; } }
 .qcard.qdone { opacity: .6; }
 .mapkeys { margin: 12px 0; }
 .mapkeys summary { cursor: pointer; font-weight: 600; }
@@ -939,6 +943,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <div class="chips" id="refChips" role="group" aria-label="Section"></div>
     <div class="qtools"><input type="text" id="refQ" placeholder="Search this section" aria-label="Search this section" autocomplete="off">
       <div class="gearrow" id="bpTools" hidden><select id="bpStatus" aria-label="Blueprint filter"><option value="all">Show: all blueprints</option><option value="missing">Show: ones I do not have</option><option value="owned">Show: ones I have</option><option value="wanted">Show: my wishlist</option></select><span class="muted" id="bpProg" role="status"></span></div>
+      <div class="gearrow" id="enTools"><select id="enType" aria-label="Enemy type"><option value="all">Show: all ARC</option><option value="Flying">Flying</option><option value="Ground">Ground</option><option value="Boss">Bosses</option><option value="Container">Husks and containers</option></select><select id="enMap" aria-label="Map"><option value="">On any map</option></select><label class="tog"><input type="checkbox" id="enNeed"> Drops what I need (most first)</label></div>
     </div>
     <div class="muted" id="refCount" role="status"></div>
     <div id="refOut"></div>
@@ -2070,6 +2075,41 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         }).join("");
       }).join("") + '<p class="muted" style="margin:6px 0 0;">Where to look comes from each blueprint&rsquo;s wiki notes below. The Raid prep on the Maps tab also lists the ones you can find on that map.</p></div>';
   }
+  /* ARC enemy cards: ENEMIES rows [name, type, HP, weak points, drops, found on, notes] plus ENEMY_INFO from each wiki page. */
+  var ENEMY_INFO = ARC.ENEMY_INFO || {};
+  var EN_ITEM = /^ (Burner|Driver|Scanner|Pulse Unit|Cell|Relay|Regulator|Compressor|Pod|Husk|Core|Shell)\b/;
+  function enInfo(e) {
+    var f = ENEMY_INFO[e[0]] || {}, maps = (f.maps || []).slice();
+    if (e[5] && e[5] !== "-") { e[5].split(", ").forEach(function (m) { if (maps.indexOf(m) === -1) { maps.push(m); } }); }
+    var hp = parseInt(String(f.health || e[2]).replace(/[^0-9]/g, ""), 10) || 0, armor = f.armor || null;
+    var lv = e[1] === "Container" ? null : e[1] === "Boss" ? 4 : hp >= 2000 ? 3 : hp >= 400 ? 2 : hp >= 100 ? 1 : hp > 0 ? 0 : null;
+    if (lv !== null && lv < 3 && /heavy/i.test(armor || "")) { lv++; }
+    if (lv !== null && /^none$/i.test(f.attack || "")) { lv = 0; }
+    return { maps: maps, hp: hp, armor: armor, attack: f.attack || null, xp: f.xp || null, note: f.mapNote || null, lv: lv };
+  }
+  function enQuests(name) {
+    var out = [];
+    QUESTS.forEach(function (q) {
+      if (q.obj.some(function (o) { var i = o.indexOf(name); while (i !== -1) { var before = i ? o.charAt(i - 1) : " ", after = o.slice(i + name.length); if (!/[A-Za-z]/.test(before) && !/^[A-Za-z]/.test(after) && !EN_ITEM.test(after)) { return true; } i = o.indexOf(name, i + 1); } return false; })) { out.push(q); }
+    });
+    return out;
+  }
+  var EN_LV = ["Low", "Medium", "High", "Very high", "Boss"];
+  function enCard(e, f, drops, miss) {
+    var qs = enQuests(e[0]), act = {}; qActive().forEach(function (q) { act[q.name] = 1; });
+    var meta = [e[1] === "Container" ? "Husk or container" : e[1]];
+    if (f.hp) { meta.push(coins(f.hp) + " HP"); }
+    if (f.armor) { meta.push(/^none$/i.test(f.armor) ? "No armor" : esc(f.armor) + " armor"); }
+    if (f.xp) { meta.push(coins(f.xp) + " XP"); }
+    return '<div class="qcard encard" id="en-' + esc(idOf(e[0])) + '"><div class="qh"><a href="' + esc(qWiki(e[0])) + '" target="_blank" rel="noopener">' + esc(e[0]) + "</a>" +
+      (f.lv !== null ? '<span class="enlv l' + f.lv + '">Threat: ' + EN_LV[f.lv] + "</span>" : "") + '<span class="qmeta" style="flex-basis:100%;">' + meta.join(" &middot; ") + "</span></div>" +
+      '<div class="refgrid">' + (f.attack ? '<div><span class="k">Attack: </span>' + (/^none$/i.test(f.attack) ? "None (unarmed)" : esc(f.attack)) + "</div>" : "") + '<div><span class="k">Weak points: </span>' + esc(e[3]) + "</div>" + (e[6] && e[6] !== "-" ? "<div>" + esc(e[6]) + "</div>" : "") + "</div>" +
+      '<div class="qrow"><span class="lbl">Maps</span>' + (f.maps.length ? f.maps.map(function (m) { var mi = -1; MAPS.forEach(function (x, k) { if (x.name === m) { mi = k; } }); return mi >= 0 ? '<button type="button" class="chip" data-action="qrMap" data-i="' + mi + '">' + esc(m) + "</button>" : '<span class="y">' + esc(m) + "</span>"; }).join("") : '<span class="muted">The wiki does not list maps.</span>') +
+      (f.note ? '<span class="muted">' + esc(f.note) + "</span>" : "") + "</div>" +
+      (drops.length ? '<div class="qrow"><span class="lbl">Drops</span>' + drops.map(function (d) { return '<span class="y' + (miss[d] ? " hl" : "") + '">' + esc(d) + (miss[d] ? " <b>(need " + miss[d] + ")</b>" : "") + "</span>"; }).join("") + "</div>" : "") +
+      (qs.length ? '<div class="qrow"><span class="lbl">Quests</span>' + qs.map(function (q) { return '<span class="y' + (act[q.name] ? " hl" : "") + '">' + esc(q.name) + (qDone[q.name] ? " &#10003;" : act[q.name] ? " (active)" : "") + "</span>"; }).join("") + "</div>" : "") +
+      '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(e[0])) + '">Report</a></div></div>';
+  }
   var refSec = "enemies";
   var REF_SECS = [["enemies", "Enemies"], ["traders", "Traders"], ["workshop", "Workshop"], ["skills", "Skills"], ["amplification", "Amplification"], ["blueprints", "Blueprints"], ["trials", "Trials"]];
   function bpHas(n) { for (var i = 0; i < BPS.length; i++) { if (BPS[i][0] === n) { return true; } } return false; }
@@ -2079,19 +2119,28 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       return '<button type="button" class="chip" data-action="refSec" data-s="' + c[0] + '" aria-pressed="' + (c[0] === refSec) + '">' + c[1] + "</button>";
     }).join("");
     document.getElementById("bpTools").hidden = refSec !== "blueprints";
+    document.getElementById("enTools").hidden = refSec !== "enemies";
+    var enMs = document.getElementById("enMap");
+    if (enMs.options.length < 2) { MAPS.forEach(function (m) { if (!/practice/i.test(m.name)) { enMs.insertAdjacentHTML("beforeend", '<option value="' + esc(m.name) + '">' + esc(m.name) + "</option>"); } }); }
     var term = document.getElementById("refQ").value.trim().toLowerCase();
     function ok(h) { return !term || nameMatch(h.toLowerCase(), term); }
     var out = "", n = 0, total = 0, mats = matSet();
     if (refSec === "enemies") {
       total = ENEMIES.length;
+      var enT = document.getElementById("enType").value, enM = document.getElementById("enMap").value, enN = document.getElementById("enNeed").checked, enMiss = {};
+      shopData(false).forEach(function (r) { enMiss[r.n] = r.miss; });
+      var enRows = [];
       ENEMIES.forEach(function (e) {
         if (!ok(e.join(" "))) { return; }
-        n++;
-        out += '<div class="qcard"><div class="qh"><a href="' + esc(qWiki(e[0])) + '" target="_blank" rel="noopener">' + esc(e[0]) + '</a><span class="qmeta">' + esc(e[1]) + (e[2] !== "-" ? " &middot; " + esc(e[2]) + " HP" : "") + "</span></div>" +
-          '<div class="refgrid"><div><span class="k">Weak points: </span>' + esc(e[3]) + "</div>" + (e[5] !== "-" ? '<div><span class="k">Found on: </span>' + esc(e[5]) + "</div>" : "") + "<div>" + esc(e[6]) + "</div></div>" +
-          (e[4] !== "-" ? '<div class="qrow"><span class="lbl">Drops</span>' + e[4].split(", ").map(function (d) { return '<span class="y' + (tracker[d] ? " hl" : "") + '">' + esc(d) + "</span>"; }).join("") + "</div>" : "") +
-          '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(e[0])) + '">Report</a></div></div>';
+        var f = enInfo(e), drops = e[4] !== "-" ? e[4].split(", ") : [], k = drops.filter(function (d) { return enMiss[d]; }).length;
+        if (enT !== "all" && e[1] !== enT) { return; }
+        if (enM && f.maps.indexOf(enM) === -1) { return; }
+        if (enN && !k) { return; }
+        enRows.push([e, f, drops, k]);
       });
+      if (enN) { enRows.sort(function (a, b) { return b[3] - a[3]; }); }
+      enRows.forEach(function (r) { n++; out += enCard(r[0], r[1], r[2], enMiss); });
+      if (n) { out += '<p class="muted">Threat is this site&rsquo;s rough rating from health and armor. Health, armor, attacks, XP and maps come from each enemy&rsquo;s wiki page; a map list can be incomplete when the wiki only names some maps.</p>'; }
     } else if (refSec === "traders") {
       total = TRADERS.length;
       var by = {}, order = [];
@@ -3269,6 +3318,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       h += '<p class="muted">' + here.length + " active quest" + (here.length === 1 ? "" : "s") + " here" + (anyN ? " (plus " + anyN + " that work on any map)" : "") + ":</p><ul class=\"mapnotes\">" + here.slice(0, 12).map(function (q) { return "<li>" + esc(q.name) + " <span class=\"muted\">(" + esc(q.trader) + ")</span></li>"; }).join("") + "</ul>";
       if (bk.length) { h += '<p class="muted">Bring:</p><div class="chips">' + bk.map(function (n) { var ok = (tracker[n] || 0) >= bring[n]; return '<span class="y' + (ok ? " ok" : "") + '"><b>' + bring[n] + "&times;</b> " + esc(n) + (ok ? " &#10003;" : "") + "</span>"; }).join("") + "</div>"; }
     }
+    var en = ENEMIES.filter(function (e) { return e[1] !== "Container" && enInfo(e).maps.indexOf(map) !== -1; });
+    if (en.length) { h += '<p class="muted">ARC seen here (tap for its card):</p><div class="chips">' + en.map(function (e) { var f = enInfo(e); return '<button type="button" class="chip" data-action="enOpen" data-n="' + esc(e[0]) + '">' + esc(e[0]) + (f.lv !== null && f.lv >= 3 ? " &#9888;" : "") + "</button>"; }).join("") + "</div>"; }
     var bw = bpForMap(map);
     if (bw.length) {
       h += '<p class="muted">Blueprints on your wishlist you can find here:</p><ul class="mapnotes">' + bw.map(function (x) {
@@ -4342,6 +4393,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById(t.getAttribute("data-tool")))); window.scrollTo(0, 0);
     } else if (a === "homeWs") {
       showTab("tracker"); var hws = document.getElementById("wsPlanner"); if (hws && hws.scrollIntoView) { hws.scrollIntoView({ block: "start" }); }
+    } else if (a === "enOpen") {
+      refSec = "enemies"; document.getElementById("refQ").value = t.getAttribute("data-n"); document.getElementById("enType").value = "all"; document.getElementById("enMap").value = ""; document.getElementById("enNeed").checked = false;
+      showTab("ref"); renderRef(); window.scrollTo(0, 0);
     } else if (a === "qrMap") {
       curMap = parseInt(t.getAttribute("data-i"), 10) || 0; showTab("maps"); renderMaps(); writeHash(); window.scrollTo(0, 0);
     } else if (a === "upProj") {
@@ -4541,6 +4595,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   document.getElementById("qSort").addEventListener("change", renderQuests);
   document.getElementById("refQ").addEventListener("input", renderRef);
   document.getElementById("bpStatus").addEventListener("change", renderRef);
+  ["enType", "enMap", "enNeed"].forEach(function (id) { document.getElementById(id).addEventListener("change", renderRef); });
   document.addEventListener("change", function (e) {
     var b = e.target && e.target.getAttribute && e.target.getAttribute("data-bp");
     if (!b) { return; }

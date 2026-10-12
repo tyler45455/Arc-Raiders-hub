@@ -345,6 +345,19 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .stk { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; padding: 0 5px; border-radius: 3px; border: 1px solid var(--line); margin-right: 4px; color: var(--muted); }
 .stedit { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
 .stedit input { width: 84px; }
+/* Site-wide card look (matches the Stash and Tracker cards): rounded, with a colored left edge. */
+.row, .qcard, .proj, details.card, .card { border-radius: 8px; }
+.row, .qcard, .proj { border-left: 4px solid var(--line); }
+.row.r-common { border-left-color: var(--r-common); } .row.r-uncommon { border-left-color: var(--r-uncommon); } .row.r-rare { border-left-color: var(--r-rare); }
+.row.r-epic { border-left-color: var(--r-epic); } .row.r-legendary { border-left-color: var(--r-legendary); }
+.qcard.qopen { border-left-color: var(--warm); } .qcard.qdone { border-left-color: var(--good); } .qcard.qlock { border-left-color: var(--line); }
+.homecard.hk-raid { border-left-color: var(--accent); } .homecard.hk-ws { border-left-color: var(--warm); } .homecard.hk-goal { border-left-color: var(--good); }
+.homecard.hk-raids { border-left-color: var(--r-rare); } .homecard.hk-stash { border-left-color: var(--r-epic); } .homecard.hk-new { border-left-color: var(--accent); }
+.row .acts .btn.ghost.minor { border-color: transparent; color: var(--muted); padding-left: 7px; padding-right: 7px; }
+.row .acts .btn.ghost.minor:hover, .row .acts .btn.ghost.minor.on { border-color: var(--line); color: var(--accent); }
+.qmore { margin-top: 10px; }
+.qmore .qbar { margin-top: 8px; }
+@media (max-width: 600px) { #homeTiles.four, #qTiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .lkcard.farmopen { grid-column: 1 / -1; }
 .lkdel { background: none; border: 0; color: var(--muted); font-size: 20px; line-height: 1; padding: 0 4px; cursor: pointer; }
 .lkdel:hover { color: var(--fg); }
@@ -776,6 +789,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <section class="panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" hidden>
     <h2>Home</h2>
     <p class="muted">Your next raid, the closest workshop upgrade, goals and raid stats at a glance. Tap any card's button to open the full tool.</p>
+    <div class="sttiles" id="homeTiles"></div>
     <div class="homegrid" id="homeOut"></div>
     <label class="qchk" style="margin-top:14px;"><input type="checkbox" id="homeStart"> Open the site on this screen</label>
     <details class="card" id="backupCard">
@@ -1031,21 +1045,24 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         <label class="tog"><input type="checkbox" id="qLocked"> Show locked</label>
         <label class="tog" title="Only quests where your tracker covers every tracked required item"><input type="checkbox" id="qReady"> Ready with my tracker</label>
         <span class="muted qprog" id="qProg" role="status"></span>
-        <button class="btn ghost" type="button" data-action="shareQuests">Share progress as image</button>
       </div>
     </div>
+    <div class="sttiles" id="qTiles"></div>
     <div id="qBanner"></div>
     <details class="card qnext" id="qNextCard" open><summary id="qNextSum">Next up</summary><div id="qNext"></div></details>
     <details class="card" id="qNeedsCard"><summary>Materials my unlocked quests need</summary>
       <div id="qNeeds"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn" type="button" data-action="qGoalsAll">Set tracker goals for all of these</button></div>
     </details>
-    <div class="qbar" style="margin:10px 0;">
+    <details class="card qmore"><summary>Share or load progress</summary>
+      <div class="qbar">
       <button class="btn ghost" type="button" data-action="qCopy">Copy to-do list</button>
       <button class="btn ghost" type="button" data-action="qLink">Copy progress link</button>
       <button class="btn ghost" type="button" data-action="qCode">Copy short code</button>
       <input type="text" id="qCodeIn" placeholder="Paste a quest code or link" aria-label="Paste a quest code or link" style="min-width:0;"><button class="btn ghost" type="button" data-action="qCodeLoad">Load code</button>
     </div>
+      <div class="qbar"><button class="btn ghost" type="button" data-action="shareQuests">Share progress as image</button></div>
+    </details>
     <textarea id="qShareBox" rows="6" aria-label="Quest list to copy" hidden readonly></textarea>
     <div class="muted" id="qCount" role="status"></div>
     <div id="qOut"></div>
@@ -1602,15 +1619,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (it.rarity) { badges += '<span class="badge ' + esc(it.rarity) + '">' + esc(it.rarity) + "</span>"; }
     if (it.custom) { badges += '<span class="badge custom">yours</span>'; }
     else if (!it.confirmed) { badges += '<button type="button" class="badge partial" data-action="partialTip" aria-expanded="false" title="Why is this marked partial? Click to find out."><span>partial</span> <span aria-hidden="true">&#9432;</span></button>'; }
-    return '<div class="row"><div class="head"><span class="name">' + esc(it.name) + "</span>" + badges + verdictChip(it) + "</div>" +
+    return '<div class="row' + (it.rarity ? " r-" + esc(String(it.rarity).toLowerCase()) : "") + '"><div class="head"><span class="name">' + esc(it.name) + "</span>" + badges + verdictChip(it) + "</div>" +
       '<div class="acts">' +
       '<button class="btn ghost star" type="button" data-action="fav" data-item="' + esc(it.name) + '" aria-pressed="' + (favs.indexOf(it.name) !== -1) + '" aria-label="Star ' + esc(it.name) + '" title="Star this item">' + (favs.indexOf(it.name) !== -1 ? "\u2605" : "\u2606") + "</button>" +
       (has ? '<button class="btn ghost cartbtn" type="button" data-action="cartAdd" data-item="' + esc(it.name) + '">+ Cart</button>' : "") +
       (has ? '<button class="btn" type="button" data-action="addItem" data-item="' + esc(it.name) + '">Add to stash</button>' : "") +
-      '<button class="btn ghost tagbtn' + (itemTags[it.name] ? " on" : "") + '" type="button" data-action="tag" data-item="' + esc(it.name) + '" title="Cycle your tag: Sell, Keep, Craft">' + (itemTags[it.name] ? "Tag: " + itemTags[it.name].charAt(0).toUpperCase() + itemTags[it.name].slice(1) : "Tag") + "</button>" +
-      '<button class="btn ghost tagbtn' + (itemNotes[it.name] ? " on" : "") + '" type="button" data-action="noteEdit" data-item="' + esc(it.name) + '">Note</button>' +
-      '<button class="btn ghost" type="button" data-action="shareItem" data-item="' + esc(it.name) + '" title="Copy a link to this item">Link</button>' +
-      '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
+      '<button class="btn ghost minor tagbtn' + (itemTags[it.name] ? " on" : "") + '" type="button" data-action="tag" data-item="' + esc(it.name) + '" title="Cycle your tag: Sell, Keep, Craft">' + (itemTags[it.name] ? "Tag: " + itemTags[it.name].charAt(0).toUpperCase() + itemTags[it.name].slice(1) : "Tag") + "</button>" +
+      '<button class="btn ghost minor tagbtn' + (itemNotes[it.name] ? " on" : "") + '" type="button" data-action="noteEdit" data-item="' + esc(it.name) + '">Note</button>' +
+      '<button class="btn ghost minor" type="button" data-action="shareItem" data-item="' + esc(it.name) + '" title="Copy a link to this item">Link</button>' +
+      '<a class="btn ghost minor" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
       (itemNotes[it.name] && noteEdit !== it.name ? '<div class="inote">' + esc(itemNotes[it.name]) + "</div>" : "") +
       (noteEdit === it.name ? '<div class="noted"><textarea data-notefor="' + esc(it.name) + '" rows="2" maxlength="300" placeholder="Your note, like: needed for Expedition 6" aria-label="Note for ' + esc(it.name) + '">' + esc(itemNotes[it.name] || "") + '</textarea><div><button class="btn" type="button" data-action="noteDone">Done</button></div></div>' : "") +
       '<div class="detail">' + yieldChips(it, hl) + "</div>" + infoLine(it) + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
@@ -2463,6 +2480,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var all = QUESTS.filter(function (q) { return q.trader === t; });
       return '<button type="button" class="chip" data-action="qTrader" data-t="' + esc(t) + '" aria-pressed="' + (qTrader === t) + '">' + esc(t) + " " + all.filter(function (q) { return qDone[q.name]; }).length + "/" + all.length + "</button>";
     })).join("");
+    var qtl = document.getElementById("qTiles");
+    if (qtl) {
+      var qdn = 0, qlk = 0, qop = 0, qrd = 0;
+      QUESTS.forEach(function (q) {
+        if (qDone[q.name]) { qdn++; } else if (qLocked(q)) { qlk++; } else { qop++; var qs1 = qStatus(q, mats); if (qs1.t.length && qs1.ok) { qrd++; } }
+      });
+      function qtile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
+      qtl.innerHTML = qtile("sell", "Completed", qdn, "of " + QUESTS.length + " quests") + qtile("keep", "Open now", qop, "you can do these") +
+        qtile("", "Ready to hand in", qrd, "your counts cover them") + qtile("", "Locked", qlk, "finish earlier quests");
+    }
     var term = document.getElementById("qQ").value.trim().toLowerCase();
     var readyOnly = document.getElementById("qReady").checked;
     var showLocked = document.getElementById("qLocked").checked;
@@ -2499,7 +2526,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     document.getElementById("qCount").textContent = list.length + " of " + QUESTS.length + " quests";
     document.getElementById("qOut").innerHTML = list.length ? list.map(function (q) {
       var st = qStatus(q, mats);
-      return '<div class="qcard' + (qDone[q.name] ? " qdone" : "") + (qLocked(q) ? " qlock" : "") + '"><div class="qh"><a href="' + esc(qWiki(q.name)) + '" target="_blank" rel="noopener">' + esc(q.name) + '</a>' +
+      return '<div class="qcard' + (qDone[q.name] ? " qdone" : qLocked(q) ? " qlock" : " qopen") + '"><div class="qh"><a href="' + esc(qWiki(q.name)) + '" target="_blank" rel="noopener">' + esc(q.name) + '</a>' +
         '<span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span></div>" +
         (qLocked(q) ? '<div class="qstat">Locked: finish ' + QPREV[q.name].filter(function (p) { return !qDone[p]; }).map(esc).join(" and ") + " first</div>" : "") +
         (q.obj.length ? '<details class="qobj"' + (term ? " open" : "") + '><summary>Objectives (' + q.obj.length + ')</summary><ol>' + q.obj.map(function (o) { return "<li>" + esc(o) + "</li>"; }).join("") + "</ol></details>" : "") +
@@ -4203,32 +4230,40 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     });
     return best;
   }
-  function homeCard(title, body, btn) { return '<div class="proj homecard"><h3>' + title + "</h3>" + body + (btn ? '<div class="acts">' + btn + "</div>" : "") + "</div>"; }
+  function homeCard(title, body, btn, kind) { return '<div class="proj homecard' + (kind ? " hk-" + kind : "") + '"><h3>' + title + "</h3>" + body + (btn ? '<div class="acts">' + btn + "</div>" : "") + "</div>"; }
   function homeBar(pct) { return '<div class="bar' + (pct >= 100 ? " done" : "") + '"><i style="width:' + Math.min(100, pct) + '%"></i></div>'; }
   function renderHome() {
     var out = document.getElementById("homeOut");
     if (!out) { return; }
     var html = "", per = parseInt(qrSet.per, 10) || 4, route = qrPlan(per), nq = qActive().length;
-    if (arctReady() && arctSet.lvl) {
-      html += homeCard("Raider level " + arctSet.lvl, "<p>" + (arctSet.name ? "<b>" + esc(arctSet.name) + "</b>, " : "") + "synced from ARC Tracker" + (arctSet.last ? " " + esc(new Date(arctSet.last).toLocaleString()) : "") + ".</p>", '<button class="btn ghost" type="button" data-action="stSync">Sync now</button>');
+    var tl = document.getElementById("homeTiles");
+    if (tl) {
+      var qd = QUESTS.filter(function (q) { return qDone[q.name]; }).length, xr = raids.filter(function (r) { return r.o === "x"; }).length, sv = 0;
+      try { sv = worthData().tot.coins; } catch (eW) { sv = 0; }
+      function htile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
+      tl.className = "sttiles" + (arctReady() && arctSet.lvl ? " four" : "");
+      tl.innerHTML = (arctReady() && arctSet.lvl ? htile("", "Raider level", arctSet.lvl, esc(arctSet.name || "from ARC Tracker")) : "") +
+        htile("sell", "Quests done", qd, "of " + QUESTS.length + " &middot; " + nq + " open") +
+        htile("keep", "Extracted", raids.length ? Math.round(xr * 100 / raids.length) + "%" : "&ndash;", raids.length + " raid" + (raids.length === 1 ? "" : "s") + " logged") +
+        htile("", "Stash value", coins(sv), "coins");
     }
     if (route.length) {
       var r0 = route[0], mi = -1; MAPS.forEach(function (m, k) { if (m.name === r0.map) { mi = k; } });
       html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" +
         '<p class="muted">' + nq + " active quest" + (nq === 1 ? "" : "s") + " in " + route.length + " raid" + (route.length === 1 ? "" : "s") + ".</p>",
-        (mi >= 0 ? '<button class="btn" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>');
+        (mi >= 0 ? '<button class="btn" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>', "raid");
     } else {
-      html += homeCard("Quests", '<p class="muted">No active quests right now.</p>', '<button class="btn ghost" type="button" data-tab="quests">Open Quests</button>');
+      html += homeCard("Quests", '<p class="muted">No active quests right now.</p>', '<button class="btn ghost" type="button" data-tab="quests">Open Quests</button>', "raid");
     }
     if (updNew > 0 && !document.getElementById("newDot").hidden) {
       var nu = UPDATES[0], nh = updHits(nu, updYou());
       html = homeCard("New game update: " + esc(nu.title), "<p>" + esc(nu.date) + (nu.ver ? " &middot; v" + esc(nu.ver) : "") + ". " + esc(nu.body) + "</p>" +
-        (nh.length ? '<p class="muted">Mentions your ' + nh.slice(0, 5).map(esc).join(", ") + (nh.length > 5 ? " and " + (nh.length - 5) + " more" : "") + ".</p>" : ""), '<button class="btn" type="button" data-tab="updates">Read the patch notes</button>') + html;
+        (nh.length ? '<p class="muted">Mentions your ' + nh.slice(0, 5).map(esc).join(", ") + (nh.length > 5 ? " and " + (nh.length - 5) + " more" : "") + ".</p>" : ""), '<button class="btn" type="button" data-tab="updates">Read the patch notes</button>', "new") + html;
     }
     var w = homeWs();
     html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> level " + esc(w.lvl) + ": <b>" + w.pct + "%</b> of the materials</p>" + homeBar(w.pct) +
       (w.miss.length ? '<p class="muted">Still need ' + w.miss.slice(0, 4).map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") + (w.miss.length > 4 ? " and " + (w.miss.length - 4) + " more" : "") + ".</p>" : '<p class="muted">You have everything. Upgrade it in game, then raise the level in the planner.</p>')
-      : '<p class="muted">Every workshop station in your plan is done.</p>', '<button class="btn ghost" type="button" data-action="homeWs">Workshop planner</button>');
+      : '<p class="muted">Every workshop station in your plan is done.</p>', '<button class="btn ghost" type="button" data-action="homeWs">Workshop planner</button>', "ws");
     var gk = Object.keys(goals).filter(function (k) { return goals[k] > 0; }), gmet = gk.filter(function (k) { return (tracker[k] || 0) >= goals[k]; }).length;
     var gopen = gk.filter(function (k) { return (tracker[k] || 0) < goals[k]; }).map(function (k) { return [k, Math.round((tracker[k] || 0) * 100 / goals[k])]; }).sort(function (a, b) { return b[1] - a[1] || a[0].localeCompare(b[0]); });
     var gb = "";
@@ -4242,7 +4277,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     rchkRoll();
     var todo = rchk.filter(function (c) { return !c.d; }).length;
     if (todo) { gb += '<p class="muted">' + todo + " daily or weekly task" + (todo === 1 ? "" : "s") + " left to tick off.</p>"; }
-    html += homeCard("Goals", gb || '<p class="muted">Nothing on your list yet. Add the materials you are looking for in the Tracker to see progress here.</p>', '<button class="btn ghost" type="button" data-tab="tracker">Tracker</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="weekTool">Weekly goals</button>');
+    html += homeCard("Goals", gb || '<p class="muted">Nothing on your list yet. Add the materials you are looking for in the Tracker to see progress here.</p>', '<button class="btn ghost" type="button" data-tab="tracker">Tracker</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="weekTool">Weekly goals</button>', "goal");
     var rb = "";
     if (raids.length) {
       var x = raids.filter(function (r) { return r.o === "x"; }), hv = x.filter(function (r) { return r.v !== null; }), streak = 0;
@@ -4252,7 +4287,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         '<p class="muted">Last raid: ' + esc(lr.m) + ", " + (lr.o === "x" ? "extracted" : "died") + (lr.v !== null ? " with " + coins(lr.v) + " coins" : "") + "." + (streak > 1 ? " " + streak + " extracts in a row." : "") + "</p>" +
         '<div class="homeform" aria-hidden="true">' + raids.slice(-10).map(function (r) { return '<i class="' + (r.o === "x" ? "x" : "d") + '"></i>'; }).join("") + "</div>";
     }
-    html += homeCard("Raids", rb || '<p class="muted">No raids logged yet. Log each raid to see your extract rate and average haul.</p>', '<button class="btn ghost" type="button" data-action="homeTool" data-tool="raidTool">Raid log</button>');
+    html += homeCard("Raids", rb || '<p class="muted">No raids logged yet. Log each raid to see your extract rate and average haul.</p>', '<button class="btn ghost" type="button" data-action="homeTool" data-tool="raidTool">Raid log</button>', "raids");
     var sb = "";
     if (Object.keys(tracker).some(function (n) { return tracker[n] > 0; })) {
       var wd = worthData();
@@ -4260,7 +4295,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     var bw = BPS.filter(function (b) { return bpWant[b[0]] && !bpOwned[b[0]]; }).length;
     if (bw) { sb += '<p class="muted">' + bw + " blueprint" + (bw === 1 ? "" : "s") + " on your wishlist.</p>"; }
-    html += homeCard("Stash", sb || '<p class="muted">Add what you have in the Stash tab to see what it is worth.</p>', '<button class="btn ghost" type="button" data-tab="stash">Open Stash</button>' + (bw ? '<button class="btn ghost" type="button" data-tab="ref">Blueprints</button>' : ""));
+    html += homeCard("Stash", sb || '<p class="muted">Add what you have in the Stash tab to see what it is worth.</p>', '<button class="btn ghost" type="button" data-tab="stash">Open Stash</button>' + (bw ? '<button class="btn ghost" type="button" data-tab="ref">Blueprints</button>' : ""), "stash");
     out.innerHTML = html;
   }
   /* Shots to kill: enemy health / weapon damage. Fire Rate x 15 = rounds per minute (the wiki lists Kettle as "30 (450 RPM)"). */
@@ -5940,7 +5975,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var map = { recycle: 0, gear: 1, quests: 2, ref: 3, tools: 4, maps: 6, updates: 6 };
     Object.keys(map).forEach(function (t) {
       var h = document.querySelector("#panel-" + t + " h2");
-      if (h && dates[map[t]]) { h.insertAdjacentHTML("afterend", '<div class="verified">Checked ' + dates[map[t]] + "</div>"); }
+      if (h && dates[map[t]]) { h.insertAdjacentHTML("afterend", '<div class="verified">' + (/^checked/i.test(dates[map[t]]) ? "" : "Checked ") + esc(dates[map[t]]) + "</div>"); }
     });
   }
 

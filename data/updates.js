@@ -21,6 +21,7 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 11, 2026";
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "New Home tab: your next raid from the quest route, the workshop upgrade you are closest to, goals, raid log stats and stash worth on one screen, each with a button to the full tool. Once you have saved progress the site opens on Home; untick the box at the bottom to keep opening on Recycle."],
     ["Oct 12, 2026", "Data checks now run every day: sell prices, weights and recipes are re-checked against the RaidTheory data set daily instead of weekly, and wiki edits to quests, keys and skills are checked daily too, so changes reach the site sooner."],
     ["Oct 11, 2026", "New Quest route planner in the Tools tab: groups your active quests into as few raids as possible (busiest map first, any-map quests fill the gaps), lists each quest's objectives and the items they need, and updates as you tick quests off."],
     ["Oct 11, 2026", "New Weapon upgrade path tool in the Tools tab: pick a weapon, the tier you have and the tier you want to see every Gunsmith step, the total materials (or basic materials), what your tracker still needs, and add it all to your projects in one tap."],

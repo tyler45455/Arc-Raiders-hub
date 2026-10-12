@@ -28,6 +28,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Loot value (Tools tab):** ranks items by sell price per kg or per stash slot, and marks the ones your quests, projects or goals still need. Its Price changes list shows every sell price change the daily sync has recorded since Oct 11, 2026; item pages show the latest one.
 - **Stash worth (Tools tab):** adds up the sell value of everything in your tracker and lists the spare items to sell first, by slots freed or coins earned.
 - **Weapon upgrade path (Tools tab):** every Gunsmith step from the tier you have to the one you want, with total materials and what your tracker still needs.
+- **Home tab:** a start screen with your next raid, the closest workshop upgrade, goals, raid stats and stash worth.
 - **Quest route planner (Tools tab):** groups your active quests into raids by map so you can finish several per trip.
 - **Blueprint wishlist (Reference tab):** mark the blueprints you want and get a hunt list of the containers, conditions, quests and ARC that drop them; Raid prep shows the ones on each map.
 - **Skill build planner (Tools tab):** spend points across the three skill trees, check large-node gates and point totals, and share the build as a link.

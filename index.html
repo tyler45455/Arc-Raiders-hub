@@ -1221,16 +1221,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <div>Fan-made, not affiliated with Embark Studios. ARC RAIDERS is a trademark of Embark Studios AB.</div>
     <details><summary>Data freshness</summary>
       <div class="muted">When each part of the site was last checked against the ARC Raiders Wiki:</div>
-      <div class="tablewrap"><table><thead><tr><th>Section</th><th>Last checked</th></tr></thead><tbody>
-        <tr><td>Recycling and salvage data</td><td>October 9, 2026</td></tr>
-        <tr><td>Weapons &amp; gear</td><td>October 9, 2026</td></tr>
-        <tr><td>Quests, objectives and quest chain</td><td>October 10, 2026</td></tr>
-        <tr><td>Reference: enemies, traders, workshop, skills, blueprints</td><td>October 10, 2026</td></tr>
-        <tr><td>Project presets</td><td>October 10, 2026 (Sheltered Retreat not added yet)</td></tr>
-        <tr><td>Trials (Season 6, Week 1)</td><td>October 10, 2026 (wiki page last edited October 8)</td></tr>
-        <tr><td>Maps and update history</td><td>October 10, 2026 (detail maps and room names added from in-game screenshots; item sources taken from the wiki on this date for about 190 items; difficulty and unlock not re-checked)</td></tr>
-      </tbody></table></div>
-      <div class="muted">A weekly check compares the wiki with this site and opens an issue on GitHub when something has changed.</div>
+      <div class="tablewrap"><table><thead><tr><th>Section</th><th>Last checked</th></tr></thead><tbody id="freshBody"></tbody></table></div>
+      <div class="muted">Rows marked daily are checked every day: item data against the RaidTheory data set, and quests, keys and skills against the edits made on the wiki that day. Their date is the last time the check found a change.</div>
     </details>
     <div>Item data from the <a href="https://arcraiders.wiki" target="_blank" rel="noopener">ARC Raiders Wiki</a> (CC BY-SA 4.0). <span id="dataStamp2"></span></div>
     <div>Wrong number or missing item? Use the Report button on any row to open a GitHub issue.<span id="reportAddr" hidden></span></div>
@@ -4712,6 +4704,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   document.getElementById("dataStamp").textContent = "Data checked against the wiki on " + DATA_UPDATED;
   document.getElementById("dataStamp2").textContent = "Last data check: " + DATA_UPDATED + ".";
+  document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
+    var when = r[2] === "daily" ? "Checked daily; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
+    return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";
+  }).join("");
   renderHint();
   setHint(!load("arcHubHint", false));
   applyTheme(load("arcHubTheme", "auto"));

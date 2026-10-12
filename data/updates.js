@@ -18,9 +18,26 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 11, 2026";
+ARC.DATA_UPDATED = "October 12, 2026";
+
+/* The Data freshness table at the bottom of the site: [section, date, how it is checked].
+   "daily" rows are re-checked every day (tools/sync-item-data.js for the first row, the daily Claude wiki check for
+   the others); their date is the last time that check changed something. Other rows show when they were last checked by hand. */
+ARC.FRESHNESS = [
+    ["Sell prices, weights, recipes and where to find items", "October 11, 2026", "daily"],
+    ["Quests, objectives and quest chain", "October 12, 2026", "daily"],
+    ["Keys and where to find them", "October 11, 2026", "daily"],
+    ["Skills", "October 10, 2026", "daily"],
+    ["Recycling and salvage data", "October 9, 2026", ""],
+    ["Weapons & gear", "October 9, 2026", ""],
+    ["Reference: enemies, traders, workshop, blueprints", "October 10, 2026", ""],
+    ["Project presets", "October 10, 2026", "Sheltered Retreat not added yet"],
+    ["Trials (Season 6, Week 1)", "October 10, 2026", "wiki page last edited October 8"],
+    ["Maps and update history", "October 10, 2026", "detail maps and room names added from in-game screenshots; difficulty and unlock not re-checked"]
+  ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "Quests: added Wires Crossed (Celeste, after Exploring Pendola Pass), which is now on the wiki. To The Skies now lists its maps, the four ARC parts you install and its full objectives, and both it and Exploring Pendola Pass now follow Off The Radar. The Data freshness table at the bottom of the site now shows which parts are re-checked every day."],
     ["Oct 12, 2026", "New Home tab: your next raid from the quest route, the workshop upgrade you are closest to, goals, raid log stats and stash worth on one screen, each with a button to the full tool. Once you have saved progress the site opens on Home; untick the box at the bottom to keep opening on Recycle."],
     ["Oct 12, 2026", "Data checks now run every day: sell prices, weights and recipes are re-checked against the RaidTheory data set daily instead of weekly, and wiki edits to quests, keys and skills are checked daily too, so changes reach the site sooner."],
     ["Oct 11, 2026", "New Quest route planner in the Tools tab: groups your active quests into as few raids as possible (busiest map first, any-map quests fill the gaps), lists each quest's objectives and the items they need, and updates as you tick quests off."],

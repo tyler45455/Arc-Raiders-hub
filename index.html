@@ -126,7 +126,7 @@ h3 { font-size: 15px; margin: 0 0 8px; }
 .note b { color: var(--fg); }
 
 /* Controls */
-input[type="text"], input[type="number"], select {
+input[type="text"], input[type="number"], input[type="password"], select {
   width: 100%; background: var(--surface); color: var(--fg);
   border: 1px solid var(--line); border-radius: 6px;
   padding: 11px 12px; font: 15px var(--font-body);
@@ -823,6 +823,20 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     </div>
     <div id="sharedList"></div>
     <div id="inventory"></div>
+    <details class="card" id="arctCard">
+      <summary>Sync from ARC Tracker</summary>
+      <p class="muted" style="margin-top:8px;">Copies your completed quests and your stash from <a href="https://arctracker.io" target="_blank" rel="noopener">ARC Tracker</a>. ARC Tracker gets them from your game account with its Link app. This site only reads them from ARC Tracker and never touches the game.</p>
+      <p class="muted" style="margin-top:8px;">In ARC Tracker, open <a href="https://arctracker.io/settings" target="_blank" rel="noopener">Settings</a>, then Developer Access, and create a key with only <b>Quests</b> and <b>Stash</b> ticked. Paste it here. The key stays in this browser and is only sent to arctracker.io.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin-top:8px;">
+        <div><label for="arctUser">ARC Tracker key (starts with arc_u1_)</label><input type="password" id="arctUser" autocomplete="off" spellcheck="false"></div>
+        <div id="arctAppRow"><label for="arctApp">App key (starts with arc_k1_)</label><input type="password" id="arctApp" autocomplete="off" spellcheck="false"></div>
+        <label class="tog"><input type="checkbox" id="arctAdd"> Also add stash items I don't track yet</label>
+        <label class="tog"><input type="checkbox" id="arctAuto"> Sync by itself when I open the site</label>
+      </div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
+      <p class="muted" id="arctMsg" role="status" style="margin-top:8px;"></p>
+      <div id="arctOut"></div>
+    </details>
     <details class="card" id="histCard">
       <summary>History</summary>
       <p class="muted" style="margin-top:8px;">One point per day, saved in this browser as you use the tracker.</p>
@@ -1299,6 +1313,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   /* ---- Report settings: edit these two lines before you publish ---- */
   var REPORT_EMAIL = "tyler45455@gmail.com";
   var REPORT_ISSUES_URL = "https://github.com/tyler45455/Arc-Raiders-hub/issues/new";
+  /* ARC Tracker app key (arc_k1_...) from arctracker.io/developers/apps. It identifies this site and is public by design; each visitor supplies their own user key. */
+  var ARCT_APP_KEY = "arc_k1_eC4e4Pmr-pWcI093-xNvdgAH76nli1a1";
 
   /* ---------- storage that survives a blocked browser ---------- */
   var mem = {};
@@ -1743,6 +1759,163 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (typeof renderWeek === "function") { renderWeek(); }
   }
 
+  /* ---------- ARC Tracker sync (read-only developer API; user endpoints allow browser calls) ---------- */
+  var arctSet = load("arcHubArct", {});
+  var arctPlan = null, arctBusy = false;
+  function arctApp() { return ARCT_APP_KEY || arctSet.a || ""; }
+  function arctGet(path, params) {
+    var qs = Object.keys(params).map(function (k) { return k + "=" + encodeURIComponent(params[k]); }).join("&");
+    return fetch("https://arctracker.io/api/v2/user/" + path + "?" + qs, { headers: { Accept: "application/json", "X-App-Key": arctApp(), Authorization: "Bearer " + arctSet.u } }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok) { var e = new Error((j && j.error && j.error.message) || "HTTP " + r.status); e.status = r.status; throw e; }
+        return j;
+      });
+    });
+  }
+  /* The response shapes are not documented, so read them loosely. */
+  function arctList(j, keys) {
+    var d = j && j.data !== undefined ? j.data : j, i;
+    if (Array.isArray(d)) { return d; }
+    for (i = 0; i < keys.length; i++) { if (d && Array.isArray(d[keys[i]])) { return d[keys[i]]; } }
+    if (d && typeof d === "object") { var v = Object.keys(d).map(function (k) { return d[k]; }); if (v.length && v.every(function (x) { return x && typeof x === "object" && !Array.isArray(x); })) { return v; } }
+    return [];
+  }
+  function arctText(n) { if (n && typeof n === "object") { n = n.en || n[Object.keys(n)[0]]; } return n ? String(n) : ""; }
+  function arctName(e) {
+    if (typeof e === "string") { return e; }
+    if (!e) { return ""; }
+    return arctText(e.name || e.itemName || e.questName || (e.item && e.item.name) || (e.quest && e.quest.name));
+  }
+  function arctId(e) { return e && typeof e === "object" ? String(e.itemId || e.item_id || e.questId || e.quest_id || (e.item && e.item.id) || (e.quest && e.quest.id) || e.id || "") : ""; }
+  function arctQty(e) {
+    var q = e && typeof e === "object" ? [e.quantity, e.amount, e.count, e.qty, e.stackSize, e.stack].filter(function (x) { return typeof x === "number" && x >= 0; })[0] : undefined;
+    return q === undefined ? 1 : Math.floor(q);
+  }
+  function arctFlag(e) {
+    if (!e || typeof e !== "object") { return null; }
+    if (typeof e.completed === "boolean") { return e.completed; }
+    if (typeof e.isCompleted === "boolean") { return e.isCompleted; }
+    if (typeof e.status === "string") { return /^(complete|completed|done|finished)$/i.test(e.status); }
+    return null;
+  }
+  function arctIndex(names) {
+    var ix = {};
+    names.forEach(function (n) { ix[qNormA(n)] = n; ix[idOf(n)] = n; ix[idOf(n).replace(/-/g, "_")] = n; });
+    return ix;
+  }
+  function qNormA(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  function arctFind(ix, e) { var n = arctName(e), id = arctId(e); return ix[qNormA(n)] || (id && (ix[id] || ix[id.toLowerCase()])) || ""; }
+  function arctStash() {
+    var all = [];
+    function page(p) {
+      return arctGet("stash", { locale: "en", per_page: 500, page: p }).then(function (j) {
+        var l = arctList(j, ["items", "stash", "results"]); all = all.concat(l);
+        return l.length >= 500 && p < 10 ? page(p + 1) : all;
+      });
+    }
+    return page(1);
+  }
+  function arctFetch() {
+    return Promise.all([arctGet("quests", { locale: "en", filter: "completed" }), arctGet("quests", { locale: "en", filter: "incomplete" }), arctStash()]).then(function (r) {
+      var qix = arctIndex(QUESTS.map(function (q) { return q.name; }));
+      var iix = arctIndex(allMaterials().concat(items.map(function (it) { return it.name; })));
+      var done = {}, open = 0, unknownQ = [], unknownI = [], counts = {};
+      arctList(r[0], ["quests", "items", "results"]).forEach(function (e) {
+        if (arctFlag(e) === false) { open++; return; }
+        var n = arctFind(qix, e); if (n) { done[n] = 1; } else { unknownQ.push(arctName(e) || arctId(e)); }
+      });
+      arctList(r[1], ["quests", "items", "results"]).forEach(function (e) {
+        if (arctFlag(e) === true) { var n = arctFind(qix, e); if (n) { done[n] = 1; } else { unknownQ.push(arctName(e) || arctId(e)); } } else { open++; }
+      });
+      var stash = r[2];
+      stash.forEach(function (e) {
+        var n = arctFind(iix, e);
+        if (n) { counts[n] = (counts[n] || 0) + arctQty(e); } else { unknownI.push(arctName(e) || arctId(e)); }
+      });
+      var nq = Object.keys(done).length;
+      var plan = { qAdd: [], qDel: [], tSet: [], unknownQ: unknownQ, unknownI: unknownI, haveQ: nq + open > 0, haveS: stash.length > 0 };
+      if (plan.haveQ) {
+        plan.qAdd = Object.keys(done).filter(function (k) { return !qDone[k]; });
+        plan.qDel = Object.keys(qDone).filter(function (k) { return !done[k]; });
+      }
+      if (plan.haveS) {
+        Object.keys(tracker).forEach(function (k) { var n = counts[k] || 0; if (n !== tracker[k]) { plan.tSet.push([k, n]); } });
+        if (arctSet.add) { Object.keys(counts).forEach(function (k) { if (!(k in tracker) && counts[k] > 0) { plan.tSet.push([k, counts[k]]); } }); }
+      }
+      return plan;
+    });
+  }
+  function arctErr(e) {
+    if (e && e.status === 401) { return "ARC Tracker did not accept the key. Check that you pasted all of it."; }
+    if (e && e.status === 403) { return "The key needs the Quests and Stash permissions. Make a new key in ARC Tracker with both ticked."; }
+    if (e && e.status === 404) { return "ARC Tracker has no game data for this account yet. Sync with the Link app first."; }
+    if (e && e.status === 429) { return "ARC Tracker is busy (too many requests). Try again in a while."; }
+    return "Could not reach ARC Tracker. Check your connection and try again." + (e && e.message ? " (" + e.message + ")" : "");
+  }
+  function arctSummary(p) {
+    var bits = [];
+    if (p.qAdd.length) { bits.push(p.qAdd.length + " quest" + (p.qAdd.length === 1 ? "" : "s") + " to mark done"); }
+    if (p.qDel.length) { bits.push(p.qDel.length + " quest" + (p.qDel.length === 1 ? "" : "s") + " to mark not done"); }
+    if (p.tSet.length) { bits.push(p.tSet.length + " tracker count" + (p.tSet.length === 1 ? "" : "s") + " to change"); }
+    return bits.join(", ");
+  }
+  function arctShow() {
+    var p = arctPlan, out = document.getElementById("arctOut"), msg = document.getElementById("arctMsg");
+    if (!p) { out.innerHTML = ""; return; }
+    if (!p.haveQ && !p.haveS) { msg.textContent = "ARC Tracker sent no quests or stash for this account. Sync with the Link app first."; out.innerHTML = ""; return; }
+    if (!p.qAdd.length && !p.qDel.length && !p.tSet.length) { msg.textContent = "Everything already matches ARC Tracker."; out.innerHTML = ""; arctPlan = null; return; }
+    msg.textContent = "Found " + arctSummary(p) + ".";
+    function li(a) { return a.slice(0, 60).map(function (x) { return "<li>" + x + "</li>"; }).join("") + (a.length > 60 ? "<li>and " + (a.length - 60) + " more</li>" : ""); }
+    var h = "";
+    if (p.qAdd.length) { h += "<details><summary>Quests to mark done (" + p.qAdd.length + ")</summary><ul>" + li(p.qAdd.map(esc)) + "</ul></details>"; }
+    if (p.qDel.length) { h += "<details><summary>Quests to mark not done (" + p.qDel.length + ")</summary><ul>" + li(p.qDel.map(esc)) + "</ul></details>"; }
+    if (p.tSet.length) { h += "<details><summary>Tracker changes (" + p.tSet.length + ")</summary><ul>" + li(p.tSet.map(function (x) { return esc(x[0]) + ": " + (tracker[x[0]] || 0) + " &rarr; " + x[1]; })) + "</ul></details>"; }
+    if (p.unknownQ.length || p.unknownI.length) { h += '<p class="muted">Skipped ' + (p.unknownQ.length + p.unknownI.length) + " name" + (p.unknownQ.length + p.unknownI.length === 1 ? "" : "s") + " this site does not list yet.</p>"; }
+    out.innerHTML = h + '<div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctApply">Apply</button><button class="btn ghost" type="button" data-action="arctCancel">Cancel</button></div>';
+  }
+  function arctApply(p, quiet) {
+    pushUndo("Synced from ARC Tracker");
+    p.qAdd.forEach(function (k) { qDone[k] = 1; });
+    p.qDel.forEach(function (k) { delete qDone[k]; });
+    p.tSet.forEach(function (x) { tracker[x[0]] = x[1]; });
+    save("arcHubQuestsDone", qDone); save("arcHubTracker", tracker);
+    arctSet.last = Date.now(); save("arcHubArct", arctSet);
+    renderQuests(); renderTracker();
+    var bits = [];
+    if (p.qAdd.length) { bits.push(p.qAdd.length + " quest" + (p.qAdd.length === 1 ? "" : "s") + " marked done"); }
+    if (p.qDel.length) { bits.push(p.qDel.length + " marked not done"); }
+    if (p.tSet.length) { bits.push(p.tSet.length + " tracker count" + (p.tSet.length === 1 ? "" : "s") + " changed"); }
+    document.getElementById("arctMsg").textContent = (quiet ? "Synced from ARC Tracker: " : "Done: ") + bits.join(", ") + ".";
+    document.getElementById("arctOut").innerHTML = ""; arctPlan = null;
+  }
+  function arctReady() { return !!(arctSet.u && arctApp()); }
+  function arctCheck() {
+    var u = document.getElementById("arctUser").value.trim(), a = document.getElementById("arctApp").value.trim(), msg = document.getElementById("arctMsg");
+    if (u) { arctSet.u = u; } if (a) { arctSet.a = a; }
+    save("arcHubArct", arctSet); arctFill();
+    if (!arctSet.u) { msg.textContent = "Paste your ARC Tracker key first."; return; }
+    if (!arctApp()) { msg.textContent = "Paste the app key first."; return; }
+    if (arctBusy) { return; }
+    arctBusy = true; msg.textContent = "Checking ARC Tracker..."; document.getElementById("arctOut").innerHTML = "";
+    arctFetch().then(function (p) { arctBusy = false; arctPlan = p; arctShow(); }, function (e) { arctBusy = false; msg.textContent = arctErr(e); });
+  }
+  function arctFill() {
+    var u = document.getElementById("arctUser"), a = document.getElementById("arctApp");
+    if (!u) { return; }
+    u.value = ""; u.placeholder = arctSet.u ? "Saved (paste a new key to replace it)" : "arc_u1_...";
+    a.value = ""; a.placeholder = arctSet.a ? "Saved" : "arc_k1_...";
+    document.getElementById("arctAppRow").hidden = !!ARCT_APP_KEY;
+    document.getElementById("arctAdd").checked = !!arctSet.add;
+    document.getElementById("arctAuto").checked = !!arctSet.auto;
+  }
+  function arctAutoRun() {
+    if (!arctSet.auto || !arctReady() || Date.now() - (arctSet.last || 0) < 15 * 60 * 1000) { return; }
+    arctBusy = true;
+    arctFetch().then(function (p) {
+      arctBusy = false;
+      if (p.qAdd.length || p.qDel.length || p.tSet.length) { arctApply(p, true); } else { arctSet.last = Date.now(); save("arcHubArct", arctSet); }
+    }, function (e) { arctBusy = false; var m = document.getElementById("arctMsg"); if (m) { m.textContent = "Automatic sync failed. " + arctErr(e); } });
+  }
   function renderTracker() {
     var shopRows = [], sm = {};
     try { shopRows = shopData(); shopRows.forEach(function (r) { sm[r.n] = r; }); renderShop(); renderPlanner(); renderWorth(); } catch (e0) {}
@@ -4522,6 +4695,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (sn) { document.getElementById("backup").value = sn.d; importData(); }
     } else if (a === "zoomMap") {
       lbOpen(t.getAttribute("data-src"), t.getAttribute("data-name"));
+    } else if (a === "arctCheck") {
+      arctCheck();
+    } else if (a === "arctApply") {
+      if (arctPlan) { arctApply(arctPlan, false); }
+    } else if (a === "arctCancel") {
+      arctPlan = null; document.getElementById("arctOut").innerHTML = ""; document.getElementById("arctMsg").textContent = "";
+    } else if (a === "arctForget") {
+      arctSet = {}; save("arcHubArct", arctSet); arctPlan = null; arctFill();
+      document.getElementById("arctOut").innerHTML = ""; document.getElementById("arctMsg").textContent = "Keys removed from this browser. You can also delete the key in ARC Tracker's settings.";
     } else if (a === "qUpTo") {
       var uq = t.getAttribute("data-q"), ul = qUpSet(uq);
       if (!ul.length) { return; }
@@ -4865,6 +5047,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   document.getElementById("qReady").addEventListener("change", renderQuests);
   document.getElementById("qLocked").addEventListener("change", renderQuests);
   document.getElementById("qStatus").addEventListener("change", renderQuests);
+  document.getElementById("arctAdd").addEventListener("change", function (e) { arctSet.add = e.target.checked; save("arcHubArct", arctSet); });
+  document.getElementById("arctAuto").addEventListener("change", function (e) { arctSet.auto = e.target.checked; save("arcHubArct", arctSet); if (e.target.checked) { arctSet.last = 0; arctAutoRun(); } });
   document.addEventListener("change", function (e) {
     var n = e.target && e.target.getAttribute && e.target.getAttribute("data-qdone");
     if (!n) { return; }
@@ -5030,6 +5214,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   document.getElementById("dataStamp").textContent = "Data checked against the wiki on " + DATA_UPDATED;
   document.getElementById("dataStamp2").textContent = "Last data check: " + DATA_UPDATED + ".";
+  arctFill(); arctAutoRun();
   document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
     var when = r[2] === "daily" ? "Checked daily; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
     return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";

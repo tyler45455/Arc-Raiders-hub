@@ -2,7 +2,7 @@
  "schema": 1,
  "kind": "quests",
  "dataDate": "October 12, 2026",
- "count": 110,
+ "count": 111,
  "quests": [
   {
    "id": "picking-up-the-pieces",
@@ -4068,6 +4068,51 @@
    ],
    "after": [
     "exploring-pendola-pass"
+   ]
+  },
+  {
+   "id": "ruins-and-reverberations",
+   "name": "Ruins And Reverberations",
+   "trader": "Celeste",
+   "locations": [
+    "Pendola Pass"
+   ],
+   "requires": [
+    {
+     "id": "spotter-relay",
+     "name": "Spotter Relay",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "smoke-grenade",
+     "name": "Smoke Grenade",
+     "qty": 2
+    },
+    {
+     "id": "looting-mk-3-safekeeper",
+     "name": "Looting Mk. 3 (Safekeeper)",
+     "qty": 1
+    },
+    {
+     "id": "electrical-components",
+     "name": "Electrical Components",
+     "qty": 3
+    },
+    {
+     "id": "speaker-component",
+     "name": "Speaker Component",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Connect a Spotter Relay to the antenna on the roof of the Cielo Sereno Observatory",
+    "Weld the wires in the crawlspace under the control room to redirect power",
+    "Activate the Spotter Relay at the antenna again"
+   ],
+   "after": [
+    "wires-crossed"
    ]
   }
  ]

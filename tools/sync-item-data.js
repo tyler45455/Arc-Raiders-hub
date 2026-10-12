@@ -4,9 +4,9 @@
    Usage: git clone --depth 1 https://github.com/RaidTheory/arcraiders-data /tmp/rt
           node tools/sync-item-data.js /tmp/rt            (rewrites data/items.js, prints a summary)
           node tools/sync-item-data.js /tmp/rt --check    (exits 1 if data/items.js would change)
-   With --summary FILE it also writes a Markdown list of the changes (used for the weekly PR).
+   With --summary FILE it also writes a Markdown list of the changes (used for the daily PR).
    Items the data set does not have keep their current entry, so hand-added wiki prices survive.
-   The weekly workflow (.github/workflows/sync-item-data.yml) runs this, then build-pages and build-api.
+   The daily workflow (.github/workflows/sync-item-data.yml) runs this, then build-pages and build-api.
    No dependencies; needs Node 14.14 or newer. */
 "use strict";
 var fs = require("fs");
@@ -185,7 +185,7 @@ if (priceChanges) { parts.push(priceChanges + " sell price" + (priceChanges === 
 if (recipeChanges) { parts.push(recipeChanges + " recipe" + (recipeChanges === 1 ? "" : "s")); }
 if (added) { parts.push(added + " new item" + (added === 1 ? "" : "s")); }
 if (farmChanged.length) { parts.push("where to find details for " + farmChanged.length + " item" + (farmChanged.length === 1 ? "" : "s")); }
-var note = "Weekly item data refresh from the RaidTheory data set: updated " + (parts.length ? parts.join(", ") : "weights and stack sizes") + ".";
+var note = "Daily item data refresh from the RaidTheory data set: updated " + (parts.length ? parts.join(", ") : "weights and stack sizes") + ".";
 var up = fs.readFileSync(UPDATES_JS, "utf8");
 up = replaceOnce(up, /^ARC\.DATA_CHANGES = \[\n/m, function (m) { return m + "    [" + JSON.stringify(shortDate) + ", " + JSON.stringify(note) + "],\n"; }, "ARC.DATA_CHANGES");
 up = up.replace(/^ARC\.DATA_UPDATED = ".*";$/m, "ARC.DATA_UPDATED = " + JSON.stringify(longDate) + ";");

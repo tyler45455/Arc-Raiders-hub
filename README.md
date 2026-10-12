@@ -25,7 +25,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Extras:** a dot on the Updates tab when there is something new, an offline indicator, and a Feedback button.
 - **Tools tab:** raid checklist, project helper with wiki presets (Expedition stages, Trophy Display and past projects) that compare what a project needs with your tracker and side-by-side item compare, weapon compare and a loadout builder that checks carried weight against your augment. Backups can be copied as a short transfer code, and the browser keeps automatic snapshots.
 - **Crafting planner (Tools tab):** pick a craftable item and a quantity to see every material it takes down to basic parts, checked against your tracker, with the workbenches needed. Save it as a project or share it as a link.
-- **Loot value (Tools tab):** ranks items by sell price per kg or per stash slot, and marks the ones your quests, projects or goals still need. Its Price changes list shows every sell price change the weekly sync has recorded since Oct 11, 2026; item pages show the latest one.
+- **Loot value (Tools tab):** ranks items by sell price per kg or per stash slot, and marks the ones your quests, projects or goals still need. Its Price changes list shows every sell price change the daily sync has recorded since Oct 11, 2026; item pages show the latest one.
 - **Stash worth (Tools tab):** adds up the sell value of everything in your tracker and lists the spare items to sell first, by slots freed or coins earned.
 - **Weapon upgrade path (Tools tab):** every Gunsmith step from the tier you have to the one you want, with total materials and what your tracker still needs.
 - **Home tab:** a start screen with your next raid, the closest workshop upgrade, goals, raid stats and stash worth.
@@ -50,7 +50,7 @@ Use the **Report** button on any item to open a pre-filled GitHub issue, or [ope
 
 Recycling data comes from the [ARC Raiders Wiki](https://arcraiders.wiki) (CC BY-SA 4.0), using the "Recycled from" tables on the material pages. Weapon and gear stats come from the wiki's weapon and equipment pages; a dash means the wiki has no value yet. Only nine materials are loaded (Metal Parts, Plastic Parts, Rubber Parts, Chemicals, Fabric, Wires, ARC Alloy, Oil and Canister), so items that also break into other materials are marked **partial**. Wiki pages are dated April to October 2026, so numbers can lag behind the game.
 
-Sell prices, weights, stack sizes and crafting recipes come from [RaidTheory/arcraiders-data](https://github.com/RaidTheory/arcraiders-data) (MIT, also behind arctracker.io) and were spot-checked against the wiki's Loot table. They are in `ITEMINFO` at the bottom of `data/items.js`. The same source fills "where to find" gaps the wiki leaves (area types, traders, weapon upgrades) in `FARM3`; wiki data always wins. A workflow re-reads that data set every Monday and opens a pull request when anything changed (see CONTRIBUTING.md).
+Sell prices, weights, stack sizes and crafting recipes come from [RaidTheory/arcraiders-data](https://github.com/RaidTheory/arcraiders-data) (MIT, also behind arctracker.io) and were spot-checked against the wiki's Loot table. They are in `ITEMINFO` at the bottom of `data/items.js`. The same source fills "where to find" gaps the wiki leaves (area types, traders, weapon upgrades) in `FARM3`; wiki data always wins. A workflow re-reads that data set every day and opens a pull request when anything changed (see CONTRIBUTING.md).
 
 ## Contributing
 

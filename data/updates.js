@@ -30,13 +30,14 @@ ARC.FRESHNESS = [
     ["Skills", "October 10, 2026", "daily"],
     ["Recycling and salvage data", "October 9, 2026", ""],
     ["Weapons & gear", "October 9, 2026", ""],
-    ["Reference: enemies, traders, workshop, blueprints", "October 10, 2026", ""],
+    ["Reference: enemies, traders, workshop, blueprints", "October 10, 2026", "enemy armor, attacks, XP and maps read from the wiki October 12"],
     ["Project presets", "October 10, 2026", "Sheltered Retreat not added yet"],
     ["Trials (Season 6, Week 1)", "October 10, 2026", "wiki page last edited October 8"],
     ["Maps and update history", "October 10, 2026", "detail maps and room names added from in-game screenshots; difficulty and unlock not re-checked"]
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "ARC enemy cards in Reference > Enemies: each enemy now shows a threat rating, health, armor, attack, XP, the maps it is seen on, which of its drops you still need, and the quests that involve it. Filter by type, map, or enemies that drop what you need. The Raid prep on the Maps tab lists the ARC seen on that map."],
     ["Oct 12, 2026", "Quests: added Wires Crossed (Celeste, after Exploring Pendola Pass), which is now on the wiki. To The Skies now lists its maps, the four ARC parts you install and its full objectives, and both it and Exploring Pendola Pass now follow Off The Radar. The Data freshness table at the bottom of the site now shows which parts are re-checked every day."],
     ["Oct 12, 2026", "New Home tab: your next raid from the quest route, the workshop upgrade you are closest to, goals, raid log stats and stash worth on one screen, each with a button to the full tool. Once you have saved progress the site opens on Home; untick the box at the bottom to keep opening on Recycle."],
     ["Oct 12, 2026", "Data checks now run every day: sell prices, weights and recipes are re-checked against the RaidTheory data set daily instead of weekly, and wiki edits to quests, keys and skills are checked daily too, so changes reach the site sooner."],

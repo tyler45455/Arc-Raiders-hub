@@ -37,6 +37,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "New Shots to kill tool in the Tools tab: pick an ARC enemy to rank every weapon by how fast it deals that enemy's health (hits, magazines, rough time and armor penetration), or pick one weapon and tier for its numbers. Each enemy card has a Shots to kill button."],
     ["Oct 12, 2026", "Patch notes for you: the Updates tab marks game updates that are new since your last visit and highlights notes that mention the items, quests, blueprints, weapons and maps you track or use. When a new update is out, Home shows a short card about it. No pop-ups."],
     ["Oct 12, 2026", "Enemy sighting reports: every ARC enemy card has a Report a sighting button. Pick the map you saw it on and it opens a short GitHub issue; maps with enough reports show on the card under Players saw it. Your own sightings show on the card and count in the map filter and Raid prep."],
     ["Oct 12, 2026", "ARC enemy cards in Reference > Enemies: each enemy now shows a threat rating, health, armor, attack, XP, the maps it is seen on, which of its drops you still need, and the quests that involve it. Filter by type, map, or enemies that drop what you need. The Raid prep on the Maps tab lists the ARC seen on that map."],

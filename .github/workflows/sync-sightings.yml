@@ -1,0 +1,84 @@
+name: Daily enemy sightings
+
+# Every day, reads the "Enemy sighting" issues from the Report a sighting button. When two or more different
+# people reported the same enemy on a map its card does not list, it opens (or updates) a pull request adding
+# that map under "Players saw it". Reports whose map is already on the card get a thank-you comment and are closed.
+# Close a wrong report as "not planned" and it stops counting. Run it by hand from the Actions tab with "Run workflow".
+on:
+  schedule:
+    - cron: "41 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency: sighting-sync
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Read sighting reports
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --repo "${{ github.repository }}" --state all --limit 1000 --search 'in:title "Enemy sighting"' \
+            --json number,title,body,author,state,stateReason > "$RUNNER_TEMP/issues.json"
+      - name: Add sightings with enough reports
+        id: sync
+        run: |
+          node tools/sync-sightings.js "$RUNNER_TEMP/issues.json" --summary "$RUNNER_TEMP/summary.md" --close "$RUNNER_TEMP/close.json"
+          cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          if git diff --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Thank and close reports already on the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node -e 'for (const c of require(process.argv[1])) console.log(c.number + "\t" + c.text)' "$RUNNER_TEMP/close.json" |
+          while IFS="$(printf '\t')" read -r num text; do
+            gh issue close "$num" --repo "${{ github.repository }}" --reason completed --comment "$text" || echo "Could not close #$num"
+          done
+      - name: Rebuild pages, sw.js and public JSON
+        if: steps.sync.outputs.changed == 'true'
+        run: node tools/build-pages.js && node tools/build-api.js
+      # Pull requests opened by this workflow do not start the Check workflow, so run the same checks here.
+      - name: Checks (same as the Check workflow)
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          node tools/build-pages.js --check
+          node tools/build-api.js --check
+          npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
+          node tools/smoke-test.js
+      - name: Open or update the pull request
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B sighting-sync
+          git add -A data item map api sitemap.xml sw.js
+          git commit -q -m "Add enemy sightings reported by players"
+          git push -f origin sighting-sync
+          {
+            cat "$RUNNER_TEMP/summary.md"
+            echo
+            echo "Made by the daily enemy sightings workflow. The page, public JSON and smoke-test checks passed in that run; this pull request does not start the Check workflow on its own. After it is merged, the next daily run thanks the reporters and closes their issues."
+          } > "$RUNNER_TEMP/body.md"
+          pr=$(gh pr list --head sighting-sync --state open --json number --jq '.[0].number')
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --body-file "$RUNNER_TEMP/body.md"
+          elif ! gh pr create --base main --head sighting-sync --title "New enemy sightings from players" --body-file "$RUNNER_TEMP/body.md" --assignee "${{ github.repository_owner }}"; then
+            # Happens when "Allow GitHub Actions to create and approve pull requests" is off in the repository settings.
+            { echo "New enemy sightings are on the sighting-sync branch, but this workflow could not open a pull request."; echo;
+              echo "Open it here: https://github.com/${{ github.repository }}/compare/main...sighting-sync?expand=1"; echo;
+              cat "$RUNNER_TEMP/body.md"; } > "$RUNNER_TEMP/issue.md"
+            [ -n "$(gh issue list --state open --search 'in:title "New enemy sightings are ready"' --json number --jq '.[0].number')" ] ||
+              gh issue create --title "New enemy sightings are ready" --body-file "$RUNNER_TEMP/issue.md" --assignee "${{ github.repository_owner }}"
+          fi

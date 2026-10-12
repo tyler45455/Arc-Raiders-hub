@@ -2245,7 +2245,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       });
       if (enN) { enRows.sort(function (a, b) { return b[3] - a[3]; }); }
       enRows.forEach(function (r) { n++; out += enCard(r[0], r[1], r[2], enMiss); });
-      if (n) { out += '<p class="muted">Saw an enemy on a map its card does not list? Pick the map and press Report a sighting. It opens a short GitHub issue, and maps with enough reports are added to the card under Players saw it. Threat is this site&rsquo;s rough rating from health and armor. Health, armor, attacks, XP and maps come from each enemy&rsquo;s wiki page; a map list can be incomplete when the wiki only names some maps.</p>'; }
+      if (n) { out += '<p class="muted">Saw an enemy on a map its card does not list? Pick the map and press Report a sighting. It opens a short GitHub issue, and once two different people report the same map, a daily check adds it to the card under Players saw it. Threat is this site&rsquo;s rough rating from health and armor. Health, armor, attacks, XP and maps come from each enemy&rsquo;s wiki page; a map list can be incomplete when the wiki only names some maps.</p>'; }
     } else if (refSec === "traders") {
       total = TRADERS.length;
       var by = {}, order = [];

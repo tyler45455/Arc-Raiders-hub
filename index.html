@@ -308,6 +308,10 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
   .undobar { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
 }
 .subtabs { margin: 14px 0 12px; }
+/* Phones get a "Tool: name" button that opens every tool as a grid, instead of a long sideways strip. */
+#toolPick { display: none; width: 100%; justify-content: space-between; align-items: center; gap: 10px; margin: 14px 0 4px; padding: 10px 14px; font-size: 15px; text-align: left; }
+#toolPick b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#toolPick span { flex: none; color: var(--muted); font-size: 13px; }
 .homegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 12px; }
 .homecard h3 { margin: 0; font-size: 17px; }
 .homecard p { margin: 0; }
@@ -636,6 +640,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .chips.subtabs,#qTraders,#gearCats,#refChips,#mapChips,#chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;-webkit-overflow-scrolling:touch}
   .chips.subtabs::-webkit-scrollbar,#qTraders::-webkit-scrollbar,#gearCats::-webkit-scrollbar,#refChips::-webkit-scrollbar,#mapChips::-webkit-scrollbar,#chips::-webkit-scrollbar{display:none}
   .chips.subtabs>*,#qTraders>*,#gearCats>*,#refChips>*,#mapChips>*,#chips>*{flex:none}
+  #toolPick{display:flex}
+  #toolTabs{display:none}
+  #toolTabs.open{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 12px;padding:0;overflow:visible}
+  #toolTabs.open .chip{border-radius:8px;padding:9px 10px;font-size:14px;text-align:left;white-space:normal;line-height:1.25}
 }
 /* phone: bottom bar shows the main tabs plus a More menu */
 .topbtns .langsel { width: auto; }
@@ -3193,7 +3201,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     ["#shopOut", "In the shopping list, press Where to farm this on any item to see its area types, matching places on the maps, ARC drops, traders and quests.", "tracker"],
     ["#resetEverythingBtn", "Reset everything to default clears your missions, counts and saved data back to zero. It asks you to press twice.", "tracker"],
     ["#tab-quests", "Quests: tick them off to unlock the next ones and see what to hand in.", "quests"],
-    ["#toolTabs", "Tools: each tool has its own tab, such as checklists, loadouts, saved projects and Keep or recycle. Squad checklists can be shared by link.", "tools"],
+    ["#toolNav", "Tools: each tool has its own tab, such as checklists, loadouts, saved projects and Keep or recycle. Squad checklists can be shared by link.", "tools"],
     ["#mapFind", "Maps: find a room on any map by name, then tap a map to open it enlarged. The enlarged map has much more detail.", "maps"],
     ["#mapCard", "In the enlarged map you can drag, pinch or scroll to zoom, search rooms, add your own pins and copy a link to the spot.", "maps"],
     ["#tab-site", "Site changes: every update to the site, newest first.", "site"],
@@ -4301,6 +4309,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         clearTimeout(window.__rst); window.__rst = setTimeout(function () { t.setAttribute("data-armed", "0"); t.textContent = "Reset everything to default"; }, 5000);
       }
     } else if (a === "toolTab") { toolShow(t.getAttribute("data-ti"));
+    } else if (a === "toolPick") { toolPickOpen(!document.getElementById("toolTabs").classList.contains("open"));
     } else if (a === "rlAdd") {
       var rlm = document.getElementById("rlMap").value, rlv = document.getElementById("rlVal").value.trim();
       raids.push({ t: Date.now(), m: rlm, o: document.getElementById("rlOut").value === "d" ? "d" : "x", v: rlv === "" ? null : Math.max(0, Math.min(1e7, parseInt(rlv, 10) || 0)), n: document.getElementById("rlNote").value.trim().slice(0, 60) });
@@ -5002,6 +5011,15 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     toolIdx = i; save("arcHubToolTab", i);
     Array.prototype.forEach.call(tools, function (t, k) { t.hidden = k !== i; });
     Array.prototype.forEach.call(document.querySelectorAll("#toolTabs .chip"), function (b, k) { b.setAttribute("aria-pressed", k === i ? "true" : "false"); });
+    toolPickOpen(false);
+  }
+  function toolPickOpen(on) {
+    var pick = document.getElementById("toolPick"), nav = document.getElementById("toolTabs");
+    if (!pick || !nav) { return; }
+    var tools = document.querySelectorAll("#panel-tools > .tool"), h = tools[toolIdx] && tools[toolIdx].querySelector("h3");
+    nav.classList.toggle("open", on);
+    pick.setAttribute("aria-expanded", on ? "true" : "false");
+    pick.innerHTML = "<b>" + esc(h ? h.textContent : "Tool") + "</b><span>" + (on ? "&#9650;" : "All " + tools.length + " &#9660;") + "</span>";
   }
   function toolsSubInit() {
     var tools = document.querySelectorAll("#panel-tools > .tool");
@@ -5012,7 +5030,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var h = t.querySelector("h3");
       return '<button type="button" class="chip" data-action="toolTab" data-ti="' + i + '" aria-pressed="false">' + esc(h ? h.textContent : "Tool " + (i + 1)) + "</button>";
     }).join("");
-    tools[0].parentNode.insertBefore(nav, tools[0]);
+    var pick = document.createElement("button");
+    pick.type = "button"; pick.className = "btn ghost"; pick.id = "toolPick"; pick.setAttribute("data-action", "toolPick"); pick.setAttribute("aria-controls", "toolTabs");
+    var box = document.createElement("div");
+    box.id = "toolNav"; box.appendChild(pick); box.appendChild(nav);
+    tools[0].parentNode.insertBefore(box, tools[0]);
     toolShow(toolIdx);
   }
   function verifiedInit() {

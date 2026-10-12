@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "Fixed: ARC Tracker sync now copies every item in your stash into the Stash tab, not only items you already had a count for (that was an opt-in box that was off by default)."],
     ["Oct 12, 2026", "New look for Home, Recycle and Quests, matching the Stash and Tracker tabs: summary tiles at the top of Home and Quests, cards with a colored edge (item rarity on Recycle, open, done or locked on Quests), quieter Tag, Note, Link and Report buttons, and the quest share and code tools tucked into one Share or load progress box."],
     ["Oct 12, 2026", "ARC Tracker sync now shows your raider level: on a Raider level card at the top of Home and in the sync line on the Stash tab."],
     ["Oct 12, 2026", "The Tracker tab is now just the materials you are looking for, styled like the Stash tab: add a material and how many you need, then count it up with +1, +5 or +10. The shopping list, workshop planner, ARC Tracker sync and history moved to the Stash tab, and backups and Reset everything moved to Home. Your saved counts did not change."],

@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "Workshop upgrade path in the Tracker tab: choose to plan the next level, the next two, or every level left. The planner lists those levels in order with how ready you are and what each unlocks, then every item you still need with the ARC enemies that drop it, the area types to search and the best items to recycle. The shopping list follows the same choice."],
     ["Oct 12, 2026", "Enemy sighting reports are now checked every day: once two different people report the same enemy on a map its card does not list, the map is added under Players saw it, and reports already on the card are closed with a thank-you."],
     ["Oct 12, 2026", "Quests now show where to go: quests whose objectives name a place on the map list it under Where, and Show on map opens the enlarged map with each spot marked and numbered by objective."],
     ["Oct 12, 2026", "Quests: added Ruins And Reverberations (Celeste, Pendola Pass, after Wires Crossed), new on the wiki today. Bring a Spotter Relay; rewards are 2 Smoke Grenades, Looting Mk. 3 (Safekeeper), 3 Electrical Components and 2 Speaker Components."],

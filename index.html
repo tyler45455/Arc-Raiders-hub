@@ -534,6 +534,15 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .wsrow .wsh { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; }
 .wsrow .wsh > span { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
 .wsrow label { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; padding: 0; border-radius: 0; }
+.wsahead { display: flex; align-items: center; gap: 8px; margin: 4px 0 8px; }
+.wsahead select { width: auto; font: inherit; padding: 4px 6px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; }
+.wsph { margin: 14px 0 4px; }
+.wssteps { margin: 6px 0 10px; padding-left: 22px; }
+.wssteps li { margin: 0 0 10px; }
+.wsstep { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; }
+.wsstep .ok { color: var(--good); }
+.wswhere { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 4px; }
+.wswhere .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); min-width: 58px; }
 .wsrow select { width: auto; min-width: 56px; font: inherit; padding: 4px 6px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; }
 .tagbtn.on { color: var(--warm); border-color: var(--warm); }
 .cmpl td, .cmpl th { vertical-align: top; }
@@ -804,7 +813,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
     <details class="tool" id="wsTool" open>
       <summary><b>Workshop planner</b></summary>
-      <p class="muted">Tick how many levels of each station you have finished. Each station&rsquo;s next level goes on the shopping list unless you untick &ldquo;Include&rdquo;.</p>
+      <p class="muted">Tick how many levels of each station you have finished. Pick how far to plan ahead: those levels go on the shopping list (untick &ldquo;Include&rdquo; to leave a station out), and the upgrade path below lists them in order with everything they need and where to find it.</p>
       <div id="wsPlanner"></div>
     </details>
 
@@ -2471,6 +2480,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var checklist = load("arcHubCheck", null) || DEFAULT_CHECK.map(function (t) { return { t: t, d: false }; });
   var wsDone = load("arcHubWs", {});
   var wsPlan = load("arcHubWsPlan", {});
+  var wsAhead = load("arcHubWsAhead", 1);
   var itemTags = load("arcHubTags", {});
   var mapNotes = load("arcHubMapNotes", {});
   var loadouts = load("arcHubLoadouts", []);
@@ -3113,10 +3123,62 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     WORKSHOP.forEach(function (w) { if (!by[w[0]]) { by[w[0]] = []; out.push(w[0]); } by[w[0]].push(w); });
     return out.map(function (n) { return [n, by[n]]; });
   }
+  /* The levels still to build on each included station, up to "Plan ahead" levels per station. */
+  function wsPath() {
+    var out = [], ahead = parseInt(wsAhead, 10) || 1;
+    wsStations().forEach(function (st) {
+      if (wsPlan[st[0]] === false) { return; }
+      st[1].slice(Math.min(wsDone[st[0]] || 0, st[1].length)).slice(0, ahead).forEach(function (w) { out.push({ st: st[0], lvl: w[1], unlocks: w[3], need: qItems(w[2]) }); });
+    });
+    return out;
+  }
+  function wsEnemyOf(a) {
+    var n = String(a).replace(/\s*\(.*$/, "").trim(), hit = null;
+    ENEMIES.forEach(function (e) { if (e[0] === n || e[0] === "ARC " + n) { hit = e[0]; } });
+    return hit;
+  }
+  function wsWhere(m) {
+    var F = FARM[m] || {}, G = FARM2[m] || {}, A = F.a || G.a || [], T = F.t || G.t || [], parts = [], ens = [];
+    A.forEach(function (a) { var e = wsEnemyOf(a); if (e && ens.indexOf(e) === -1) { ens.push(e); } });
+    if (ens.length) { parts.push('<span class="lbl">ARC</span>' + ens.map(function (e) { return '<button type="button" class="btn ghost qmapbtn" data-action="enOpen" data-n="' + esc(e) + '">' + esc(e) + "</button>"; }).join("")); }
+    var areas = T.filter(function (x) { return x !== "ARC"; });
+    if (areas.length) { parts.push('<span class="lbl">Areas</span>' + areas.map(function (x) { return '<span class="y">' + esc(x) + "</span>"; }).join("")); }
+    var b = bestSources(m);
+    if (b.length) { parts.push('<span class="lbl">Recycle</span><span class="muted">' + b.map(esc).join(", ") + "</span>"); }
+    return parts.length ? parts.map(function (h) { return '<div class="wswhere">' + h + "</div>"; }).join("") : '<div class="muted">The wiki lists no sources yet.</div>';
+  }
+  function renderWsPath() {
+    var path = wsPath();
+    if (!path.length) { return '<div class="empty-line">Nothing left to build on the stations you included.</div>'; }
+    var tot = {}, order = [];
+    path.forEach(function (p) { p.need.forEach(function (r) { if (!tot[r.n]) { tot[r.n] = 0; order.push(r.n); } tot[r.n] += r.q; }); });
+    /* Spend what you have on each level in order, so a level only counts as ready when the earlier ones are covered too. */
+    var left = {}; order.forEach(function (n) { left[n] = tracker[n] || 0; });
+    var steps = path.map(function (p) {
+      var got = 0, all = 0, miss = [];
+      p.need.forEach(function (r) { var h = Math.min(left[r.n], r.q); left[r.n] -= h; got += h; all += r.q; if (h < r.q) { miss.push((r.q - h) + "× " + r.n); } });
+      var pct = all ? Math.round(got * 100 / all) : 100;
+      return '<li><div class="wsstep"><b>' + esc(p.st) + " level " + esc(p.lvl) + '</b><span class="' + (pct >= 100 ? "ok" : "muted") + '">' + (pct >= 100 ? "Ready to build &#10003;" : pct + "% ready") + "</span></div>" +
+        homeBar(pct) + (miss.length ? '<div class="muted">Still need: ' + esc(miss.join(", ")) + "</div>" : "") +
+        '<div class="muted">Unlocks: ' + esc(p.unlocks) + "</div></li>";
+    });
+    var rows = order.map(function (n) { return { n: n, need: tot[n], have: tracker[n] || 0, miss: Math.max(0, tot[n] - (tracker[n] || 0)) }; })
+      .sort(function (a, b) { return (b.miss > 0) - (a.miss > 0) || b.miss - a.miss || a.n.localeCompare(b.n); });
+    var missing = rows.filter(function (r) { return r.miss; }).length, covered = rows.length - missing;
+    rows = rows.filter(function (r) { return r.miss; });
+    return '<h4 class="wsph">Upgrade path</h4><p class="muted">' + path.length + " level" + (path.length === 1 ? "" : "s") + " to build; " + (missing ? missing + " item" + (missing === 1 ? "" : "s") + " still short." : "you have everything for them.") + "</p>" +
+      '<ol class="wssteps">' + steps.join("") + "</ol>" +
+      (missing ? '<h4 class="wsph">What you still need and where to find it</h4>' : "") + (covered ? '<p class="muted">' + covered + " item" + (covered === 1 ? " is" : "s are") + " already covered by what you have.</p>" : "") +
+      rows.map(function (r) {
+        return '<div class="shoprow wsneed' + (r.miss ? "" : " covered") + '"><div class="sh1"><b>' + esc(r.n) + '</b><span class="shmiss">' + (r.miss ? r.miss + " missing" : "covered &#10003;") + '</span><span class="muted">' + Math.min(r.have, r.need) + " / " + r.need + "</span></div>" +
+          (r.miss ? wsWhere(r.n) + '<div class="acts"><button class="btn ghost" type="button" data-action="shopWhere" data-m="' + esc(r.n) + '" aria-expanded="' + (shopWhereOpen[r.n] ? "true" : "false") + '">' + (shopWhereOpen[r.n] ? "Hide where to farm" : "Where to farm this") + "</button></div>" + (shopWhereOpen[r.n] ? farmWhere(r.n) : "") : "") + "</div>";
+      }).join("");
+  }
   function renderPlanner() {
     var box = document.getElementById("wsPlanner");
     if (!box) { return; }
-    box.innerHTML = wsStations().map(function (st) {
+    var ahead = parseInt(wsAhead, 10) || 1;
+    box.innerHTML = '<label class="wsahead">Plan ahead <select id="wsAhead" aria-label="How many levels to plan ahead">' + [[1, "Next level"], [2, "Next 2 levels"], [99, "Every level left"]].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === ahead ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select></label>" + wsStations().map(function (st) {
       var n = st[0], rows = st[1], done = Math.min(wsDone[n] || 0, rows.length), next = rows[done];
       var opts = ""; for (var i = 0; i <= rows.length; i++) { opts += '<option value="' + i + '"' + (i === done ? " selected" : "") + ">" + i + "</option>"; }
       var body = next ? qItems(next[2]).map(function (r) {
@@ -3125,7 +3187,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       }).join("") : '<div class="empty-line">All levels done.</div>';
       return '<div class="wsrow"><div class="wsh"><b>' + esc(n) + '</b><span><label>Levels done <select data-wsdone="' + esc(n) + '" aria-label="' + esc(n) + ' levels done">' + opts + "</select> of " + rows.length + '</label> <label class="tog"><input type="checkbox" data-wsplan="' + esc(n) + '"' + (wsPlan[n] !== false ? " checked" : "") + "> Include</label></span></div>" +
         (next ? '<div class="muted">Next: level ' + esc(next[1]) + "</div>" : "") + body + "</div>";
-    }).join("");
+    }).join("") + '<div id="wsPath">' + renderWsPath() + "</div>";
   }
   var shopSrc = load("arcHubShopSrc", {});
   var autoSpend = load("arcHubAutoSpend", false);
@@ -3137,11 +3199,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (shopSrc.quest !== false) { qActive().forEach(function (q) { q.req.forEach(function (r) { add(r.n, r.q, "quest", q.name); }); }); }
     if (shopSrc.project !== false) { projects.forEach(function (p) { p.needs.forEach(function (n) { add(n[0], n[1], "project", p.name); }); }); }
     if (shopSrc.workshop !== false) {
-      wsStations().forEach(function (st) {
-        if (wsPlan[st[0]] === false) { return; }
-        var next = st[1][Math.min(wsDone[st[0]] || 0, st[1].length)];
-        if (next) { qItems(next[2]).forEach(function (r) { add(r.n, r.q, "workshop", st[0] + " L" + next[1]); }); }
-      });
+      wsPath().forEach(function (p) { p.need.forEach(function (r) { add(r.n, r.q, "workshop", p.st + " L" + p.lvl); }); });
     }
     if (shopSrc.goal !== false) { Object.keys(goals).forEach(function (m) { if (goals[m] > (t[m] || 0)) { t[m] = goals[m]; if (!src[m]) { src[m] = []; } if (src[m].indexOf("goal") === -1) { src[m].push("goal"); } } }); }
     var rows = [];
@@ -4895,6 +4953,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (autoSpend && newL > oldL) { var wr = WORKSHOP.filter(function (w) { return w[0] === v; }); for (var li = oldL; li < newL && li < wr.length; li++) { spend(qItems(wr[li][2]), v + " level " + wr[li][1]); } }
       renderTracker(); return;
     }
+    if (el.id === "wsAhead") { wsAhead = parseInt(el.value, 10) || 1; save("arcHubWsAhead", wsAhead); renderTracker(); return; }
     if ((v = el.getAttribute("data-wsplan")) !== null) { if (el.checked) { delete wsPlan[v]; } else { wsPlan[v] = false; } save("arcHubWsPlan", wsPlan); renderTracker(); return; }
     if ((v = el.getAttribute("data-shopsrc")) !== null) { shopSrc[v] = el.checked; save("arcHubShopSrc", shopSrc); renderTracker(); return; }
     if (el.getAttribute("data-invhave") !== null) { return; }

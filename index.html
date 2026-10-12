@@ -853,8 +853,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <div id="inventory"></div>
     <details class="card" id="arctCard">
       <summary>Sync from ARC Tracker</summary>
-      <p class="muted" style="margin-top:8px;">Copies your completed quests and your stash from <a href="https://arctracker.io" target="_blank" rel="noopener">ARC Tracker</a>. ARC Tracker gets them from your game account with its Link app. This site only reads them from ARC Tracker and never touches the game.</p>
-      <p class="muted" style="margin-top:8px;">In ARC Tracker, open <a href="https://arctracker.io/settings" target="_blank" rel="noopener">Settings</a>, then Developer Access, and create a key with only <b>Quests</b> and <b>Stash</b> ticked. Paste it here. The key stays in this browser and is only sent to arctracker.io.</p>
+      <p class="muted" style="margin-top:8px;">Copies your completed quests, stash, workshop levels, learned blueprints, project stages and raid history from <a href="https://arctracker.io" target="_blank" rel="noopener">ARC Tracker</a>. ARC Tracker gets them from your game account with its Link app. Skill trees are not in ARC Tracker's API, so set those on the Skills page. This site only reads them from ARC Tracker and never touches the game.</p>
+      <p class="muted" style="margin-top:8px;">In ARC Tracker, open <a href="https://arctracker.io/settings" target="_blank" rel="noopener">Settings</a>, then Developer Access, and create a key with every permission ticked (Profile, Quests, Stash, Hideout, Projects, Rounds and Blueprints). Paste it here. A key with fewer permissions still works; the parts it cannot read are skipped. After the first sync, the site syncs by itself each time you open it. The key stays in this browser and is only sent to arctracker.io.</p>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin-top:8px;">
         <div><label for="arctUser">ARC Tracker key (starts with arc_u1_)</label><input type="password" id="arctUser" autocomplete="off" spellcheck="false"></div>
         <div id="arctAppRow"><label for="arctApp">App key (starts with arc_k1_)</label><input type="password" id="arctApp" autocomplete="off" spellcheck="false"></div>
@@ -862,6 +862,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         <label class="tog"><input type="checkbox" id="arctAuto"> Sync by itself when I open the site</label>
       </div>
       <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
+      <p class="muted" id="arctWho" style="margin-top:8px;" hidden></p>
       <p class="muted" id="arctMsg" role="status" style="margin-top:8px;"></p>
       <div id="arctOut"></div>
     </details>
@@ -1861,62 +1862,211 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     return page(1);
   }
+  /* Each part is optional: a key without that permission (403) or an account with nothing there (404) only skips that part. */
+  function arctTry(pr) { return pr.then(function (j) { return { j: j }; }, function (e) { if (e && (e.status === 403 || e.status === 404)) { return { e: e }; } throw e; }); }
+  function arctPaged(path, params, keys, size, max) {
+    var all = [];
+    function page(p) {
+      var q = {}; Object.keys(params).forEach(function (k) { q[k] = params[k]; });
+      if (path === "rounds") { q.limit = size; q.offset = (p - 1) * size; } else { q.per_page = size; q.page = p; }
+      return arctGet(path, q).then(function (j) {
+        var l = arctList(j, keys); all = all.concat(l);
+        return l.length >= size && p < max ? page(p + 1) : all;
+      });
+    }
+    return page(1);
+  }
+  function arctNum(e, keys) {
+    for (var i = 0; i < keys.length; i++) { var v = e[keys[i]]; if (typeof v === "string" && /^\d+(\.\d+)?$/.test(v)) { v = +v; } if (typeof v === "number" && isFinite(v)) { return v; } }
+    return null;
+  }
+  function arctStr(e, keys) {
+    for (var i = 0; i < keys.length; i++) { var v = e[keys[i]]; if (v && typeof v === "object") { v = v.slug || v.id || arctText(v.name); } if (v !== undefined && v !== null && v !== "") { return String(v); } }
+    return "";
+  }
+  var ARCT_ST = { weapon_bench: "Gunsmith", equipment_bench: "Gear Bench", med_station: "Medical Lab", medical_station: "Medical Lab", explosives_bench: "Explosives Station", utility_bench: "Utility Station", refiner: "Refiner", research_station: "Research Station", research_bench: "Research Station", research: "Research Station" };
+  var ARCT_MAP = { "dam-battleground": "Dam Battlegrounds", "dam-battlegrounds": "Dam Battlegrounds", "the-spaceport": "Spaceport", spaceport: "Spaceport", "blue-gate": "The Blue Gate", "the-blue-gate": "The Blue Gate", "stella-montis": "Stella Montis", "buried-city": "Buried City", "riven-tides": "Riven Tides", "pendola-pass": "Pendola Pass" };
+  /* Hideout: station levels, as a list of stations or as { station: level }. */
+  function arctHideout(j) {
+    var d = j && j.data !== undefined ? j.data : j, rows = [], six = arctIndex(wsStations().map(function (s) { return s[0]; })), out = {};
+    if (d && typeof d === "object" && !Array.isArray(d)) { ["stations", "hideout", "modules", "benches", "workshop"].forEach(function (k) { if (d[k] && typeof d[k] === "object" && !Array.isArray(d[k]) && !rows.length) { d = d[k]; } }); }
+    if (d && typeof d === "object" && !Array.isArray(d) && Object.keys(d).some(function (k) { return typeof d[k] === "number"; })) {
+      Object.keys(d).forEach(function (k) { if (typeof d[k] === "number") { rows.push({ id: k, level: d[k] }); } });
+    } else { rows = arctList(j, ["stations", "hideout", "modules", "benches", "workshop", "items", "results"]); }
+    rows.forEach(function (e) {
+      if (!e || typeof e !== "object") { return; }
+      var id = arctStr(e, ["id", "stationId", "station_id", "moduleId", "module_id", "slug", "key"]).toLowerCase(), nm = arctName(e) || arctText(e.station && e.station.name);
+      var st = ARCT_ST[id] || ARCT_ST[qNormA(nm).replace(/ /g, "_")] || six[qNormA(nm)] || six[id] || "";
+      var lv = arctNum(e, ["level", "currentLevel", "current_level", "tier", "lvl", "upgradeLevel", "upgrade_level"]);
+      if (st && lv !== null) { out[st] = Math.max(out[st] || 0, Math.floor(lv)); }
+    });
+    return out;
+  }
+  /* Projects: how many stages are finished, read loosely. null when the response does not say. */
+  function arctStages(e, total) {
+    if (arctFlag(e) === true) { return total; }
+    var arr = e.phases || e.stages || e.steps;
+    if (Array.isArray(arr) && arr.length) { return arr.filter(function (s) { return arctFlag(s) === true; }).length; }
+    var n = arctNum(e, ["completedPhases", "completed_phases", "phasesCompleted", "phases_completed", "completedStages", "completed_stages", "stagesCompleted", "stages_completed"]);
+    if (n !== null) { return n; }
+    n = arctNum(e, ["currentPhase", "current_phase", "phase", "currentStage", "current_stage", "stage"]);
+    return n === null ? null : Math.max(0, n - 1);
+  }
+  /* Rounds: map, outcome, time and haul for the raid log. */
+  function arctRound(e, mix) {
+    if (!e || typeof e !== "object") { return null; }
+    var slug = arctStr(e, ["map", "mapSlug", "map_slug", "mapId", "map_id", "mapName", "map_name"]).toLowerCase();
+    var m = ARCT_MAP[slug] || ARCT_MAP[idOf(slug)] || mix[qNormA(slug)] || mix[idOf(slug)] || "";
+    var oc = arctStr(e, ["outcome", "result", "status", "extractionStatus", "extraction_status"]).toLowerCase(), o = "";
+    if (e.extracted === true || e.survived === true || /extract|surviv|success|escap|won/.test(oc)) { o = "x"; } else if (e.extracted === false || e.survived === false || /die|dead|death|kill|fail|lost|kia|eliminat/.test(oc)) { o = "d"; }
+    var tv = e.endedAt || e.ended_at || e.finishedAt || e.finished_at || e.startedAt || e.started_at || e.playedAt || e.played_at || e.createdAt || e.created_at || e.date || e.timestamp, t;
+    t = typeof tv === "number" ? (tv < 1e12 ? tv * 1000 : tv) : Date.parse(tv);
+    if (!m || !o || !(t > 0)) { return null; }
+    var v = arctNum(e, ["lootValue", "loot_value", "extractedValue", "extracted_value", "haulValue", "haul_value", "totalValue", "total_value", "value"]);
+    var id = arctStr(e, ["id", "roundId", "round_id", "matchId", "match_id"]);
+    return { t: t, m: m, o: o, v: v === null || o === "d" ? null : Math.max(0, Math.min(1e7, Math.round(v))), n: "", s: "arct:" + (id || t + m) };
+  }
+  var ARCT_PARTS = [["profile", "Profile"], ["questsDone", "Quests"], ["questsOpen", "Quests"], ["stash", "Stash"], ["hideout", "Hideout"], ["blueprints", "Blueprints"], ["projects", "Projects"], ["rounds", "Rounds"]];
   function arctFetch() {
-    return Promise.all([arctGet("quests", { locale: "en", filter: "completed" }), arctGet("quests", { locale: "en", filter: "incomplete" }), arctStash()]).then(function (r) {
+    return Promise.all([
+      arctTry(arctGet("profile", { locale: "en" })),
+      arctTry(arctGet("quests", { locale: "en", filter: "completed" })),
+      arctTry(arctGet("quests", { locale: "en", filter: "incomplete" })),
+      arctTry(arctStash()),
+      arctTry(arctGet("hideout", { locale: "en" })),
+      arctTry(arctPaged("blueprints", { locale: "en", filter: "learned" }, ["blueprints", "items", "results"], 500, 4)),
+      arctTry(arctGet("projects", { locale: "en" })),
+      arctTry(arctPaged("rounds", { locale: "en" }, ["rounds", "items", "results"], 200, 3))
+    ]).then(function (r) {
+      var missing = [], failed = r.filter(function (x) { return x.e; });
+      if (failed.length === r.length) { throw failed[0].e; }
+      r.forEach(function (x, i) { if (x.e && x.e.status === 403 && missing.indexOf(ARCT_PARTS[i][1]) === -1) { missing.push(ARCT_PARTS[i][1]); } });
+      var plan = { qAdd: [], qDel: [], tSet: [], wsSet: [], bpAdd: [], bpDel: [], pAdd: [], pDel: [], rAdd: [], unknownQ: [], unknownI: [], missing: missing, haveQ: false, haveS: false, who: "" };
+      /* Profile */
+      if (r[0].j) {
+        var pd = r[0].j.data !== undefined ? r[0].j.data : r[0].j; pd = pd && (pd.profile || pd.user || pd);
+        if (pd && typeof pd === "object") {
+          var who = arctText(pd.username || pd.displayName || pd.display_name || pd.name || pd.embarkId || pd.embark_id), lv = arctNum(pd, ["level", "playerLevel", "player_level"]);
+          plan.who = who ? who + (lv !== null ? " (level " + lv + ")" : "") : "";
+        }
+      }
+      /* Quests */
       var qix = arctIndex(QUESTS.map(function (q) { return q.name; }));
-      var iix = arctIndex(allMaterials().concat(items.map(function (it) { return it.name; })));
-      var done = {}, open = 0, unknownQ = [], unknownI = [], counts = {};
-      arctList(r[0], ["quests", "items", "results"]).forEach(function (e) {
-        if (arctFlag(e) === false) { open++; return; }
-        var n = arctFind(qix, e); if (n) { done[n] = 1; } else { unknownQ.push(arctName(e) || arctId(e)); }
-      });
-      arctList(r[1], ["quests", "items", "results"]).forEach(function (e) {
-        if (arctFlag(e) === true) { var n = arctFind(qix, e); if (n) { done[n] = 1; } else { unknownQ.push(arctName(e) || arctId(e)); } } else { open++; }
-      });
-      var stash = r[2];
-      stash.forEach(function (e) {
-        var n = arctFind(iix, e);
-        if (n) { counts[n] = (counts[n] || 0) + arctQty(e); } else { unknownI.push(arctName(e) || arctId(e)); }
-      });
-      var nq = Object.keys(done).length;
-      var plan = { qAdd: [], qDel: [], tSet: [], unknownQ: unknownQ, unknownI: unknownI, haveQ: nq + open > 0, haveS: stash.length > 0 };
+      var done = {}, open = 0;
+      if (r[1].j) {
+        arctList(r[1].j, ["quests", "items", "results"]).forEach(function (e) {
+          if (arctFlag(e) === false) { open++; return; }
+          var n = arctFind(qix, e); if (n) { done[n] = 1; } else { plan.unknownQ.push(arctName(e) || arctId(e)); }
+        });
+      }
+      if (r[2].j) {
+        arctList(r[2].j, ["quests", "items", "results"]).forEach(function (e) {
+          if (arctFlag(e) === true) { var n = arctFind(qix, e); if (n) { done[n] = 1; } else { plan.unknownQ.push(arctName(e) || arctId(e)); } } else { open++; }
+        });
+      }
+      plan.haveQ = !!(r[1].j && r[2].j) && Object.keys(done).length + open > 0;
       if (plan.haveQ) {
         plan.qAdd = Object.keys(done).filter(function (k) { return !qDone[k]; });
         plan.qDel = Object.keys(qDone).filter(function (k) { return !done[k]; });
       }
+      /* Stash */
+      var stash = r[3].j || [], counts = {};
+      var iix = arctIndex(allMaterials().concat(items.map(function (it) { return it.name; })));
+      stash.forEach(function (e) {
+        var n = arctFind(iix, e);
+        if (n) { counts[n] = (counts[n] || 0) + arctQty(e); } else { plan.unknownI.push(arctName(e) || arctId(e)); }
+      });
+      plan.haveS = stash.length > 0;
       if (plan.haveS) {
         Object.keys(tracker).forEach(function (k) { var n = counts[k] || 0; if (n !== tracker[k]) { plan.tSet.push([k, n]); } });
         if (arctSet.add) { Object.keys(counts).forEach(function (k) { if (!(k in tracker) && counts[k] > 0) { plan.tSet.push([k, counts[k]]); } }); }
       }
+      /* Hideout: workshop station levels */
+      if (r[4].j) {
+        var hw = arctHideout(r[4].j), sts = wsStations();
+        sts.forEach(function (s) { if (s[0] in hw) { var nl = Math.min(hw[s[0]], s[1].length); if (nl !== (wsDone[s[0]] || 0)) { plan.wsSet.push([s[0], nl]); } } });
+      }
+      /* Blueprints learned. Removals only when most names matched, so a naming change on their side cannot wipe the list. */
+      if (r[5].j && r[5].j.length) {
+        var bix = arctIndex(BPS.map(function (b) { return b[0]; })), learned = {}, miss = 0;
+        r[5].j.forEach(function (e) {
+          if (e && typeof e === "object" && (e.learned === false || e.isLearned === false)) { return; }
+          var nm = arctName(e).replace(/\s*blueprint$/i, ""), id = arctId(e).replace(/[_-]?blueprint$/i, "");
+          var n = bix[qNormA(nm)] || (id && (bix[id] || bix[id.toLowerCase()])) || "";
+          if (n) { learned[n] = 1; } else { miss++; }
+        });
+        plan.bpAdd = Object.keys(learned).filter(function (k) { return !bpOwned[k]; });
+        if (miss * 2 <= r[5].j.length) { plan.bpDel = Object.keys(bpOwned).filter(function (k) { return bpOwned[k] && !learned[k] && bix[qNormA(k)]; }); }
+      }
+      /* Projects: keep one saved project per running project, set to the stage you are on. */
+      if (r[6].j) {
+        var pix = arctIndex(PRESETS.map(function (p) { return p.name; }));
+        arctList(r[6].j, ["projects", "items", "results"]).forEach(function (e) {
+          if (!e || typeof e !== "object") { return; }
+          var pn = pix[qNormA(arctName(e).replace(/\s*project$/i, ""))] || pix[arctId(e).replace(/_project$/i, "")] || "";
+          var pr = pn && PRESETS.filter(function (p) { return p.name === pn; })[0];
+          if (!pr || pr.ended) { return; }
+          var sd = arctStages(e, pr.stages.length);
+          if (sd === null) { return; }
+          var src = "arct:" + pr.name, cur = projects.filter(function (p) { return p.src === src; })[0];
+          var want = sd < pr.stages.length ? pr.name + ", stage " + (sd + 1) + ": " + pr.stages[sd].n : "";
+          if (cur && cur.name !== want) { plan.pDel.push(cur.name); }
+          if (want && (!cur || cur.name !== want) && !projects.some(function (p) { return p.name === want; })) { plan.pAdd.push({ name: want, needs: pr.stages[sd].needs.map(function (n) { return [n[0], n[1]]; }), src: src }); }
+        });
+      }
+      /* Rounds: new raids for the raid log */
+      if (r[7].j) {
+        var mix = arctIndex(MAPS.map(function (m) { return m.name; })), seen = {};
+        raids.forEach(function (x) { if (x.s) { seen[x.s] = 1; } });
+        r[7].j.forEach(function (e) { var x = arctRound(e, mix); if (x && !seen[x.s]) { seen[x.s] = 1; plan.rAdd.push(x); } });
+      }
       return plan;
     });
   }
+  function arctAny(p) { return !!(p.qAdd.length || p.qDel.length || p.tSet.length || p.wsSet.length || p.bpAdd.length || p.bpDel.length || p.pAdd.length || p.pDel.length || p.rAdd.length); }
   function arctErr(e) {
     if (e && e.status === 401) { return "ARC Tracker did not accept the key. Check that you pasted all of it."; }
-    if (e && e.status === 403) { return "The key needs the Quests and Stash permissions. Make a new key in ARC Tracker with both ticked."; }
+    if (e && e.status === 403) { return "The key has none of the permissions this needs. Make a new key in ARC Tracker with every permission ticked."; }
     if (e && e.status === 404) { return "ARC Tracker has no game data for this account yet. Sync with the Link app first."; }
     if (e && e.status === 429) { return "ARC Tracker is busy (too many requests). Try again in a while."; }
     return "Could not reach ARC Tracker. Check your connection and try again." + (e && e.message ? " (" + e.message + ")" : "");
   }
-  function arctSummary(p) {
+  function arctPl(n, one, many) { return n + " " + (n === 1 ? one : many || one + "s"); }
+  function arctSummary(p, past) {
     var bits = [];
-    if (p.qAdd.length) { bits.push(p.qAdd.length + " quest" + (p.qAdd.length === 1 ? "" : "s") + " to mark done"); }
-    if (p.qDel.length) { bits.push(p.qDel.length + " quest" + (p.qDel.length === 1 ? "" : "s") + " to mark not done"); }
-    if (p.tSet.length) { bits.push(p.tSet.length + " tracker count" + (p.tSet.length === 1 ? "" : "s") + " to change"); }
+    if (p.qAdd.length) { bits.push(arctPl(p.qAdd.length, "quest") + (past ? " marked done" : " to mark done")); }
+    if (p.qDel.length) { bits.push(arctPl(p.qDel.length, "quest") + (past ? " marked not done" : " to mark not done")); }
+    if (p.tSet.length) { bits.push(arctPl(p.tSet.length, "tracker count") + (past ? " changed" : " to change")); }
+    if (p.wsSet.length) { bits.push(arctPl(p.wsSet.length, "workshop level") + (past ? " updated" : " to update")); }
+    if (p.bpAdd.length) { bits.push(arctPl(p.bpAdd.length, "blueprint") + (past ? " marked learned" : " to mark learned")); }
+    if (p.bpDel.length) { bits.push(arctPl(p.bpDel.length, "blueprint") + (past ? " unmarked" : " to unmark")); }
+    if (p.pAdd.length || p.pDel.length) { bits.push(arctPl(Math.max(p.pAdd.length, p.pDel.length), "project stage") + (past ? " updated" : " to update")); }
+    if (p.rAdd.length) { bits.push(arctPl(p.rAdd.length, "raid") + (past ? " added to the raid log" : " to add to the raid log")); }
     return bits.join(", ");
+  }
+  function arctMissing(p) { return p.missing.length ? " The key cannot read " + p.missing.slice(0, -1).join(", ") + (p.missing.length > 1 ? " or " : "") + p.missing[p.missing.length - 1] + ", so " + (p.missing.length === 1 ? "that part was" : "those parts were") + " skipped. Make a new key with " + (p.missing.length === 1 ? "that permission" : "those permissions") + " ticked to sync " + (p.missing.length === 1 ? "it" : "them") + " too." : ""; }
+  function arctWho(p) {
+    if (p.who) { arctSet.who = p.who; save("arcHubArct", arctSet); }
+    var w = document.getElementById("arctWho"); if (w) { w.textContent = arctSet.who ? "Connected as " + arctSet.who + "." : ""; w.hidden = !arctSet.who; }
   }
   function arctShow() {
     var p = arctPlan, out = document.getElementById("arctOut"), msg = document.getElementById("arctMsg");
     if (!p) { out.innerHTML = ""; return; }
-    if (!p.haveQ && !p.haveS) { msg.textContent = "ARC Tracker sent no quests or stash for this account. Sync with the Link app first."; out.innerHTML = ""; return; }
-    if (!p.qAdd.length && !p.qDel.length && !p.tSet.length) { msg.textContent = "Everything already matches ARC Tracker."; out.innerHTML = ""; arctPlan = null; return; }
-    msg.textContent = "Found " + arctSummary(p) + ".";
+    arctWho(p);
+    if (!arctAny(p)) {
+      msg.textContent = (p.haveQ || p.haveS || p.who ? "Everything already matches ARC Tracker." : "ARC Tracker sent no game data for this account. Sync with the Link app first.") + arctMissing(p);
+      out.innerHTML = ""; arctPlan = null; arctSet.last = Date.now(); save("arcHubArct", arctSet); return;
+    }
+    msg.textContent = "Found " + arctSummary(p) + "." + arctMissing(p);
     function li(a) { return a.slice(0, 60).map(function (x) { return "<li>" + x + "</li>"; }).join("") + (a.length > 60 ? "<li>and " + (a.length - 60) + " more</li>" : ""); }
-    var h = "";
-    if (p.qAdd.length) { h += "<details><summary>Quests to mark done (" + p.qAdd.length + ")</summary><ul>" + li(p.qAdd.map(esc)) + "</ul></details>"; }
-    if (p.qDel.length) { h += "<details><summary>Quests to mark not done (" + p.qDel.length + ")</summary><ul>" + li(p.qDel.map(esc)) + "</ul></details>"; }
-    if (p.tSet.length) { h += "<details><summary>Tracker changes (" + p.tSet.length + ")</summary><ul>" + li(p.tSet.map(function (x) { return esc(x[0]) + ": " + (tracker[x[0]] || 0) + " &rarr; " + x[1]; })) + "</ul></details>"; }
-    if (p.unknownQ.length || p.unknownI.length) { h += '<p class="muted">Skipped ' + (p.unknownQ.length + p.unknownI.length) + " name" + (p.unknownQ.length + p.unknownI.length === 1 ? "" : "s") + " this site does not list yet.</p>"; }
+    function sec(t, a) { return a.length ? "<details><summary>" + t + " (" + a.length + ")</summary><ul>" + li(a) + "</ul></details>" : ""; }
+    var h = sec("Quests to mark done", p.qAdd.map(esc)) + sec("Quests to mark not done", p.qDel.map(esc)) +
+      sec("Tracker changes", p.tSet.map(function (x) { return esc(x[0]) + ": " + (tracker[x[0]] || 0) + " &rarr; " + x[1]; })) +
+      sec("Workshop levels", p.wsSet.map(function (x) { return esc(x[0]) + ": level " + (wsDone[x[0]] || 0) + " &rarr; " + x[1]; })) +
+      sec("Blueprints to mark learned", p.bpAdd.map(esc)) + sec("Blueprints to unmark", p.bpDel.map(esc)) +
+      sec("Projects", p.pDel.map(function (n) { return "Remove " + esc(n); }).concat(p.pAdd.map(function (x) { return "Add " + esc(x.name); }))) +
+      sec("Raids to add to the raid log", p.rAdd.slice().sort(function (a, b) { return b.t - a.t; }).map(function (x) { return esc(x.m) + ", " + (x.o === "x" ? "extracted" : "died") + ", " + esc(new Date(x.t).toLocaleString()); }));
+    if (p.unknownQ.length || p.unknownI.length) { h += '<p class="muted">Skipped ' + arctPl(p.unknownQ.length + p.unknownI.length, "name") + " this site does not list yet.</p>"; }
     out.innerHTML = h + '<div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctApply">Apply</button><button class="btn ghost" type="button" data-action="arctCancel">Cancel</button></div>';
   }
   function arctApply(p, quiet) {
@@ -1924,14 +2074,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     p.qAdd.forEach(function (k) { qDone[k] = 1; });
     p.qDel.forEach(function (k) { delete qDone[k]; });
     p.tSet.forEach(function (x) { tracker[x[0]] = x[1]; });
-    save("arcHubQuestsDone", qDone); save("arcHubTracker", tracker);
+    p.wsSet.forEach(function (x) { if (x[1] > 0) { wsDone[x[0]] = x[1]; } else { delete wsDone[x[0]]; } });
+    p.bpAdd.forEach(function (k) { bpOwned[k] = 1; });
+    p.bpDel.forEach(function (k) { delete bpOwned[k]; });
+    projects = projects.filter(function (x) { return !(x.src && p.pDel.indexOf(x.name) !== -1); }).concat(p.pAdd);
+    if (p.rAdd.length) { raids = raids.concat(p.rAdd).sort(function (a, b) { return a.t - b.t; }).slice(-500); save("arcHubRaids", raids); }
+    save("arcHubQuestsDone", qDone); save("arcHubTracker", tracker); save("arcHubWs", wsDone); save("arcHubBP", bpOwned); save("arcHubProjects", projects);
     arctSet.last = Date.now(); save("arcHubArct", arctSet);
-    renderQuests(); renderTracker(); if (curTab === "stash") { renderStash(); }
-    var bits = [];
-    if (p.qAdd.length) { bits.push(p.qAdd.length + " quest" + (p.qAdd.length === 1 ? "" : "s") + " marked done"); }
-    if (p.qDel.length) { bits.push(p.qDel.length + " marked not done"); }
-    if (p.tSet.length) { bits.push(p.tSet.length + " tracker count" + (p.tSet.length === 1 ? "" : "s") + " changed"); }
-    document.getElementById("arctMsg").textContent = (quiet ? "Synced from ARC Tracker: " : "Done: ") + bits.join(", ") + ".";
+    arctWho(p);
+    refresh(); renderTools(); renderQuests(); renderRef(); if (curTab === "stash") { renderStash(); }
+    document.getElementById("arctMsg").textContent = (quiet ? "Synced from ARC Tracker: " : "Done: ") + arctSummary(p, true) + "." + arctMissing(p);
     document.getElementById("arctOut").innerHTML = ""; arctPlan = null;
   }
   function arctReady() { return !!(arctSet.u && arctApp()); }
@@ -1952,14 +2104,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     a.value = ""; a.placeholder = arctSet.a ? "Saved" : "arc_k1_...";
     document.getElementById("arctAppRow").hidden = !!ARCT_APP_KEY;
     document.getElementById("arctAdd").checked = !!arctSet.add;
-    document.getElementById("arctAuto").checked = !!arctSet.auto;
+    document.getElementById("arctAuto").checked = arctSet.auto !== false;
+    arctWho({});
   }
+  /* Syncs by itself once a key is saved and the first sync was checked with Apply (or already matched). Off only when unticked. */
   function arctAutoRun() {
-    if (!arctSet.auto || !arctReady() || Date.now() - (arctSet.last || 0) < 15 * 60 * 1000) { return; }
+    if (arctSet.auto === false || !arctReady() || !arctSet.last || Date.now() - arctSet.last < 15 * 60 * 1000) { return; }
     arctBusy = true;
     arctFetch().then(function (p) {
       arctBusy = false;
-      if (p.qAdd.length || p.qDel.length || p.tSet.length) { arctApply(p, true); } else { arctSet.last = Date.now(); save("arcHubArct", arctSet); }
+      if (arctAny(p)) { arctApply(p, true); } else { arctWho(p); arctSet.last = Date.now(); save("arcHubArct", arctSet); }
     }, function (e) { arctBusy = false; var m = document.getElementById("arctMsg"); if (m) { m.textContent = "Automatic sync failed. " + arctErr(e); } });
   }
   function renderTracker() {
@@ -2987,7 +3141,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var raids = rlClean(load("arcHubRaids", []));
   function rlClean(list) {
     return (Array.isArray(list) ? list : []).filter(function (r) { return r && typeof r.m === "string" && r.m.length < 60 && (r.o === "x" || r.o === "d") && r.t > 0; }).map(function (r) {
-      var v = parseInt(r.v, 10); return { t: +r.t, m: r.m, o: r.o, v: v >= 0 ? Math.min(v, 1e7) : null, n: typeof r.n === "string" ? r.n.slice(0, 60) : "" };
+      var v = parseInt(r.v, 10); return { t: +r.t, m: r.m, o: r.o, v: v >= 0 ? Math.min(v, 1e7) : null, n: typeof r.n === "string" ? r.n.slice(0, 60) : "", s: typeof r.s === "string" && r.s.length < 90 ? r.s : undefined };
     }).slice(-500);
   }
   function renderRaids() {
@@ -3582,7 +3736,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   /* ---------- undo ---------- */
   function undoSnap() {
-    return JSON.stringify({ tracker: tracker, goals: goals, qDone: qDone, projects: projects, wsDone: wsDone, wsPlan: wsPlan, itemTags: itemTags, checklist: checklist, rchk: rchk, loadouts: loadouts, itemNotes: itemNotes, trials: trials, favs: favs, bpOwned: bpOwned, bpWant: bpWant, enSeen: enSeen });
+    return JSON.stringify({ tracker: tracker, goals: goals, qDone: qDone, projects: projects, wsDone: wsDone, wsPlan: wsPlan, itemTags: itemTags, checklist: checklist, rchk: rchk, loadouts: loadouts, itemNotes: itemNotes, trials: trials, favs: favs, bpOwned: bpOwned, bpWant: bpWant, enSeen: enSeen, raids: raids });
   }
   function pushUndo(label) {
     var now = Date.now();
@@ -3600,7 +3754,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var u = undoStack.pop(); if (!u) { return; }
     var d = JSON.parse(u.s);
     tracker = d.tracker; goals = d.goals; qDone = d.qDone; projects = d.projects; wsDone = d.wsDone; wsPlan = d.wsPlan; itemTags = d.itemTags;
-    checklist = d.checklist; rchk = d.rchk; loadouts = d.loadouts; itemNotes = d.itemNotes; trials = d.trials; favs = d.favs; bpOwned = d.bpOwned; bpWant = d.bpWant || {}; enSeen = d.enSeen || {};
+    checklist = d.checklist; rchk = d.rchk; loadouts = d.loadouts; itemNotes = d.itemNotes; trials = d.trials; favs = d.favs; bpOwned = d.bpOwned; bpWant = d.bpWant || {}; enSeen = d.enSeen || {}; if (d.raids) { raids = rlClean(d.raids); save("arcHubRaids", raids); }
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubQuestsDone", qDone); save("arcHubProjects", projects); save("arcHubWs", wsDone); save("arcHubWsPlan", wsPlan);
     save("arcHubTags", itemTags); save("arcHubCheck", checklist); save("arcHubRepeat", rchk); save("arcHubLoadouts", loadouts); save("arcHubNotes", itemNotes); save("arcHubTrials", trials); save("arcHubFavs", favs); save("arcHubBP", bpOwned); save("arcHubBPWant", bpWant); save("arcHubEnSeen", enSeen);
     lastUndoAt = 0;

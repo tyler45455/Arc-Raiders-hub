@@ -4909,7 +4909,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     if (e.key === "g") { gWait = Date.now(); }
   });
+  /* Set to true to show the "What is new" pop-up again when the data changes. Off while updates are frequent; the Updates tab still lists everything. */
+  var WHATS_NEW_POPUP = false;
   function whatsNew() {
+    if (!WHATS_NEW_POPUP) { return; }
     var n = DATA_CHANGES.length, seen = load("arcHubChgSeen", null);
     if (seen === null || seen > n) { save("arcHubChgSeen", n); return; }
     if (n > seen && !window.navigator.webdriver && document.getElementById("tour").hidden) {

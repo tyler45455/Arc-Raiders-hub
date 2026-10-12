@@ -937,7 +937,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin-top:8px;">
         <div><label for="arctUser">ARC Tracker key (starts with arc_u1_)</label><input type="password" id="arctUser" autocomplete="off" spellcheck="false"></div>
         <div id="arctAppRow"><label for="arctApp">App key (starts with arc_k1_)</label><input type="password" id="arctApp" autocomplete="off" spellcheck="false"></div>
-        <label class="tog"><input type="checkbox" id="arctAdd"> Also add stash items the site has no count for yet</label>
+        <label class="tog"><input type="checkbox" id="arctAdd"> Copy every item in my stash, not only the ones the site already counts</label>
         <label class="tog"><input type="checkbox" id="arctAuto"> Sync by itself when I open the site</label>
       </div>
       <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
@@ -2032,7 +2032,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       plan.haveS = stash.length > 0;
       if (plan.haveS) {
         Object.keys(tracker).forEach(function (k) { var n = counts[k] || 0; if (n !== tracker[k]) { plan.tSet.push([k, n]); } });
-        if (arctSet.add) { Object.keys(counts).forEach(function (k) { if (!(k in tracker) && counts[k] > 0) { plan.tSet.push([k, counts[k]]); } }); }
+        if (arctSet.add !== false) { Object.keys(counts).forEach(function (k) { if (!(k in tracker) && counts[k] > 0) { plan.tSet.push([k, counts[k]]); } }); }
       }
       /* Hideout: workshop station levels */
       if (r[4].j) {
@@ -2158,7 +2158,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     u.value = ""; u.placeholder = arctSet.u ? "Saved (paste a new key to replace it)" : "arc_u1_...";
     a.value = ""; a.placeholder = arctSet.a ? "Saved" : "arc_k1_...";
     document.getElementById("arctAppRow").hidden = !!ARCT_APP_KEY;
-    document.getElementById("arctAdd").checked = !!arctSet.add;
+    document.getElementById("arctAdd").checked = arctSet.add !== false;
     document.getElementById("arctAuto").checked = arctSet.auto !== false;
     arctWho({});
   }

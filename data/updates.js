@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "New look for Gear, Reference and Tools: weapons and gear sit in a two-column grid of cards with a rarity-colored edge, enemy cards have an edge colored by threat level, and each tool card has an accent edge. The colored card edges now show properly on Quests too."],
     ["Oct 12, 2026", "Fixed: ARC Tracker sync now copies every item in your stash into the Stash tab, not only items you already had a count for (that was an opt-in box that was off by default)."],
     ["Oct 12, 2026", "New look for Home, Recycle and Quests, matching the Stash and Tracker tabs: summary tiles at the top of Home and Quests, cards with a colored edge (item rarity on Recycle, open, done or locked on Quests), quieter Tag, Note, Link and Report buttons, and the quest share and code tools tucked into one Share or load progress box."],
     ["Oct 12, 2026", "ARC Tracker sync now shows your raider level: on a Raider level card at the top of Home and in the sync line on the Stash tab."],

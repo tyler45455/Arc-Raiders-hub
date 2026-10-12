@@ -18,5 +18,5 @@ Done so far: backup files with IDs, stable item and quest IDs, and public JSON d
 - **Wiki check.** Item prices, recipes and sources from RaidTheory refresh daily, and a daily Claude routine reads the wiki's recent changes for quests, keys and skills. Recycling tables, gear stats and map rooms are still checked by hand.
 - **Tests in CI.** Add search, tracker and import/export checks next to the existing smoke test.
 - **Accessibility pass.** Keyboard use in the map viewer and in the new popovers (partial note, search results).
-- **Wiki gaps.** About 40 items have no sources; Wires Crossed and Disrupting The Frigate are not on the wiki; Broken Monument's prerequisite is ambiguous.
+- **Wiki gaps.** About 40 items have no sources; Disrupting The Frigate is not on the wiki; Broken Monument's prerequisite is ambiguous.
 - **Older tests** t21, t27 and t30 break on the tool sub-tabs and need updating.

@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 11, 2026",
- "count": 109,
+ "dataDate": "October 12, 2026",
+ "count": 110,
  "quests": [
   {
    "id": "picking-up-the-pieces",
@@ -3006,7 +3006,9 @@
     "Use 1 Wire to patch into the antenna on top of the tallest tower in the Railyard",
     "Search 3 containers inside the Commissary Supermarket"
    ],
-   "after": []
+   "after": [
+    "off-the-radar"
+   ]
   },
   {
    "id": "keeping-an-eye-out",
@@ -3774,9 +3776,33 @@
    "name": "To The Skies",
    "trader": "Apollo",
    "locations": [
-    "Any"
+    "Dam Battlegrounds",
+    "The Blue Gate",
+    "Spaceport",
+    "Riven Tides"
    ],
-   "requires": [],
+   "requires": [
+    {
+     "id": "arc-performance-steel",
+     "name": "ARC Performance Steel",
+     "qty": 1
+    },
+    {
+     "id": "pop-trigger",
+     "name": "Pop Trigger",
+     "qty": 1
+    },
+    {
+     "id": "arc-synthetic-resin",
+     "name": "ARC Synthetic Resin",
+     "qty": 1
+    },
+    {
+     "id": "arc-thermo-lining",
+     "name": "ARC Thermo Lining",
+     "qty": 1
+    }
+   ],
    "rewards": [
     {
      "id": "arc-performance-steel",
@@ -3796,9 +3822,17 @@
    ],
    "objectives": [
     "Scan any Crashed ARC Probe",
-    "Scan any ARC Courier"
+    "Scan any ARC Courier",
+    "Search for the Gondola Prototype (near the Red Lakes, in the Farmlands, in the East Plains or at the top of the Dried Riverbed)",
+    "Install ARC Performance Steel",
+    "Install ARC Pop Trigger",
+    "Install ARC Synthetic Resin",
+    "Install ARC Thermo Lining",
+    "Activate the Gondola Prototype"
    ],
-   "after": []
+   "after": [
+    "off-the-radar"
+   ]
   },
   {
    "id": "turnabout",
@@ -3974,6 +4008,63 @@
     "Ping a Skulker",
     "(Optional) Destroy 3 Skulkers",
     "(Optional) Deliver a Skulker Targeter to Shani"
+   ],
+   "after": [
+    "exploring-pendola-pass"
+   ]
+  },
+  {
+   "id": "wires-crossed",
+   "name": "Wires Crossed",
+   "trader": "Celeste",
+   "locations": [
+    "The Blue Gate",
+    "Spaceport",
+    "Buried City"
+   ],
+   "requires": [
+    {
+     "id": "snitch-scanner",
+     "name": "Snitch Scanner",
+     "qty": 1
+    },
+    {
+     "id": "surveyor-vault",
+     "name": "Surveyor Vault",
+     "qty": 1
+    },
+    {
+     "id": "sentinel-firing-core",
+     "name": "Sentinel Firing Core",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "electrical-components",
+     "name": "Electrical Components",
+     "qty": 3
+    },
+    {
+     "id": "renegade-i",
+     "name": "Renegade I",
+     "qty": 1
+    },
+    {
+     "id": "zipline",
+     "name": "Zipline",
+     "qty": 2
+    },
+    {
+     "id": "crash-mat",
+     "name": "Crash Mat",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "On The Blue Gate, attach a Snitch Scanner to the antenna at Pilgrim's Peak",
+    "On Spaceport, attach a Surveyor Vault to the antenna on top of the Launch Towers",
+    "On Buried City, attach a Sentinel Firing Core to the antenna at the roof of the Grandioso Apartments"
    ],
    "after": [
     "exploring-pendola-pass"

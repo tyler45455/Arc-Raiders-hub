@@ -37,6 +37,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "Enemy sighting reports: every ARC enemy card has a Report a sighting button. Pick the map you saw it on and it opens a short GitHub issue; maps with enough reports show on the card under Players saw it. Your own sightings show on the card and count in the map filter and Raid prep."],
     ["Oct 12, 2026", "ARC enemy cards in Reference > Enemies: each enemy now shows a threat rating, health, armor, attack, XP, the maps it is seen on, which of its drops you still need, and the quests that involve it. Filter by type, map, or enemies that drop what you need. The Raid prep on the Maps tab lists the ARC seen on that map."],
     ["Oct 12, 2026", "Quests: added Wires Crossed (Celeste, after Exploring Pendola Pass), which is now on the wiki. To The Skies now lists its maps, the four ARC parts you install and its full objectives, and both it and Exploring Pendola Pass now follow Off The Radar. The Data freshness table at the bottom of the site now shows which parts are re-checked every day."],
     ["Oct 12, 2026", "New Home tab: your next raid from the quest route, the workshop upgrade you are closest to, goals, raid log stats and stash worth on one screen, each with a button to the full tool. Once you have saved progress the site opens on Home; untick the box at the bottom to keep opening on Recycle."],

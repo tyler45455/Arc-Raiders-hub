@@ -439,6 +439,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .qrow .lbl { color: var(--muted); min-width: 64px; }
 .qcard.qlock { border-style: dashed; }
 .ensee select { width: auto; max-width: 170px; font-size: 16px; padding: 4px 8px; min-height: 36px; }
+.kpen { font-weight: 700; } .kpen.bad { color: var(--danger); } .kpen.meh { color: var(--warm); } .kpen.good { color: var(--good); }
 .enlv { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
 .enlv.l0 { color: var(--muted); } .enlv.l1 { color: var(--good); } .enlv.l2 { color: var(--warm); } .enlv.l3, .enlv.l4 { color: var(--danger); }
 #enTools { grid-template-columns: 1fr 1fr auto; gap: 8px 12px; }
@@ -1171,6 +1172,17 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         <div><label for="qrPer">Quests per raid</label><select id="qrPer"><option value="2">Up to 2</option><option value="3">Up to 3</option><option value="4" selected>Up to 4</option><option value="6">Up to 6</option><option value="99">No limit</option></select></div>
       </div>
       <div id="qrOut" aria-live="polite"></div>
+    </div>
+
+    <div class="tool" id="killTool">
+      <h3>Shots to kill</h3>
+      <p class="muted">Pick an ARC enemy to rank every weapon by how fast it deals that enemy&rsquo;s health, or pick one weapon to see the shots and magazines it needs.</p>
+      <div class="stashgrid">
+        <div><label for="kEn">Enemy</label><select id="kEn"></select></div>
+        <div><label for="kW">Weapon</label><select id="kW"><option value="">All weapons, fastest first</option></select></div>
+        <div><label for="kT">Weapon tier</label><select id="kT"><option value="0">I</option><option value="1">II</option><option value="2">III</option><option value="3">IV</option></select></div>
+      </div>
+      <div id="kOut" aria-live="polite"></div>
     </div>
   </section>
 
@@ -2171,7 +2183,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         ((enSeen[e[0]] || []).length ? '<span class="muted">You reported: ' + enSeen[e[0]].map(esc).join(", ") + "</span>" : "") + "</div>" : "") +
       (drops.length ? '<div class="qrow"><span class="lbl">Drops</span>' + drops.map(function (d) { return '<span class="y' + (miss[d] ? " hl" : "") + '">' + esc(d) + (miss[d] ? " <b>(need " + miss[d] + ")</b>" : "") + "</span>"; }).join("") + "</div>" : "") +
       (qs.length ? '<div class="qrow"><span class="lbl">Quests</span>' + qs.map(function (q) { return '<span class="y' + (act[q.name] ? " hl" : "") + '">' + esc(q.name) + (qDone[q.name] ? " &#10003;" : act[q.name] ? " (active)" : "") + "</span>"; }).join("") + "</div>" : "") +
-      '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(e[0])) + '">Report a mistake</a></div></div>';
+      '<div class="acts">' + (e[1] !== "Container" && f.hp > 0 ? '<button type="button" class="btn ghost" data-action="killOpen" data-n="' + esc(e[0]) + '">Shots to kill</button>' : "") + '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(e[0])) + '">Report a mistake</a></div></div>';
   }
   var refSec = "enemies";
   var REF_SECS = [["enemies", "Enemies"], ["traders", "Traders"], ["workshop", "Workshop"], ["skills", "Skills"], ["amplification", "Amplification"], ["blueprints", "Blueprints"], ["trials", "Trials"]];
@@ -3734,8 +3746,61 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     html += homeCard("Stash", sb || '<p class="muted">Add what you have in the Tracker to see what it is worth.</p>', '<button class="btn ghost" type="button" data-action="homeTool" data-tool="worthTool">Stash worth</button>' + (bw ? '<button class="btn ghost" type="button" data-tab="ref">Blueprints</button>' : ""));
     out.innerHTML = html;
   }
+  /* Shots to kill: enemy health / weapon damage. Fire Rate x 15 = rounds per minute (the wiki lists Kettle as "30 (450 RPM)"). */
+  var kSet = load("arcHubKill", {});
+  var K_RELOAD = 2; /* assumed seconds per reload; the wiki lists no base reload times */
+  var K_PEN = { "Very Weak": 0, "Weak": 1, "Moderate": 2, "Strong": 3, "Very Strong": 4 };
+  function kWeapons() { return GEARDATA.weapons.map(wObj); }
+  function kStat(w, tier) {
+    var dmg = numOf(w.dmg), rate = numOf(w.rate), mags = String(w.mag || "").split("/").map(function (x) { return numOf(x); });
+    var mag = mags[Math.min(tier, mags.length - 1)];
+    return { dmg: dmg > 0 ? dmg : 0, rpm: rate > 0 ? rate * 15 : 0, mag: mag > 0 ? mag : 0, pen: w.armor || "" };
+  }
+  function kCalc(hp, st) {
+    if (!(hp > 0) || !(st.dmg > 0)) { return null; }
+    var shots = Math.ceil(hp / st.dmg), reloads = st.mag ? Math.max(0, Math.ceil(shots / st.mag) - 1) : 0;
+    var secs = st.rpm ? (shots - 1) * 60 / st.rpm : null;
+    return { shots: shots, reloads: reloads, secs: secs, total: secs === null ? null : secs + reloads * K_RELOAD };
+  }
+  function kPenNote(armor, pen) {
+    var a = /heavy/i.test(armor || "") ? 2 : /light/i.test(armor || "") ? 1 : 0, p = K_PEN[pen];
+    if (p === undefined || !a) { return ""; }
+    if (a === 2 && p <= 1) { return "bad"; }
+    if (a === 2 && p === 2 || a === 1 && p === 0) { return "meh"; }
+    return "good";
+  }
+  var K_PEN_TXT = { bad: "Poor against its heavy armor: aim for weak points", meh: "Struggles against its armor", good: "Gets through its armor well" };
+  function renderKill() {
+    var es = document.getElementById("kEn"), ws = document.getElementById("kW"), ts = document.getElementById("kT"), out = document.getElementById("kOut");
+    if (!out) { return; }
+    var EN = ENEMIES.filter(function (e) { return e[1] !== "Container" && enInfo(e).hp > 0; });
+    if (!es.options.length) {
+      es.innerHTML = EN.map(function (e) { return '<option value="' + esc(e[0]) + '">' + esc(e[0]) + " (" + coins(enInfo(e).hp) + " HP)</option>"; }).join("");
+      ws.insertAdjacentHTML("beforeend", kWeapons().map(function (w) { return '<option value="' + esc(w.name) + '">' + esc(w.name) + "</option>"; }).join(""));
+      if (kSet.e) { es.value = kSet.e; } if (kSet.w) { ws.value = kSet.w; } if (kSet.t) { ts.value = String(kSet.t); }
+    }
+    var e = EN.filter(function (x) { return x[0] === es.value; })[0] || EN[0];
+    if (!e) { out.innerHTML = ""; return; }
+    var f = enInfo(e), tier = parseInt(ts.value, 10) || 0;
+    var head = '<p style="margin:10px 0 4px;"><b>' + esc(e[0]) + "</b>: " + coins(f.hp) + " HP" + (f.armor ? ", " + (/^none$/i.test(f.armor) ? "no" : esc(f.armor).toLowerCase()) + " armor" : "") + '. <span class="muted">Weak points: ' + esc(e[3]) + "</span></p>";
+    var W = kWeapons();
+    if (ws.value) {
+      var w = W.filter(function (x) { return x.name === ws.value; })[0], st = kStat(w, tier), c = kCalc(f.hp, st), pn = kPenNote(f.armor, st.pen);
+      out.innerHTML = head + (c ? '<div class="proj"><div><b>' + c.shots + "</b> hit" + (c.shots === 1 ? "" : "s") + " with the " + esc(w.name) + " " + UP_T[tier] + " (" + st.dmg + " damage each)" +
+        (st.mag ? " &middot; " + Math.ceil(c.shots / st.mag) + " magazine" + (Math.ceil(c.shots / st.mag) === 1 ? "" : "s") + " of " + st.mag : "") + "</div>" +
+        (c.secs !== null ? "<div>About <b>" + c.secs.toFixed(1) + " s</b> of nonstop fire" + (c.reloads ? " plus " + c.reloads + " reload" + (c.reloads === 1 ? "" : "s") + " (about " + c.total.toFixed(1) + " s in all)" : "") + ".</div>" : "") +
+        "<div>Armor penetration: <b>" + esc(st.pen || "unknown") + "</b>" + (pn ? ". " + K_PEN_TXT[pn] + "." : "") + "</div></div>" : '<div class="empty-line">No damage figure for this weapon yet.</div>');
+    } else {
+      var rows = W.map(function (w) { var st = kStat(w, tier); return { w: w, st: st, c: kCalc(f.hp, st), pn: kPenNote(f.armor, st.pen) }; }).filter(function (r) { return r.c; });
+      rows.sort(function (a, b) { var pa = a.pn === "bad" ? 1 : 0, pb = b.pn === "bad" ? 1 : 0; return pa - pb || (a.c.total === null ? 1e9 : a.c.total) - (b.c.total === null ? 1e9 : b.c.total) || a.c.shots - b.c.shots; });
+      out.innerHTML = head + '<div class="tablewrap"><table class="rltab"><thead><tr><th>Weapon</th><th class="n">Hits</th><th class="n">Mags</th><th class="n">Time</th><th>Armor</th></tr></thead><tbody>' +
+        rows.map(function (r) { return "<tr><td>" + esc(r.w.name) + '</td><td class="n">' + r.c.shots + '</td><td class="n">' + (r.st.mag ? Math.ceil(r.c.shots / r.st.mag) : "&ndash;") + '</td><td class="n">' + (r.c.total === null ? "&ndash;" : r.c.total.toFixed(1) + " s") + "</td><td>" + (r.pn ? '<span class="kpen ' + r.pn + '" title="' + esc(K_PEN_TXT[r.pn]) + '">' + esc(r.st.pen) + "</span>" : esc(r.st.pen)) + "</td></tr>"; }).join("") +
+        "</tbody></table></div>";
+    }
+    out.innerHTML += '<p class="muted">Hits are the enemy&rsquo;s health divided by body damage, so weak points and explosives kill faster. Time assumes every shot lands, uses the Fire Rate stat as rounds per minute &times;15 (the wiki lists Kettle at 450 RPM) and adds about ' + K_RELOAD + ' s per reload, since the wiki lists no reload times. The wiki gives no exact armor numbers, so armor is a rough guide: low penetration against heavy armor is listed last. Burst and charged weapons are approximate.</p>';
+  }
   function renderTools() {
-    renderRepeat(); renderLoSaved(); renderUpgrade(); renderRoute();
+    renderRepeat(); renderLoSaved(); renderUpgrade(); renderRoute(); renderKill();
     renderKeep();
     renderChecklist();
     renderPresets();
@@ -4471,6 +4536,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         window.open(enSightUrl(esn, esm), "_blank", "noopener");
         renderRef();
       }
+    } else if (a === "killOpen") {
+      kSet.e = t.getAttribute("data-n"); kSet.w = ""; save("arcHubKill", kSet);
+      var ke = document.getElementById("kEn"); if (ke.options.length) { ke.value = kSet.e; document.getElementById("kW").value = ""; }
+      showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("killTool"))); renderKill(); window.scrollTo(0, 0);
     } else if (a === "enOpen") {
       refSec = "enemies"; document.getElementById("refQ").value = t.getAttribute("data-n"); document.getElementById("enType").value = "all"; document.getElementById("enMap").value = ""; document.getElementById("enNeed").checked = false;
       showTab("ref"); renderRef(); window.scrollTo(0, 0);
@@ -5088,6 +5157,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     stashUpdate();
     var sw = document.getElementById("swSort");
     if (sw) { sw.addEventListener("change", function () { stash.wsort = sw.value; save("arcHubStash", stash); renderWorth(); }); }
+    ["kEn", "kW", "kT"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) { el.addEventListener("change", function () { kSet = { e: document.getElementById("kEn").value, w: document.getElementById("kW").value, t: parseInt(document.getElementById("kT").value, 10) || 0 }; save("arcHubKill", kSet); renderKill(); }); }
+    });
     var qrp = document.getElementById("qrPer");
     if (qrp) { qrp.addEventListener("change", function () { qrSet.per = parseInt(qrp.value, 10) || 4; save("arcHubRoute", qrSet); renderRoute(); }); }
     ["upW", "upFrom", "upTo", "upDeep"].forEach(function (id) {

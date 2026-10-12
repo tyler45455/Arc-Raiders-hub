@@ -28,7 +28,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Loot value (Tools tab):** ranks items by sell price per kg or per stash slot, and marks the ones your quests, projects or goals still need. Its Price changes list shows every sell price change the daily sync has recorded since Oct 11, 2026; item pages show the latest one.
 - **Stash worth (Tools tab):** adds up the sell value of everything in your tracker and lists the spare items to sell first, by slots freed or coins earned.
 - **Weapon upgrade path (Tools tab):** every Gunsmith step from the tier you have to the one you want, with total materials and what your tracker still needs.
-- **ARC enemy cards (Reference tab):** threat, health, armor, attack, XP, maps, needed drops and related quests for every ARC enemy, with type and map filters. Report a sighting sends the map you saw an enemy on, so missing maps get filled in.
+- **ARC enemy cards (Reference tab):** threat, health, armor, attack, XP, maps, needed drops and related quests for every ARC enemy, with type and map filters. Report a sighting sends the map you saw an enemy on, so missing maps get filled in; a daily job adds a map once two different people report it.
 - **Patch notes for you (Updates tab):** new game updates are marked, and notes that mention your tracked items, quests, blueprints and maps are highlighted; Home shows a card when one is new.
 - **Shots to kill (Tools tab):** ranks every weapon against an ARC enemy by hits, magazines, rough time and armor penetration.
 - **Quest locations (Quests tab):** Show on map opens the map with the places a quest's objectives name marked and numbered.

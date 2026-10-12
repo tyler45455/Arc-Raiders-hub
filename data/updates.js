@@ -21,13 +21,14 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 12, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
-   "daily" rows are re-checked every day (tools/sync-item-data.js for the first row, the daily Claude wiki check for
-   the others); their date is the last time that check changed something. Other rows show when they were last checked by hand. */
+   "daily" rows are re-checked every day (tools/sync-item-data.js for the first row, tools/sync-sightings.js for
+   Enemy sightings, the daily Claude wiki check for the others); their date is the last time that check changed something. Other rows show when they were last checked by hand. */
 ARC.FRESHNESS = [
     ["Sell prices, weights, recipes and where to find items", "October 11, 2026", "daily"],
     ["Quests, objectives and quest chain", "October 12, 2026", "daily"],
     ["Keys and where to find them", "October 11, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
+    ["Enemy sightings from players", "October 12, 2026", "daily"],
     ["Recycling and salvage data", "October 9, 2026", ""],
     ["Weapons & gear", "October 9, 2026", ""],
     ["Reference: enemies, traders, workshop, blueprints", "October 10, 2026", "enemy armor, attacks, XP and maps read from the wiki October 12"],
@@ -37,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "Enemy sighting reports are now checked every day: once two different people report the same enemy on a map its card does not list, the map is added under Players saw it, and reports already on the card are closed with a thank-you."],
     ["Oct 12, 2026", "Quests now show where to go: quests whose objectives name a place on the map list it under Where, and Show on map opens the enlarged map with each spot marked and numbered by objective."],
     ["Oct 12, 2026", "Quests: added Ruins And Reverberations (Celeste, Pendola Pass, after Wires Crossed), new on the wiki today. Bring a Spotter Relay; rewards are 2 Smoke Grenades, Looting Mk. 3 (Safekeeper), 3 Electrical Components and 2 Speaker Components."],
     ["Oct 12, 2026", "New Shots to kill tool in the Tools tab: pick an ARC enemy to rank every weapon by how fast it deals that enemy's health (hits, magazines, rough time and armor penetration), or pick one weapon and tier for its numbers. Each enemy card has a Shots to kill button."],

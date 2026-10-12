@@ -1979,8 +1979,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (r[0].j) {
         var pd = r[0].j.data !== undefined ? r[0].j.data : r[0].j; pd = pd && (pd.profile || pd.user || pd);
         if (pd && typeof pd === "object") {
-          var who = arctText(pd.username || pd.displayName || pd.display_name || pd.name || pd.embarkId || pd.embark_id), lv = arctNum(pd, ["level", "playerLevel", "player_level"]);
+          var who = arctText(pd.username || pd.displayName || pd.display_name || pd.name || pd.embarkId || pd.embark_id);
+          var lk = ["raiderLevel", "raider_level", "playerLevel", "player_level", "level", "accountLevel", "account_level"], lv = arctNum(pd, lk);
+          if (lv === null) { [pd.stats, pd.progression, pd.player, pd.raider].forEach(function (o) { if (lv === null && o && typeof o === "object") { lv = arctNum(o, lk); } }); }
           plan.who = who ? who + (lv !== null ? " (level " + lv + ")" : "") : "";
+          plan.lvl = lv !== null && lv > 0 && lv < 1000 ? Math.floor(lv) : null; plan.name = who;
         }
       }
       /* Quests */
@@ -2079,7 +2082,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
   function arctMissing(p) { return p.missing.length ? " The key cannot read " + p.missing.slice(0, -1).join(", ") + (p.missing.length > 1 ? " or " : "") + p.missing[p.missing.length - 1] + ", so " + (p.missing.length === 1 ? "that part was" : "those parts were") + " skipped. Make a new key with " + (p.missing.length === 1 ? "that permission" : "those permissions") + " ticked to sync " + (p.missing.length === 1 ? "it" : "them") + " too." : ""; }
   function arctWho(p) {
-    if (p.who) { arctSet.who = p.who; save("arcHubArct", arctSet); }
+    if (p.who) { arctSet.who = p.who; arctSet.name = p.name || ""; }
+    if (p.lvl) { arctSet.lvl = p.lvl; }
+    if (p.who || p.lvl) { save("arcHubArct", arctSet); if (curTab === "home") { try { renderHome(); } catch (eH) {} } }
     var w = document.getElementById("arctWho"); if (w) { w.textContent = arctSet.who ? "Connected as " + arctSet.who + "." : ""; w.hidden = !arctSet.who; }
   }
   function arctShow() {
@@ -4204,6 +4209,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var out = document.getElementById("homeOut");
     if (!out) { return; }
     var html = "", per = parseInt(qrSet.per, 10) || 4, route = qrPlan(per), nq = qActive().length;
+    if (arctReady() && arctSet.lvl) {
+      html += homeCard("Raider level " + arctSet.lvl, "<p>" + (arctSet.name ? "<b>" + esc(arctSet.name) + "</b>, " : "") + "synced from ARC Tracker" + (arctSet.last ? " " + esc(new Date(arctSet.last).toLocaleString()) : "") + ".</p>", '<button class="btn ghost" type="button" data-action="stSync">Sync now</button>');
+    }
     if (route.length) {
       var r0 = route[0], mi = -1; MAPS.forEach(function (m, k) { if (m.name === r0.map) { mi = k; } });
       html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" +
@@ -5694,7 +5702,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function stashSync() {
     var box = document.getElementById("stSync"), t = "";
     if (arctReady()) {
-      t = arctSet.last ? "Synced from ARC Tracker " + new Date(arctSet.last).toLocaleString() + "." : "ARC Tracker is connected but has not synced yet.";
+      t = (arctSet.last ? "Synced from ARC Tracker " + new Date(arctSet.last).toLocaleString() + "." : "ARC Tracker is connected but has not synced yet.") + (arctSet.lvl ? " Raider level " + arctSet.lvl + "." : "");
     } else {
       t = "Counts are the ones you entered in the Tracker. Connect ARC Tracker to fill them in from your game.";
     }

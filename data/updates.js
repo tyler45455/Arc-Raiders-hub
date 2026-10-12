@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 12, 2026", "ARC Tracker sync now shows your raider level: on a Raider level card at the top of Home and in the sync line on the Stash tab."],
     ["Oct 12, 2026", "The Tracker tab is now just the materials you are looking for, styled like the Stash tab: add a material and how many you need, then count it up with +1, +5 or +10. The shopping list, workshop planner, ARC Tracker sync and history moved to the Stash tab, and backups and Reset everything moved to Home. Your saved counts did not change."],
     ["Oct 12, 2026", "ARC Tracker sync now copies everything its API offers: completed quests, stash, workshop station levels, learned blueprints, the stage you are on in each running project, and your raids into the raid log. It syncs by itself every time you open the site after the first sync, which you still check before applying. Skill trees are not in ARC Tracker's API, so they stay manual."],
     ["Oct 12, 2026", "New Stash tab: every item you have, with its value, split into what to keep (and which quest, workbench or Outpost upgrade, project or tracked material needs it) and what is safe to sell, with the coins and slots that frees. Filter by Sell or Keep, sort by value or slots, and change counts right on the cards. Counts include anything synced from ARC Tracker."],

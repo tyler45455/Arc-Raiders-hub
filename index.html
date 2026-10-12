@@ -826,7 +826,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <details class="card" id="arctCard">
       <summary>Sync from ARC Tracker</summary>
       <p class="muted" style="margin-top:8px;">Copies your completed quests and your stash from <a href="https://arctracker.io" target="_blank" rel="noopener">ARC Tracker</a>. ARC Tracker gets them from your game account with its Link app. This site only reads them from ARC Tracker and never touches the game.</p>
-      <p class="muted" style="margin-top:8px;">In ARC Tracker, open Settings, then Developer Access, and create a key with only <b>Quests</b> and <b>Stash</b> ticked. Paste it here. The key stays in this browser and is only sent to arctracker.io.</p>
+      <p class="muted" style="margin-top:8px;">In ARC Tracker, open <a href="https://arctracker.io/settings" target="_blank" rel="noopener">Settings</a>, then Developer Access, and create a key with only <b>Quests</b> and <b>Stash</b> ticked. Paste it here. The key stays in this browser and is only sent to arctracker.io.</p>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin-top:8px;">
         <div><label for="arctUser">ARC Tracker key (starts with arc_u1_)</label><input type="password" id="arctUser" autocomplete="off" spellcheck="false"></div>
         <div id="arctAppRow"><label for="arctApp">App key (starts with arc_k1_)</label><input type="password" id="arctApp" autocomplete="off" spellcheck="false"></div>
@@ -1313,8 +1313,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   /* ---- Report settings: edit these two lines before you publish ---- */
   var REPORT_EMAIL = "tyler45455@gmail.com";
   var REPORT_ISSUES_URL = "https://github.com/tyler45455/Arc-Raiders-hub/issues/new";
-  /* ARC Tracker app key (arc_k1_...) from arctracker.io/developers/apps. Leave empty to ask each visitor for one. */
-  var ARCT_APP_KEY = "";
+  /* ARC Tracker app key (arc_k1_...) from arctracker.io/developers/apps. It identifies this site and is public by design; each visitor supplies their own user key. */
+  var ARCT_APP_KEY = "arc_k1_eC4e4Pmr-pWcI093-xNvdgAH76nli1a1";
 
   /* ---------- storage that survives a blocked browser ---------- */
   var mem = {};

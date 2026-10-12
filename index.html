@@ -345,19 +345,6 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .stk { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; padding: 0 5px; border-radius: 3px; border: 1px solid var(--line); margin-right: 4px; color: var(--muted); }
 .stedit { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
 .stedit input { width: 84px; }
-/* Site-wide card look (matches the Stash and Tracker cards): rounded, with a colored left edge. */
-.row, .qcard, .proj, details.card, .card { border-radius: 8px; }
-.row, .qcard, .proj { border-left: 4px solid var(--line); }
-.row.r-common { border-left-color: var(--r-common); } .row.r-uncommon { border-left-color: var(--r-uncommon); } .row.r-rare { border-left-color: var(--r-rare); }
-.row.r-epic { border-left-color: var(--r-epic); } .row.r-legendary { border-left-color: var(--r-legendary); }
-.qcard.qopen { border-left-color: var(--warm); } .qcard.qdone { border-left-color: var(--good); } .qcard.qlock { border-left-color: var(--line); }
-.homecard.hk-raid { border-left-color: var(--accent); } .homecard.hk-ws { border-left-color: var(--warm); } .homecard.hk-goal { border-left-color: var(--good); }
-.homecard.hk-raids { border-left-color: var(--r-rare); } .homecard.hk-stash { border-left-color: var(--r-epic); } .homecard.hk-new { border-left-color: var(--accent); }
-.row .acts .btn.ghost.minor { border-color: transparent; color: var(--muted); padding-left: 7px; padding-right: 7px; }
-.row .acts .btn.ghost.minor:hover, .row .acts .btn.ghost.minor.on { border-color: var(--line); color: var(--accent); }
-.qmore { margin-top: 10px; }
-.qmore .qbar { margin-top: 8px; }
-@media (max-width: 600px) { #homeTiles.four, #qTiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .lkcard.farmopen { grid-column: 1 / -1; }
 .lkdel { background: none; border: 0; color: var(--muted); font-size: 20px; line-height: 1; padding: 0 4px; cursor: pointer; }
 .lkdel:hover { color: var(--fg); }
@@ -743,6 +730,25 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   /* iPhone zooms in on any field under 16px when it is tapped, and the page then pans sideways */
   input, select, textarea { font-size: 16px !important; }
 }
+/* Site-wide card look (matches the Stash and Tracker cards): rounded, with a colored left edge. */
+.row, .qcard, .proj, details.card, .card { border-radius: 8px; }
+.row, .qcard, .proj { border-left: 4px solid var(--line); }
+.row.r-common { border-left-color: var(--r-common); } .row.r-uncommon { border-left-color: var(--r-uncommon); } .row.r-rare { border-left-color: var(--r-rare); }
+.row.r-epic { border-left-color: var(--r-epic); } .row.r-legendary { border-left-color: var(--r-legendary); }
+.qcard.qopen { border-left-color: var(--warm); } .qcard.qdone { border-left-color: var(--good); } .qcard.qlock { border-left-color: var(--line); }
+.homecard.hk-raid { border-left-color: var(--accent); } .homecard.hk-ws { border-left-color: var(--warm); } .homecard.hk-goal { border-left-color: var(--good); }
+.homecard.hk-raids { border-left-color: var(--r-rare); } .homecard.hk-stash { border-left-color: var(--r-epic); } .homecard.hk-new { border-left-color: var(--accent); }
+.row .acts .btn.ghost.minor { border-color: transparent; color: var(--muted); padding-left: 7px; padding-right: 7px; }
+.row .acts .btn.ghost.minor:hover, .row .acts .btn.ghost.minor.on { border-color: var(--line); color: var(--accent); }
+.qmore { margin-top: 10px; }
+.qmore .qbar { margin-top: 8px; }
+.cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 0 10px; align-items: start; }
+.cardgrid > .row { margin-bottom: 10px; }
+.qcard.encard.th0 { border-left-color: var(--muted); } .qcard.encard.th1 { border-left-color: var(--good); } .qcard.encard.th2 { border-left-color: var(--warm); }
+.qcard.encard.th3, .qcard.encard.th4 { border-left-color: var(--danger); }
+.tool { border-left: 4px solid var(--accent); }
+.tool h3 { color: var(--fg); }
+@media (max-width: 600px) { #homeTiles.four, #qTiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
 </head>
 <body>
@@ -1084,7 +1090,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <!-- TOOLS -->
   <section class="panel" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools" hidden>
     <h2>Tools</h2>
-    <p class="muted">The shopping list and workshop planner are now in the Tracker tab. A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
+    <p class="muted">The shopping list and workshop planner are in the Stash tab. A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
 
     <div class="tool printable">
       <h3>Raid checklist</h3>
@@ -2665,7 +2671,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (f.hp) { meta.push(coins(f.hp) + " HP"); }
     if (f.armor) { meta.push(/^none$/i.test(f.armor) ? "No armor" : esc(f.armor) + " armor"); }
     if (f.xp) { meta.push(coins(f.xp) + " XP"); }
-    return '<div class="qcard encard" id="en-' + esc(idOf(e[0])) + '"><div class="qh"><a href="' + esc(qWiki(e[0])) + '" target="_blank" rel="noopener">' + esc(e[0]) + "</a>" +
+    return '<div class="qcard encard' + (f.lv !== null ? " th" + f.lv : "") + '" id="en-' + esc(idOf(e[0])) + '"><div class="qh"><a href="' + esc(qWiki(e[0])) + '" target="_blank" rel="noopener">' + esc(e[0]) + "</a>" +
       (f.lv !== null ? '<span class="enlv l' + f.lv + '">Threat: ' + EN_LV[f.lv] + "</span>" : "") + '<span class="qmeta" style="flex-basis:100%;">' + meta.join(" &middot; ") + "</span></div>" +
       '<div class="refgrid">' + (f.attack ? '<div><span class="k">Attack: </span>' + (/^none$/i.test(f.attack) ? "None (unarmed)" : esc(f.attack)) + "</div>" : "") + '<div><span class="k">Weak points: </span>' + esc(e[3]) + "</div>" + (e[6] && e[6] !== "-" ? "<div>" + esc(e[6]) + "</div>" : "") + "</div>" +
       '<div class="qrow"><span class="lbl">Maps</span>' + (f.maps.length ? f.maps.map(function (m) { var mi = -1; MAPS.forEach(function (x, k) { if (x.name === m) { mi = k; } }); return mi >= 0 ? '<button type="button" class="chip" data-action="qrMap" data-i="' + mi + '">' + esc(m) + "</button>" : '<span class="y">' + esc(m) + "</span>"; }).join("") : '<span class="muted">The wiki does not list maps.</span>') +
@@ -2808,8 +2814,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   function gearRow(name, badges, chips, text, kv, extra) {
     var wiki = "https://arcraiders.wiki/wiki/" + encodeURIComponent(name.replace(/ /g, "_"));
-    return '<div class="row"><div class="head"><a class="name" href="' + wiki + '" target="_blank" rel="noopener">' + esc(name) + "</a>" + badges + "</div>" +
-      '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(name)) + '">Report</a></div>' +
+    var rm = /class="badge (common|uncommon|rare|epic|legendary)\b/i.exec(badges || "");
+    return '<div class="row' + (rm ? " r-" + rm[1].toLowerCase() : "") + '"><div class="head"><a class="name" href="' + wiki + '" target="_blank" rel="noopener">' + esc(name) + "</a>" + badges + "</div>" +
+      '<div class="acts"><a class="btn ghost minor" target="_blank" rel="noopener" href="' + esc(reportUrl(name)) + '">Report</a></div>' +
       (chips.length ? '<div class="detail">' + chips.map(function (c) { return '<span class="y"><b>' + dash(c[1]) + "</b> " + esc(c[0]) + "</span>"; }).join("") + "</div>" : "") +
       (text ? '<div class="gnote">' + esc(text) + "</div>" : "") +
       (kv && kv.length ? '<details><summary>All stats</summary><div class="kv">' + kv.map(function (p) { return "<div><span>" + esc(p[0]) + "</span>" + dash(p[1]) + "</div>"; }).join("") + "</div></details>" : "") +
@@ -2921,7 +2928,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         out += gearRow(g[0], pg.badge + (tag ? '<span class="badge cls">' + esc(tag) + "</span>" : ""), pg.chips, desc, [], "");
       });
     }
-    document.getElementById("gearOut").innerHTML = n ? out : '<div class="empty">Nothing matches &ldquo;' + esc(q) + "&rdquo;.</div>";
+    document.getElementById("gearOut").innerHTML = n ? '<div class="cardgrid">' + out + "</div>" : '<div class="empty">Nothing matches &ldquo;' + esc(q) + "&rdquo;.</div>";
   }
 
   /* ---------- extra state ---------- */

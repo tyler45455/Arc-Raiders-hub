@@ -1,11 +1,11 @@
-name: Weekly item data sync
+name: Daily item data sync
 
-# Every Monday, re-reads sell prices, weights, stack sizes, recipes and the extra "where to find"
+# Every day, re-reads sell prices, weights, stack sizes, recipes and the extra "where to find"
 # details from RaidTheory/arcraiders-data and opens (or updates) a pull request when anything changed.
 # Run it by hand from the Actions tab with "Run workflow".
 on:
   schedule:
-    - cron: "17 6 * * 1"
+    - cron: "17 6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -50,21 +50,21 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B data-sync
           git add -A data item map api sitemap.xml sw.js
-          git commit -q -m "Weekly item data refresh from RaidTheory/arcraiders-data"
+          git commit -q -m "Daily item data refresh from RaidTheory/arcraiders-data"
           git push -f origin data-sync
           {
             cat "$RUNNER_TEMP/summary.md"
             echo
-            echo "Made by the weekly item data sync workflow. The page, public JSON and smoke-test checks passed in that run; this pull request does not start the Check workflow on its own."
+            echo "Made by the daily item data sync workflow. The page, public JSON and smoke-test checks passed in that run; this pull request does not start the Check workflow on its own."
           } > "$RUNNER_TEMP/body.md"
           pr=$(gh pr list --head data-sync --state open --json number --jq '.[0].number')
           if [ -n "$pr" ]; then
             gh pr edit "$pr" --body-file "$RUNNER_TEMP/body.md"
-          elif ! gh pr create --base main --head data-sync --title "Weekly item data refresh" --body-file "$RUNNER_TEMP/body.md" --assignee "${{ github.repository_owner }}"; then
+          elif ! gh pr create --base main --head data-sync --title "Daily item data refresh" --body-file "$RUNNER_TEMP/body.md" --assignee "${{ github.repository_owner }}"; then
             # Happens when "Allow GitHub Actions to create and approve pull requests" is off in the repository settings.
-            { echo "The weekly item data refresh is on the data-sync branch, but this workflow could not open a pull request."; echo;
+            { echo "The daily item data refresh is on the data-sync branch, but this workflow could not open a pull request."; echo;
               echo "Open it here: https://github.com/${{ github.repository }}/compare/main...data-sync?expand=1"; echo;
               cat "$RUNNER_TEMP/body.md"; } > "$RUNNER_TEMP/issue.md"
-            [ -n "$(gh issue list --state open --search 'in:title "Weekly item data refresh is ready"' --json number --jq '.[0].number')" ] ||
-              gh issue create --title "Weekly item data refresh is ready" --body-file "$RUNNER_TEMP/issue.md" --assignee "${{ github.repository_owner }}"
+            [ -n "$(gh issue list --state open --search 'in:title "Daily item data refresh is ready"' --json number --jq '.[0].number')" ] ||
+              gh issue create --title "Daily item data refresh is ready" --body-file "$RUNNER_TEMP/issue.md" --assignee "${{ github.repository_owner }}"
           fi

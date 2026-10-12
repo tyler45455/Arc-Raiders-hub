@@ -1273,7 +1273,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   /* Listed on the wiki as "Cannot be recycled". */
   var NO_RECYCLE = ARC.NO_RECYCLE;
   var ITEMINFO = ARC.ITEMINFO || {};
-  /* Sell price changes recorded by the weekly sync: item -> [[YYYY-MM-DD, old, new], ...], oldest first. */
+  /* Sell price changes recorded by the daily sync: item -> [[YYYY-MM-DD, old, new], ...], oldest first. */
   var PRICE_LOG = ARC.PRICE_LOG || {};
   var CRAFTS_INTO = {};
   Object.keys(ITEMINFO).forEach(function (n) { var r = ITEMINFO[n][3]; if (r) { r[1].forEach(function (g) { (CRAFTS_INTO[g[0]] = CRAFTS_INTO[g[0]] || []).push(n); }); } });
@@ -2464,7 +2464,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     Object.keys(PRICE_LOG).forEach(function (n) { PRICE_LOG[n].forEach(function (c) { if (!q || n.toLowerCase().indexOf(q) !== -1) { ch.push([c[0], n, c[1], c[2]]); } }); });
     ch.sort(function (a, b) { return a[0] < b[0] ? 1 : a[0] > b[0] ? -1 : (a[1] < b[1] ? -1 : 1); });
     document.getElementById("lvChCount").textContent = ch.length ? "(" + ch.length + ")" : "";
-    document.getElementById("lvChOut").innerHTML = '<p class="muted">Sell price changes the weekly data sync has picked up, newest first. Recording started Oct 11, 2026, so older changes are not listed.</p>' +
+    document.getElementById("lvChOut").innerHTML = '<p class="muted">Sell price changes the daily data sync has picked up, newest first. Recording started Oct 11, 2026, so older changes are not listed.</p>' +
       (ch.length ? ch.slice(0, 100).map(function (c) {
         var up = c[3] > c[2];
         return '<div class="krow"><b>' + esc(c[1]) + '</b><span class="muted">' + isoDay(c[0]) + ' &middot; ' + coins(c[2]) + ' to <b>' + coins(c[3]) + '</b> <span class="' + (up ? "good" : "bad") + '">' + (up ? "+" : "") + coins(c[3] - c[2]) + "</span></span></div>";

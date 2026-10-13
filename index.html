@@ -809,6 +809,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .chg.newf { border-left-color: var(--good); }
 .chg.look { border-left-color: var(--accent); }
 .chg > div { font-weight: 400; }
+
+.rdcard { border-left-color: var(--line); }
+.rdcard.rx { border-left-color: var(--good); }
+.rdcard.rd { border-left-color: var(--danger); }
+.rdvals { display: flex; gap: 6px 22px; flex-wrap: wrap; }
+.rdvals > div { display: grid; }
+.rdvals .k { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.rdvals b { font-size: 20px; }
+.rdvals b.pos { color: var(--good); } .rdvals b.neg { color: var(--danger); }
+.rdh { margin: 14px 0 6px; }
 </style>
 </head>
 <body>
@@ -831,7 +841,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         </div>
         <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
         <p class="muted" id="arctWho" style="margin-top:8px;" hidden></p>
-        <details class="arctraw" id="arctRaw" style="margin-top:8px;"><summary class="muted">What ARC Tracker sent for your profile</summary><p class="muted" style="margin:6px 0;">If your raider level looks wrong, copy this and send it with the Feedback button so the site can read it properly.</p><pre id="arctRawOut" style="white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;font-size:12px;"></pre><button class="btn ghost" type="button" data-action="arctRawCopy">Copy</button> <span class="muted" id="arctRawMsg" role="status"></span></details>
+        <details class="arctraw" id="arctRaw" style="margin-top:8px;"><summary class="muted">What ARC Tracker sent for your profile and raids</summary><p class="muted" style="margin:6px 0;">If your raider level or raid values look wrong, copy this and send it with the Feedback button so the site can read it properly.</p><pre id="arctRawOut" style="white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;font-size:12px;"></pre><button class="btn ghost" type="button" data-action="arctRawCopy">Copy</button> <span class="muted" id="arctRawMsg" role="status"></span></details>
         <p class="muted" id="arctMsg" role="status" style="margin-top:8px;"></p>
         <div id="arctOut"></div>
       </div>
@@ -844,6 +854,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <button class="tab" role="tab" id="tab-home" data-tab="home" aria-selected="false">Home</button>
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycle</button>
       <button class="tab" role="tab" id="tab-stash" data-tab="stash" aria-selected="false">Stash</button>
+      <button class="tab sec" role="tab" id="tab-raids" data-tab="raids" aria-selected="false">Raids</button>
       <button class="tab sec" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Gear</button>
       <button class="tab" role="tab" id="tab-quests" data-tab="quests" aria-selected="false">Quests</button>
       <button class="tab sec" role="tab" id="tab-ref" data-tab="ref" aria-selected="false">Reference</button>
@@ -971,6 +982,28 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       <select id="histMat" aria-label="Material" style="font:inherit;padding:6px 8px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:6px;"></select>
       <div id="histOut" aria-live="polite"></div>
     </details>
+  </section>
+
+  <!-- RAIDS -->
+  <section class="panel" id="panel-raids" role="tabpanel" aria-labelledby="tab-raids" hidden>
+    <h2>Raids</h2>
+    <p class="muted">Every raid synced from ARC Tracker, plus any you log by hand in Tools, with what you brought out and your profit when ARC Tracker sends it.</p>
+    <div class="sttiles four" id="rdTiles"></div>
+    <div class="sttools">
+      <div class="seg" role="group" aria-label="Show">
+        <button type="button" data-rdf="all" aria-pressed="true">All</button>
+        <button type="button" data-rdf="x" aria-pressed="false">Extracted</button>
+        <button type="button" data-rdf="d" aria-pressed="false">Died</button>
+      </div>
+      <label class="stsort">Map <select id="rdMap" aria-label="Map"><option value="">All maps</option></select></label>
+      <label class="stsort">When <select id="rdWhen" aria-label="Time range"><option value="0">All time</option><option value="1">Today</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select></label>
+      <label class="stsort">Sort <select id="rdSort" aria-label="Sort raids"><option value="new">Newest first</option><option value="value">Most brought out</option><option value="profit">Most profit</option></select></label>
+    </div>
+    <h3 class="rdh">By map</h3>
+    <div class="mapgrid" id="rdMaps"></div>
+    <h3 class="rdh">Raids</h3>
+    <div class="stgrid" id="rdOut" aria-live="polite"></div>
+    <div class="acts" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="rdMore" id="rdMore" hidden>Show more</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="raidTool">Log a raid by hand</button></div>
   </section>
 
   <!-- FROZEN TRAIL -->
@@ -2032,15 +2065,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var tv = e.endedAt || e.ended_at || e.finishedAt || e.finished_at || e.startedAt || e.started_at || e.playedAt || e.played_at || e.createdAt || e.created_at || e.date || e.timestamp, t;
     t = typeof tv === "number" ? (tv < 1e12 ? tv * 1000 : tv) : Date.parse(tv);
     if (!m || !o || !(t > 0)) { return null; }
-    var v = arctNum(e, ["lootValue", "loot_value", "extractedValue", "extracted_value", "haulValue", "haul_value", "totalValue", "total_value", "value"]);
+    var v = arctNum(e, ["carriedOut", "carried_out", "carriedOutValue", "carried_out_value", "lootValue", "loot_value", "extractedValue", "extracted_value", "haulValue", "haul_value", "totalValue", "total_value", "value"]);
+    var pf = arctNum(e, ["profit", "netProfit", "net_profit", "profitValue", "profit_value", "net", "netValue", "net_value"]);
+    if (pf === null) { var pn = Number(e.profit !== undefined ? e.profit : e.netProfit); if (isFinite(pn) && pn !== 0) { pf = pn; } }
+    var du = arctNum(e, ["duration", "durationSeconds", "duration_seconds", "durationSec", "length", "seconds"]);
     var id = arctStr(e, ["id", "roundId", "round_id", "matchId", "match_id"]);
-    return { t: t, m: m, o: o, v: v === null || o === "d" ? null : Math.max(0, Math.min(1e7, Math.round(v))), n: "", s: "arct:" + (id || t + m) };
+    return { t: t, m: m, o: o, v: v === null || o === "d" ? null : Math.max(0, Math.min(1e7, Math.round(v))), p: pf === null ? null : Math.max(-1e7, Math.min(1e7, Math.round(pf))), d: du === null ? null : Math.round(du > 86400 ? du / 1000 : du), n: "", s: "arct:" + (id || t + m) };
   }
   var ARCT_PARTS = [["profile", "Profile"], ["questsDone", "Quests"], ["questsOpen", "Quests"], ["stash", "Stash"], ["hideout", "Hideout"], ["blueprints", "Blueprints"], ["projects", "Projects"], ["rounds", "Rounds"]];
   /* Raider level: the profile shape is not documented, so search it. Specific names (raiderLevel, playerLevel...) anywhere
      in the profile win; then a plain "level" inside a raider, player, progression, stats or account object; then a top-level
      "level". A value can be a number, a numeric string, or an object holding current, value or level. */
-  var arctRawProfile = null;
+  var arctRawProfile = null, arctRawRounds = null;
   function arctLvVal(v) {
     if (typeof v === "string" && /^\s*\d+(\.\d+)?\s*$/.test(v)) { v = +v; }
     if (typeof v === "number" && isFinite(v) && v > 0 && v < 1000) { return v; }
@@ -2075,7 +2111,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var missing = [], failed = r.filter(function (x) { return x.e; });
       if (failed.length === r.length) { throw failed[0].e; }
       r.forEach(function (x, i) { if (x.e && x.e.status === 403 && missing.indexOf(ARCT_PARTS[i][1]) === -1) { missing.push(ARCT_PARTS[i][1]); } });
-      var plan = { qAdd: [], qDel: [], tSet: [], wsSet: [], bpAdd: [], bpDel: [], pAdd: [], pDel: [], rAdd: [], unknownQ: [], unknownI: [], missing: missing, haveQ: false, haveS: false, who: "" };
+      var plan = { qAdd: [], qDel: [], tSet: [], wsSet: [], bpAdd: [], bpDel: [], pAdd: [], pDel: [], rAdd: [], rUpd: [], unknownQ: [], unknownI: [], missing: missing, haveQ: false, haveS: false, who: "" };
       /* Profile */
       if (r[0].j) {
         plan.profileOk = true;
@@ -2158,13 +2194,18 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       /* Rounds: new raids for the raid log */
       if (r[7].j) {
         var mix = arctIndex(MAPS.map(function (m) { return m.name; })), seen = {};
-        raids.forEach(function (x) { if (x.s) { seen[x.s] = 1; } });
-        r[7].j.forEach(function (e) { var x = arctRound(e, mix); if (x && !seen[x.s]) { seen[x.s] = 1; plan.rAdd.push(x); } });
+        var have = {}; raids.forEach(function (x) { if (x.s) { seen[x.s] = 1; have[x.s] = x; } });
+        arctRawRounds = r[7].j.slice(0, 2);
+        r[7].j.forEach(function (e) {
+          var x = arctRound(e, mix); if (!x) { return; }
+          if (!seen[x.s]) { seen[x.s] = 1; plan.rAdd.push(x); return; }
+          var o = have[x.s]; if (o && ((o.v == null && x.v != null) || (o.p == null && x.p != null) || (o.d == null && x.d != null))) { plan.rUpd.push(x); delete have[x.s]; }
+        });
       }
       return plan;
     });
   }
-  function arctAny(p) { return !!(p.qAdd.length || p.qDel.length || p.tSet.length || p.wsSet.length || p.bpAdd.length || p.bpDel.length || p.pAdd.length || p.pDel.length || p.rAdd.length); }
+  function arctAny(p) { return !!(p.qAdd.length || p.qDel.length || p.tSet.length || p.wsSet.length || p.bpAdd.length || p.bpDel.length || p.pAdd.length || p.pDel.length || p.rAdd.length || p.rUpd.length); }
   function arctErr(e) {
     if (e && e.status === 401) { return "ARC Tracker did not accept the key. Check that you pasted all of it."; }
     if (e && e.status === 403) { return "The key has none of the permissions this needs. Make a new key in ARC Tracker with every permission ticked."; }
@@ -2183,13 +2224,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (p.bpDel.length) { bits.push(arctPl(p.bpDel.length, "blueprint") + (past ? " unmarked" : " to unmark")); }
     if (p.pAdd.length || p.pDel.length) { bits.push(arctPl(Math.max(p.pAdd.length, p.pDel.length), "project stage") + (past ? " updated" : " to update")); }
     if (p.rAdd.length) { bits.push(arctPl(p.rAdd.length, "raid") + (past ? " added to the raid log" : " to add to the raid log")); }
+    if (p.rUpd.length) { bits.push(arctPl(p.rUpd.length, "raid") + (past ? " given its value" : " to fill in the value for")); }
     return bits.join(", ");
   }
   function arctMissing(p) { return p.missing.length ? " The key cannot read " + p.missing.slice(0, -1).join(", ") + (p.missing.length > 1 ? " or " : "") + p.missing[p.missing.length - 1] + ", so " + (p.missing.length === 1 ? "that part was" : "those parts were") + " skipped. Make a new key with " + (p.missing.length === 1 ? "that permission" : "those permissions") + " ticked to sync " + (p.missing.length === 1 ? "it" : "them") + " too." : ""; }
   function arctRawShow() {
     var o = document.getElementById("arctRawOut");
     if (!o) { return; }
-    o.textContent = arctRawProfile ? JSON.stringify(arctRawProfile, null, 2).slice(0, 6000) : "Nothing yet. Press Resync or Check ARC Tracker to load it.";
+    o.textContent = arctRawProfile ? JSON.stringify(arctRawProfile, null, 2).slice(0, 4000) + (arctRawRounds && arctRawRounds.length ? "\n\nNewest raids:\n" + JSON.stringify(arctRawRounds, null, 2).slice(0, 4000) : "") : "Nothing yet. Press Resync or Check ARC Tracker to load it.";
   }
   function arctWho(p) {
     if (p.who) { arctSet.who = p.who; arctSet.name = p.name || ""; }
@@ -2228,11 +2270,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     p.bpAdd.forEach(function (k) { bpOwned[k] = 1; });
     p.bpDel.forEach(function (k) { delete bpOwned[k]; });
     projects = projects.filter(function (x) { return !(x.src && p.pDel.indexOf(x.name) !== -1); }).concat(p.pAdd);
+    if (p.rUpd.length) { var ru = {}; p.rUpd.forEach(function (x) { ru[x.s] = x; }); raids = raids.map(function (x) { var u = x.s && ru[x.s]; return u ? { t: x.t, m: x.m, o: x.o, v: x.v != null ? x.v : u.v, p: x.p != null ? x.p : u.p, d: x.d != null ? x.d : u.d, n: x.n, s: x.s } : x; }); if (!p.rAdd.length) { save("arcHubRaids", raids); } }
     if (p.rAdd.length) { raids = raids.concat(p.rAdd).sort(function (a, b) { return a.t - b.t; }).slice(-500); save("arcHubRaids", raids); }
     save("arcHubQuestsDone", qDone); save("arcHubTracker", tracker); save("arcHubWs", wsDone); save("arcHubBP", bpOwned); save("arcHubProjects", projects);
     arctSet.last = Date.now(); save("arcHubArct", arctSet);
     arctWho(p);
-    refresh(); renderTools(); renderQuests(); renderRef(); if (curTab === "stash") { renderStash(); }
+    refresh(); renderTools(); renderQuests(); renderRef(); if (curTab === "stash") { renderStash(); } if (curTab === "raids") { renderRaidsTab(); }
     document.getElementById("arctMsg").textContent = (quiet ? "Synced from ARC Tracker: " : "Done: ") + arctSummary(p, true) + "." + arctMissing(p);
     document.getElementById("arctOut").innerHTML = ""; arctPlan = null;
     syncBarRender();
@@ -3341,10 +3384,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var raids = rlClean(load("arcHubRaids", []));
   function rlClean(list) {
     return (Array.isArray(list) ? list : []).filter(function (r) { return r && typeof r.m === "string" && r.m.length < 60 && (r.o === "x" || r.o === "d") && r.t > 0; }).map(function (r) {
-      var v = parseInt(r.v, 10); return { t: +r.t, m: r.m, o: r.o, v: v >= 0 ? Math.min(v, 1e7) : null, n: typeof r.n === "string" ? r.n.slice(0, 60) : "", s: typeof r.s === "string" && r.s.length < 90 ? r.s : undefined };
+      var v = parseInt(r.v, 10), pf = parseInt(r.p, 10), du = parseInt(r.d, 10);
+      return { t: +r.t, m: r.m, o: r.o, v: v >= 0 ? Math.min(v, 1e7) : null, p: isFinite(pf) ? Math.max(-1e7, Math.min(pf, 1e7)) : null, d: du > 0 && du < 86400 ? du : null, n: typeof r.n === "string" ? r.n.slice(0, 60) : "", s: typeof r.s === "string" && r.s.length < 90 ? r.s : undefined };
     }).slice(-500);
   }
   function renderRaids() {
+    if (curTab === "raids") { renderRaidsTab(); }
     var st = document.getElementById("rlStats"), li = document.getElementById("rlList");
     if (!st) { return; }
     var sel = document.getElementById("rlMap");
@@ -4659,7 +4704,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function applyHash() {
     var r = readHash();
     if (r.tab === "tracker" && !/^list=/.test(r.arg)) { r.tab = "stash"; }
-    if (["home", "recycle", "tracker", "stash", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].indexOf(r.tab) === -1) { return; }
+    if (["home", "recycle", "tracker", "stash", "raids", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].indexOf(r.tab) === -1) { return; }
     showTab(r.tab, true);
     if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
     if (r.tab === "quests" && /^p=/.test(r.arg)) {
@@ -4935,7 +4980,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "tracker") { name = "stash"; }
     curTab = name;
     renderHint();
-    ["home", "recycle", "stash", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].forEach(function (t) {
+    ["home", "recycle", "stash", "raids", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
@@ -4943,6 +4988,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (name === "home") { renderHome(); }
     if (name === "stash") { renderTracker(); }
     if (name === "gear") { renderGear(); }
+    if (name === "raids") { renderRaidsTab(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
     if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); renderRaids(); }
@@ -4965,7 +5011,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function syncMore(open) {
     var menu = document.getElementById("moreMenu"), btn = document.getElementById("moreBtn");
     if (!menu || !btn) { return; }
-    var names = { gear: "Gear", ref: "Reference", tools: "Tools", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
+    var names = { raids: "Raids", gear: "Gear", ref: "Reference", tools: "Tools", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
     menu.innerHTML = Object.keys(names).map(function (name) {
       var tb = document.getElementById("tab-" + name), on = tb.getAttribute("aria-selected") === "true", nd = tb.querySelector(".newdot");
       if (on) { cur = name; }
@@ -5212,6 +5258,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       raids = raids.slice(-500); save("arcHubRaids", raids); save("arcHubRaidMap", rlm);
       document.getElementById("rlVal").value = ""; document.getElementById("rlNote").value = "";
       document.getElementById("rlMsg").textContent = "Logged."; renderRaids();
+    } else if (a === "rdMore") { rdShow += 60; renderRaidsTab();
+    } else if (a === "rdPickMap") { var rpm = t.getAttribute("data-m"); rdView.m = rdView.m === rpm ? "" : rpm; save("arcHubRaidView", rdView); rdShow = 60; renderRaidsTab();
     } else if (a === "rlDel") {
       var rli = parseInt(t.getAttribute("data-i"), 10);
       if (raids[rli]) { raids.splice(rli, 1); save("arcHubRaids", raids); renderRaids(); }
@@ -5804,6 +5852,71 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }).join("") : '<div class="empty-line">The board is empty. Add who is bringing or farming what.</div>';
   }
 
+  /* ---------- Raids tab: the raid log as cards, with what you brought out and profit. ---------- */
+  var rdView = load("arcHubRaidView", { f: "all", m: "", w: "0", s: "new" }), rdShow = 60;
+  function rdDur(d) { return d ? Math.floor(d / 60) + ":" + ("0" + (d % 60)).slice(-2) : ""; }
+  function rdSigned(n) { return (n > 0 ? "+" : n < 0 ? "&minus;" : "") + coins(Math.abs(n)); }
+  function renderRaidsTab() {
+    var out = document.getElementById("rdOut");
+    if (!out) { return; }
+    var msel = document.getElementById("rdMap"), seenM = {};
+    raids.forEach(function (r) { seenM[r.m] = 1; });
+    var mopts = '<option value="">All maps</option>' + Object.keys(seenM).sort().map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + "</option>"; }).join("");
+    if (msel.innerHTML !== mopts) { msel.innerHTML = mopts; }
+    msel.value = seenM[rdView.m] ? rdView.m : "";
+    document.getElementById("rdWhen").value = rdView.w; document.getElementById("rdSort").value = rdView.s;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rdf]"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-rdf") === rdView.f ? "true" : "false"); });
+    var since = 0, w = parseInt(rdView.w, 10) || 0;
+    if (w === 1) { var d0 = new Date(); d0.setHours(0, 0, 0, 0); since = d0.getTime(); } else if (w) { since = Date.now() - w * 864e5; }
+    var inRange = raids.filter(function (r) { return r.t >= since && (!msel.value || r.m === msel.value); });
+    var list = inRange.filter(function (r) { return rdView.f === "all" || r.o === rdView.f; });
+    function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
+    var x = inRange.filter(function (r) { return r.o === "x"; }), xv = x.filter(function (r) { return r.v != null; }), pv = inRange.filter(function (r) { return r.p != null; });
+    var out$ = xv.reduce(function (a, r) { return a + r.v; }, 0), prof = pv.reduce(function (a, r) { return a + r.p; }, 0);
+    var best = xv.slice().sort(function (a, b) { return b.v - a.v; })[0];
+    document.getElementById("rdTiles").innerHTML = !inRange.length ? "" :
+      tile("sell", "Brought out", coins(out$), xv.length + " extracted raid" + (xv.length === 1 ? "" : "s") + " with a value") +
+      tile(prof < 0 ? "keep" : "", "Profit", pv.length ? rdSigned(prof) : "&ndash;", pv.length ? pv.length + " raid" + (pv.length === 1 ? "" : "s") + " with profit" : "Not sent by ARC Tracker") +
+      tile("", "Extracted", Math.round(x.length * 100 / inRange.length) + "%", x.length + " of " + inRange.length + " raid" + (inRange.length === 1 ? "" : "s")) +
+      tile("keep", "Best raid", best ? coins(best.v) : "&ndash;", best ? esc(best.m) + " &middot; " + sbAgo(best.t) : "No values yet");
+    var maps = {}; inRange.forEach(function (r) { (maps[r.m] = maps[r.m] || []).push(r); });
+    document.getElementById("rdMaps").innerHTML = Object.keys(maps).sort(function (a, b) { return maps[b].length - maps[a].length; }).map(function (m) {
+      var g = maps[m], gx = g.filter(function (r) { return r.o === "x"; }), gv = gx.filter(function (r) { return r.v != null; }), tot = gv.reduce(function (a, r) { return a + r.v; }, 0);
+      var md = MAPS.filter(function (z) { return z.name === m; })[0], rate = Math.round(gx.length * 100 / g.length);
+      return '<button type="button" class="mapt md' + (md && md.diff || 0) + '" data-action="rdPickMap" data-m="' + esc(m) + '" aria-pressed="' + (msel.value === m) + '"><b>' + esc(m) + '</b><span class="s">' + g.length + " raid" + (g.length === 1 ? "" : "s") + " &middot; " + rate + "% extracted</span>" +
+        '<span class="s">Brought out <b>' + coins(tot) + "</b>" + (gv.length ? " &middot; avg " + coins(Math.round(tot / gv.length)) : "") + "</span></button>";
+    }).join("");
+    document.querySelectorAll(".rdh").forEach(function (h) { h.hidden = !inRange.length; });
+    var by = rdView.s;
+    list.sort(function (a, b) {
+      if (by === "value") { return (b.v || 0) - (a.v || 0) || b.t - a.t; }
+      if (by === "profit") { return (b.p == null ? -1e9 : b.p) - (a.p == null ? -1e9 : a.p) || b.t - a.t; }
+      return b.t - a.t;
+    });
+    document.getElementById("rdMore").hidden = list.length <= rdShow;
+    if (!raids.length) {
+      out.innerHTML = '<div class="empty-line">No raids yet. Connect ARC Tracker with the bar at the top to copy your raids in, or log one by hand in Tools.</div>'; return;
+    }
+    out.innerHTML = list.length ? list.slice(0, rdShow).map(function (r) {
+      var dt = new Date(r.t), dur = rdDur(r.d);
+      return '<div class="stcard rdcard ' + (r.o === "x" ? "rx" : "rd") + '"><div class="sthead"><b>' + esc(r.m) + '</b><span class="ktag ' + (r.o === "x" ? "go" : "want") + '">' + (r.o === "x" ? "Extracted" : "Died") + "</span></div>" +
+        '<div class="muted" style="font-size:13px;">' + dt.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + dt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " &middot; " + sbAgo(r.t) + (dur ? " &middot; " + dur : "") + "</div>" +
+        '<div class="rdvals"><div><span class="k">Brought out</span><b>' + (r.v != null ? coins(r.v) : r.o === "d" ? "0" : "&ndash;") + "</b></div>" +
+        (r.p != null ? '<div><span class="k">Profit</span><b class="' + (r.p >= 0 ? "pos" : "neg") + '">' + rdSigned(r.p) + "</b></div>" : "") + "</div>" +
+        (r.n ? '<div class="muted" style="font-size:13px;">' + esc(r.n) + "</div>" : "") +
+        '<div class="muted" style="font-size:12px;">' + (r.s ? "From ARC Tracker" : "Logged by hand") + "</div></div>";
+    }).join("") : '<div class="empty-line">No raids match.</div>';
+  }
+  function raidsTabInit() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rdf]"), function (b) {
+      b.addEventListener("click", function () { rdView.f = b.getAttribute("data-rdf"); save("arcHubRaidView", rdView); rdShow = 60; renderRaidsTab(); });
+    });
+    [["rdMap", "m"], ["rdWhen", "w"], ["rdSort", "s"]].forEach(function (x) {
+      var el = document.getElementById(x[0]);
+      if (el) { el.addEventListener("change", function () { rdView[x[1]] = el.value; save("arcHubRaidView", rdView); rdShow = 60; renderRaidsTab(); }); }
+    });
+  }
+
   /* ---------- Stash tab ---------- */
   /* Every source that needs an item, always counted (unlike the Shopping list toggles), with a label for each.
      Research Station levels count as the Outpost; the other stations are the workbench. */
@@ -6246,7 +6359,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

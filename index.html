@@ -448,6 +448,30 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .toprow { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .topbtns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .toprow .btn { padding: 5px 10px; font-size: 12px; }
+.syncbar { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; margin: 10px 0 4px; padding: 6px 6px 6px 12px; background: var(--bg); border: 1px solid var(--line); border-left: 4px solid var(--muted); border-radius: 8px; font-size: 13px; color: var(--muted); }
+.syncbar.on { border-left-color: var(--good); }
+.syncbar.busy { border-left-color: var(--warm); }
+.syncbar.bad { border-left-color: var(--danger); }
+.sbdot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.syncbar.on .sbdot { background: var(--good); } .syncbar.busy .sbdot { background: var(--warm); } .syncbar.bad .sbdot { background: var(--danger); }
+.sbtext { flex: 1 1 200px; min-width: 0; }
+.sbtext b { color: var(--fg); font-weight: 600; }
+.sbbtns { display: flex; gap: 6px; flex: none; margin-left: auto; }
+.syncbar .btn { padding: 5px 12px; font-size: 13px; min-height: 32px; }
+.arctpanel { margin: 0 0 8px; }
+.arcthead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.arcthead .btn { padding: 4px 10px; font-size: 13px; }
+.stadd-grid { grid-template-columns: 3fr 1fr 1fr auto; }
+@media (max-width: 600px) { .stadd-grid { grid-template-columns: 1fr 1fr; } .stadd-grid > div:first-child, .stadd-grid > .btn { grid-column: 1 / -1; } }
+.stused { font-size: 13px; }
+.stused summary { cursor: pointer; color: var(--muted); list-style: none; }
+.stused summary::-webkit-details-marker { display: none; }
+.stused summary b { color: var(--fg); font-weight: 600; }
+.stused summary .more { color: var(--accent); white-space: nowrap; }
+.stused[open] summary .more { display: none; }
+.stused ul { margin: 4px 0 0; padding-left: 18px; columns: 2 140px; column-gap: 12px; }
+.stwant { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.stwant .stedit input { width: 100%; min-width: 0; }
 .stamp { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin: -4px 0 14px; }
 .hint { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
 .hint .btn { flex: none; }
@@ -557,6 +581,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .ktag { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
 .ktag.keep { color: var(--warm); border-color: var(--warm); }
 .ktag.go { color: var(--good); border-color: var(--good); }
+.ktag.want { color: var(--accent); border-color: var(--accent); }
 .offstate { color: var(--muted); }
 .offbar { background: var(--warm); color: #14110d; text-align: center; padding: 6px 12px; font-size: 13px; }
 .kofi { margin-bottom: 6px; color: var(--muted); }
@@ -757,6 +782,23 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 <header class="band">
   <div class="wrap">
     <div class="toprow"><p class="eyebrow">Fan-made field reference</p><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="install" id="installBtn" hidden>Install app</button><details class="dispmenu" id="dispMenu"><summary class="btn ghost">Display</summary><div class="dispbox"><a class="btn ghost fbmob" target="_blank" rel="noopener" href="https://github.com/tyler45455/Arc-Raiders-hub/issues/new?title=Feedback&amp;body=What%20would%20you%20like%20to%20see%20or%20fix%3F%0A">Feedback</a><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button><button class="btn ghost" type="button" data-action="contrast" id="contrastBtn">Contrast: Off</button><button class="btn ghost" type="button" data-action="raid" id="raidBtn" aria-pressed="false">Raid mode: Off</button><button class="btn ghost" type="button" data-action="textSize" id="textBtn">Text size: Normal</button><button class="btn ghost" type="button" data-action="motion" id="motionBtn">Motion: Normal</button></div></details><select class="btn ghost langsel" id="langSel" aria-label="Language"></select><button class="btn ghost" type="button" data-action="trReport" id="trReport" title="Highlight the text that looks wrong first, then press this to open a GitHub issue." hidden>Report a translation error</button></div></div>
+    <div class="syncbar" id="syncBar"><span class="sbdot" aria-hidden="true"></span><span class="sbtext" id="sbText" role="status"></span><span class="sbbtns"><button class="btn sbgo" type="button" data-action="arctResync" id="sbGo">Resync</button><button class="btn ghost" type="button" data-action="arctPanel" id="sbSet" aria-expanded="false" aria-controls="arctCard">Settings</button></span></div>
+      <div class="card arctpanel" id="arctCard" hidden>
+        <div class="arcthead"><b>ARC Tracker sync</b><button class="btn ghost" type="button" data-action="arctPanel" aria-label="Close ARC Tracker settings">Close</button></div>
+        <p class="muted" style="margin-top:8px;">This site can only read what ARC Tracker already has, it cannot make ARC Tracker pull new data from the game. Run a sync in the ARC Tracker Link app first, then press Resync here.</p>
+        <p class="muted" style="margin-top:8px;">Copies your completed quests, stash, workshop levels, learned blueprints, project stages and raid history from <a href="https://arctracker.io" target="_blank" rel="noopener">ARC Tracker</a>. ARC Tracker gets them from your game account with its Link app. Skill trees are not in ARC Tracker's API, so set those on the Skills page. This site only reads them from ARC Tracker and never touches the game.</p>
+        <p class="muted" style="margin-top:8px;">In ARC Tracker, open <a href="https://arctracker.io/settings" target="_blank" rel="noopener">Settings</a>, then Developer Access, and create a key with every permission ticked (Profile, Quests, Stash, Hideout, Projects, Rounds and Blueprints). Paste it here. A key with fewer permissions still works; the parts it cannot read are skipped. After the first sync, the site syncs by itself each time you open it. The key stays in this browser and is only sent to arctracker.io.</p>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin-top:8px;">
+          <div><label for="arctUser">ARC Tracker key (starts with arc_u1_)</label><input type="password" id="arctUser" autocomplete="off" spellcheck="false"></div>
+          <div id="arctAppRow"><label for="arctApp">App key (starts with arc_k1_)</label><input type="password" id="arctApp" autocomplete="off" spellcheck="false"></div>
+          <label class="tog"><input type="checkbox" id="arctAdd"> Copy every item in my stash, not only the ones the site already counts</label>
+          <label class="tog"><input type="checkbox" id="arctAuto"> Sync by itself when I open the site</label>
+        </div>
+        <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
+        <p class="muted" id="arctWho" style="margin-top:8px;" hidden></p>
+        <p class="muted" id="arctMsg" role="status" style="margin-top:8px;"></p>
+        <div id="arctOut"></div>
+      </div>
     <h1 class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="48" height="48"><span>Arc Raiders <em>Hub</em></span></h1>
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
     <p class="stamp"><span id="dataStamp"></span><span class="offstate" id="offState"></span></p>
@@ -765,8 +807,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     <div class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" id="tab-home" data-tab="home" aria-selected="false">Home</button>
       <button class="tab" role="tab" id="tab-recycle" data-tab="recycle" aria-selected="true">Recycle</button>
-      <button class="tab" role="tab" id="tab-tracker" data-tab="tracker" aria-selected="false">Tracker<span class="count" id="trackerCount"></span></button>
-      <button class="tab sec" role="tab" id="tab-stash" data-tab="stash" aria-selected="false">Stash</button>
+      <button class="tab" role="tab" id="tab-stash" data-tab="stash" aria-selected="false">Stash</button>
       <button class="tab sec" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Gear</button>
       <button class="tab" role="tab" id="tab-quests" data-tab="quests" aria-selected="false">Quests</button>
       <button class="tab sec" role="tab" id="tab-ref" data-tab="ref" aria-selected="false">Reference</button>
@@ -863,94 +904,31 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     </details>
   </section>
 
-  <!-- TRACKER -->
-  <section class="panel" id="panel-tracker" role="tabpanel" aria-labelledby="tab-tracker" hidden>
-    <h2>Tracker</h2>
-    <p class="muted">The materials you are looking for. Add one, say how many you need, and update the count as you find them. Counts are shared with the Stash tab. Saved in this browser only.</p>
-    <div class="card lkadd">
-      <div class="form-grid" style="grid-template-columns: 3fr 1fr auto;">
-        <div><label for="tName">Material</label><input type="text" id="tName" list="matList" placeholder="Metal Parts" autocomplete="off"></div>
-        <div><label for="tGoal">How many you need</label><input type="number" id="tGoal" min="0" inputmode="numeric" placeholder="any"></div>
-        <button class="btn" type="button" data-action="trackAdd">Add</button>
-      </div>
-      <datalist id="matList"></datalist>
-    </div>
-    <div class="sttiles" id="lkTiles"></div>
-    <div class="sttools" id="lkTools">
-      <div class="seg" role="group" aria-label="Show">
-        <button type="button" data-lkf="all" aria-pressed="true">All</button>
-        <button type="button" data-lkf="need" aria-pressed="false">Still looking</button>
-        <button type="button" data-lkf="done" aria-pressed="false">Found</button>
-      </div>
-      <input type="text" id="lkQ" placeholder="Filter by name" aria-label="Filter materials by name" autocomplete="off">
-      <label class="stsort">Sort <select id="lkSort" aria-label="Sort materials"><option value="togo">Most to go first</option><option value="name">A to Z</option></select></label>
-    </div>
-    <div class="stgrid" id="inventory"></div>
-    <div class="toolbar lkfoot">
-      <div class="muted" id="trackerSummary"></div>
-      <button class="btn ghost" type="button" data-action="shareTracker">Share as image</button><button class="btn danger" type="button" data-action="trackReset" id="resetBtn">Clear list</button>
-    </div>
-  </section>
-
   <!-- STASH -->
   <section class="panel" id="panel-stash" role="tabpanel" aria-labelledby="tab-stash" hidden>
     <h2>Stash</h2>
-    <p class="muted">Everything in your stash, what to keep for your quests, workbench and Outpost upgrades, projects and tracked materials, and what is safe to sell. Type counts on the cards, add items below, or sync them from ARC Tracker. The shopping list, workshop planner, ARC Tracker sync and history are further down. Items you tag Keep are always kept.</p>
-    <div class="stsync" id="stSync"></div>
+    <p class="muted">Everything in your stash, what to keep for your quests, workbench and Outpost upgrades and projects, and what is safe to sell. Type counts on the cards or add items below. Set a Want amount on any card to mark a material you are looking for, even one you have none of yet. Items you tag Keep are always kept. Sync from ARC Tracker with the bar at the top of the page.</p>
     <div class="sttiles" id="stTiles"></div>
     <div class="sttools">
       <div class="seg" role="group" aria-label="Show">
         <button type="button" data-stf="all" aria-pressed="true">All</button>
         <button type="button" data-stf="sell" aria-pressed="false">Sell</button>
         <button type="button" data-stf="keep" aria-pressed="false">Keep</button>
+        <button type="button" data-stf="want" aria-pressed="false">Looking for</button>
       </div>
       <input type="text" id="stQ" placeholder="Filter by name" aria-label="Filter stash items by name" autocomplete="off">
       <label class="stsort">Sort <select id="stSort" aria-label="Sort stash items"><option value="value">Value, highest first</option><option value="slots">Slots, most first</option><option value="name">A to Z</option></select></label>
     </div>
     <div class="stgrid" id="stOut" aria-live="polite"></div>
     <div class="card stadd">
-      <div class="form-grid" style="grid-template-columns: 3fr 1fr auto;">
-        <div><label for="stAddName">Add to your stash</label><input type="text" id="stAddName" list="matList" placeholder="Metal Parts" autocomplete="off"></div>
-        <div><label for="stAddQty">How many</label><input type="number" id="stAddQty" min="0" inputmode="numeric" value="1"></div>
+      <div class="form-grid stadd-grid">
+        <div><label for="stAddName">Add an item</label><input type="text" id="stAddName" list="matList" placeholder="Metal Parts" autocomplete="off"></div>
+        <div><label for="stAddQty">How many you have</label><input type="number" id="stAddQty" min="0" inputmode="numeric" placeholder="0"></div>
+        <div><label for="stAddWant">Want</label><input type="number" id="stAddWant" min="0" inputmode="numeric" placeholder="any"></div>
         <button class="btn" type="button" data-action="stAdd">Add</button>
       </div>
+      <datalist id="matList"></datalist>
     </div>
-    <div id="sharedList"></div>
-    <div class="tool" id="shopTool">
-      <h3>Shopping list</h3>
-      <p class="muted">Built automatically from your active quests, saved projects, workshop upgrades and tracker goals, compared with what you track. Type how many you have in each box to update your stash counts.</p>
-      <div class="chips" role="group" aria-label="What to include">
-        <label class="tog"><input type="checkbox" data-shopsrc="quest" checked> Quests</label>
-        <label class="tog"><input type="checkbox" data-shopsrc="project" checked> Projects</label>
-        <label class="tog"><input type="checkbox" data-shopsrc="workshop" checked> Workshop</label>
-        <label class="tog"><input type="checkbox" data-shopsrc="goal" checked> Goals</label>
-      </div>
-      <div id="shopOut"></div>
-      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="cueOn"> Play a small sound and vibration when a material is covered or a goal is met</label>
-      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="autoSpend"> Subtract items from my tracker when I complete a quest or workshop level</label>
-      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><button class="btn ghost" type="button" data-action="shopLink">Copy list as link</button><span class="muted" id="shopMsg" role="status"></span></div>
-    </div>
-
-    <details class="tool" id="wsTool" open>
-      <summary><b>Workshop planner</b></summary>
-      <p class="muted">Tick how many levels of each station you have finished. Pick how far to plan ahead: those levels go on the shopping list (untick &ldquo;Include&rdquo; to leave a station out), and the upgrade path below lists them in order with everything they need and where to find it.</p>
-      <div id="wsPlanner"></div>
-    </details>
-    <details class="card" id="arctCard">
-      <summary>Sync from ARC Tracker</summary>
-      <p class="muted" style="margin-top:8px;">Copies your completed quests, stash, workshop levels, learned blueprints, project stages and raid history from <a href="https://arctracker.io" target="_blank" rel="noopener">ARC Tracker</a>. ARC Tracker gets them from your game account with its Link app. Skill trees are not in ARC Tracker's API, so set those on the Skills page. This site only reads them from ARC Tracker and never touches the game.</p>
-      <p class="muted" style="margin-top:8px;">In ARC Tracker, open <a href="https://arctracker.io/settings" target="_blank" rel="noopener">Settings</a>, then Developer Access, and create a key with every permission ticked (Profile, Quests, Stash, Hideout, Projects, Rounds and Blueprints). Paste it here. A key with fewer permissions still works; the parts it cannot read are skipped. After the first sync, the site syncs by itself each time you open it. The key stays in this browser and is only sent to arctracker.io.</p>
-      <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin-top:8px;">
-        <div><label for="arctUser">ARC Tracker key (starts with arc_u1_)</label><input type="password" id="arctUser" autocomplete="off" spellcheck="false"></div>
-        <div id="arctAppRow"><label for="arctApp">App key (starts with arc_k1_)</label><input type="password" id="arctApp" autocomplete="off" spellcheck="false"></div>
-        <label class="tog"><input type="checkbox" id="arctAdd"> Copy every item in my stash, not only the ones the site already counts</label>
-        <label class="tog"><input type="checkbox" id="arctAuto"> Sync by itself when I open the site</label>
-      </div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
-      <p class="muted" id="arctWho" style="margin-top:8px;" hidden></p>
-      <p class="muted" id="arctMsg" role="status" style="margin-top:8px;"></p>
-      <div id="arctOut"></div>
-    </details>
     <details class="card" id="histCard">
       <summary>History</summary>
       <p class="muted" style="margin-top:8px;">One point per day, saved in this browser as you use the tracker.</p>
@@ -1090,7 +1068,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <!-- TOOLS -->
   <section class="panel" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools" hidden>
     <h2>Tools</h2>
-    <p class="muted">The shopping list and workshop planner are in the Stash tab. A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
+    <p class="muted">The shopping list and workshop planner are at the end of the list. A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
 
     <div class="tool printable">
       <h3>Raid checklist</h3>
@@ -1308,6 +1286,28 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       </div>
       <div id="kOut" aria-live="polite"></div>
     </div>
+
+    <div class="tool" id="shopTool">
+      <h3>Shopping list</h3>
+      <div id="sharedList"></div>
+      <p class="muted">Built automatically from your active quests, saved projects, workshop upgrades and tracker goals, compared with what you track. Type how many you have in each box to update your stash counts.</p>
+      <div class="chips" role="group" aria-label="What to include">
+        <label class="tog"><input type="checkbox" data-shopsrc="quest" checked> Quests</label>
+        <label class="tog"><input type="checkbox" data-shopsrc="project" checked> Projects</label>
+        <label class="tog"><input type="checkbox" data-shopsrc="workshop" checked> Workshop</label>
+        <label class="tog"><input type="checkbox" data-shopsrc="goal" checked> Goals</label>
+      </div>
+      <div id="shopOut"></div>
+      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="cueOn"> Play a small sound and vibration when a material is covered or a goal is met</label>
+      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="autoSpend"> Subtract items from my tracker when I complete a quest or workshop level</label>
+      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><button class="btn ghost" type="button" data-action="shopLink">Copy list as link</button><span class="muted" id="shopMsg" role="status"></span></div>
+    </div>
+
+    <div class="tool" id="wsTool">
+      <h3>Workshop planner</h3>
+      <p class="muted">Tick how many levels of each station you have finished. Pick how far to plan ahead: those levels go on the shopping list (untick &ldquo;Include&rdquo; to leave a station out), and the upgrade path below lists them in order with everything they need and where to find it.</p>
+      <div id="wsPlanner"></div>
+    </div>
   </section>
 
   <!-- MAPS -->
@@ -1384,7 +1384,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   </div>
 </footer>
 <div class="undobar" id="undoBar" role="status" aria-live="polite" hidden><span id="undoText"></span><button class="btn" type="button" data-action="undo">Undo</button></div>
-<div class="tour kbbox" id="kbBox" role="dialog" aria-label="Keyboard shortcuts" hidden><b>Keyboard shortcuts</b><ul><li><kbd>/</kbd> <span>Search</span></li><li><kbd>?</kbd> <span>Show or hide this list</span></li><li><kbd>g</kbd> <kbd>r</kbd> <span>Recycle</span></li><li><kbd>g</kbd> <kbd>t</kbd> <span>Tracker</span></li><li><kbd>g</kbd> <kbd>k</kbd> <span>Stash</span></li><li><kbd>g</kbd> <kbd>a</kbd> <span>Gear</span></li><li><kbd>g</kbd> <kbd>q</kbd> <span>Quests</span></li><li><kbd>g</kbd> <kbd>e</kbd> <span>Reference</span></li><li><kbd>g</kbd> <kbd>o</kbd> <span>Tools</span></li><li><kbd>g</kbd> <kbd>m</kbd> <span>Maps</span></li><li><kbd>g</kbd> <kbd>s</kbd> <span>Site changes</span></li></ul><div class="tbtn"><span></span><button class="btn" type="button" data-action="kbClose">Close</button></div></div>
+<div class="tour kbbox" id="kbBox" role="dialog" aria-label="Keyboard shortcuts" hidden><b>Keyboard shortcuts</b><ul><li><kbd>/</kbd> <span>Search</span></li><li><kbd>?</kbd> <span>Show or hide this list</span></li><li><kbd>g</kbd> <kbd>r</kbd> <span>Recycle</span></li><li><kbd>g</kbd> <kbd>k</kbd> <span>Stash</span></li><li><kbd>g</kbd> <kbd>a</kbd> <span>Gear</span></li><li><kbd>g</kbd> <kbd>q</kbd> <span>Quests</span></li><li><kbd>g</kbd> <kbd>e</kbd> <span>Reference</span></li><li><kbd>g</kbd> <kbd>o</kbd> <span>Tools</span></li><li><kbd>g</kbd> <kbd>m</kbd> <span>Maps</span></li><li><kbd>g</kbd> <kbd>s</kbd> <span>Site changes</span></li></ul><div class="tbtn"><span></span><button class="btn" type="button" data-action="kbClose">Close</button></div></div>
 <div class="tour" id="newBox" role="dialog" aria-label="What is new" hidden><b>What is new</b><div id="newList"></div><div class="tbtn"><span></span><button class="btn" type="button" data-action="newClose">Got it</button></div></div>
 <div class="tour" id="tour" role="dialog" aria-label="Quick tour" hidden><div id="tourText"></div><div class="tbtn"><span class="muted" id="tourStep"></span><span style="display:flex;gap:8px;"><button class="btn ghost" type="button" data-action="tourSkip">Skip</button><button class="btn" type="button" data-action="tourNext" id="tourNextBtn">Next</button></span></div></div>
 
@@ -1512,10 +1512,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var shopWhereOpen = {};
   var disp = load("arcHubDisplay", { raid: false, text: 0, motion: false });
   var goals = load("arcHubGoals", {});
-  /* Materials on the Tracker tab ("looking for"). Counts stay in tracker, the amount needed in goals. First run: what the old Tracker listed. */
+  /* Kept for old backups: the materials the removed Tracker tab listed. Want amounts now live in goals and show on the Stash cards. */
   var look = load("arcHubLook", null);
   if (!look || typeof look !== "object" || Array.isArray(look)) { look = {}; Object.keys(goals).concat(Object.keys(tracker)).forEach(function (k) { look[k] = 1; }); save("arcHubLook", look); }
-  var lkView = load("arcHubLookView", { f: "all", s: "togo" });
   var curTab = "recycle";
   var rarityMap = {};
   var lootNames = {};
@@ -2146,6 +2145,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     refresh(); renderTools(); renderQuests(); renderRef(); if (curTab === "stash") { renderStash(); }
     document.getElementById("arctMsg").textContent = (quiet ? "Synced from ARC Tracker: " : "Done: ") + arctSummary(p, true) + "." + arctMissing(p);
     document.getElementById("arctOut").innerHTML = ""; arctPlan = null;
+    syncBarRender();
   }
   function arctReady() { return !!(arctSet.u && arctApp()); }
   function arctCheck() {
@@ -2156,7 +2156,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (!arctApp()) { msg.textContent = "Paste the app key first."; return; }
     if (arctBusy) { return; }
     arctBusy = true; msg.textContent = "Checking ARC Tracker..."; document.getElementById("arctOut").innerHTML = "";
-    arctFetch().then(function (p) { arctBusy = false; arctPlan = p; arctShow(); }, function (e) { arctBusy = false; msg.textContent = arctErr(e); });
+    syncBarRender();
+    arctFetch().then(function (p) { arctBusy = false; arctPlan = p; arctShow(); syncBarRender(); }, function (e) { arctBusy = false; msg.textContent = arctErr(e); syncBarRender(); });
   }
   function arctFill() {
     var u = document.getElementById("arctUser"), a = document.getElementById("arctApp");
@@ -2167,68 +2168,62 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     document.getElementById("arctAdd").checked = arctSet.add !== false;
     document.getElementById("arctAuto").checked = arctSet.auto !== false;
     arctWho({});
+    syncBarRender();
   }
   /* Syncs by itself once a key is saved and the first sync was checked with Apply (or already matched). Off only when unticked. */
   function arctAutoRun() {
     if (arctSet.auto === false || !arctReady() || !arctSet.last || Date.now() - arctSet.last < 15 * 60 * 1000) { return; }
-    arctBusy = true;
+    arctBusy = true; syncBarRender();
     arctFetch().then(function (p) {
       arctBusy = false;
-      if (arctAny(p)) { arctApply(p, true); } else { arctWho(p); arctSet.last = Date.now(); save("arcHubArct", arctSet); }
-    }, function (e) { arctBusy = false; var m = document.getElementById("arctMsg"); if (m) { m.textContent = "Automatic sync failed. " + arctErr(e); } });
+      if (arctAny(p)) { arctApply(p, true); sbSay("Updated: " + arctSummary(p, true) + "."); } else { arctWho(p); arctSet.last = Date.now(); save("arcHubArct", arctSet); syncBarRender(); }
+    }, function (e) { arctBusy = false; var m = document.getElementById("arctMsg"); if (m) { m.textContent = "Automatic sync failed. " + arctErr(e); } sbSay("Automatic sync failed. " + arctErr(e), true); });
   }
+  /* Header sync bar, on every page: when it last synced, raider level, Resync and the key settings.
+     ARC Tracker's API is read-only (no call makes it pull from the game), so Resync reads whatever its Link app last saved. */
+  var sbNote = "", sbBad = false, sbAt = 0;
+  function sbAgo(t) {
+    var m = Math.round((Date.now() - t) / 60000), h = Math.round(m / 60), d = Math.round(h / 24);
+    return m < 1 ? "just now" : m < 60 ? m + " min ago" : h < 24 ? h + " hour" + (h === 1 ? "" : "s") + " ago" : d + " day" + (d === 1 ? "" : "s") + " ago";
+  }
+  function sbSay(t, bad) { sbNote = t; sbBad = !!bad; sbAt = Date.now(); syncBarRender(); }
+  function syncBarRender() {
+    var bar = document.getElementById("syncBar"), tx = document.getElementById("sbText"), go = document.getElementById("sbGo");
+    if (!bar) { return; }
+    if (sbNote && Date.now() - sbAt > 3 * 60 * 1000) { sbNote = ""; sbBad = false; }
+    var ready = arctReady(), t;
+    if (!ready) { t = "Sync your stash, quests and raider level from <b>ARC Tracker</b>."; }
+    else if (!arctSet.last) { t = "<b>ARC Tracker</b> connected" + (arctSet.who ? " as " + esc(arctSet.who) : "") + ". Resync to check your first sync."; }
+    else { t = "<b>ARC Tracker</b> synced " + sbAgo(arctSet.last) + (arctSet.lvl ? " &middot; Raider level " + esc(String(arctSet.lvl)) : "") + "."; }
+    if (arctBusy) { t = "Reading your data from <b>ARC Tracker</b>..."; } else if (sbNote) { t += " " + esc(sbNote); }
+    tx.innerHTML = t;
+    bar.className = "syncbar" + (arctBusy ? " busy" : sbBad ? " bad" : ready && arctSet.last ? " on" : "");
+    go.textContent = arctBusy ? "Syncing..." : ready ? "Resync" : "Connect";
+    go.disabled = arctBusy;
+    go.title = ready ? "Reads what ARC Tracker has right now. Sync in the ARC Tracker Link app first to pull your newest game data." : "Connect your ARC Tracker account";
+  }
+  function arctPanel(open) {
+    var c = document.getElementById("arctCard"), b = document.getElementById("sbSet");
+    if (!c) { return; }
+    c.hidden = !open; b.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) { arctFill(); }
+  }
+  function arctResync() {
+    if (arctBusy) { return; }
+    if (!arctReady()) { arctPanel(true); var u = document.getElementById("arctUser"); if (u) { u.focus(); } return; }
+    if (!arctSet.last) { arctPanel(true); arctCheck(); return; }
+    arctBusy = true; sbNote = ""; sbBad = false; syncBarRender();
+    arctFetch().then(function (p) {
+      arctBusy = false;
+      if (arctAny(p)) { arctApply(p, true); sbSay("Updated: " + arctSummary(p, true) + "." + (p.missing.length ? " Some parts were skipped, see Settings." : "")); }
+      else { arctWho(p); arctSet.last = Date.now(); save("arcHubArct", arctSet); sbSay("Nothing new. If you just played, sync in the ARC Tracker Link app first."); }
+    }, function (e) { arctBusy = false; sbSay(arctErr(e), true); });
+  }
+  /* The Tracker tab is gone: counts and Want amounts live on the Stash cards. This refreshes everything built from them. */
   function renderTracker() {
-    var shopRows = [], sm = {};
-    try { shopRows = shopData(); shopRows.forEach(function (r) { sm[r.n] = r; }); renderShop(); renderPlanner(); renderWorth(); } catch (e0) {}
+    try { renderShop(); renderPlanner(); renderWorth(); } catch (e0) {}
     histSoon();
-    var keys = Object.keys(look).sort(), found = 0, togo = 0;
-    keys.forEach(function (k) { var h = tracker[k] || 0, g = goals[k] || 0; if (g && h >= g) { found++; } else if (g) { togo += g - h; } });
-    document.getElementById("trackerCount").textContent = keys.length ? "(" + keys.length + ")" : "";
-    document.getElementById("trackerSummary").textContent = "";
-    document.getElementById("resetBtn").hidden = !keys.length;
-    document.getElementById("lkTools").hidden = !keys.length;
-    Array.prototype.forEach.call(document.querySelectorAll("[data-lkf]"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-lkf") === lkView.f ? "true" : "false"); });
-    var sel = document.getElementById("lkSort"); if (sel.value !== lkView.s) { sel.value = lkView.s; }
-    var box = document.getElementById("inventory"), tiles = document.getElementById("lkTiles");
-    if (!keys.length) {
-      tiles.innerHTML = "";
-      box.innerHTML = '<div class="empty">Nothing on your list yet.<br>Type a material above and how many you need. Your stash counts are in the Stash tab.</div>';
-      return;
-    }
-    function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
-    tiles.innerHTML = tile("", "Looking for", keys.length, keys.length === 1 ? "material" : "materials") +
-      tile("sell", "Found", found, "amount reached") +
-      tile("keep", "Still to find", togo, togo === 1 ? "item left" : "items left");
-    if (invTyping) { return; }
-    var q = (document.getElementById("lkQ").value || "").trim().toLowerCase();
-    var list = keys.filter(function (k) {
-      var h = tracker[k] || 0, g = goals[k] || 0, done = g > 0 && h >= g;
-      if (lkView.f === "need" && done) { return false; }
-      if (lkView.f === "done" && !done) { return false; }
-      return !q || k.toLowerCase().indexOf(q) !== -1;
-    });
-    function left(k) { var g = goals[k] || 0; return g ? Math.max(0, g - (tracker[k] || 0)) : -1; }
-    if (lkView.s === "togo") { list.sort(function (x, y) { return left(y) - left(x) || (x < y ? -1 : 1); }); }
-    box.innerHTML = list.length ? list.map(lookCard).join("") : '<div class="empty-line">Nothing matches.</div>';
-  }
-  function lookCard(k) {
-    var ip = invParts(k), g = goals[k] || 0, rar = String(rarityMap[k] || "Common").toLowerCase(), ek = esc(k);
-    return '<div class="stcard lkcard r-' + esc(rar) + (shopWhereOpen[k] ? " farmopen" : "") + '" data-inv="' + ek + '"><div class="sthead"><b>' + ek + '</b><button type="button" class="lkdel" data-action="lookDel" data-m="' + ek + '" aria-label="Stop looking for ' + ek + '" title="Remove from the list">&times;</button></div>' +
-      '<div class="invprog">' + ip.prog + '</div><div class="invneed">' + ip.need + "</div>" +
-      '<div class="lkedit"><label class="stedit">Have <input type="number" min="0" inputmode="numeric" data-invhave="' + ek + '" value="' + (tracker[k] || 0) + '" aria-label="How many ' + ek + ' you have"></label>' +
-      '<label class="stedit">Need <input type="number" min="0" inputmode="numeric" data-goal="' + ek + '" value="' + (g || "") + '" placeholder="any" aria-label="How many ' + ek + ' you need"></label></div>' +
-      '<div class="lkacts"><button class="btn ghost" type="button" data-action="shopBump" data-m="' + ek + '" data-n="1">+1</button><button class="btn ghost" type="button" data-action="shopBump" data-m="' + ek + '" data-n="5">+5</button><button class="btn ghost" type="button" data-action="shopBump" data-m="' + ek + '" data-n="10">+10</button>' +
-      '<button class="btn ghost" type="button" data-action="shopWhere" data-m="' + ek + '" aria-expanded="' + (shopWhereOpen[k] ? "true" : "false") + '">' + (shopWhereOpen[k] ? "Hide where to find" : "Where to find") + "</button></div>" +
-      (shopWhereOpen[k] ? farmWhere(k) : "") + "</div>";
-  }
-  function invParts(k) {
-    var have = tracker[k] || 0, g = goals[k] || 0, pct = g ? Math.min(100, Math.round(have * 100 / g)) : 0, sr = null;
-    try { shopData().forEach(function (r) { if (r.n === k) { sr = r; } }); } catch (e1) { sr = null; }
-    return {
-      prog: g ? '<div class="stverdict"><span class="stqty">' + have + " / " + g + '</span><span class="ktag ' + (have >= g ? 'go">Found &#10003;' : 'keep">' + (g - have) + " to go") + '</span></div><div class="lkbar' + (have >= g ? " done" : "") + '" role="img" aria-label="' + pct + ' percent"><i style="width:' + pct + '%"></i></div>' :
-        '<div class="stverdict"><span class="stqty">' + have + '</span><span class="muted" style="font-size:13px;">No amount set</span></div>',
-      need: sr && sr.src.filter(function (x) { return x !== "goal"; }).length ? '<div class="muted" style="font-size:13px;">Also needed for ' + esc(shopLabel(sr.src.filter(function (x) { return x !== "goal"; }))) + "</div>" : ""
-    };
+    if (!invTyping && curTab === "stash") { renderStash(); }
   }
   function invTypeUpdate(name, val) {
     var n = parseInt(val, 10); if (!(n >= 0)) { n = 0; }
@@ -2238,10 +2233,6 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if ((preMiss > 0 && missOf(name) === 0) || (preGoal && n >= goals[name])) { cue(); }
     invTyping = true; shopTyping = true;
     try { renderTracker(); renderDatalist(); updateGoalToggle(); renderResults(); } finally { invTyping = false; shopTyping = false; }
-    var cards = document.querySelectorAll("#inventory .lkcard");
-    Array.prototype.forEach.call(cards, function (el) {
-      if (el.getAttribute("data-inv") === name) { var ip = invParts(name); el.querySelector(".invprog").innerHTML = ip.prog; el.querySelector(".invneed").innerHTML = ip.need; }
-    });
     var all = shopData(true), row = null; all.forEach(function (r) { if (r.n === name) { row = r; } });
     Array.prototype.forEach.call(document.querySelectorAll("#shopOut .shoprow"), function (el) {
       if (el.getAttribute("data-shoprow") === name && row) {
@@ -3299,7 +3290,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }).join("") : '<div class="empty-line">Nothing is blocking you. Add quests, projects or goals and this fills in.</div>') + (keepL.length > 40 ? '<div class="muted">And ' + (keepL.length - 40) + " more.</div>" : "") + "</div>";
     html += "<div><b>Recycle for your goals (" + goL.length + ")</b>" + (goL.length ? goL.slice(0, 40).map(function (k) {
       return '<div class="krow"><b>' + esc(k[0].name) + '</b><span class="ktag go">Recycle</span><span class="muted">' + k[1].map(function (x) { return "+" + x[1] + " " + esc(x[0]); }).join(", ") + "</span></div>";
-    }).join("") : '<div class="empty-line">Set goals in the Tracker to see which items help.</div>') + (goL.length > 40 ? '<div class="muted">And ' + (goL.length - 40) + " more.</div>" : "") + "</div>";
+    }).join("") : '<div class="empty-line">Set Want amounts on your Stash cards to see which items help.</div>') + (goL.length > 40 ? '<div class="muted">And ' + (goL.length - 40) + " more.</div>" : "") + "</div>";
     html += '<div><b>Safe to recycle (' + safe.length + ')</b><div class="muted">No active quest, project or goal needs these. Sell value and personal use still matter.</div></div>';
     box.innerHTML = html + "</div>";
   }
@@ -3869,8 +3860,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     ["#gq", "Search everything here: items, quests, enemies, blueprints and weapons.", "recycle"],
     ["#searchBox", "Recycle: type an item to see what it breaks down into, or a material to see every item that gives it.", "recycle"],
     ["#tab-home", "Home: your next raid, the workshop upgrade you are closest to, goals, raid stats and stash worth on one screen.", "home"],
-    ["#tab-tracker", "Tracker: list the materials you are looking for and how many you need, then count them up as you find them.", "tracker"],
-    ["#shopOut", "The Stash tab has the shopping list. Press Where to farm this on any item to see its area types, matching places on the maps, ARC drops, traders and quests.", "stash"],
+    ["#syncBar", "Connect ARC Tracker here to copy your stash, quests, workshop levels and raider level. Resync pulls the newest data from ARC Tracker on any page.", "recycle"],
+    ["#tab-stash", "Stash: everything you have, what to keep and what is safe to sell. Set a Want amount on any card to mark a material you are looking for.", "stash"],
     ["#resetEverythingBtn", "Reset everything to default (on Home, under Back up or move your data) clears your missions, counts and saved data back to zero. It asks you to press twice.", "home"],
     ["#tab-quests", "Quests: tick them off to unlock the next ones and see what to hand in.", "quests"],
     ["#toolNav", "Tools: each tool has its own tab, such as checklists, loadouts, saved projects and Keep or recycle. Squad checklists can be shared by link.", "tools"],
@@ -4284,7 +4275,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     rchkRoll();
     var todo = rchk.filter(function (c) { return !c.d; }).length;
     if (todo) { gb += '<p class="muted">' + todo + " daily or weekly task" + (todo === 1 ? "" : "s") + " left to tick off.</p>"; }
-    html += homeCard("Goals", gb || '<p class="muted">Nothing on your list yet. Add the materials you are looking for in the Tracker to see progress here.</p>', '<button class="btn ghost" type="button" data-tab="tracker">Tracker</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="weekTool">Weekly goals</button>', "goal");
+    html += homeCard("Goals", gb || '<p class="muted">Nothing on your list yet. Set a Want amount on a Stash card to see progress here.</p>', '<button class="btn ghost" type="button" data-tab="stash">Stash</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="weekTool">Weekly goals</button>', "goal");
     var rb = "";
     if (raids.length) {
       var x = raids.filter(function (r) { return r.o === "x"; }), hv = x.filter(function (r) { return r.v !== null; }), streak = 0;
@@ -4530,6 +4521,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
   function applyHash() {
     var r = readHash();
+    if (r.tab === "tracker" && !/^list=/.test(r.arg)) { r.tab = "stash"; }
     if (["home", "recycle", "tracker", "stash", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].indexOf(r.tab) === -1) { return; }
     showTab(r.tab, true);
     if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
@@ -4539,7 +4531,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     }
     if (r.tab === "tracker" && /^list=/.test(r.arg)) {
       sharedList = r.arg.slice(5).split("~").map(function (x) { var i = x.lastIndexOf("*"); return [x.slice(0, i), parseInt(x.slice(i + 1), 10) || 0]; }).filter(function (x) { return x[0] && x[1] > 0 && x[0].length < 80; }).slice(0, 80);
-      renderShared(); r.tab = "stash"; showTab("stash", true);
+      renderShared(); r.tab = "tools"; showTab("tools", true); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("shopTool")));
     }
     if (r.tab === "tools" && /^(ck|lo)=/.test(r.arg)) { toolShow(r.arg.slice(0, 2) === "ck" ? 0 : 4); }
     if (r.tab === "tools" && /^ck=/.test(r.arg)) {
@@ -4567,13 +4559,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   var HINTS = {
     home: "<b>Home.</b> A summary of your progress: the next raid from the Quest route planner, the workshop upgrade you are closest to, your goals, raid log stats and what your stash is worth. Each card has a button that opens the full tool.",
-    recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set a goal in the Tracker and items that help it show a green &ldquo;Helps your goals&rdquo; line.",
-    stash: "<b>Stash.</b> Every item you track, split into what to keep (needed by active quests, workbench and Outpost upgrades, projects or tracked materials) and what is safe to sell, with its value. Change a count on any card, or sync from ARC Tracker in the Tracker tab.",
-    tracker: "<b>Tracker.</b> List the materials you are looking for and how many you need. Update the Have box or press +1, +5 or +10 as you find them, and press Where to find for places to farm each one. Your counts are shared with the Stash tab, where the shopping list, workshop planner and ARC Tracker sync now live.",
+    recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set a Want amount on a Stash card and items that help it show a green &ldquo;Helps your goals&rdquo; line.",
+    stash: "<b>Stash.</b> Every item you have, split into what to keep (needed by active quests, workbench and Outpost upgrades, projects or Want amounts) and what is safe to sell, with its value and what it crafts. Change Have or Want on any card. Looking for shows the materials you want. Sync from ARC Tracker with the bar at the top.",
     gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
     quests: "<b>Quests.</b> Search or tap a trader to filter. Tick &ldquo;Mark as completed&rdquo; to unlock the next quests, or turn on &ldquo;Show locked&rdquo; to see everything. Items you track show how many you have.",
     ref: "<b>Reference.</b> Pick a section, then search inside it. Enemy drops you track are highlighted, workshop costs can be added to the Project helper, and you can tick the blueprints you own.",
-    tools: "<b>Tools.</b> A raid checklist, project presets that fill from your tracker, weapon compare, a loadout builder and item compare. Back up your data from the Tracker tab.",
+    tools: "<b>Tools.</b> A raid checklist, project presets that fill from your tracker, weapon compare, a loadout builder and item compare. The shopping list and workshop planner are here too. Back up your data from Home.",
     maps: "<b>Maps.</b> Pick a map to see its difficulty, unlock requirement, conditions and what changed there, plus the overview image. <b>Tip:</b> tap or click the map image to enlarge it, because the enlarged map has much more detail, including room names and a key. Copy the address bar to share a specific map.",
     frozen: "<b>Frozen Trail 2.0.</b> A quick summary of the latest update: the new map, enemies, weapons, gear and balance changes.",
     updates: "<b>Update history.</b> Every major update from launch to now, newest first, with the main highlights. Weekly store updates and small hotfixes are left out.",
@@ -4804,21 +4795,21 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
 
   function showTab(name, quiet) {
+    if (name === "tracker") { name = "stash"; }
     curTab = name;
     renderHint();
-    ["home", "recycle", "tracker", "stash", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].forEach(function (t) {
+    ["home", "recycle", "stash", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
     });
     if (name === "home") { renderHome(); }
-    if (name === "stash") { renderTracker(); renderStash(); }
+    if (name === "stash") { renderTracker(); }
     if (name === "gear") { renderGear(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
     if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); renderRaids(); }
     if (name === "maps") { renderMaps(); }
-    if (name === "tracker") { Object.keys(tracker).forEach(function (k) { if (!(tracker[k] > 0) && !goals[k] && !look[k]) { delete tracker[k]; } }); save("arcHubTracker", tracker); renderTracker(); }
     if (name === "updates") { renderTimeline(); markUpdatesSeen(); }
     if (name === "site") { try { renderAudit(); } catch (eA) {} }
     syncMore();
@@ -4837,7 +4828,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function syncMore(open) {
     var menu = document.getElementById("moreMenu"), btn = document.getElementById("moreBtn");
     if (!menu || !btn) { return; }
-    var names = { stash: "Stash", gear: "Gear", ref: "Reference", tools: "Tools", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
+    var names = { gear: "Gear", ref: "Reference", tools: "Tools", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
     menu.innerHTML = Object.keys(names).map(function (name) {
       var tb = document.getElementById("tab-" + name), on = tb.getAttribute("aria-selected") === "true", nd = tb.querySelector(".newdot");
       if (on) { cur = name; }
@@ -4948,7 +4939,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var tt = qTotals(matSet());
       Object.keys(tt).forEach(function (k) { goals[k] = Math.max(goals[k] || 0, tt[k]); });
       save("arcHubGoals", goals); refresh();
-      var ga = t.textContent; t.textContent = "Goals set in the tracker"; setTimeout(function () { t.textContent = ga; }, 1500);
+      var ga = t.textContent; t.textContent = "Want amounts set in Stash"; setTimeout(function () { t.textContent = ga; }, 1500);
     } else if (a === "qCopy") {
       var lines = qActive().map(function (q) {
         return "[ ] " + q.name + " (" + q.trader + ", " + q.loc.join("/") + ")" + (q.req.length ? " - hand in: " + q.req.map(function (r) { return (r.q > 1 ? r.q + "x " : "") + r.n; }).join(", ") : "");
@@ -5019,9 +5010,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     } else if (a === "gAdd") {
       var gr = gTargets[parseInt(t.getAttribute("data-i"), 10)]; if (gr) { bump(gr.go[1], 1); t.textContent = "Added"; }
     } else if (a === "emptyGoal") {
-      var tn = document.getElementById("tName"); if (tn) { tn.scrollIntoView({ block: "center" }); tn.focus(); }
+      showTab("stash"); var tn = document.getElementById("stAddName"); if (tn) { tn.scrollIntoView({ block: "center" }); tn.focus(); }
     } else if (a === "raid") {
-      disp.raid = !disp.raid; save("arcHubDisplay", disp); applyDisp(); if (disp.raid && curTab !== "tracker" && curTab !== "maps") { showTab("tracker"); writeHash(); }
+      disp.raid = !disp.raid; save("arcHubDisplay", disp); applyDisp(); if (disp.raid && curTab !== "stash" && curTab !== "maps") { showTab("stash"); writeHash(); }
     } else if (a === "textSize") {
       disp.text = ((disp.text || 0) + 1) % 3; save("arcHubDisplay", disp); applyDisp();
     } else if (a === "motion") {
@@ -5109,12 +5100,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var crt = document.getElementById("craftTool"); if (crt && crt.scrollIntoView) { crt.scrollIntoView({ block: "start" }); }
     } else if (a === "homeTool") {
       showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById(t.getAttribute("data-tool")))); window.scrollTo(0, 0);
-    } else if (a === "stSync") {
-      showTab("stash"); var sac = document.getElementById("arctCard");
-      if (sac) { sac.open = true; if (sac.scrollIntoView) { sac.scrollIntoView({ block: "start" }); } }
-      if (arctReady()) { arctCheck(); } else { var sau = document.getElementById("arctUser"); if (sau) { sau.focus(); } }
+    } else if (a === "stSync" || a === "arctResync") {
+      arctResync();
+    } else if (a === "arctPanel") {
+      arctPanel(document.getElementById("arctCard").hidden);
     } else if (a === "homeWs") {
-      showTab("stash"); var hws = document.getElementById("wsPlanner"); if (hws && hws.scrollIntoView) { hws.scrollIntoView({ block: "start" }); }
+      showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("wsTool"))); window.scrollTo(0, 0);
     } else if (a === "enSeen") {
       var esn = t.getAttribute("data-n"), ess = document.querySelector('[data-ensel="' + CSS.escape(esn) + '"]'), esm = ess ? ess.value : "";
       if (esm) {
@@ -5138,7 +5129,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       if (un.length) {
         projects.push({ name: "Upgrade to " + uw + " " + upTiers(uw)[ut - 1], needs: un.map(function (m) { return [m, uc.tot[m]]; }) });
         save("arcHubProjects", projects); renderProjects();
-        document.getElementById("upMsg").textContent = "Saved. It now feeds the shopping list in the Tracker tab.";
+        document.getElementById("upMsg").textContent = "Saved. It now feeds the shopping list in Tools.";
       }
     } else if (a === "crProj" || a === "crLink") {
       var crn = craftFind(document.getElementById("crItem").value), crq = Math.max(1, Math.min(99, parseInt(document.getElementById("crQty").value, 10) || 1)), crm = document.getElementById("crMsg");
@@ -5146,7 +5137,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         var crc = craftCalc(crn, crq, document.getElementById("crDeep").checked);
         projects.push({ name: "Craft " + crq + "\u00d7 " + crn, needs: Object.keys(crc.leaf).map(function (m) { return [m, crc.leaf[m]]; }) });
         save("arcHubProjects", projects); renderProjects();
-        crm.textContent = "Saved. It now feeds the shopping list in the Tracker tab.";
+        crm.textContent = "Saved. It now feeds the shopping list in Tools.";
       } else if (crn) {
         copyText(window.location.href.split("#")[0] + "#tools/craft=" + encodeURIComponent(crn + "*" + crq), function (ok) { crm.textContent = ok ? "Link copied" : "Copy failed"; });
       }
@@ -5290,42 +5281,19 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       customItems = customItems.filter(function (c) { return c.name !== dn; });
       save("arcHubCustom", customItems);
       refresh();
-    } else if (a === "trackAdd") {
-      var name = document.getElementById("tName").value.trim();
-      var gl = parseInt(document.getElementById("tGoal").value, 10) || 0;
-      if (name) {
-        name = (typeof canonItem === "function" && canonItem(name)) || name;
-        pushUndo("Added " + name);
-        look[name] = 1; save("arcHubLook", look);
-        if (gl > 0) { goals[name] = gl; save("arcHubGoals", goals); }
-        renderTracker(); renderDatalist(); updateGoalToggle(); renderResults();
-        document.getElementById("tName").value = "";
-        document.getElementById("tGoal").value = "";
-        document.getElementById("tName").focus();
-      }
-    } else if (a === "lookDel") {
-      var ldm = t.getAttribute("data-m"); pushUndo("Removed " + ldm);
-      delete look[ldm]; delete goals[ldm]; save("arcHubLook", look); save("arcHubGoals", goals);
-      renderTracker(); updateGoalToggle(); renderResults();
     } else if (a === "stAdd") {
-      var san = document.getElementById("stAddName").value.trim(), saq = parseInt(document.getElementById("stAddQty").value, 10) || 0;
-      if (san && saq > 0) { bump((typeof canonItem === "function" && canonItem(san)) || san, saq); document.getElementById("stAddName").value = ""; document.getElementById("stAddQty").value = 1; renderStash(); }
+      var san = document.getElementById("stAddName").value.trim(), saq = parseInt(document.getElementById("stAddQty").value, 10) || 0, saw = parseInt(document.getElementById("stAddWant").value, 10) || 0;
+      if (san && (saq > 0 || saw > 0)) {
+        san = (typeof canonItem === "function" && canonItem(san)) || san;
+        if (saw > 0) { pushUndo("Want " + saw + " " + san); goals[san] = saw; save("arcHubGoals", goals); updateGoalToggle(); }
+        if (saq > 0) { bump(san, saq); } else { renderTracker(); renderResults(); }
+        ["stAddName", "stAddQty", "stAddWant"].forEach(function (id) { document.getElementById(id).value = ""; });
+        renderStash(); document.getElementById("stAddName").focus();
+      }
     } else if (a === "inc") {
       bump(t.getAttribute("data-m"), 1);
     } else if (a === "dec") {
       bump(t.getAttribute("data-m"), -1);
-    } else if (a === "trackReset") {
-      if (t.getAttribute("data-armed") === "1") {
-        pushUndo("Cleared the list");
-        Object.keys(look).forEach(function (k) { delete goals[k]; });
-        look = {}; save("arcHubLook", look); save("arcHubGoals", goals);
-        renderTracker(); updateGoalToggle(); renderResults();
-        t.setAttribute("data-armed", "0"); t.textContent = "Clear list";
-      } else {
-        t.setAttribute("data-armed", "1");
-        t.textContent = "Press again to clear";
-        setTimeout(function () { t.setAttribute("data-armed", "0"); t.textContent = "Clear list"; }, 3000);
-      }
     }
   });
 
@@ -5401,10 +5369,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     save("arcHubGoals", goals);
     invTyping = true; shopTyping = true;
     try { renderTracker(); updateGoalToggle(); renderResults(); } finally { invTyping = false; shopTyping = false; }
-    Array.prototype.forEach.call(document.querySelectorAll("#inventory .lkcard"), function (c) {
-      if (c.getAttribute("data-inv") === g) { var ip = invParts(g); c.querySelector(".invprog").innerHTML = ip.prog; c.querySelector(".invneed").innerHTML = ip.need; }
-    });
-    renderShop();
+    renderShop(); if (curTab === "stash") { renderStash(); }
   });
   document.addEventListener("keydown", function (e) {
     if (!document.getElementById("lightbox").hidden) {
@@ -5525,7 +5490,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   document.getElementById("dataStamp").textContent = "Data checked against the wiki on " + DATA_UPDATED;
   document.getElementById("dataStamp2").textContent = "Last data check: " + DATA_UPDATED + ".";
-  arctFill(); arctAutoRun();
+  arctFill(); arctAutoRun(); setInterval(syncBarRender, 60000);
   document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
     var when = r[2] === "daily" ? "Checked daily; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
     return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";
@@ -5632,7 +5597,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (e.key === "Escape") { document.getElementById("kbBox").hidden = true; return; }
     if (e.key === "?") { var kb = document.getElementById("kbBox"); kb.hidden = !kb.hidden; return; }
     if (gWait && Date.now() - gWait < 1500) {
-      var go = { r: "recycle", t: "tracker", k: "stash", a: "gear", q: "quests", e: "ref", o: "tools", m: "maps", f: "frozen", u: "updates", s: "site" };
+      var go = { r: "recycle", t: "stash", k: "stash", a: "gear", q: "quests", e: "ref", o: "tools", m: "maps", f: "frozen", u: "updates", s: "site" };
       gWait = 0;
       if (go[e.key]) { showTab(go[e.key]); writeHash(); window.scrollTo(0, 0); e.preventDefault(); }
       return;
@@ -5664,7 +5629,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (!sel.options.length) { sel.innerHTML = MAPS.map(function (m, i) { return '<option value="' + i + '">' + esc(m.name) + "</option>"; }).join(""); sel.value = String(curMap); }
     var mi = parseInt(sel.value, 10) || 0, mp = MAPS[mi];
     var rows = shopData(false).sort(function (a, b) { return b.miss - a.miss; }).slice(0, 8);
-    if (!rows.length) { out.innerHTML = '<div class="empty-line">You need nothing right now. Add goals or quests in the Tracker and this fills in.</div>'; return; }
+    if (!rows.length) { out.innerHTML = '<div class="empty-line">You need nothing right now. Set Want amounts in Stash or tick quests and this fills in.</div>'; return; }
     var R = ROOMS[mapSlug(mp)], sc = {}, en = {};
     rows.forEach(function (r) {
       var F = FARM[r.n] || {}, G = FARM2[r.n] || {}, T = F.t || G.t || [];
@@ -5716,85 +5681,82 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     return { t: t, why: why };
   }
   function stashRows() {
-    var nd = stashNeeds(), rows = [];
-    Object.keys(tracker).forEach(function (n) {
-      var have = tracker[n] || 0;
-      if (!(have > 0)) { return; }
+    var nd = stashNeeds(), rows = [], seen = {};
+    Object.keys(tracker).concat(Object.keys(goals)).forEach(function (n) {
+      if (seen[n]) { return; } seen[n] = 1;
+      var have = tracker[n] || 0, want = goals[n] > 0 ? goals[n] : 0;
+      if (!(have > 0) && !want) { return; }
       var f = ITEMINFO[n], price = f && f[0] != null ? f[0] : null, st = (f && f[2]) || 1, need = nd.t[n] || 0, tag = itemTags[n] || "";
       var keep = tag === "keep" ? have : Math.min(have, need), sell = have - keep;
-      rows.push({ n: n, have: have, keep: keep, sell: sell, need: need, why: nd.why[n] || [], tag: tag, price: price,
+      rows.push({ n: n, have: have, want: want, keep: keep, sell: sell, need: need, why: nd.why[n] || [], tag: tag, price: price,
         value: price === null ? 0 : price * have, sellValue: price === null ? 0 : price * sell,
         slots: swSlots(have, st), free: swSlots(have, st) - swSlots(have - sell, st), rar: String(rarityMap[n] || "Common").toLowerCase() });
     });
     return rows;
   }
+  /* "Used to craft": the recipes in ITEMINFO that take this item, first three inline and the rest on tap. */
+  function stashUsed(n) {
+    var u = CRAFTS_INTO[n];
+    if (!u || !u.length) { return ""; }
+    var first = u.slice(0, 3).map(esc).join(", ");
+    if (u.length <= 3) { return '<div class="stused muted">Used to craft <b>' + first + "</b></div>"; }
+    return '<details class="stused"><summary>Used to craft <b>' + first + '</b> <span class="more">+' + (u.length - 3) + " more</span></summary><ul>" + u.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>";
+  }
   function stashCard(r) {
-    var why = r.why.map(function (w) { return '<li><span class="stk">' + STASH_KINDS[w.k] + "</span>" + esc(w.l) + (w.k === "goal" ? "" : " &middot; " + w.q) + "</li>"; });
+    var why = r.why.filter(function (w) { return w.k !== "goal"; }).map(function (w) { return '<li><span class="stk">' + STASH_KINDS[w.k] + "</span>" + esc(w.l) + " &middot; " + w.q + "</li>"; });
     if (r.tag === "keep") { why.unshift('<li><span class="stk">Tag</span>You tagged this Keep</li>'); }
-    var verdict = (r.keep ? '<span class="ktag keep">Keep ' + r.keep + "</span>" : "") +
+    var verdict = (r.want ? (r.have >= r.want ? '<span class="ktag go">Want ' + r.want + " &middot; found &#10003;</span>" : '<span class="ktag want">Want ' + r.want + " &middot; " + (r.want - r.have) + " to go</span>") : "") +
+      (r.keep ? '<span class="ktag keep">Keep ' + r.keep + "</span>" : "") +
       (r.sell ? '<span class="ktag go">Sell ' + r.sell + (r.price === null ? "" : " &middot; " + coins(r.sellValue)) + "</span>" : "") +
       (r.sell && r.free ? '<span class="ktag">frees ' + r.free + " slot" + (r.free === 1 ? "" : "s") + "</span>" : "");
-    return '<div class="stcard r-' + esc(r.rar) + '"><div class="sthead"><b>' + esc(r.n) + '</b><span class="stqty">&times;' + r.have + "</span></div>" +
-      '<div class="stval">' + (r.price === null ? '<span class="muted">No known sell price</span>' : "<b>" + coins(r.value) + '</b> coins <span class="muted">&middot; ' + coins(r.price) + " each &middot; " + r.slots + " slot" + (r.slots === 1 ? "" : "s") + "</span>") + "</div>" +
-      '<div class="stbar" role="img" aria-label="Keep ' + r.keep + ", sell " + r.sell + '"><i style="width:' + Math.round(r.keep / r.have * 100) + '%"></i></div>' +
-      '<div class="stverdict">' + verdict + "</div>" +
-      (why.length ? '<ul class="stwhy">' + why.join("") + "</ul>" : '<div class="muted" style="font-size:13px;">Nothing you track needs this.</div>') +
-      '<label class="stedit">Have <input type="number" min="0" inputmode="numeric" data-sthave="' + esc(r.n) + '" value="' + r.have + '" aria-label="How many ' + esc(r.n) + ' you have"></label></div>';
-  }
-  function stashSync() {
-    var box = document.getElementById("stSync"), t = "";
-    if (arctReady()) {
-      t = (arctSet.last ? "Synced from ARC Tracker " + new Date(arctSet.last).toLocaleString() + "." : "ARC Tracker is connected but has not synced yet.") + (arctSet.lvl ? " Raider level " + arctSet.lvl + "." : "");
-    } else {
-      t = "Counts are the ones you entered in the Tracker. Connect ARC Tracker to fill them in from your game.";
-    }
-    box.innerHTML = "<span>" + esc(t) + '</span><button class="btn ghost" type="button" data-action="stSync">' + (arctReady() ? "Sync from ARC Tracker" : "Connect ARC Tracker") + "</button>";
+    var ek = esc(r.n), pct = r.have ? Math.round(r.keep / r.have * 100) : 0;
+    return '<div class="stcard r-' + esc(r.rar) + '"><div class="sthead"><b>' + ek + '</b><span class="stqty">&times;' + r.have + "</span></div>" +
+      '<div class="stval">' + (r.price === null ? '<span class="muted">No known sell price</span>' : !r.have ? '<span class="muted">None yet &middot; ' + coins(r.price) + " each</span>" : "<b>" + coins(r.value) + '</b> coins <span class="muted">&middot; ' + coins(r.price) + " each &middot; " + r.slots + " slot" + (r.slots === 1 ? "" : "s") + "</span>") + "</div>" +
+      (r.have ? '<div class="stbar" role="img" aria-label="Keep ' + r.keep + ", sell " + r.sell + '"><i style="width:' + pct + '%"></i></div>' : "") +
+      (verdict ? '<div class="stverdict">' + verdict + "</div>" : "") +
+      (why.length ? '<ul class="stwhy">' + why.join("") + "</ul>" : r.want ? "" : '<div class="muted" style="font-size:13px;">Nothing you track needs this.</div>') +
+      stashUsed(r.n) +
+      '<div class="stwant"><label class="stedit">Have <input type="number" min="0" inputmode="numeric" data-sthave="' + ek + '" value="' + r.have + '" aria-label="How many ' + ek + ' you have"></label>' +
+      '<label class="stedit">Want <input type="number" min="0" inputmode="numeric" data-goal="' + ek + '" value="' + (r.want || "") + '" placeholder="any" aria-label="How many ' + ek + ' you want"></label></div></div>';
   }
   function renderStash() {
     var out = document.getElementById("stOut");
     if (!out) { return; }
-    stashSync();
     Array.prototype.forEach.call(document.querySelectorAll("[data-stf]"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-stf") === stView.f ? "true" : "false"); });
     var sel = document.getElementById("stSort"); if (sel.value !== stView.s) { sel.value = stView.s; }
     var rows = stashRows(), tiles = document.getElementById("stTiles");
     if (!rows.length) {
       tiles.innerHTML = "";
-      out.innerHTML = '<div class="empty-line">Your stash is empty here. Add what you have below, or sync it from ARC Tracker.</div>';
+      out.innerHTML = '<div class="empty-line">Your stash is empty here. Add what you have below, or connect ARC Tracker with the bar at the top of the page.</div>';
       return;
     }
-    var T = { value: 0, slots: 0, sellV: 0, sellN: 0, free: 0, keepV: 0, keepN: 0 };
+    var T = { value: 0, slots: 0, sellV: 0, sellN: 0, free: 0, keepV: 0, keepN: 0, wantN: 0, wantLeft: 0 };
     rows.forEach(function (r) {
       T.value += r.value; T.slots += r.slots; T.free += r.free;
       if (r.sell) { T.sellN++; T.sellV += r.sellValue; }
       if (r.keep) { T.keepN++; T.keepV += r.value - r.sellValue; }
+      if (r.want) { T.wantN++; T.wantLeft += Math.max(0, r.want - r.have); }
     });
-    var cap = parseInt(stash.cap, 10) || 0;
+    var cap = parseInt(stash.cap, 10) || 0, held = rows.filter(function (r) { return r.have > 0; }).length;
     function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
-    tiles.innerHTML = tile("", "Stash value", coins(T.value), rows.length + " item" + (rows.length === 1 ? "" : "s") + " &middot; " + T.slots + (cap ? " of " + cap : "") + " slots") +
+    tiles.innerHTML = tile("", "Stash value", coins(T.value), held + " item" + (held === 1 ? "" : "s") + " &middot; " + T.slots + (cap ? " of " + cap : "") + " slots") +
       tile("sell", "Safe to sell", coins(T.sellV), T.sellN + " item" + (T.sellN === 1 ? "" : "s") + " &middot; frees " + T.free + " slot" + (T.free === 1 ? "" : "s")) +
       tile("keep", "Keep", coins(T.keepV), T.keepN + " item" + (T.keepN === 1 ? "" : "s") + " needed");
     var q = (document.getElementById("stQ").value || "").trim().toLowerCase();
     var list = rows.filter(function (r) {
       if (stView.f === "sell" && !r.sell) { return false; }
       if (stView.f === "keep" && !r.keep) { return false; }
+      if (stView.f === "want" && !r.want) { return false; }
       return !q || r.n.toLowerCase().indexOf(q) !== -1;
     });
     var by = stView.s;
     list.sort(function (a, b) {
+      if (stView.f === "want" && by !== "name") { return (b.want - b.have) - (a.want - a.have) || a.n.localeCompare(b.n); }
       if (by === "name") { return a.n.localeCompare(b.n); }
       if (by === "slots") { return (stView.f === "sell" ? b.free - a.free : b.slots - a.slots) || b.value - a.value || a.n.localeCompare(b.n); }
       return (stView.f === "sell" ? b.sellValue - a.sellValue : b.value - a.value) || a.n.localeCompare(b.n);
     });
-    out.innerHTML = list.length ? list.map(stashCard).join("") : '<div class="empty-line">' + (stView.f === "sell" ? "Nothing is safe to sell: everything you have is needed." : stView.f === "keep" ? "Nothing you have is needed right now." : "No items match.") + "</div>";
-  }
-  function lookTabInit() {
-    Array.prototype.forEach.call(document.querySelectorAll("[data-lkf]"), function (b) {
-      b.addEventListener("click", function () { lkView.f = b.getAttribute("data-lkf"); save("arcHubLookView", lkView); renderTracker(); });
-    });
-    var sel = document.getElementById("lkSort");
-    if (sel) { sel.addEventListener("change", function () { lkView.s = sel.value; save("arcHubLookView", lkView); renderTracker(); }); }
-    var q = document.getElementById("lkQ");
-    if (q) { q.addEventListener("input", renderTracker); }
+    out.innerHTML = list.length ? list.map(stashCard).join("") : '<div class="empty-line">' + (stView.f === "sell" ? "Nothing is safe to sell: everything you have is needed." : stView.f === "keep" ? "Nothing you have is needed right now." : stView.f === "want" ? "You are not looking for anything. Type a Want amount on any card, or add a material below with a Want amount." : "No items match.") + "</div>";
   }
   function stashTabInit() {
     Array.prototype.forEach.call(document.querySelectorAll("[data-stf]"), function (b) {
@@ -5842,7 +5804,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (stash && stash.wsort && sel.value !== stash.wsort) { sel.value = stash.wsort; }
     var by = sel.value === "coins" ? "coins" : "slots", d = worthData(), t = d.tot;
     if (!Object.keys(tracker).some(function (n) { return tracker[n] > 0; })) {
-      out.innerHTML = '<div class="empty-line">Nothing in your tracker yet. Add what you have in the Tracker tab to see what it is worth.</div>';
+      out.innerHTML = '<div class="empty-line">Nothing in your tracker yet. Add what you have in the Stash tab to see what it is worth.</div>';
       return;
     }
     d.rows.sort(function (a, b) { return (b[by] - a[by]) || (by === "slots" ? b.coins - a.coins : b.slots - a.slots) || a.n.localeCompare(b.n); });
@@ -6142,7 +6104,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); lookTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit();
+  renderFarm(); stashInit(); stashTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

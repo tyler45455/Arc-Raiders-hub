@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 13, 2026", "New look for Maps, Frozen Trail, Updates and Site changes: summary tiles at the top of each, map cards with an edge colored by difficulty (and your raid count and extract rate per map), colored-edge cards for the Frozen Trail sections and each game update, and site changes grouped by day."],
     ["Oct 13, 2026", "ARC Tracker sync moved to a bar at the top of every page, with a Resync button and a Settings button for your key. The Tracker tab is gone: set a Want amount on any Stash card (or when adding an item) to mark a material you are looking for, and use the new Looking for filter. Stash cards also show what each item is used to craft. The Shopping list and Workshop planner moved from Stash to Tools."],
     ["Oct 12, 2026", "New look for Gear, Reference and Tools: weapons and gear sit in a two-column grid of cards with a rarity-colored edge, enemy cards have an edge colored by threat level, and each tool card has an accent edge. The colored card edges now show properly on Quests too."],
     ["Oct 12, 2026", "Fixed: ARC Tracker sync now copies every item in your stash into the Stash tab, not only items you already had a count for (that was an opt-in box that was off by default)."],

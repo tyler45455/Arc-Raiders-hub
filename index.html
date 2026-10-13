@@ -773,7 +773,42 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .qcard.encard.th3, .qcard.encard.th4 { border-left-color: var(--danger); }
 .tool { border-left: 4px solid var(--accent); }
 .tool h3 { color: var(--fg); }
-@media (max-width: 600px) { #homeTiles.four, #qTiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { #homeTiles.four, #qTiles, .sttiles.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Maps, Frozen Trail, Updates and Site changes: same tiles and edged cards as Stash */
+.mapcard { border-left: 4px solid var(--muted); }
+.mapcard.md1, .mapcard.md2, .mapt.md1, .mapt.md2 { border-left-color: var(--good); }
+.mapcard.md3, .mapt.md3 { border-left-color: var(--warm); }
+.mapcard.md4, .mapcard.md5, .mapt.md4, .mapt.md5 { border-left-color: var(--danger); }
+.mapgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 8px; margin: 4px 0 10px; }
+.mapt { font: inherit; color: inherit; text-align: left; cursor: pointer; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--muted); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; }
+.mapt:hover { border-color: var(--fg); }
+.mapt[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: -1px; }
+.mapt b { font-size: 15px; }
+.mapt .dots { letter-spacing: 1px; }
+.mapt .s { font-size: 13px; color: var(--muted); }
+.mapt .ktag { justify-self: start; }
+.ftcols > .card { border-left: 4px solid var(--accent); }
+.ftcols > .card:nth-child(4n+2) { border-left-color: var(--danger); }
+.ftcols > .card:nth-child(4n+3) { border-left-color: var(--warm); }
+.ftcols > .card:nth-child(4n+4) { border-left-color: var(--good); }
+.ftcols > .card h3 { margin-top: 0; }
+.ftbal { border-left: 4px solid var(--muted); }
+.tl { margin-left: 6px; max-width: 880px; }
+.chglist { max-width: 860px; }
+.tl-item { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+.tl-item::before { left: -31px; top: 16px; }
+.tl-item.latest { border-left-color: var(--accent); }
+.tl-item.mine { border-left-color: var(--good); }
+.tl-item .tl-title { font-size: 20px; }
+.chgday { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 10px 0 0; font-weight: 400; }
+.chgday:first-child { margin-top: 0; }
+.chglist { gap: 8px; }
+.chg { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.chg.fix { border-left-color: var(--warm); }
+.chg.newf { border-left-color: var(--good); }
+.chg.look { border-left-color: var(--accent); }
+.chg > div { font-weight: 400; }
 </style>
 </head>
 <body>
@@ -941,7 +976,13 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <section class="panel" id="panel-frozen" role="tabpanel" aria-labelledby="tab-frozen" hidden>
     <h2>Frozen Trail 2.0</h2>
     <p class="muted">Released October 8, 2026. The biggest update since launch, based on the official Embark patch notes and community write-ups.</p>
-    <div class="cols">
+    <div class="sttiles four">
+      <div class="sttile"><div class="k">Released</div><div class="v">Oct 8</div><div class="s">2026 &middot; v2.0</div></div>
+      <div class="sttile sell"><div class="k">New map</div><div class="v">Pendola Pass</div><div class="s">plus Frigate and Redirection</div></div>
+      <div class="sttile keep"><div class="k">New ARC</div><div class="v">3</div><div class="s">Bully, Skulker, Hydra</div></div>
+      <div class="sttile"><div class="k">New quests</div><div class="v">22</div><div class="s">and 14 weapon stencils</div></div>
+    </div>
+    <div class="cols ftcols">
       <div class="card"><h3>New map and conditions</h3>
         <ul class="plain">
           <li><b>Pendola Pass</b>, a frozen mountain map beyond the Rust Belt</li>
@@ -985,7 +1026,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
           <li>You can drop loot to the ground straight from containers</li>
         </ul></div>
     </div>
-    <div class="card">
+    <div class="card ftbal">
       <h3>Balance changes (selected)</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Item</th><th>Change</th></tr></thead>
@@ -1314,13 +1355,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <section class="panel" id="panel-maps" role="tabpanel" aria-labelledby="tab-maps" hidden>
     <h2>Maps</h2>
     <p class="muted">Pick a map to see its difficulty, unlock requirement, conditions and what changed there. Detailed layouts are on the wiki; each card links to that map's page.</p>
+    <div class="sttiles" id="mapTiles"></div>
     <div class="mapfind"><label for="mapFind" class="muted">Find a room on any map</label><input type="text" id="mapFind" placeholder="Try Seed Vault, Hydroponic Dome, Old Town..." autocomplete="off"><div class="mapfindres" id="mapFindRes" aria-live="polite"></div></div>
     <div class="chips" id="mapChips" role="group" aria-label="Maps"></div>
     <div class="mapcard" id="mapCard" aria-live="polite"></div>
-    <div class="tablewrap"><table>
-      <thead><tr><th>Map</th><th>Difficulty</th><th>Round length</th><th>Unlock</th></tr></thead>
-      <tbody id="mapTable"></tbody>
-    </table></div>
+    <h3>All maps</h3>
+    <div class="mapgrid" id="mapTable"></div>
     <p class="muted">Map data from the ARC Raiders Wiki (CC BY-SA 4.0). Map art belongs to Embark Studios and is not reproduced here.</p>
   </section>
 
@@ -1328,6 +1368,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <section class="panel" id="panel-updates" role="tabpanel" aria-labelledby="tab-updates" hidden>
     <h2>Update history</h2>
     <p class="muted">Major content updates, newest first. Weekly store updates and hotfixes are left out.</p>
+    <div class="sttiles" id="updTiles"></div>
     <p class="muted" id="updYou"></p>
     <div class="tl" id="timeline"></div>
   </section>
@@ -1336,6 +1377,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   <section class="panel" id="panel-site" role="tabpanel" aria-labelledby="tab-site" hidden>
     <h2>Site changes</h2>
     <p class="muted">What changed on this website itself, newest first. For ARC Raiders game updates, see the Updates tab.</p>
+    <div class="sttiles" id="chgTiles"></div>
     <details class="card" id="auditBox" style="margin-bottom:12px;"><summary><b>Data gaps</b> <span class="muted" id="auditCount"></span></summary>
       <p class="muted">What the site still does not know, worked out from its own data each time you open this. If you know an answer, the Report what you know button opens a pre-filled GitHub issue.</p>
       <div id="auditOut"></div>
@@ -1496,9 +1538,19 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       keysHtml(m) +
       prepHtml(m.name) +
       '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
-    document.getElementById("mapTable").innerHTML = MAPS.map(function (x) {
-      return "<tr><td>" + esc(x.name) + "</td><td>" + (x.diff || "n/a") + " / 5</td><td>" + esc(x.len) + "</td><td>" + esc(x.unlock) + "</td></tr>";
+    document.getElementById("mapCard").className = "mapcard md" + (m.diff || 0);
+    var runs = {};
+    raids.forEach(function (r) { var k = runs[r.m] = runs[r.m] || { n: 0, x: 0 }; k.n++; if (r.o === "x") { k.x++; } });
+    document.getElementById("mapTable").innerHTML = MAPS.map(function (x, i) {
+      var d = x.diff ? new Array(x.diff + 1).join("\u25CF") + new Array(6 - x.diff).join("\u25CB") : "n/a", r = runs[x.name];
+      return '<button type="button" class="mapt md' + (x.diff || 0) + '" data-map="' + i + '" aria-pressed="' + (i === curMap) + '"><b>' + esc(x.name) + '</b><span class="s">Difficulty <span class="dots">' + d + "</span></span>" +
+        '<span class="s">' + esc(x.len) + " &middot; Unlock: " + esc(x.unlock) + "</span>" + (r ? '<span class="ktag go">' + r.n + " raid" + (r.n === 1 ? "" : "s") + " &middot; " + Math.round(r.x * 100 / r.n) + "% extracted</span>" : "") + "</button>";
     }).join("");
+    var tot = raids.length, ext = raids.filter(function (r) { return r.o === "x"; }).length, fav = Object.keys(runs).sort(function (a, b) { return runs[b].n - runs[a].n; })[0];
+    function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
+    document.getElementById("mapTiles").innerHTML = tile("", "Maps", MAPS.length, MAPS.filter(function (x) { return x.diff >= 4; }).length + " rated hard") +
+      tile("sell", "Your raids", tot, tot ? Math.round(ext * 100 / tot) + "% extracted" : "Log raids in Tools") +
+      tile("keep", "Most raided", fav ? esc(fav) : "None yet", fav ? runs[fav].n + " raid" + (runs[fav].n === 1 ? "" : "s") : "from your raid log");
   }
 
   var UPDATES = ARC.UPDATES;
@@ -2285,13 +2337,20 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var html = UPDATES.map(function (u, i) {
       var hits = updHits(u, you), isNew = i < updNew;
       if (hits.length) { anyHit++; }
-      return '<div class="tl-item' + (u.latest ? " latest" : "") + '"><div class="tl-date">' + esc(u.date) +
-        (u.ver ? " &middot; v" + esc(u.ver) : "") + (u.latest ? " &middot; latest" : "") + (isNew ? ' <span class="tl-new">New since your last visit</span>' : "") + "</div>" +
+      return '<div class="tl-item' + (u.latest ? " latest" : hits.length ? " mine" : "") + '"><div class="tl-date">' + esc(u.date) +
+        (u.ver ? ' <span class="ktag">v' + esc(u.ver) + "</span>" : "") + (u.latest ? ' <span class="ktag want">Latest</span>' : "") + (isNew ? ' <span class="tl-new">New since your last visit</span>' : "") + "</div>" +
         '<div class="tl-title">' + esc(u.title) + '</div><div class="tl-body">' + esc(u.body) + "</div>" +
         (hits.length ? '<div class="tl-you"><span class="muted">Mentions your:</span> ' + hits.map(function (n) { return '<span class="y hl">' + esc(n) + ' <span class="muted">(' + esc(you[n]) + ")</span></span>"; }).join(" ") + "</div>" : "") +
         '<ul class="tl-points">' + u.points.map(function (p) { var ph = hits.filter(function (n) { return p.indexOf(n) !== -1; }); return "<li" + (ph.length ? ' class="tl-mine"' : "") + ">" + updMark(p, ph) + "</li>"; }).join("") + "</ul></div>";
     }).join("");
     document.getElementById("timeline").innerHTML = html;
+    var ut = document.getElementById("updTiles"), lu = UPDATES[0];
+    if (ut && lu) {
+      var tl = function (cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; };
+      ut.innerHTML = tl("", "Latest", esc(lu.title), esc(lu.date) + (lu.ver ? " &middot; v" + esc(lu.ver) : "")) +
+        tl("keep", "Updates", UPDATES.length, "since " + esc(UPDATES[UPDATES.length - 1].date)) +
+        tl("sell", "Mention your stuff", anyHit, anyHit === 1 ? "update" : "updates");
+    }
     var sum = document.getElementById("updYou");
     if (sum) {
       sum.innerHTML = Object.keys(you).length ? (anyHit ? "Notes that mention things you track, use or are working on are marked." : "None of these notes mention the items, quests, blueprints or maps you track yet.") : "Track items, quests, blueprints or raids and the notes that mention them get marked here.";
@@ -3808,7 +3867,22 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   }
   function renderChanges() {
     var el = document.getElementById("changesList");
-    if (el) { el.innerHTML = DATA_CHANGES.map(function (c) { return '<div class="chg"><span class="tl-date">' + esc(c[0]) + "</span><div>" + esc(c[1]) + "</div></div>"; }).join(""); }
+    if (el) {
+      var days = [], byDay = {};
+      DATA_CHANGES.forEach(function (c) { if (!byDay[c[0]]) { byDay[c[0]] = []; days.push(c[0]); } byDay[c[0]].push(c[1]); });
+      var kind = function (t) { return /^Fixed/.test(t) ? " fix" : /^New look|look for|restyle/i.test(t) ? " look" : /^New /.test(t) ? " newf" : ""; };
+      el.innerHTML = days.map(function (d) {
+        return '<h3 class="chgday">' + esc(d) + " &middot; " + byDay[d].length + " change" + (byDay[d].length === 1 ? "" : "s") + "</h3>" +
+          byDay[d].map(function (t) { return '<div class="chg' + kind(t) + '"><div>' + esc(t) + "</div></div>"; }).join("");
+      }).join("");
+      var ct = document.getElementById("chgTiles");
+      if (ct) {
+        var tl2 = function (cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; };
+        ct.innerHTML = tl2("", "Site changes", DATA_CHANGES.length, "over " + days.length + " day" + (days.length === 1 ? "" : "s")) +
+          tl2("sell", "Latest", esc(days[0] || ""), (byDay[days[0]] || []).length + " change" + ((byDay[days[0]] || []).length === 1 ? "" : "s") + " that day") +
+          tl2("keep", "Fixes", DATA_CHANGES.filter(function (c) { return /^Fixed/.test(c[1]); }).length, "bugs fixed");
+      }
+    }
   }
 
 

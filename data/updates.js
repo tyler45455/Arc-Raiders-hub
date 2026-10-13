@@ -21,23 +21,25 @@ ARC.UPDATES = [
 ARC.DATA_UPDATED = "October 12, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
-   "daily" rows are re-checked every day (tools/sync-item-data.js for the first row, tools/sync-sightings.js for
-   Enemy sightings, the daily Claude wiki check for the others); their date is the last time that check changed something. Other rows show when they were last checked by hand. */
+   Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
+   Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
+   the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
     ["Sell prices, weights, recipes and where to find items", "October 11, 2026", "daily"],
     ["Quests, objectives and quest chain", "October 12, 2026", "daily"],
     ["Keys and where to find them", "October 11, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
-    ["Recycling and salvage data", "October 9, 2026", ""],
-    ["Weapons & gear", "October 9, 2026", ""],
-    ["Reference: enemies, traders, workshop, blueprints", "October 10, 2026", "enemy armor, attacks, XP and maps read from the wiki October 12"],
-    ["Project presets", "October 10, 2026", "Sheltered Retreat not added yet"],
-    ["Trials (Season 6, Week 1)", "October 10, 2026", "wiki page last edited October 8"],
-    ["Maps and update history", "October 10, 2026", "detail maps and room names added from in-game screenshots; difficulty and unlock not re-checked"]
+    ["Recycling and salvage data", "October 9, 2026", "daily"],
+    ["Weapons & gear", "October 9, 2026", "daily"],
+    ["Reference: enemies, traders, workshop, blueprints", "October 12, 2026", "daily"],
+    ["Project presets", "October 10, 2026", "daily"],
+    ["Trials (Season 6, Week 1)", "October 10, 2026", "daily"],
+    ["Maps and update history", "October 10, 2026", "daily"]
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 13, 2026", "Every part of the site's data is now checked daily: recycling and salvage, weapons and gear, enemies, traders, workshop, blueprints, project presets, trials, maps and update history join items, quests, keys, skills and sightings."],
     ["Oct 13, 2026", "The data date at the top and bottom of the site now shows when the daily check last ran, even on days when nothing changed. The Data freshness table shows both the last check and the last change."],
     ["Oct 13, 2026", "Gear cards now have the same spacing everywhere: even gaps between cards, cards in a row match heights, and the Report button stays next to the name on phones."],
     ["Oct 13, 2026", "Fresh look: the title, buttons and ARC Tracker bar now sit together at the top, cards have soft depth and lift on hover, big numbers use the game-style font, and stat tiles carry the four-colour stripe. The Home Raids card shows what you brought out and your profit, and opens the Raids tab."],

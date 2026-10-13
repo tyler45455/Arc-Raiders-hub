@@ -2084,6 +2084,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
           var who = arctText(pd.username || pd.displayName || pd.display_name || pd.name || pd.embarkId || pd.embark_id);
           arctRawProfile = r[0].j;
           var lv = arctLevel(pd);
+          /* ARC Tracker's API sends playerLevel 1 even when its own site shows the real level (seen Oct 13, 2026: 1 vs 52),
+             so treat 1 as "not sent" rather than show a wrong level. */
+          if (lv !== null && lv <= 1) { lv = null; }
           plan.who = who ? who + (lv !== null ? " (level " + lv + ")" : "") : "";
           plan.lvl = lv !== null && lv > 0 && lv < 1000 ? Math.floor(lv) : null; plan.name = who;
         }

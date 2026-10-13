@@ -5720,15 +5720,12 @@ footer .wrap { display: grid; gap: 2px; }
   offUpdate();
   document.getElementById("reportAddr").textContent = "";
 
-  document.getElementById("dataStamp").textContent = "Data checked against the wiki on " + DATA_UPDATED;
-  document.getElementById("dataStamp2").textContent = "Last data check: " + DATA_UPDATED + ".";
+  checkStamp(load("arcHubLastCheck", null));
+  lastCheckFetch();
   arctFill(); arctAutoRun(); setInterval(function () { syncBarRender(); }, 60000);
   arctProbeAt = Date.now(); setInterval(arctTick, 10 * 60 * 1000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { syncBarRender(); arctTick(); } });
-  document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
-    var when = r[2] === "daily" ? "Checked daily; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
-    return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";
-  }).join("");
+
   renderHint();
   setHint(!load("arcHubHint", false));
   applyTheme(load("arcHubTheme", "auto"));
@@ -5962,6 +5959,28 @@ footer .wrap { display: grid; gap: 2px; }
     });
   }
 
+  /* Daily check date. ARC.DATA_UPDATED only moves when data changes, so the date of the last daily check comes from
+     the newest successful run of the "Daily item data sync" GitHub workflow (public API, cached for 3 hours).
+     Falls back to DATA_UPDATED when GitHub can't be reached. */
+  function ckDate(iso) { var d = new Date(iso); return isNaN(d) ? "" : d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }); }
+  function checkStamp(c) {
+    var last = c && c.t ? ckDate(c.t) : "", ch = last && last !== DATA_UPDATED ? " Data last changed " + DATA_UPDATED + "." : "";
+    document.getElementById("dataStamp").textContent = last ? "Data checked daily, last on " + last : "Data checked against the wiki on " + DATA_UPDATED;
+    document.getElementById("dataStamp2").textContent = last ? "Last daily data check: " + last + "." + ch : "Last data check: " + DATA_UPDATED + ".";
+    document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
+      var when = r[2] === "daily" ? "Checked daily" + (last ? " (last " + last + ")" : "") + "; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
+      return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";
+    }).join("");
+  }
+  function lastCheckFetch() {
+    var c = load("arcHubLastCheck", null);
+    if (c && c.at && Date.now() - c.at < 3 * 3600 * 1000) { return; }
+    if (!window.fetch) { return; }
+    fetch("https://api.github.com/repos/tyler45455/Arc-Raiders-hub/actions/workflows/sync-item-data.yml/runs?status=success&per_page=1", { headers: { Accept: "application/vnd.github+json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { var run = j && j.workflow_runs && j.workflow_runs[0]; if (!run) { return; } var v = { t: run.run_started_at || run.created_at, at: Date.now() }; save("arcHubLastCheck", v); checkStamp(v); })
+      .catch(function () {});
+  }
   /* ---------- Stash tab ---------- */
   /* Every source that needs an item, always counted (unlike the Shopping list toggles), with a label for each.
      Research Station levels count as the Outpost; the other stations are the workbench. */

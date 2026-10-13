@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 13, 2026", "Fixed: raids from ARC Tracker now sync with the right time, value brought out, profit and length. Raid cards also show what you brought in and your kills."],
     ["Oct 13, 2026", "New Raids tab: every raid synced from ARC Tracker or logged by hand, with what you brought out and your profit per raid, totals, extract rate, best raid and a per-map breakdown. Filter by outcome, map and time, and sort by newest, value or profit."],
     ["Oct 13, 2026", "Fixed: the raider level no longer shows as 1. ARC Tracker's API currently sends level 1 instead of your real level, so the site hides it until ARC Tracker sends the right number."],
     ["Oct 13, 2026", "Fixed: raider level from ARC Tracker is found in more places in your profile, and an old wrong level is cleared when ARC Tracker no longer sends one. The ARC Tracker Settings panel can now show exactly what ARC Tracker sent for your profile, to copy into a bug report."],

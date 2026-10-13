@@ -767,8 +767,10 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .row .acts .btn.ghost.minor:hover, .row .acts .btn.ghost.minor.on { border-color: var(--line); color: var(--accent); }
 .qmore { margin-top: 10px; }
 .qmore .qbar { margin-top: 8px; }
-.cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 0 10px; align-items: start; }
-.cardgrid > .row { margin-bottom: 10px; }
+.cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 12px; align-items: stretch; margin-top: 14px; }
+.cardgrid > .row { margin: 0; align-content: start; align-items: start; }
+.cardgrid > .row > .head, .cardgrid > .row > .acts { align-self: center; }
+@media (max-width: 600px) { .cardgrid > .row > .acts { grid-column: auto; justify-content: flex-end; } }
 .qcard.encard.th0 { border-left-color: var(--muted); } .qcard.encard.th1 { border-left-color: var(--good); } .qcard.encard.th2 { border-left-color: var(--warm); }
 .qcard.encard.th3, .qcard.encard.th4 { border-left-color: var(--danger); }
 .tool { border-left: 4px solid var(--accent); }

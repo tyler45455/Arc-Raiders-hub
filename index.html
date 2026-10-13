@@ -2062,15 +2062,16 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     var m = ARCT_MAP[slug] || ARCT_MAP[idOf(slug)] || mix[qNormA(slug)] || mix[idOf(slug)] || "";
     var oc = arctStr(e, ["outcome", "result", "status", "extractionStatus", "extraction_status"]).toLowerCase(), o = "";
     if (e.extracted === true || e.survived === true || /extract|surviv|success|escap|won/.test(oc)) { o = "x"; } else if (e.extracted === false || e.survived === false || /die|dead|death|kill|fail|lost|kia|eliminat/.test(oc)) { o = "d"; }
-    var tv = e.endedAt || e.ended_at || e.finishedAt || e.finished_at || e.startedAt || e.started_at || e.playedAt || e.played_at || e.createdAt || e.created_at || e.date || e.timestamp, t;
+    var tv = e.roundEndedAt || e.round_ended_at || e.endedAt || e.ended_at || e.finishedAt || e.finished_at || e.startedAt || e.started_at || e.playedAt || e.played_at || e.createdAt || e.created_at || e.date || e.timestamp, t;
     t = typeof tv === "number" ? (tv < 1e12 ? tv * 1000 : tv) : Date.parse(tv);
     if (!m || !o || !(t > 0)) { return null; }
-    var v = arctNum(e, ["carriedOut", "carried_out", "carriedOutValue", "carried_out_value", "lootValue", "loot_value", "extractedValue", "extracted_value", "haulValue", "haul_value", "totalValue", "total_value", "value"]);
+    var v = arctNum(e, ["valueExtracted", "value_extracted", "carriedOut", "carried_out", "carriedOutValue", "carried_out_value", "lootValue", "loot_value", "extractedValue", "extracted_value", "haulValue", "haul_value", "totalValue", "total_value", "value"]);
     var pf = arctNum(e, ["profit", "netProfit", "net_profit", "profitValue", "profit_value", "net", "netValue", "net_value"]);
     if (pf === null) { var pn = Number(e.profit !== undefined ? e.profit : e.netProfit); if (isFinite(pn) && pn !== 0) { pf = pn; } }
-    var du = arctNum(e, ["duration", "durationSeconds", "duration_seconds", "durationSec", "length", "seconds"]);
+    var du = arctNum(e, ["durationMs", "duration_ms"]); if (du !== null) { du = du / 1000; } else { du = arctNum(e, ["duration", "durationSeconds", "duration_seconds", "durationSec", "length", "seconds"]); }
+    var bi = arctNum(e, ["valueBroughtIn", "value_brought_in", "broughtIn", "brought_in", "loadoutValue", "loadout_value"]), kl = arctNum(e, ["kills", "totalKills", "total_kills"]);
     var id = arctStr(e, ["id", "roundId", "round_id", "matchId", "match_id"]);
-    return { t: t, m: m, o: o, v: v === null || o === "d" ? null : Math.max(0, Math.min(1e7, Math.round(v))), p: pf === null ? null : Math.max(-1e7, Math.min(1e7, Math.round(pf))), d: du === null ? null : Math.round(du > 86400 ? du / 1000 : du), n: "", s: "arct:" + (id || t + m) };
+    return { t: t, m: m, o: o, v: v === null || o === "d" ? null : Math.max(0, Math.min(1e7, Math.round(v))), p: pf === null ? null : Math.max(-1e7, Math.min(1e7, Math.round(pf))), d: du === null ? null : Math.round(du > 86400 ? du / 1000 : du), b: bi === null ? null : Math.max(0, Math.min(1e7, Math.round(bi))), k: kl === null ? null : Math.max(0, Math.min(999, Math.round(kl))), n: "", s: "arct:" + (id || t + m) };
   }
   var ARCT_PARTS = [["profile", "Profile"], ["questsDone", "Quests"], ["questsOpen", "Quests"], ["stash", "Stash"], ["hideout", "Hideout"], ["blueprints", "Blueprints"], ["projects", "Projects"], ["rounds", "Rounds"]];
   /* Raider level: the profile shape is not documented, so search it. Specific names (raiderLevel, playerLevel...) anywhere
@@ -2199,7 +2200,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         r[7].j.forEach(function (e) {
           var x = arctRound(e, mix); if (!x) { return; }
           if (!seen[x.s]) { seen[x.s] = 1; plan.rAdd.push(x); return; }
-          var o = have[x.s]; if (o && ((o.v == null && x.v != null) || (o.p == null && x.p != null) || (o.d == null && x.d != null))) { plan.rUpd.push(x); delete have[x.s]; }
+          var o = have[x.s]; if (o && ((o.v == null && x.v != null) || (o.p == null && x.p != null) || (o.d == null && x.d != null) || (o.b == null && x.b != null) || (o.k == null && x.k != null))) { plan.rUpd.push(x); delete have[x.s]; }
         });
       }
       return plan;
@@ -2270,7 +2271,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     p.bpAdd.forEach(function (k) { bpOwned[k] = 1; });
     p.bpDel.forEach(function (k) { delete bpOwned[k]; });
     projects = projects.filter(function (x) { return !(x.src && p.pDel.indexOf(x.name) !== -1); }).concat(p.pAdd);
-    if (p.rUpd.length) { var ru = {}; p.rUpd.forEach(function (x) { ru[x.s] = x; }); raids = raids.map(function (x) { var u = x.s && ru[x.s]; return u ? { t: x.t, m: x.m, o: x.o, v: x.v != null ? x.v : u.v, p: x.p != null ? x.p : u.p, d: x.d != null ? x.d : u.d, n: x.n, s: x.s } : x; }); if (!p.rAdd.length) { save("arcHubRaids", raids); } }
+    if (p.rUpd.length) { var ru = {}; p.rUpd.forEach(function (x) { ru[x.s] = x; }); raids = raids.map(function (x) { var u = x.s && ru[x.s]; return u ? { t: x.t, m: x.m, o: x.o, v: x.v != null ? x.v : u.v, p: x.p != null ? x.p : u.p, d: x.d != null ? x.d : u.d, b: x.b != null ? x.b : u.b, k: x.k != null ? x.k : u.k, n: x.n, s: x.s } : x; }); if (!p.rAdd.length) { save("arcHubRaids", raids); } }
     if (p.rAdd.length) { raids = raids.concat(p.rAdd).sort(function (a, b) { return a.t - b.t; }).slice(-500); save("arcHubRaids", raids); }
     save("arcHubQuestsDone", qDone); save("arcHubTracker", tracker); save("arcHubWs", wsDone); save("arcHubBP", bpOwned); save("arcHubProjects", projects);
     arctSet.last = Date.now(); save("arcHubArct", arctSet);
@@ -3384,8 +3385,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   var raids = rlClean(load("arcHubRaids", []));
   function rlClean(list) {
     return (Array.isArray(list) ? list : []).filter(function (r) { return r && typeof r.m === "string" && r.m.length < 60 && (r.o === "x" || r.o === "d") && r.t > 0; }).map(function (r) {
-      var v = parseInt(r.v, 10), pf = parseInt(r.p, 10), du = parseInt(r.d, 10);
-      return { t: +r.t, m: r.m, o: r.o, v: v >= 0 ? Math.min(v, 1e7) : null, p: isFinite(pf) ? Math.max(-1e7, Math.min(pf, 1e7)) : null, d: du > 0 && du < 86400 ? du : null, n: typeof r.n === "string" ? r.n.slice(0, 60) : "", s: typeof r.s === "string" && r.s.length < 90 ? r.s : undefined };
+      var v = parseInt(r.v, 10), pf = parseInt(r.p, 10), du = parseInt(r.d, 10), bi = parseInt(r.b, 10), kl = parseInt(r.k, 10);
+      return { t: +r.t, m: r.m, o: r.o, v: v >= 0 ? Math.min(v, 1e7) : null, p: isFinite(pf) ? Math.max(-1e7, Math.min(pf, 1e7)) : null, d: du > 0 && du < 86400 ? du : null, b: bi >= 0 ? Math.min(bi, 1e7) : null, k: kl >= 0 ? Math.min(kl, 999) : null, n: typeof r.n === "string" ? r.n.slice(0, 60) : "", s: typeof r.s === "string" && r.s.length < 90 ? r.s : undefined };
     }).slice(-500);
   }
   function renderRaids() {
@@ -5903,6 +5904,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         '<div class="muted" style="font-size:13px;">' + dt.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + dt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " &middot; " + sbAgo(r.t) + (dur ? " &middot; " + dur : "") + "</div>" +
         '<div class="rdvals"><div><span class="k">Brought out</span><b>' + (r.v != null ? coins(r.v) : r.o === "d" ? "0" : "&ndash;") + "</b></div>" +
         (r.p != null ? '<div><span class="k">Profit</span><b class="' + (r.p >= 0 ? "pos" : "neg") + '">' + rdSigned(r.p) + "</b></div>" : "") + "</div>" +
+        (r.b != null || r.k != null ? '<div class="muted" style="font-size:13px;">' + [r.b != null ? "Brought in " + coins(r.b) : "", r.k != null ? arctPl(r.k, "kill") : ""].filter(Boolean).join(" &middot; ") + "</div>" : "") +
         (r.n ? '<div class="muted" style="font-size:13px;">' + esc(r.n) + "</div>" : "") +
         '<div class="muted" style="font-size:12px;">' + (r.s ? "From ARC Tracker" : "Logged by hand") + "</div></div>";
     }).join("") : '<div class="empty-line">No raids match.</div>';

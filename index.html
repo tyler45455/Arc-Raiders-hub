@@ -827,7 +827,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
           <div><label for="arctUser">ARC Tracker key (starts with arc_u1_)</label><input type="password" id="arctUser" autocomplete="off" spellcheck="false"></div>
           <div id="arctAppRow"><label for="arctApp">App key (starts with arc_k1_)</label><input type="password" id="arctApp" autocomplete="off" spellcheck="false"></div>
           <label class="tog"><input type="checkbox" id="arctAdd"> Copy every item in my stash, not only the ones the site already counts</label>
-          <label class="tog"><input type="checkbox" id="arctAuto"> Sync by itself when I open the site</label>
+          <label class="tog"><input type="checkbox" id="arctAuto"> Sync by itself when I open the site, and re-check every few minutes while it is open</label>
         </div>
         <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
         <p class="muted" id="arctWho" style="margin-top:8px;" hidden></p>
@@ -1920,6 +1920,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   function arctGet(path, params) {
     var qs = Object.keys(params).map(function (k) { return k + "=" + encodeURIComponent(params[k]); }).join("&");
     return fetch("https://arctracker.io/api/v2/user/" + path + "?" + qs, { headers: { Accept: "application/json", "X-App-Key": arctApp(), Authorization: "Bearer " + arctSet.u } }).then(function (r) {
+      var rl = r.headers.get("X-RateLimit-Remaining"), rr = r.headers.get("X-RateLimit-Reset");
+      if (rl !== null && rl !== "") { arctRate = { left: +rl, reset: +rr || 0 }; }
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (!r.ok) { var e = new Error((j && j.error && j.error.message) || "HTTP " + r.status); e.status = r.status; throw e; }
         return j;
@@ -2259,6 +2261,31 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     if (!c) { return; }
     c.hidden = !open; b.setAttribute("aria-expanded", open ? "true" : "false");
     if (open) { arctFill(); }
+  }
+  /* Auto re-check while the site is open: every 10 minutes while the page is visible, and when you come back to it.
+     ARC Tracker's 500 requests an hour are shared by everyone using this site, so a re-check first asks for just the
+     profile and newest raid (2 requests) and only runs the full sync (8+) when those changed, or once an hour. */
+  var arctRate = null, arctProbeAt = 0;
+  function arctSig(j) { try { var c = JSON.parse(JSON.stringify(j || {})); if (c.meta) { delete c.meta; } return JSON.stringify(c); } catch (e) { return ""; } }
+  function arctQuietSync() {
+    arctBusy = true; syncBarRender();
+    return arctFetch().then(function (p) {
+      arctBusy = false;
+      if (arctAny(p)) { arctApply(p, true); sbSay("Updated: " + arctSummary(p, true) + "."); } else { arctWho(p); arctSet.last = Date.now(); save("arcHubArct", arctSet); syncBarRender(); }
+    }, function (e) { arctBusy = false; syncBarRender(); });
+  }
+  function arctTick() {
+    if (document.hidden || arctBusy || arctSet.auto === false || !arctReady() || !arctSet.last) { return; }
+    if (Date.now() - arctProbeAt < 5 * 60 * 1000) { return; }
+    if (arctRate && arctRate.left < 60 && Date.now() / 1000 < arctRate.reset) { return; }
+    arctProbeAt = Date.now();
+    if (Date.now() - arctSet.last > 60 * 60 * 1000) { arctQuietSync(); return; }
+    Promise.all([arctTry(arctGet("profile", { locale: "en" })), arctTry(arctGet("rounds", { locale: "en", limit: 1, offset: 0 }))]).then(function (r) {
+      var sig = r.map(function (x) { return x.j ? arctSig(x.j) : "-"; }).join("|");
+      if (arctSet.sig === sig) { return; }
+      var first = !arctSet.sig; arctSet.sig = sig; save("arcHubArct", arctSet);
+      if (!first) { arctQuietSync(); }
+    }, function () {});
   }
   function arctResync() {
     if (arctBusy) { return; }
@@ -5564,7 +5591,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 
   document.getElementById("dataStamp").textContent = "Data checked against the wiki on " + DATA_UPDATED;
   document.getElementById("dataStamp2").textContent = "Last data check: " + DATA_UPDATED + ".";
-  arctFill(); arctAutoRun(); setInterval(syncBarRender, 60000);
+  arctFill(); arctAutoRun(); setInterval(function () { syncBarRender(); }, 60000);
+  arctProbeAt = Date.now(); setInterval(arctTick, 10 * 60 * 1000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) { syncBarRender(); arctTick(); } });
   document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
     var when = r[2] === "daily" ? "Checked daily; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
     return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";

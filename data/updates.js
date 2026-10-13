@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 13, 2026", "The data date at the top and bottom of the site now shows when the daily check last ran, even on days when nothing changed. The Data freshness table shows both the last check and the last change."],
     ["Oct 13, 2026", "Gear cards now have the same spacing everywhere: even gaps between cards, cards in a row match heights, and the Report button stays next to the name on phones."],
     ["Oct 13, 2026", "Fresh look: the title, buttons and ARC Tracker bar now sit together at the top, cards have soft depth and lift on hover, big numbers use the game-style font, and stat tiles carry the four-colour stripe. The Home Raids card shows what you brought out and your profit, and opens the Raids tab."],
     ["Oct 13, 2026", "Fixed: raids from ARC Tracker now sync with the right time, value brought out, profit and length. Raid cards also show what you brought in and your kills."],

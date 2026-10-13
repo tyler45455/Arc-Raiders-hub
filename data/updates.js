@@ -38,6 +38,7 @@ ARC.FRESHNESS = [
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 13, 2026", "Fixed: raider level from ARC Tracker is found in more places in your profile, and an old wrong level is cleared when ARC Tracker no longer sends one. The ARC Tracker Settings panel can now show exactly what ARC Tracker sent for your profile, to copy into a bug report."],
     ["Oct 13, 2026", "ARC Tracker sync now re-checks by itself every few minutes while the site is open and when you come back to the tab, so new data from the ARC Tracker Link app shows up without pressing Resync. It asks for a small check first and only runs the full sync when something changed."],
     ["Oct 13, 2026", "New look for Maps, Frozen Trail, Updates and Site changes: summary tiles at the top of each, map cards with an edge colored by difficulty (and your raid count and extract rate per map), colored-edge cards for the Frozen Trail sections and each game update, and site changes grouped by day."],
     ["Oct 13, 2026", "ARC Tracker sync moved to a bar at the top of every page, with a Resync button and a Settings button for your key. The Tracker tab is gone: set a Want amount on any Stash card (or when adding an item) to mark a material you are looking for, and use the new Looking for filter. Stash cards also show what each item is used to craft. The Shopping list and Workshop planner moved from Stash to Tools."],

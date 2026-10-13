@@ -831,6 +831,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
         </div>
         <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="arctCheck">Check ARC Tracker</button><button class="btn ghost" type="button" data-action="arctForget">Forget my keys</button></div>
         <p class="muted" id="arctWho" style="margin-top:8px;" hidden></p>
+        <details class="arctraw" id="arctRaw" style="margin-top:8px;"><summary class="muted">What ARC Tracker sent for your profile</summary><p class="muted" style="margin:6px 0;">If your raider level looks wrong, copy this and send it with the Feedback button so the site can read it properly.</p><pre id="arctRawOut" style="white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;font-size:12px;"></pre><button class="btn ghost" type="button" data-action="arctRawCopy">Copy</button> <span class="muted" id="arctRawMsg" role="status"></span></details>
         <p class="muted" id="arctMsg" role="status" style="margin-top:8px;"></p>
         <div id="arctOut"></div>
       </div>
@@ -2036,6 +2037,30 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     return { t: t, m: m, o: o, v: v === null || o === "d" ? null : Math.max(0, Math.min(1e7, Math.round(v))), n: "", s: "arct:" + (id || t + m) };
   }
   var ARCT_PARTS = [["profile", "Profile"], ["questsDone", "Quests"], ["questsOpen", "Quests"], ["stash", "Stash"], ["hideout", "Hideout"], ["blueprints", "Blueprints"], ["projects", "Projects"], ["rounds", "Rounds"]];
+  /* Raider level: the profile shape is not documented, so search it. Specific names (raiderLevel, playerLevel...) anywhere
+     in the profile win; then a plain "level" inside a raider, player, progression, stats or account object; then a top-level
+     "level". A value can be a number, a numeric string, or an object holding current, value or level. */
+  var arctRawProfile = null;
+  function arctLvVal(v) {
+    if (typeof v === "string" && /^\s*\d+(\.\d+)?\s*$/.test(v)) { v = +v; }
+    if (typeof v === "number" && isFinite(v) && v > 0 && v < 1000) { return v; }
+    if (v && typeof v === "object" && !Array.isArray(v)) { var k = ["current", "value", "level", "lvl", "currentLevel", "current_level"]; for (var i = 0; i < k.length; i++) { var x = arctLvVal(v[k[i]]); if (x !== null && typeof v[k[i]] !== "object") { return x; } } }
+    return null;
+  }
+  function arctLevel(pd) {
+    var SPEC = /^(raider|player|account|current|character)[_ ]?(level|lvl)$/i, GEN = /^(level|lvl)$/i, HOLD = /raider|player|progress|stat|account|character|profile/i;
+    var best = [null, null, null];
+    (function walk(o, depth, inHold) {
+      if (!o || typeof o !== "object" || depth > 4) { return; }
+      Object.keys(o).forEach(function (k) {
+        var v = o[k];
+        if (SPEC.test(k) && best[0] === null) { best[0] = arctLvVal(v); }
+        else if (GEN.test(k)) { if (inHold && best[1] === null) { best[1] = arctLvVal(v); } else if (depth === 0 && best[2] === null) { best[2] = arctLvVal(v); } }
+        if (v && typeof v === "object" && !Array.isArray(v)) { walk(v, depth + 1, inHold || HOLD.test(k)); }
+      });
+    })(pd, 0, false);
+    return best[0] !== null ? best[0] : best[1] !== null ? best[1] : best[2];
+  }
   function arctFetch() {
     return Promise.all([
       arctTry(arctGet("profile", { locale: "en" })),
@@ -2053,11 +2078,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       var plan = { qAdd: [], qDel: [], tSet: [], wsSet: [], bpAdd: [], bpDel: [], pAdd: [], pDel: [], rAdd: [], unknownQ: [], unknownI: [], missing: missing, haveQ: false, haveS: false, who: "" };
       /* Profile */
       if (r[0].j) {
+        plan.profileOk = true;
         var pd = r[0].j.data !== undefined ? r[0].j.data : r[0].j; pd = pd && (pd.profile || pd.user || pd);
         if (pd && typeof pd === "object") {
           var who = arctText(pd.username || pd.displayName || pd.display_name || pd.name || pd.embarkId || pd.embark_id);
-          var lk = ["raiderLevel", "raider_level", "playerLevel", "player_level", "level", "accountLevel", "account_level"], lv = arctNum(pd, lk);
-          if (lv === null) { [pd.stats, pd.progression, pd.player, pd.raider].forEach(function (o) { if (lv === null && o && typeof o === "object") { lv = arctNum(o, lk); } }); }
+          arctRawProfile = r[0].j;
+          var lv = arctLevel(pd);
           plan.who = who ? who + (lv !== null ? " (level " + lv + ")" : "") : "";
           plan.lvl = lv !== null && lv > 0 && lv < 1000 ? Math.floor(lv) : null; plan.name = who;
         }
@@ -2157,10 +2183,17 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
     return bits.join(", ");
   }
   function arctMissing(p) { return p.missing.length ? " The key cannot read " + p.missing.slice(0, -1).join(", ") + (p.missing.length > 1 ? " or " : "") + p.missing[p.missing.length - 1] + ", so " + (p.missing.length === 1 ? "that part was" : "those parts were") + " skipped. Make a new key with " + (p.missing.length === 1 ? "that permission" : "those permissions") + " ticked to sync " + (p.missing.length === 1 ? "it" : "them") + " too." : ""; }
+  function arctRawShow() {
+    var o = document.getElementById("arctRawOut");
+    if (!o) { return; }
+    o.textContent = arctRawProfile ? JSON.stringify(arctRawProfile, null, 2).slice(0, 6000) : "Nothing yet. Press Resync or Check ARC Tracker to load it.";
+  }
   function arctWho(p) {
     if (p.who) { arctSet.who = p.who; arctSet.name = p.name || ""; }
-    if (p.lvl) { arctSet.lvl = p.lvl; }
-    if (p.who || p.lvl) { save("arcHubArct", arctSet); if (curTab === "home") { try { renderHome(); } catch (eH) {} } }
+    var lvChanged = false;
+    if (p.lvl) { lvChanged = arctSet.lvl !== p.lvl; arctSet.lvl = p.lvl; } else if (p.profileOk && arctSet.lvl) { delete arctSet.lvl; lvChanged = true; }
+    arctRawShow();
+    if (p.who || lvChanged) { save("arcHubArct", arctSet); if (curTab === "home") { try { renderHome(); } catch (eH) {} } }
     var w = document.getElementById("arctWho"); if (w) { w.textContent = arctSet.who ? "Connected as " + arctSet.who + "." : ""; w.hidden = !arctSet.who; }
   }
   function arctShow() {
@@ -5203,6 +5236,9 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
       showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById(t.getAttribute("data-tool")))); window.scrollTo(0, 0);
     } else if (a === "stSync" || a === "arctResync") {
       arctResync();
+    } else if (a === "arctRawCopy") {
+      var rawT = document.getElementById("arctRawOut").textContent, rawM = document.getElementById("arctRawMsg");
+      try { window.navigator.clipboard.writeText(rawT).then(function () { rawM.textContent = "Copied."; }, function () { rawM.textContent = "Copy failed."; }); } catch (eR) { rawM.textContent = "Copy failed."; }
     } else if (a === "arctPanel") {
       arctPanel(document.getElementById("arctCard").hidden);
     } else if (a === "homeWs") {

@@ -2941,7 +2941,7 @@ footer .wrap { display: grid; gap: 2px; }
       if (n) { out += '<p class="muted">Station upgrade costs and unlocks from the wiki&rsquo;s Workshop page. Scrappy upgrades are left out because the wiki does not say which items go with which level.</p>'; }
     } else if (refSec === "trials") {
       total = 1; n = 1;
-      var TW = ["Damage ARC enemies using a Stiletto", "Damage flying ARC enemies using Light Impact Grenade", "Open Containers", "Destroy Skulkers", "Search frozen Raider Caches"];
+      var TW = ["Open containers in the Comissary Supermarket", "Harvest plants", "Damage Bullies", "Deal damage using a Skulker Targeter", "Damage ARC with a Bantam"];
       var TR = [["Disarm mines during Locked Gate", "300 per mine", "Locked Gate"], ["Download information inside the bunker", "1,200 per data", "Hidden Bunker"], ["Get hit by lightning", "30 per damage", "Electromagnetic Storm"], ["Loot Bird Nests", "180 per nest", "Bird City"], ["Search frozen Raider containers", "1,000 per container", "Cold Snap"], ["Throw snowballs at Bastions", "200 per hit", "Cold Snap"], ["Throw snowballs at Rocketeers", "250 per hit", "Cold Snap"]];
       out += '<div class="qcard"><div class="qh"><b>Season 6</b><span class="qmeta">Began October 8, 2026</span></div>' +
         '<div class="refgrid"><div>Trials unlock at level 15. Each week has 5 challenges, and matching actions earn points toward them. Points are counted when you extract, and only your best score per challenge counts.</div>' +
@@ -2949,7 +2949,7 @@ footer .wrap { display: grid; gap: 2px; }
         '<div><span class="k">Divisions: </span>after your first point in a week you join a division of 100 Raiders (first come, first served), ranked on combined personal-best scores. Ranks update on Mondays.</div>' +
         '<div><span class="k">Ranks: </span>14 ranks, most with three sub-ranks. Cantina Legend is for the top 1,000 players in Hotshot. In a new season you start two ranks below your last placement.</div>' +
         '<div><span class="k">Season rewards: </span>cosmetics and emotes based on final rank. The wiki has not listed Season 6 rewards or an end date yet.</div></div></div>' +
-        '<div class="qcard"><div class="qh"><b>Week 1</b><span class="qmeta">October 8 to 14, 2026</span></div><p class="muted" id="trSum" style="margin:4px 0;">' + trSummary() + '. Tick challenges off and note your points. Rewards come at 1,000, 2,000 and 3,000.</p>' + TW.map(function (x, i) {
+        '<div class="qcard"><div class="qh"><b>Week 2</b><span class="qmeta">October 13 to 19, 2026</span></div><p class="muted" id="trSum" style="margin:4px 0;">' + trSummary() + '. Tick challenges off and note your points. Rewards come at 1,000, 2,000 and 3,000.</p>' + TW.map(function (x, i) {
         var tr = trials[trKey(i)] || {};
         return '<div class="trrow' + (tr.d ? " done" : "") + '"><input type="checkbox" id="tr' + i + '" data-trial="' + i + '"' + (tr.d ? " checked" : "") + '><label for="tr' + i + '">' + esc(x) + '</label><input type="number" min="0" inputmode="numeric" data-trialp="' + i + '" value="' + (tr.p || "") + '" placeholder="points" aria-label="Your points for ' + esc(x) + '"><span class="trtier" id="trt' + i + '">' + trTier(tr.p || 0) + "</span></div>";
       }).join("") +
@@ -4169,7 +4169,7 @@ footer .wrap { display: grid; gap: 2px; }
     }
     return h + "</div>";
   }
-  function trKey(i) { return "s6w1:" + i; }
+  function trKey(i) { return "s6w2:" + i; }
   function trTier(p) { return p >= 3000 ? "Epic tier" : p >= 2000 ? "Rare tier" : p >= 1000 ? "Uncommon tier" : p > 0 ? "Keep going" : ""; }
   function trSummary() { var n = 0; for (var i = 0; i < 5; i++) { if (trials[trKey(i)] && trials[trKey(i)].d) { n++; } } return n + " of 5 done"; }
 

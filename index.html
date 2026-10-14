@@ -1455,6 +1455,8 @@ footer .wrap { display: grid; gap: 2px; }
     <h2>Site changes</h2>
     <p class="muted">What changed on this website itself, newest first. For ARC Raiders game updates, see the Updates tab.</p>
     <div class="sttiles" id="chgTiles"></div>
+    <div class="chips" id="chgView" role="group" aria-label="Show"><button type="button" class="chip" data-chgv="all" aria-pressed="true">All changes</button><button type="button" class="chip" data-chgv="wiki" aria-pressed="false">Wiki updates</button></div>
+    <p class="muted" id="chgWikiNote" hidden></p>
     <details class="card" id="auditBox" style="margin-bottom:12px;"><summary><b>Data gaps</b> <span class="muted" id="auditCount"></span></summary>
       <p class="muted">What the site still does not know, worked out from its own data each time you open this. If you know an answer, the Report what you know button opens a pre-filled GitHub issue.</p>
       <div id="auditOut"></div>
@@ -4017,22 +4019,31 @@ footer .wrap { display: grid; gap: 2px; }
     }).join("");
     document.getElementById("auditCount").textContent = "(" + tot + " open)";
   }
+  var chgView = load("arcHubChgView", "all") === "wiki" ? "wiki" : "all";
   function renderChanges() {
     var el = document.getElementById("changesList");
     if (el) {
-      var days = [], byDay = {};
-      DATA_CHANGES.forEach(function (c) { if (!byDay[c[0]]) { byDay[c[0]] = []; days.push(c[0]); } byDay[c[0]].push(c[1]); });
+      var days = [], byDay = {}, wikiOnly = chgView === "wiki";
+      DATA_CHANGES.forEach(function (c) { if (wikiOnly && c[2] !== "wiki") { return; } if (!byDay[c[0]]) { byDay[c[0]] = []; days.push(c[0]); } byDay[c[0]].push(c[1]); });
+      Array.prototype.forEach.call(document.querySelectorAll("#chgView [data-chgv]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-chgv") === chgView)); });
+      var wn = document.getElementById("chgWikiNote");
+      if (wn) {
+        var lc = load("arcHubLastCheck", null), lcd = lc && lc.t ? ckDate(lc.t) : "";
+        wn.hidden = !wikiOnly;
+        wn.textContent = "Game data the site picked up from the ARC Raiders wiki: new quests, items, enemies, trials and fixes. The wiki is checked every day" + (lcd ? " (last on " + lcd + ")" : "") + "; days with nothing new are left out.";
+      }
       var kind = function (t) { return /^Fixed/.test(t) ? " fix" : /^New look|look for|restyle/i.test(t) ? " look" : /^New /.test(t) ? " newf" : ""; };
       el.innerHTML = days.map(function (d) {
         return '<h3 class="chgday">' + esc(d) + " &middot; " + byDay[d].length + " change" + (byDay[d].length === 1 ? "" : "s") + "</h3>" +
           byDay[d].map(function (t) { return '<div class="chg' + kind(t) + '"><div>' + esc(t) + "</div></div>"; }).join("");
-      }).join("");
+      }).join("") || '<p class="muted">No wiki updates yet.</p>';
       var ct = document.getElementById("chgTiles");
       if (ct) {
         var tl2 = function (cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; };
-        ct.innerHTML = tl2("", "Site changes", DATA_CHANGES.length, "over " + days.length + " day" + (days.length === 1 ? "" : "s")) +
+        var allDays = {}; DATA_CHANGES.forEach(function (c) { allDays[c[0]] = 1; }); var nd = Object.keys(allDays).length;
+        ct.innerHTML = tl2("", "Site changes", DATA_CHANGES.length, "over " + nd + " day" + (nd === 1 ? "" : "s")) +
           tl2("sell", "Latest", esc(days[0] || ""), (byDay[days[0]] || []).length + " change" + ((byDay[days[0]] || []).length === 1 ? "" : "s") + " that day") +
-          tl2("keep", "Fixes", DATA_CHANGES.filter(function (c) { return /^Fixed/.test(c[1]); }).length, "bugs fixed");
+          tl2("keep", "Wiki updates", DATA_CHANGES.filter(function (c) { return c[2] === "wiki"; }).length, "game data changes from the wiki");
       }
     }
   }
@@ -5684,6 +5695,10 @@ footer .wrap { display: grid; gap: 2px; }
     if (auto) { setTimeout(function () { setHint(false); tourShow(0); }, 700); }
   })();
   renderChanges();
+  document.getElementById("chgView").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-chgv]"); if (!b) { return; }
+    chgView = b.getAttribute("data-chgv"); save("arcHubChgView", chgView); renderChanges();
+  });
   document.getElementById("gq").addEventListener("input", gSearch);
   document.getElementById("backupFile").addEventListener("change", backupFileChosen);
   document.getElementById("gq").addEventListener("keydown", function (e) {

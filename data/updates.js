@@ -41,7 +41,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
-    ["Oct 14, 2026", "New Wiki updates view in the Site changes tab: one tap shows only the game data the daily check picked up from the wiki (new quests, items, enemies, trials and fixes), day by day, with the date of the last check."],
+    ["Oct 14, 2026", "New Wiki updates button in the Site changes tab: press it to see only the game data the daily check picked up from the wiki (new quests, items, enemies, trials and fixes), day by day, with the date of the last check."],
     ["Oct 14, 2026", "Daily check: added the new quest Divided (Nomadic Envoys, Pendola Pass, after Ruins And Reverberations). Belly Of The Beast now lists all 7 objectives and needs Tracks Of The Beast too. Bastions also show up on Pendola Pass. Trials moved to Season 6, Week 2 (October 13 to 19) with the new challenges.", "wiki"],
     ["Oct 13, 2026", "Every part of the site's data is now checked daily: recycling and salvage, weapons and gear, enemies, traders, workshop, blueprints, project presets, trials, maps and update history join items, quests, keys, skills and sightings."],
     ["Oct 13, 2026", "The data date at the top and bottom of the site now shows when the daily check last ran, even on days when nothing changed. The Data freshness table shows both the last check and the last change."],

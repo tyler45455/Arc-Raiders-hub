@@ -25,9 +25,9 @@ ARC.DATA_UPDATED = "October 14, 2026";
    Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
-    ["Sell prices, weights, recipes and where to find items", "October 11, 2026", "daily"],
+    ["Sell prices, weights, recipes and where to find items", "October 14, 2026", "daily"],
     ["Quests, objectives and quest chain", "October 14, 2026", "daily"],
-    ["Keys and where to find them", "October 11, 2026", "daily"],
+    ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
     ["Recycling and salvage data", "October 9, 2026", "daily"],
@@ -41,6 +41,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 14, 2026", "Filled in data gaps from the wiki: sell prices for 20 items (Calculator, Hand Drill, Steel Cable, Skulker Targeter, Stiletto and more), where to get 27 items (traders, quests, ARC drops, area types and Gunsmith upgrades for Bantam, Stiletto and Rascal tiers), recipes for Bantam I, Stiletto I, Grappling Hook, Yank Grenade and Basic Camera, and map spots for the JKV Employee Access Card (Space Travel) and the Communication Tower Key (Pilgrim's Peak).", "wiki"],
     ["Oct 14, 2026", "New Wiki updates button in the Site changes tab: press it to see only the game data the daily check picked up from the wiki (new quests, items, enemies, trials and fixes), day by day, with the date of the last check."],
     ["Oct 14, 2026", "Daily check: added the new quest Divided (Nomadic Envoys, Pendola Pass, after Ruins And Reverberations). Belly Of The Beast now lists all 7 objectives and needs Tracks Of The Beast too. Bastions also show up on Pendola Pass. Trials moved to Season 6, Week 2 (October 13 to 19) with the new challenges.", "wiki"],
     ["Oct 13, 2026", "Every part of the site's data is now checked daily: recycling and salvage, weapons and gear, enemies, traders, workshop, blueprints, project presets, trials, maps and update history join items, quests, keys, skills and sightings."],

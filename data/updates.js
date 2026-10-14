@@ -18,7 +18,7 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 12, 2026";
+ARC.DATA_UPDATED = "October 14, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
@@ -26,19 +26,20 @@ ARC.DATA_UPDATED = "October 12, 2026";
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
     ["Sell prices, weights, recipes and where to find items", "October 11, 2026", "daily"],
-    ["Quests, objectives and quest chain", "October 12, 2026", "daily"],
+    ["Quests, objectives and quest chain", "October 14, 2026", "daily"],
     ["Keys and where to find them", "October 11, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
     ["Recycling and salvage data", "October 9, 2026", "daily"],
     ["Weapons & gear", "October 9, 2026", "daily"],
-    ["Reference: enemies, traders, workshop, blueprints", "October 12, 2026", "daily"],
+    ["Reference: enemies, traders, workshop, blueprints", "October 14, 2026", "daily"],
     ["Project presets", "October 10, 2026", "daily"],
-    ["Trials (Season 6, Week 1)", "October 10, 2026", "daily"],
+    ["Trials (Season 6, Week 2)", "October 14, 2026", "daily"],
     ["Maps and update history", "October 10, 2026", "daily"]
   ];
 
 ARC.DATA_CHANGES = [
+    ["Oct 14, 2026", "Daily check: added the new quest Divided (Nomadic Envoys, Pendola Pass, after Ruins And Reverberations). Belly Of The Beast now lists all 7 objectives and needs Tracks Of The Beast too. Bastions also show up on Pendola Pass. Trials moved to Season 6, Week 2 (October 13 to 19) with the new challenges."],
     ["Oct 13, 2026", "Every part of the site's data is now checked daily: recycling and salvage, weapons and gear, enemies, traders, workshop, blueprints, project presets, trials, maps and update history join items, quests, keys, skills and sightings."],
     ["Oct 13, 2026", "The data date at the top and bottom of the site now shows when the daily check last ran, even on days when nothing changed. The Data freshness table shows both the last check and the last change."],
     ["Oct 13, 2026", "Gear cards now have the same spacing everywhere: even gaps between cards, cards in a row match heights, and the Report button stays next to the name on phones."],

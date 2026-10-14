@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 12, 2026",
- "count": 111,
+ "dataDate": "October 14, 2026",
+ "count": 112,
  "quests": [
   {
    "id": "picking-up-the-pieces",
@@ -3975,10 +3975,16 @@
    ],
    "objectives": [
     "(Optional) Acquire an Emperor Gateway Conduit",
-    "Enter the Emperor"
+    "Enter the Emperor",
+    "Find where the power inside the Emperor comes from",
+    "Find out what happens to the Harvester Payloads that enter the Emperor",
+    "Find where the Harvester Payloads sent to the Emperor are stored",
+    "Search 5 containers inside the Emperor",
+    "Obtain a unique piece of Emperor loot"
    ],
    "after": [
-    "sizing-things-up"
+    "sizing-things-up",
+    "tracks-of-the-beast"
    ]
   },
   {
@@ -4113,6 +4119,46 @@
    ],
    "after": [
     "wires-crossed"
+   ]
+  },
+  {
+   "id": "divided",
+   "name": "Divided",
+   "trader": "Nomadic Envoys",
+   "locations": [
+    "Pendola Pass"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "durable-cloth",
+     "name": "Durable Cloth",
+     "qty": 2
+    },
+    {
+     "id": "magnet",
+     "name": "Magnet",
+     "qty": 2
+    },
+    {
+     "id": "music-box",
+     "name": "Music Box",
+     "qty": 1
+    },
+    {
+     "id": "rusted-gear",
+     "name": "Rusted Gear",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Search for the Nomad recording at the Loading Platforms",
+    "Search for the Nomad recording at the Weather Station",
+    "Search for the Nomad recording at the Dispatch Tower",
+    "Search for the Nomad recording at Almatera Station"
+   ],
+   "after": [
+    "ruins-and-reverberations"
    ]
   }
  ]

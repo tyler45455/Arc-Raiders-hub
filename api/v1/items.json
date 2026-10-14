@@ -558,7 +558,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani"
+    ]
+   },
    "sellPrice": 1000,
    "weightKg": null,
    "stackSize": 1,
@@ -1303,7 +1307,11 @@
    "recycle": [],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "foundIn": [
+     "Chimneys (while Bird City is active)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": null,
    "stackSize": 15,
@@ -1585,6 +1593,24 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3800,
+   "weightKg": 3,
+   "stackSize": null,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 4
+     },
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bantam-i/"
   },
   {
@@ -1601,7 +1627,11 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bantam II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bantam-iii/"
   },
   {
@@ -1618,7 +1648,11 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Bantam III at the Gunsmith (4 Mechanical Components, 1 Heavy Gun Parts)"
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bantam-iv/"
   },
   {
@@ -1680,10 +1714,34 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "sellers": [
+     "Shani"
+    ],
+    "questRewards": [
+     "Reduced to Rubble",
+     "Sizing Things Up",
+     "Taking Stock"
+    ]
+   },
    "sellPrice": 640,
-   "weightKg": null,
+   "weightKg": 0.5,
    "stackSize": 1,
+   "craft": {
+    "at": "Workbench",
+    "ingredients": [
+     {
+      "id": "plastic-parts",
+      "name": "Plastic Parts",
+      "qty": 8
+     },
+     {
+      "id": "wires",
+      "name": "Wires",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/basic-camera/"
   },
   {
@@ -2718,6 +2776,9 @@
      "ARC"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.25,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/burned-arc-circuitry/"
   },
   {
@@ -2744,6 +2805,9 @@
     "Industrial"
    ],
    "sources": {},
+   "sellPrice": 270,
+   "weightKg": 0.5,
+   "stackSize": 15,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/cable-stripper/"
   },
   {
@@ -2774,6 +2838,9 @@
      "Scavenging - Pendola Pass"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/calculator/"
   },
   {
@@ -3849,6 +3916,9 @@
      "ARC"
     ]
    },
+   "sellPrice": 1000,
+   "weightKg": 0.3,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/damaged-leaper-pulse-unit/"
   },
   {
@@ -4145,8 +4215,14 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
+   "areaTypes": [
+    "Technological",
+    "Electrical"
+   ],
    "sources": {},
+   "sellPrice": 1000,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/differential-microphone/"
   },
   {
@@ -4502,7 +4578,14 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "foundIn": [
+     "Scavenging (the wiki names no area type yet)"
+    ]
+   },
+   "sellPrice": 1000,
+   "weightKg": 0.5,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/epoxy-bucket/"
   },
   {
@@ -5885,8 +5968,17 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "foundIn": [
+     "Dropped by the ARC Frigate"
+    ]
+   },
+   "sellPrice": 7000,
+   "weightKg": 0.5,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/frigate-inductor/"
   },
   {
@@ -6274,7 +6366,36 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "questRewards": [
+     "Boarding The Frigate",
+     "Ruins And Reverberations",
+     "Tracks Of The Beast"
+    ]
+   },
+   "sellPrice": 1200,
+   "weightKg": 5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Utility Station 1",
+    "ingredients": [
+     {
+      "id": "rope",
+      "name": "Rope",
+      "qty": 2
+     },
+     {
+      "id": "cable-stripper",
+      "name": "Cable Stripper",
+      "qty": 1
+     },
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/grappling-hook/"
   },
   {
@@ -6547,6 +6668,9 @@
     "Industrial"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/hand-drill/"
   },
   {
@@ -6806,7 +6930,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "questRewards": [
+     "Safe Harbor"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 0.5,
    "stackSize": 1,
@@ -7409,7 +7537,11 @@
    "recycle": [],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Built into the Looting Mk. 3 (Cautious) augment; it cannot be dropped"
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/integrated-binoculars/"
   },
   {
@@ -7738,7 +7870,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Reward from the Trophy Display project (stage 3)"
+    ]
+   },
    "sellPrice": 7000,
    "weightKg": 0.75,
    "stackSize": 1,
@@ -7796,8 +7932,14 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Mechanical",
+    "Industrial"
+   ],
    "sources": {},
+   "sellPrice": 2000,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/laser-level/"
   },
   {
@@ -8566,8 +8708,14 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "arcEnemies": [
+     "Matriarch"
+    ]
+   },
    "sellPrice": 11000,
    "weightKg": 10,
    "stackSize": 1,
@@ -8857,6 +9005,9 @@
     "Electrical"
    ],
    "sources": {},
+   "sellPrice": 640,
+   "weightKg": 0.5,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/mini-pump/"
   },
   {
@@ -10032,8 +10183,14 @@
      "qty": 1
     }
    ],
-   "areaTypes": [],
+   "areaTypes": [
+    "Mechanical",
+    "Industrial"
+   ],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 0.5,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/radial-press/"
   },
   {
@@ -10183,7 +10340,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Rascal I at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 10000,
    "weightKg": 4,
    "stackSize": null,
@@ -10214,7 +10375,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Rascal II at the Gunsmith (1 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 13000,
    "weightKg": 4,
    "stackSize": null,
@@ -10245,7 +10410,11 @@
     }
    ],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Rascal III at the Gunsmith (2 Advanced Mechanical Components, 2 Heavy Gun Parts)"
+    ]
+   },
    "sellPrice": 17000,
    "weightKg": 4,
    "stackSize": null,
@@ -12223,8 +12392,20 @@
     }
    ],
    "salvage": [],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "foundIn": [
+     "Also dropped by the Courier"
+    ],
+    "arcEnemies": [
+     "Skulker"
+    ]
+   },
+   "sellPrice": 1000,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/skulker-targeter/"
   },
   {
@@ -12800,6 +12981,9 @@
      "Scavenging (no specific containers listed)"
     ]
    },
+   "sellPrice": 270,
+   "weightKg": 0.5,
+   "stackSize": 5,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/steel-cable/"
   },
   {
@@ -12931,6 +13115,24 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": 3000,
+   "weightKg": 7,
+   "stackSize": null,
+   "craft": {
+    "at": "Gunsmith 1",
+    "ingredients": [
+     {
+      "id": "mechanical-components",
+      "name": "Mechanical Components",
+      "qty": 4
+     },
+     {
+      "id": "simple-gun-parts",
+      "name": "Simple Gun Parts",
+      "qty": 4
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stiletto-i/"
   },
   {
@@ -12952,7 +13154,14 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Stiletto I at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
+   "sellPrice": 6000,
+   "weightKg": 7,
+   "stackSize": null,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stiletto-ii/"
   },
   {
@@ -12974,7 +13183,11 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Stiletto II at the Gunsmith (3 Mechanical Components, 1 Simple Gun Parts)"
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stiletto-iii/"
   },
   {
@@ -12996,7 +13209,14 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "other": [
+     "Upgrade from Stiletto III at the Gunsmith (4 Mechanical Components, 1 Light Gun Parts)"
+    ]
+   },
+   "sellPrice": 11000,
+   "weightKg": 7,
+   "stackSize": null,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/stiletto-iv/"
   },
   {
@@ -13794,6 +14014,9 @@
      "Scavenging old ARC husks"
     ]
    },
+   "sellPrice": 640,
+   "weightKg": 1,
+   "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/tattered-arc-lining/"
   },
   {
@@ -14562,8 +14785,17 @@
      "qty": 2
     }
    ],
-   "areaTypes": [],
-   "sources": {},
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "foundIn": [
+     "Also dropped by the Courier"
+    ],
+    "arcEnemies": [
+     "Vaporizer"
+    ]
+   },
    "sellPrice": 6000,
    "weightKg": 0.5,
    "stackSize": 3,
@@ -15485,7 +15717,29 @@
    ],
    "salvage": [],
    "areaTypes": [],
-   "sources": {},
+   "sources": {
+    "foundIn": [
+     "Scavenging (the wiki names no area type yet)"
+    ]
+   },
+   "sellPrice": 550,
+   "weightKg": 0.35,
+   "stackSize": 3,
+   "craft": {
+    "at": "Explosives Station 2",
+    "ingredients": [
+     {
+      "id": "rope",
+      "name": "Rope",
+      "qty": 1
+     },
+     {
+      "id": "crude-explosives",
+      "name": "Crude Explosives",
+      "qty": 1
+     }
+    ]
+   },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/yank-grenade/"
   },
   {

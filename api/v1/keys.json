@@ -17,8 +17,8 @@
    "id": "buried-city-jkv-employee-access-card",
    "name": "Buried City JKV Employee Access Card",
    "mapId": "buried-city",
-   "roomId": null,
-   "usedAt": "Unlocks a door in the J Kozma Ventures company building.",
+   "roomId": "space-travel",
+   "usedAt": "Opens a locked room on the north side of the J Kozma Ventures (Space Travel) building, fourth floor.",
    "questReward": null,
    "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
@@ -152,9 +152,9 @@
    "id": "blue-gate-communication-tower-key",
    "name": "Blue Gate Communication Tower Key",
    "mapId": "the-blue-gate",
-   "roomId": null,
-   "usedAt": "Unlocks a door by the Communication Tower.",
-   "questReward": null,
+   "roomId": "pilgrim-s-peak",
+   "usedAt": "Opens a locked room in the basement of Pilgrim's Peak, by the Communication Tower.",
+   "questReward": "Groundbreaking",
    "foundIn": "Random loot from containers; the wiki names no specific spot"
   },
   {

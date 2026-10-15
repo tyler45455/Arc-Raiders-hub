@@ -518,6 +518,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .mapkeys .btn { margin-top: 6px; }
 /* Quest chain map: one row per step, lines drawn in an SVG behind the nodes; the box scrolls sideways on phones */
 .qcwrap { position: relative; overflow: auto; max-height: 70vh; margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); -webkit-overflow-scrolling: touch; }
+.qcwrap.grab { cursor: grab; } .qcwrap.grabbing, .qcwrap.grabbing .qcn { cursor: grabbing; user-select: none; }
 .qcin { position: relative; padding: 12px; width: max-content; min-width: 100%; box-sizing: border-box; }
 .qcin svg { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
 .qcin svg path { fill: none; stroke: var(--line); stroke-width: 1.5; }
@@ -1163,7 +1164,7 @@ footer .wrap { display: grid; gap: 2px; }
       <input type="text" id="qQ" placeholder="Search quest, objective, trader, location, item or reward" aria-label="Search quests" autocomplete="off">
       <div class="chips" id="qTraders" role="group" aria-label="Trader"></div>
       <div class="qbar">
-        <select id="qStatus" aria-label="Completion filter"><option value="all">All quests</option><option value="todo">Not completed</option><option value="done">Completed</option></select>
+        <select id="qStatus" aria-label="Completion filter"><option value="all">All quests</option><option value="todo" selected>Not completed</option><option value="done">Completed</option></select>
         <select id="qMap" aria-label="Show quests for a map"><option value="">All maps</option></select>
         <select id="qSort" aria-label="Sort quests"><option value="chain">Wiki order</option><option value="ready">Closest to ready</option></select>
         <label class="tog"><input type="checkbox" id="qLocked"> Show locked</label>
@@ -1175,7 +1176,7 @@ footer .wrap { display: grid; gap: 2px; }
     <div id="qBanner"></div>
     <details class="card qnext" id="qNextCard" open><summary id="qNextSum">Next up</summary><div id="qNext"></div></details>
     <details class="card" id="qChainCard"><summary>Quest chain map</summary>
-      <p class="muted">Every quest in the order they unlock, one step per row; lines join a quest to the ones it opens. Tap a quest, or pick one below, to light up the path to it and list what is left to do.</p>
+      <p class="muted">Every quest in the order they unlock, one step per row; lines join a quest to the ones it opens. Drag to move around the map. Tap a quest, or pick one below, to light up the path to it and list what is left to do.</p>
       <div class="stashgrid"><div><label for="qcPick">Show the path to</label><select id="qcPick"><option value="">Pick a quest</option></select></div></div>
       <div id="qcPath" role="status"></div>
       <div class="qclegend"><span><i style="border-color:var(--good);box-shadow:inset 3px 0 0 var(--good)"></i>Done</span><span><i style="border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)"></i>Ready to start</span><span><i style="border-style:dashed"></i>Locked</span></div>
@@ -2800,7 +2801,7 @@ footer .wrap { display: grid; gap: 2px; }
       if (tb && wrap && qcScroll) { var tr = tb.getBoundingClientRect(), wr = wrap.getBoundingClientRect(); wrap.scrollLeft += tr.left - wr.left - (wrap.clientWidth - tr.width) / 2; wrap.scrollTop += tr.top - wr.top - (wrap.clientHeight - tr.height) / 2; qcScroll = false; }
     }
   }
-  var qcScroll = true;
+  var qcScroll = true, qcDragged = false;
   function qcSet(name, noScroll) { qcTarget = name || ""; save("arcHubQChain", qcTarget); qcScroll = !noScroll; renderQChain(); }
   function renderQuests() {
     renderQChain();
@@ -5799,7 +5800,30 @@ footer .wrap { display: grid; gap: 2px; }
   document.getElementById("qLocked").addEventListener("change", renderQuests);
   document.getElementById("qChainCard").addEventListener("toggle", function () { qcScroll = true; renderQChain(); });
   document.getElementById("qcPick").addEventListener("change", function (e) { qcSet(e.target.value); });
-  document.getElementById("qcIn").addEventListener("click", function (e) { var b = e.target.closest("[data-qc]"); if (b) { var n = b.getAttribute("data-qc"); qcSet(n === qcTarget ? "" : n, true); } });
+  /* Left-click drag pans the chain map with a mouse (touch already scrolls); a drag does not count as tapping a quest. */
+  (function () {
+    var w = document.getElementById("qcWrap"), d = null;
+    w.classList.add("grab");
+    w.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "mouse" || e.button !== 0) { return; }
+      d = { x: e.clientX, y: e.clientY, l: w.scrollLeft, t: w.scrollTop, moved: false, id: e.pointerId };
+    });
+    w.addEventListener("pointermove", function (e) {
+      if (!d || e.pointerId !== d.id) { return; }
+      var dx = e.clientX - d.x, dy = e.clientY - d.y;
+      if (!d.moved && Math.abs(dx) + Math.abs(dy) < 5) { return; }
+      if (!d.moved) { d.moved = true; w.classList.add("grabbing"); try { w.setPointerCapture(d.id); } catch (er) {} }
+      w.scrollLeft = d.l - dx; w.scrollTop = d.t - dy; e.preventDefault();
+    });
+    function end(e) {
+      if (!d || (e && e.pointerId !== d.id)) { return; }
+      if (d.moved) { qcDragged = true; setTimeout(function () { qcDragged = false; }, 0); }
+      w.classList.remove("grabbing"); d = null;
+    }
+    w.addEventListener("pointerup", end); w.addEventListener("pointercancel", end);
+    w.addEventListener("dragstart", function (e) { e.preventDefault(); });
+  })();
+  document.getElementById("qcIn").addEventListener("click", function (e) { if (qcDragged) { return; } var b = e.target.closest("[data-qc]"); if (b) { var n = b.getAttribute("data-qc"); qcSet(n === qcTarget ? "" : n, true); } });
   document.getElementById("qStatus").addEventListener("change", renderQuests);
   document.getElementById("arctAdd").addEventListener("change", function (e) { arctSet.add = e.target.checked; save("arcHubArct", arctSet); });
   document.getElementById("arctAuto").addEventListener("change", function (e) { arctSet.auto = e.target.checked; save("arcHubArct", arctSet); if (e.target.checked) { arctSet.last = 0; arctAutoRun(); } });

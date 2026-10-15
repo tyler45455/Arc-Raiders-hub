@@ -33,6 +33,7 @@ A free, fan-made reference site for ARC Raiders.
 - **Shots to kill (Tools tab):** ranks every weapon against an ARC enemy by hits, magazines, rough time and armor penetration.
 - **Quest locations (Quests tab):** Show on map opens the map with the places a quest's objectives name marked and numbered.
 - **Loadout cost vs haul (Tools > Raid log):** add what your kit was worth, or pick a saved loadout to fill it in from sell prices, and the raid log and Raids tab show profit per raid and per map. A death counts as losing the kit.
+- **Route on one map (Quests > Quest route planner, and Home):** Show route on map opens the enlarged map with every named stop for that raid's quests, numbered in the order with the shortest walk and joined by a dashed line, plus a list of which quest each stop is for.
 - **Home tab:** a start screen with your next raid, the closest workshop upgrade, goals, raid stats and stash worth.
 - **Quest route planner (Tools tab):** groups your active quests into raids by map so you can finish several per trip.
 - **Blueprint wishlist (Reference tab):** mark the blueprints you want and get a hunt list of the containers, conditions, quests and ARC that drop them; Raid prep shows the ones on each map.

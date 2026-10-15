@@ -4051,11 +4051,15 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("auditCount").textContent = "(" + tot + " open)";
   }
   var chgView = load("arcHubChgView", "all") === "wiki" ? "wiki" : "all";
+  /* Only the newest few changes show at first, so the page stays short; Show more adds the next batch. */
+  var CHG_FIRST = 5, CHG_STEP = 10, chgShown = CHG_FIRST;
   function renderChanges() {
     var el = document.getElementById("changesList");
     if (el) {
       var days = [], byDay = {}, wikiOnly = chgView === "wiki";
-      DATA_CHANGES.forEach(function (c) { if (wikiOnly && c[2] !== "wiki") { return; } if (!byDay[c[0]]) { byDay[c[0]] = []; days.push(c[0]); } byDay[c[0]].push(c[1]); });
+      var list = DATA_CHANGES.filter(function (c) { return !wikiOnly || c[2] === "wiki"; }), left = Math.max(0, list.length - chgShown);
+      var dayN = {}; list.forEach(function (c) { dayN[c[0]] = (dayN[c[0]] || 0) + 1; });
+      list.slice(0, chgShown).forEach(function (c) { if (!byDay[c[0]]) { byDay[c[0]] = []; days.push(c[0]); } byDay[c[0]].push(c[1]); });
       Array.prototype.forEach.call(document.querySelectorAll("#chgView [data-chgv]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-chgv") === chgView)); });
       var wn = document.getElementById("chgWikiNote");
       if (wn) {
@@ -4065,15 +4069,16 @@ footer .wrap { display: grid; gap: 2px; }
       }
       var kind = function (t) { return /^Fixed/.test(t) ? " fix" : /^New look|look for|restyle/i.test(t) ? " look" : /^New /.test(t) ? " newf" : ""; };
       el.innerHTML = days.map(function (d) {
-        return '<h3 class="chgday">' + esc(d) + " &middot; " + byDay[d].length + " change" + (byDay[d].length === 1 ? "" : "s") + "</h3>" +
+        return '<h3 class="chgday">' + esc(d) + " &middot; " + dayN[d] + " change" + (dayN[d] === 1 ? "" : "s") + "</h3>" +
           byDay[d].map(function (t) { return '<div class="chg' + kind(t) + '"><div>' + esc(t) + "</div></div>"; }).join("");
       }).join("") || '<p class="muted">No wiki updates yet.</p>';
+      if (left) { el.innerHTML += '<div class="acts"><button class="btn ghost" type="button" data-chgmore="1">Show more (' + left + ' older)</button></div>'; }
       var ct = document.getElementById("chgTiles");
       if (ct) {
         var tl2 = function (cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; };
         var allDays = {}; DATA_CHANGES.forEach(function (c) { allDays[c[0]] = 1; }); var nd = Object.keys(allDays).length;
         ct.innerHTML = tl2("", "Site changes", DATA_CHANGES.length, "over " + nd + " day" + (nd === 1 ? "" : "s")) +
-          tl2("sell", "Latest", esc(days[0] || ""), (byDay[days[0]] || []).length + " change" + ((byDay[days[0]] || []).length === 1 ? "" : "s") + " that day") +
+          tl2("sell", "Latest", esc(days[0] || ""), (dayN[days[0]] || 0) + " change" + (dayN[days[0]] === 1 ? "" : "s") + " that day") +
           tl2("keep", "Wiki updates", DATA_CHANGES.filter(function (c) { return c[2] === "wiki"; }).length, "game data changes from the wiki");
       }
     }
@@ -5775,7 +5780,11 @@ footer .wrap { display: grid; gap: 2px; }
   renderChanges();
   document.getElementById("chgView").addEventListener("click", function (e) {
     var b = e.target.closest("[data-chgv]"); if (!b) { return; }
-    chgView = b.getAttribute("data-chgv"); save("arcHubChgView", chgView); renderChanges();
+    chgView = b.getAttribute("data-chgv"); save("arcHubChgView", chgView); chgShown = CHG_FIRST; renderChanges();
+  });
+  document.getElementById("changesList").addEventListener("click", function (e) {
+    if (!e.target.closest("[data-chgmore]")) { return; }
+    chgShown += CHG_STEP; renderChanges();
   });
   document.getElementById("gq").addEventListener("input", gSearch);
   document.getElementById("backupFile").addEventListener("change", backupFileChosen);

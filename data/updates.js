@@ -41,6 +41,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 15, 2026", "Site changes now shows only the 5 newest changes, so the page stays short. Press Show more to see older ones."],
     ["Oct 15, 2026", "Fixed: on a phone, the first ARC Tracker sync no longer loops on \"Resync to check your first sync\". After Resync the bar says what was found and to press Apply, and scrolls to the Apply button; if ARC Tracker rejects your key, the bar says so too."],
     ["Oct 15, 2026", "Fixed: ARC Tracker sync works again with the site's new ARC Tracker app key. The key box now warns you if you paste an app key (starts with arc_k1_) instead of your own user key (starts with arc_u1_, from ARC Tracker Settings > Developer Access)."],
     ["Oct 15, 2026", "The daily data check now also works through the Data gaps list every day: anything the wiki has filled in since (a sell price, a source, a key's spot on the map) is added to the site and shows under Wiki updates."],

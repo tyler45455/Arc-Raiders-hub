@@ -1,6 +1,6 @@
-# ARC Raiders Hub
+# Speranza Field Guide
 
-A free, fan-made reference site for ARC Raiders.
+A free, fan-made companion site for ARC Raiders (formerly Arc Raiders Hub).
 
 **Live site:** https://tyler45455.github.io/Arc-Raiders-hub/
 

@@ -1,6 +1,6 @@
 # Security policy
 
-ARC Raiders Hub is a free, fan-made static site hosted on GitHub Pages. It has no accounts or server of its own, but it does run code in your browser and stores a few things there, such as your ARC Tracker user key if you turn on sync. If you find a way that could be abused, please tell us privately so it can be fixed before anyone else learns about it.
+Speranza Field Guide is a free, fan-made static site hosted on GitHub Pages. It has no accounts or server of its own, but it does run code in your browser and stores a few things there, such as your ARC Tracker user key if you turn on sync. If you find a way that could be abused, please tell us privately so it can be fixed before anyone else learns about it.
 
 ## How to report a vulnerability
 

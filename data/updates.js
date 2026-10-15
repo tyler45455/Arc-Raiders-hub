@@ -41,6 +41,8 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 15, 2026", "New name: the site is now Speranza Field Guide, so it no longer shares a name with other ARC Raiders sites and Discords. The web address, your saved stash, quests and settings stay the same."],
+    ["Oct 15, 2026", "Easier to find and nicer to share: clearer page titles and descriptions for Google, a new link preview image, a full preview card on every item and map page when shared on Discord, Reddit or X, and the sitemap now tells Google when the data last changed."],
     ["Oct 15, 2026", "The Quests tab now starts on Not completed, so finished quests stay out of the way (pick All quests to see them). With a mouse you can left-click and drag the Quest chain map to move around it."],
     ["Oct 15, 2026", "New Quest chain map in the Quests tab: every quest laid out step by step in the order they unlock, with lines from each quest to the ones it opens, and done, ready and locked quests marked. Tap a quest or pick one from the list to light up the path to it and see the quests left to finish, in order."],
     ["Oct 15, 2026", "New Craft or sell tool in Tools: every craftable item with what it sells for next to what its materials sell for, so you can see whether crafting gains coins or you should just sell the materials. It shows how many you can craft from your Stash right now, and the Crafting planner shows the same answer for the item you pick."],

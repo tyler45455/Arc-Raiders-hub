@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "name": "Arc Raiders Hub data",
+ "name": "Speranza Field Guide data",
  "dataDate": "October 15, 2026",
  "site": "https://tyler45455.github.io/Arc-Raiders-hub/",
  "note": "Read-only static files from a fan-made site. Not affiliated with Embark Studios. IDs are lowercase slugs of the English names and match the item/ and map/ page paths.",

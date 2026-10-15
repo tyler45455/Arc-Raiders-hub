@@ -12,6 +12,7 @@ var vm = require("vm");
 var ROOT = path.join(__dirname, "..");
 var SITE = "https://tyler45455.github.io/Arc-Raiders-hub/";
 var CHECKED = "October 10, 2026";
+var SHARE_ALT = "Arc Raiders Hub: recycling lookup, maps with keys, quests, stash and raid planner";
 /* Run the data files the way the site loads them and read window.ARC_DATA. */
 var DATA_FILES = fs.readdirSync(path.join(ROOT, "data")).filter(function (f) { return /\.js$/.test(f); }).sort();
 var SANDBOX = { window: {} };
@@ -74,13 +75,13 @@ function head(o) {
     '<meta property="og:title" content="' + esc(o.ogTitle || o.title) + '">\n' +
     '<meta property="og:description" content="' + esc(o.desc) + '">\n' +
     '<meta property="og:url" content="' + o.url + '">\n' +
+    '<meta property="og:site_name" content="Arc Raiders Hub">\n' +
     '<meta property="og:image" content="' + o.image + '">\n' +
-    '<meta name="twitter:card" content="summary_large_image">\n';
-  if (o.twitter) {
-    h += '<meta name="twitter:title" content="' + esc(o.ogTitle) + '">\n' +
-      '<meta name="twitter:description" content="' + esc(o.desc) + '">\n' +
-      '<meta name="twitter:image" content="' + o.image + '">\n';
-  }
+    '<meta property="og:image:alt" content="' + esc(o.imageAlt) + '">\n' +
+    '<meta name="twitter:card" content="summary_large_image">\n' +
+    '<meta name="twitter:title" content="' + esc(o.ogTitle || o.title) + '">\n' +
+    '<meta name="twitter:description" content="' + esc(o.desc) + '">\n' +
+    '<meta name="twitter:image" content="' + o.image + '">\n';
   return h + '<link rel="icon" href="' + o.icon + 'icons/apple-touch-icon.png">\n<style>\n' + o.css + "</style>\n</head>\n";
 }
 
@@ -135,7 +136,7 @@ function itemPage(it) {
     title: it.name + ": where to farm and what it recycles into | Arc Raiders Hub",
     desc: (hasFarm ? "Where to farm " + it.name + " in ARC Raiders: area types, sources, traders and quests, plus what it recycles into" :
       it.name + " in ARC Raiders: what it recycles into") + (I[0] != null ? ". Sells for " + I[0].toLocaleString("en-US") + " coins." : (hasFarm ? "." : "")),
-    url: url, image: SITE + "og-image.png", icon: "../../", css: ITEM_CSS
+    url: url, image: SITE + "og-image.png", imageAlt: SHARE_ALT, icon: "../../", css: ITEM_CSS
   }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Arc Raiders Hub</a> / <a href="../">Items</a></div>\n' +
     "<h1>" + esc(it.name) + "</h1>\n" +
     '<p class="m">Item' + (it.rarity ? " (" + esc(it.rarity) + ")" : "") + ". Fan-made reference, not affiliated with Embark Studios.</p>\n" +
@@ -149,7 +150,7 @@ function itemIndex(items) {
   return head({
     title: "ARC Raiders items: where to farm and recycle | Arc Raiders Hub",
     desc: "Every ARC Raiders item with what it recycles into, where to farm it, traders and quests.",
-    url: SITE + "item/", image: SITE + "og-image.png", icon: "../", css: ITEM_CSS
+    url: SITE + "item/", image: SITE + "og-image.png", imageAlt: SHARE_ALT, icon: "../", css: ITEM_CSS
   }) + '<body><div class="w"><div class="eb"><a href="../">Arc Raiders Hub</a></div><h1>All items</h1><ul class="idx">' +
     items.map(function (it) { return '<li><a href="' + slug(it.name) + '/">' + esc(it.name) + "</a></li>"; }).join("") +
     "</ul></div></body></html>\n";
@@ -162,7 +163,7 @@ function mapPage(m) {
   var img = SITE + "maps/" + s + ".jpg", link = hashLink("maps", m.name);
   return head({
     title: m.name + " map, rooms and key | Arc Raiders Hub", ogTitle: m.name + " map | Arc Raiders Hub",
-    desc: desc, url: SITE + "map/" + s + "/", image: img, icon: "../../", css: MAP_CSS, twitter: true
+    desc: desc, url: SITE + "map/" + s + "/", image: img, imageAlt: m.name + " overview map", icon: "../../", css: MAP_CSS
   }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Arc Raiders Hub</a> / Maps</div>\n' +
     "<h1>" + esc(m.name) + " map</h1>\n<p>" + esc(m.desc) + "</p>\n" +
     '<div class="stats"><span>Difficulty <b>' + "●".repeat(m.diff) + "○".repeat(5 - m.diff) + "</b></span><span>Round <b>" + esc(m.len) +
@@ -177,7 +178,9 @@ function mapPage(m) {
 }
 
 function sitemap(maps, items) {
-  var u = function (loc, extra) { return "  <url><loc>" + SITE + loc + "</loc>" + (extra || "") + "</url>\n"; };
+  /* lastmod is the day the site's data last changed (ARC.DATA_UPDATED), so Google knows when to re-read. */
+  var d = new Date(grab("DATA_UPDATED") + " UTC"), mod = "<lastmod>" + d.toISOString().slice(0, 10) + "</lastmod>";
+  var u = function (loc, extra) { return "  <url><loc>" + SITE + loc + "</loc>" + mod + (extra || "") + "</url>\n"; };
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     u("", "<changefreq>weekly</changefreq>") +
     maps.map(function (m) { return u("map/" + mapSlug(m) + "/"); }).join("") +

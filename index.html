@@ -2329,6 +2329,7 @@ footer .wrap { display: grid; gap: 2px; }
     refresh(); renderTools(); renderQuests(); renderRef(); if (curTab === "stash") { renderStash(); } if (curTab === "raids") { renderRaidsTab(); }
     document.getElementById("arctMsg").textContent = (quiet ? "Synced from ARC Tracker: " : "Done: ") + arctSummary(p, true) + "." + arctMissing(p);
     document.getElementById("arctOut").innerHTML = ""; arctPlan = null;
+    if (!quiet) { sbNote = ""; sbBad = false; }
     syncBarRender();
   }
   function arctReady() { return !!(arctSet.u && arctApp()); }
@@ -2343,7 +2344,14 @@ footer .wrap { display: grid; gap: 2px; }
     if (arctBusy) { return; }
     arctBusy = true; msg.textContent = "Checking ARC Tracker..."; document.getElementById("arctOut").innerHTML = "";
     syncBarRender();
-    arctFetch().then(function (p) { arctBusy = false; arctPlan = p; arctShow(); syncBarRender(); }, function (e) { arctBusy = false; msg.textContent = arctErr(e); syncBarRender(); });
+    arctFetch().then(function (p) {
+      arctBusy = false; arctPlan = p; arctShow();
+      /* The first sync waits for Apply in the settings panel; say so in the bar and bring the button into view, so it is not missed on a phone. */
+      if (arctPlan) {
+        sbSay("Found " + arctSummary(arctPlan) + ". Press Apply in the panel below to finish.");
+        var ap = document.querySelector('#arctOut [data-action="arctApply"]'); if (ap && ap.scrollIntoView) { ap.scrollIntoView({ block: "center" }); }
+      } else { sbNote = ""; sbBad = false; syncBarRender(); }
+    }, function (e) { arctBusy = false; msg.textContent = arctErr(e); sbSay(arctErr(e), true); });
   }
   function arctFill() {
     var u = document.getElementById("arctUser"), a = document.getElementById("arctApp");
@@ -2379,7 +2387,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (sbNote && Date.now() - sbAt > 3 * 60 * 1000) { sbNote = ""; sbBad = false; }
     var ready = arctReady(), t;
     if (!ready) { t = "Sync your stash, quests and raider level from <b>ARC Tracker</b>."; }
-    else if (!arctSet.last) { t = "<b>ARC Tracker</b> connected" + (arctSet.who ? " as " + esc(arctSet.who) : "") + ". Resync to check your first sync."; }
+    else if (!arctSet.last) { t = "<b>ARC Tracker</b> connected" + (arctSet.who ? " as " + esc(arctSet.who) : "") + ". Press Resync, then Apply, to finish your first sync."; }
     else { t = "<b>ARC Tracker</b> synced " + sbAgo(arctSet.last) + (arctSet.lvl ? " &middot; Raider level " + esc(String(arctSet.lvl)) : "") + "."; }
     if (arctBusy) { t = "Reading your data from <b>ARC Tracker</b>..."; } else if (sbNote) { t += " " + esc(sbNote); }
     tx.innerHTML = t;

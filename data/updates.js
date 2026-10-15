@@ -41,6 +41,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 15, 2026", "Route on one map: each raid in the Quest route planner, and the Next raid card on Home, has a Show route on map button. It opens the enlarged map with every spot those quests name, numbered in a short walking order and joined by a dashed line, and lists which quest each stop is for."],
     ["Oct 15, 2026", "Loadout cost vs haul: the Raid log in Tools has a Kit value box, or pick a saved loadout to fill it in from sell prices. Each raid then shows its profit (haul minus kit; a death loses the kit), and the raid log and Raids tab show profit per map. The loadout builder and saved loadouts show what each kit is worth."],
     ["Oct 15, 2026", "Fixed the daily item sync trying to put back Apollo's old 6-per-day Noisemaker limit. The wiki's newer answer (no daily limit) is now kept as a wiki override, so the sync leaves it alone."],
     ["Oct 15, 2026", "Daily check: added the quest A Path Not Yours (Nomadic Envoys, The Blue Gate, after Taking Stock). Amplifications now match the wiki's new Amplified Weapons page: Anti Shield is for the Kettle, Bigger Mag adds the Aphelion, More Reload adds the Il Toro, Increased Burst adds the Aphelion, High Velocity now lists its effect, and Straight Bolt is now called Ergonomic Bolt. Apollo no longer limits Noisemaker purchases per day.", "wiki"],

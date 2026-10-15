@@ -4442,6 +4442,41 @@ footer .wrap { display: grid; gap: 2px; }
     while (any.length) { raids.push({ map: "Any map", qs: any.splice(0, per) }); }
     return raids;
   }
+  /* The named quest spots for one planned raid, deduplicated and put in the order with the shortest walk between them. */
+  function qrStops(r) {
+    var by = {}, list = [];
+    if (r.map === "Any map") { return list; }
+    r.qs.forEach(function (q) {
+      (qSpots(q).by[r.map] || []).forEach(function (x) {
+        var k = x.r[0] + "|" + x.r[1] + "|" + x.r[2];
+        if (!by[k]) { by[k] = { r: x.r, qs: [] }; list.push(by[k]); }
+        if (by[k].qs.indexOf(q.name) === -1) { by[k].qs.push(q.name); }
+      });
+    });
+    if (list.length < 3) { return list; }
+    function dist(a, b) { return Math.sqrt(Math.pow(a.r[1] - b.r[1], 2) + Math.pow(a.r[2] - b.r[2], 2)); }
+    var best = null, bestLen = 1e9;
+    list.forEach(function (s0) {
+      var left = list.filter(function (x) { return x !== s0; }), path = [s0], cur = s0, len = 0;
+      while (left.length) {
+        var bi = 0, bd = 1e9;
+        left.forEach(function (x, k) { var d = dist(cur, x); if (d < bd) { bd = d; bi = k; } });
+        cur = left.splice(bi, 1)[0]; path.push(cur); len += bd;
+      }
+      if (len < bestLen) { bestLen = len; best = path; }
+    });
+    return best;
+  }
+  function qrRouteOpen(r, label) {
+    var mi = -1; MAPS.forEach(function (m, k) { if (m.name === r.map) { mi = k; } });
+    if (mi < 0) { return; }
+    var stops = qrStops(r), on = {};
+    stops.forEach(function (x) { x.qs.forEach(function (n) { on[n] = 1; }); });
+    var off = r.qs.filter(function (q) { return !on[q.name]; }).map(function (q) { return q.name; });
+    lb.questPend = { spots: stops.map(function (x, i) { return { r: x.r, n: i + 1 }; }), route: true };
+    lbOpen(mapDetailSrc(MAPS[mi]), r.map, undefined, label + ": " + (stops.length ? stops.map(function (x, i) { return (i + 1) + ". " + x.r[0] + " (" + x.qs.join(", ") + ")"; }).join("; ") + "." : "none of these quests name a spot on the map.") +
+      (off.length ? " No set spot for " + off.join(", ") + "." : ""));
+  }
   function renderRoute() {
     var out = document.getElementById("qrOut");
     if (!out) { return; }
@@ -4457,7 +4492,8 @@ footer .wrap { display: grid; gap: 2px; }
         var hand = {}; r.qs.forEach(function (q) { q.req.forEach(function (x) { hand[x.n] = (hand[x.n] || 0) + x.q; }); });
         var hk = Object.keys(hand).sort();
         return '<div class="proj" style="margin-top:8px;"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline;"><b>Raid ' + (i + 1) + ": " + esc(r.map) + "</b>" +
-          (mi >= 0 ? '<button type="button" class="linkbtn" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + "</div>" +
+          '<span style="display:flex;gap:12px;flex-wrap:wrap;">' + (function () { var ns = qrStops(r).length; return ns ? '<button type="button" class="linkbtn" data-action="qrRoute" data-r="' + i + '">Show route on map (' + ns + " stop" + (ns === 1 ? "" : "s") + ")</button>" : ""; })() +
+          (mi >= 0 ? '<button type="button" class="linkbtn" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + "</span></div>" +
           r.qs.map(function (q) {
             return '<div class="chk"><input type="checkbox" id="qr-' + esc(q.name) + '" data-qdone="' + esc(q.name) + '"><label for="qr-' + esc(q.name) + '"><b>' + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + (q.loc.indexOf("Any") !== -1 ? ", any map" : "") + "</span>" +
               (q.obj.length ? '<span class="muted" style="display:block;font-size:13px;">' + q.obj.map(esc).join("; ") + "</span>" : "") + "</label></div>";
@@ -4506,7 +4542,7 @@ footer .wrap { display: grid; gap: 2px; }
       var r0 = route[0], mi = -1; MAPS.forEach(function (m, k) { if (m.name === r0.map) { mi = k; } });
       html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" +
         '<p class="muted">' + nq + " active quest" + (nq === 1 ? "" : "s") + " in " + route.length + " raid" + (route.length === 1 ? "" : "s") + ".</p>",
-        (mi >= 0 ? '<button class="btn" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>', "raid");
+        (qrStops(r0).length ? '<button class="btn" type="button" data-action="qrRoute" data-r="0">Show route on map</button>' : "") + (mi >= 0 ? '<button class="btn' + (qrStops(r0).length ? " ghost" : "") + '" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>', "raid");
     } else {
       html += homeCard("Quests", '<p class="muted">No active quests right now.</p>', '<button class="btn ghost" type="button" data-tab="quests">Open Quests</button>', "raid");
     }
@@ -4889,6 +4925,7 @@ footer .wrap { display: grid; gap: 2px; }
       html += '<button type="button" class="lb-pin" data-pin="' + i + '" style="left:' + (p.x * 100) + "%;top:" + (p.y * 100) + '%" aria-label="Pin: ' + esc(p.t || "unnamed") + '"><i></i>' + (p.t || num[i] ? "<span>" + (num[i] ? num[i] + ". " : "") + esc(p.t || "") + "</span>" : "") + "</button>";
     });
     if (lb.tmp) { html += '<div class="lb-pin tmp" style="left:' + (lb.tmp.x * 100) + "%;top:" + (lb.tmp.y * 100) + '%"><i></i></div>'; }
+    if (lb.qroute && lb.quest.length > 1 && lb.nw) { html += '<svg class="lb-route" viewBox="0 0 ' + lb.nw + " " + lb.nh + '" aria-hidden="true"><polyline points="' + lb.quest.map(function (x) { return Math.round(x.r[1] * lb.nw) + "," + Math.round(x.r[2] * lb.nh); }).join(" ") + '"/></svg>'; }
     (lb.quest || []).forEach(function (x) { html += '<div class="lb-room lb-qspot" style="left:' + (x.r[1] * 100) + "%;top:" + (x.r[2] * 100) + '%"><b>' + x.n + ". " + esc(x.r[0]) + "</b><i></i></div>"; });
     if (lb.room) { html += '<div class="lb-room" style="left:' + (lb.room[1] * 100) + "%;top:" + (lb.room[2] * 100) + '%"><b>' + esc(lb.room[0]) + "</b><i></i></div>"; }
     box.innerHTML = html;
@@ -4941,7 +4978,7 @@ footer .wrap { display: grid; gap: 2px; }
     lbReturn = document.activeElement;
     var img = lbEl("lbImg");
     var mi = -1; MAPS.forEach(function (m, i) { if (m.name === name) { mi = i; } });
-    lb.quest = lb.questPend ? lb.questPend.spots : []; lb.questPend = null;
+    lb.quest = lb.questPend ? lb.questPend.spots : []; lb.qroute = !!(lb.questPend && lb.questPend.route); lb.questPend = null;
     lb.slug = mi >= 0 ? mapSlug(MAPS[mi]) : ""; lb.name = name; lb.room = null; lb.shared = lb.pend ? lb.pend.p : []; lb.view = lb.pend ? lb.pend.v : null; lb.pend = null; lb.types = {}; lb.route = false; lbEl("lbLayers").hidden = true; lbEl("lbLayersBtn").setAttribute("aria-pressed", "false"); lbRenderLayers(); lb.tmp = null; lb.edit = -1; lb.pm = false;
     lbEl("lbPinBtn").setAttribute("aria-pressed", "false"); lbEl("lbStage").classList.remove("placing");
     lbEl("lbFind").value = ""; lbEl("lbResults").hidden = true; lbPinBox(false);
@@ -5433,6 +5470,9 @@ footer .wrap { display: grid; gap: 2px; }
         var cx = document.createElement("button"); cx.type = "button"; cx.className = "tipx"; cx.setAttribute("data-action", "partialTip"); cx.setAttribute("aria-label", "Close"); cx.textContent = "\u00d7"; tip.appendChild(tx); tip.appendChild(cx);
         var hd = prow.querySelector(".head"); hd.parentNode.insertBefore(tip, hd.nextSibling); t.setAttribute("aria-expanded", "true");
       }
+    } else if (a === "qrRoute") {
+      var qrri = parseInt(t.getAttribute("data-r"), 10) || 0, qrrs = document.getElementById("qrPer"), qrrp = parseInt(qrSet.per || (qrrs && qrrs.value), 10) || 4, qrr = qrPlan(qrrp)[qrri];
+      if (qrr) { qrRouteOpen(qrr, "Raid " + (qrri + 1) + " route"); }
     } else if (a === "qMap") {
       var qmq = QUESTS.filter(function (x) { return x.name === t.getAttribute("data-q"); })[0], qmn = t.getAttribute("data-m"), qmi = -1;
       MAPS.forEach(function (m, k) { if (m.name === qmn) { qmi = k; } });

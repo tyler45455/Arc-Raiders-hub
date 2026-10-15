@@ -4898,7 +4898,7 @@ footer .wrap { display: grid; gap: 2px; }
     var msg = document.getElementById("backupMsg");
     try {
       var blob = new window.Blob([JSON.stringify(backupObj(), null, 1)], { type: "application/json" }), url = window.URL.createObjectURL(blob), a = document.createElement("a");
-      a.href = url; a.download = "arc-raiders-hub-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+      a.href = url; a.download = "speranza-field-guide-backup-" + new Date().toISOString().slice(0, 10) + ".json";
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       window.setTimeout(function () { window.URL.revokeObjectURL(url); }, 2000);
       msg.textContent = "Backup file saved. Keep it somewhere safe; Import from file loads it back.";
@@ -4922,8 +4922,8 @@ footer .wrap { display: grid; gap: 2px; }
   }
   function importData() {
     var msg = document.getElementById("backupMsg"), d;
-    try { d = JSON.parse(document.getElementById("backup").value); } catch (e) { msg.textContent = "That does not look like an Speranza Field Guide backup."; return; }
-    if (!d || d.app !== "arc-raiders-hub") { msg.textContent = "That does not look like an Speranza Field Guide backup."; return; }
+    try { d = JSON.parse(document.getElementById("backup").value); } catch (e) { msg.textContent = "That does not look like a Speranza Field Guide backup."; return; }
+    if (!d || d.app !== "arc-raiders-hub") { msg.textContent = "That does not look like a Speranza Field Guide backup."; return; }
     if (d.v > 2) { msg.textContent = "This backup is from a newer version of the site. Importing what this version understands."; }
     pushUndo("Imported a backup");
     tracker = numMap(d.tracker); goals = numMap(d.goals);

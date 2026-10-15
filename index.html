@@ -820,6 +820,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .rdvals .k { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .rdvals b { font-size: 20px; }
 .rdvals b.pos { color: var(--good); } .rdvals b.neg { color: var(--danger); }
+.rlrow .pos { color: var(--good); font-weight: 600; } .rlrow .neg { color: var(--danger); font-weight: 600; }
 .rdh { margin: 14px 0 6px; }
 
 /* Polish pass: header in one row, softer cards with depth, game-style numbers, four-colour accents */
@@ -1351,11 +1352,13 @@ footer .wrap { display: grid; gap: 2px; }
 
     <div class="tool" id="raidTool">
       <h3>Raid log</h3>
-      <p class="muted">Log each raid in a few taps to see your extract rate and average haul on every map. Saved in this browser and included in backups.</p>
+      <p class="muted">Log each raid in a few taps to see your extract rate, average haul and profit on every map. Add what your kit was worth (or pick a saved loadout) and profit is the haul minus the kit; a death counts as losing the kit. Saved in this browser and included in backups.</p>
       <div class="stashgrid">
         <div><label for="rlMap">Map</label><select id="rlMap"></select></div>
         <div><label for="rlOut">Result</label><select id="rlOut"><option value="x">Extracted</option><option value="d">Died</option></select></div>
         <div><label for="rlVal">Haul value (coins, optional)</label><input type="number" min="0" max="10000000" inputmode="numeric" id="rlVal"></div>
+        <div><label for="rlKit">Kit value (coins, optional)</label><input type="number" min="0" max="10000000" inputmode="numeric" id="rlKit"></div>
+        <div><label for="rlLo">Or use a saved loadout</label><select id="rlLo"><option value="">None</option></select></div>
         <div><label for="rlNote">Note (optional)</label><input type="text" id="rlNote" maxlength="60" autocomplete="off" placeholder="Like: Matriarch, duo"></div>
       </div>
       <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn" type="button" data-action="rlAdd">Log raid</button><span class="muted" id="rlMsg" role="status"></span></div>
@@ -3440,24 +3443,28 @@ footer .wrap { display: grid; gap: 2px; }
     if (!st) { return; }
     var sel = document.getElementById("rlMap");
     if (!sel.options.length) { sel.innerHTML = MAPS.filter(function (m) { return !/practice/i.test(m.name); }).map(function (m) { return '<option value="' + esc(m.name) + '">' + esc(m.name) + "</option>"; }).join(""); var lm = load("arcHubRaidMap", ""); if (lm) { sel.value = lm; } }
+    var lsel = document.getElementById("rlLo"), lkeep = lsel.value;
+    lsel.innerHTML = '<option value="">None</option>' + loadouts.map(function (l, i) { return '<option value="' + i + '">' + esc(l.name) + " (" + coins(loValue(l.code).tot) + ")</option>"; }).join("");
+    lsel.value = loadouts[lkeep] ? lkeep : ""; lsel.parentNode.hidden = !loadouts.length;
     if (!raids.length) { st.innerHTML = '<p class="muted" style="margin-top:10px;">No raids logged yet.</p>'; li.innerHTML = ""; return; }
     function agg(list) {
       var x = list.filter(function (r) { return r.o === "x"; }), hv = x.filter(function (r) { return r.v !== null; });
       var tot = hv.reduce(function (a, r) { return a + r.v; }, 0);
-      return { n: list.length, x: x.length, rate: Math.round(x.length * 100 / list.length), avg: hv.length ? Math.round(tot / hv.length) : null, best: hv.length ? Math.max.apply(null, hv.map(function (r) { return r.v; })) : null, tot: tot };
+      var pl = list.filter(function (r) { return r.p != null; }), pt = pl.reduce(function (a, r) { return a + r.p; }, 0);
+      return { n: list.length, x: x.length, rate: Math.round(x.length * 100 / list.length), avg: hv.length ? Math.round(tot / hv.length) : null, best: hv.length ? Math.max.apply(null, hv.map(function (r) { return r.v; })) : null, tot: tot, pn: pl.length, pt: pt, pavg: pl.length ? Math.round(pt / pl.length) : null };
     }
     var all = agg(raids), streak = 0;
     for (var i = raids.length - 1; i >= 0 && raids[i].o === "x"; i--) { streak++; }
     var maps = {}; raids.forEach(function (r) { (maps[r.m] = maps[r.m] || []).push(r); });
     var cell = function (v) { return v === null ? "&ndash;" : coins(v); };
-    st.innerHTML = '<div class="proj"><div><b>' + all.n + "</b> raids &middot; <b>" + all.rate + "%</b> extracted &middot; average haul <b>" + cell(all.avg) + "</b> &middot; total <b>" + coins(all.tot) + "</b> coins" + (streak > 1 ? " &middot; " + streak + " extracts in a row" : "") + "</div>" +
-      '<div class="tablewrap"><table class="rltab"><thead><tr><th>Map</th><th class="n">Raids</th><th class="n">Extract</th><th class="n">Avg</th><th class="n">Best</th></tr></thead><tbody>' +
+    st.innerHTML = '<div class="proj"><div><b>' + all.n + "</b> raids &middot; <b>" + all.rate + "%</b> extracted &middot; average haul <b>" + cell(all.avg) + "</b> &middot; total <b>" + coins(all.tot) + "</b> coins" + (all.pn ? " &middot; profit <b>" + rdSigned(all.pt) + "</b> over " + all.pn + " raid" + (all.pn === 1 ? "" : "s") : "") + (streak > 1 ? " &middot; " + streak + " extracts in a row" : "") + "</div>" +
+      '<div class="tablewrap"><table class="rltab"><thead><tr><th>Map</th><th class="n">Raids</th><th class="n">Extract</th><th class="n">Avg</th><th class="n">Best</th>' + (all.pn ? '<th class="n">Profit</th>' : "") + '</tr></thead><tbody>' +
       Object.keys(maps).sort(function (a, b) { return maps[b].length - maps[a].length; }).map(function (m) {
-        var g = agg(maps[m]); return "<tr><td>" + esc(m) + '</td><td class="n">' + g.n + '</td><td class="n">' + g.rate + '%<span class="rlmeter" aria-hidden="true"><i style="width:' + g.rate + '%"></i></span></td><td class="n">' + cell(g.avg) + '</td><td class="n">' + cell(g.best) + "</td></tr>";
-      }).join("") + "</tbody></table></div><div class=\"muted\">Average and best count extracted raids with a haul value.</div></div>" + rlChart();
+        var g = agg(maps[m]); return "<tr><td>" + esc(m) + '</td><td class="n">' + g.n + '</td><td class="n">' + g.rate + '%<span class="rlmeter" aria-hidden="true"><i style="width:' + g.rate + '%"></i></span></td><td class="n">' + cell(g.avg) + '</td><td class="n">' + cell(g.best) + "</td>" + (all.pn ? '<td class="n">' + (g.pavg === null ? "&ndash;" : rdSigned(g.pavg)) + "</td>" : "") + "</tr>";
+      }).join("") + "</tbody></table></div><div class=\"muted\">Average and best count extracted raids with a haul value." + (all.pn ? " Profit is the average per raid where you gave a kit value: the haul minus the kit, or minus the whole kit on a death." : "") + "</div></div>" + rlChart();
     li.innerHTML = "<h4 style=\"margin:12px 0 4px;\">Recent raids</h4>" + raids.slice(-15).reverse().map(function (r) {
       var d = new Date(r.t), idx = raids.indexOf(r);
-      return '<div class="rlrow"><div><b>' + esc(r.m) + "</b> &middot; " + (r.o === "x" ? "Extracted" : "Died") + (r.v !== null ? " &middot; " + coins(r.v) + " coins" : "") +
+      return '<div class="rlrow"><div><b>' + esc(r.m) + "</b> &middot; " + (r.o === "x" ? "Extracted" : "Died") + (r.v !== null ? " &middot; " + coins(r.v) + " coins" : "") + (r.p != null ? ' &middot; <span class="' + (r.p >= 0 ? "pos" : "neg") + '">' + rdSigned(r.p) + "</span>" : "") +
         '<div class="muted">' + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + (r.n ? " &middot; " + esc(r.n) : "") + "</div></div>" +
         '<button type="button" class="btn ghost" style="padding:3px 8px;" data-action="rlDel" data-i="' + idx + '" aria-label="Delete this raid">&times;</button></div>';
     }).join("") + '<div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="shareRaids">Share as image</button><button class="btn ghost" type="button" data-action="rlClear">Clear raid log</button></div>';
@@ -3953,6 +3960,18 @@ footer .wrap { display: grid; gap: 2px; }
     tot = Math.round(tot * 100) / 100;
     return { aug: aug[0], limit: aug[1], shield: f[1] || "None", weapons: wl, items: il, total: tot, over: tot > aug[1] };
   }
+  /* Rough kit value from sell prices: weapons count as tier I (a loadout does not store the tier); the augment counts too. */
+  function loPrice(n) {
+    if (ITEMINFO[n]) { return ITEMINFO[n][0]; }
+    return ITEMINFO[n + " I"] ? ITEMINFO[n + " I"][0] : ITEMINFO[n + " II"] ? ITEMINFO[n + " II"][0] : null;
+  }
+  function loValue(code) {
+    var f = code.slice(3).split("~~"), tot = 0, miss = [];
+    function add(n, q) { if (!n) { return; } var v = loPrice(n); if (v === null) { miss.push(n); } else { tot += v * q; } }
+    add(f[0], 1); add(f[1], 1); add(f[2], 1); add(f[3], 1);
+    (f[4] ? f[4].split("~") : []).forEach(function (x) { var pr = x.split("*"); add(pr[0], parseInt(pr[1], 10) || 1); });
+    return { tot: tot, miss: miss };
+  }
   function renderLoSaved() {
     var box = document.getElementById("loSaved");
     if (!box) { return; }
@@ -3960,7 +3979,7 @@ footer .wrap { display: grid; gap: 2px; }
     var opts = loadouts.map(function (l, i) { return '<option value="' + i + '">' + esc(l.name) + "</option>"; }).join("");
     var keepA = (document.getElementById("loCA") || {}).value, keepB = (document.getElementById("loCB") || {}).value;
     var html = '<div class="group-title">Saved loadouts</div>' + loadouts.map(function (l, i) {
-      return '<div class="rcrow"><label>' + esc(l.name) + '</label><button class="btn ghost" type="button" data-action="loLoad" data-i="' + i + '">Load</button><button class="btn ghost" type="button" data-action="loLink" data-i="' + i + '">Link</button><button class="btn danger" type="button" data-action="loDel" data-i="' + i + '">Delete</button></div>';
+      return '<div class="rcrow"><label>' + esc(l.name) + ' <span class="muted">kit worth about ' + coins(loValue(l.code).tot) + '</span></label><button class="btn ghost" type="button" data-action="loLoad" data-i="' + i + '">Load</button><button class="btn ghost" type="button" data-action="loLink" data-i="' + i + '">Link</button><button class="btn danger" type="button" data-action="loDel" data-i="' + i + '">Delete</button></div>';
     }).join("");
     if (loadouts.length > 1) {
       html += '<div class="rcadd" style="grid-template-columns:1fr 1fr;"><select id="loCA" aria-label="Compare loadout A">' + opts + '</select><select id="loCB" aria-label="Compare loadout B">' + opts + '</select></div><div id="loCmpOut"></div>';
@@ -4329,7 +4348,8 @@ footer .wrap { display: grid; gap: 2px; }
     if (shClass && aug[2].indexOf(shClass) === -1) { msg += '<div class="qwarn">The ' + esc(shName) + " is not compatible with the " + esc(aug[0]) + " (it works with: " + esc(aug[2]) + ").</div>"; }
     document.getElementById("loOut").innerHTML = '<div class="refgrid" style="margin-top:10px;">' + lines.map(function (l) { return "<div>" + esc(l[0]) + ": <b>" + (Math.round(l[1] * 100) / 100) + "</b></div>"; }).join("") + "</div>" +
       '<div class="qstat' + (over ? "" : " ok") + '" style="margin-top:8px;">Carried weight: ' + (Math.round(total * 100) / 100) + " of " + limit + " (" + esc(aug[0]) + " weight limit)" + (over ? ": over by " + (Math.round((total - limit) * 100) / 100) : ": " + (Math.round((limit - total) * 100) / 100) + " to spare") + "</div>" + msg +
-      '<p class="muted">The augment&rsquo;s own weight and any ammo are not counted. It has ' + aug[5] + " quick use slots and " + aug[6] + " safe pocket slots.</p>";
+      '<p class="muted">The augment&rsquo;s own weight and any ammo are not counted. It has ' + aug[5] + " quick use slots and " + aug[6] + " safe pocket slots.</p>" +
+      (function () { var kv = loValue(loCode()); return '<p class="muted">Kit worth about <b>' + coins(kv.tot) + "</b> coins at sell prices (weapons as tier I)" + (kv.miss.length ? "; no price for " + esc(kv.miss.join(", ")) : "") + ". Save it, then pick it when you log a raid to see your profit.</p>"; })();
   }
   function initLoadout() {
     var wopts = GEARDATA.weapons.map(function (w) { return '<option>' + esc(w[0]) + "</option>"; }).join("");
@@ -5309,9 +5329,14 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "toolPick") { toolPickOpen(!document.getElementById("toolTabs").classList.contains("open"));
     } else if (a === "rlAdd") {
       var rlm = document.getElementById("rlMap").value, rlv = document.getElementById("rlVal").value.trim();
-      raids.push({ t: Date.now(), m: rlm, o: document.getElementById("rlOut").value === "d" ? "d" : "x", v: rlv === "" ? null : Math.max(0, Math.min(1e7, parseInt(rlv, 10) || 0)), n: document.getElementById("rlNote").value.trim().slice(0, 60) });
+      var rlo = document.getElementById("rlOut").value === "d" ? "d" : "x", rlval = rlv === "" ? null : Math.max(0, Math.min(1e7, parseInt(rlv, 10) || 0));
+      var rlk = document.getElementById("rlKit").value.trim(), rlkit = rlk === "" ? null : Math.max(0, Math.min(1e7, parseInt(rlk, 10) || 0));
+      var rlnew = { t: Date.now(), m: rlm, o: rlo, v: rlval, n: document.getElementById("rlNote").value.trim().slice(0, 60) };
+      if (rlkit !== null) { rlnew.b = rlkit; if (rlo === "d" || rlval !== null) { rlnew.p = (rlo === "d" ? 0 : rlval) - rlkit; } }
+      raids.push(rlnew);
       raids = raids.slice(-500); save("arcHubRaids", raids); save("arcHubRaidMap", rlm);
       document.getElementById("rlVal").value = ""; document.getElementById("rlNote").value = "";
+      if (!document.getElementById("rlLo").value) { document.getElementById("rlKit").value = ""; }
       document.getElementById("rlMsg").textContent = "Logged."; renderRaids();
     } else if (a === "rdMore") { rdShow += 60; renderRaidsTab();
     } else if (a === "rdPickMap") { var rpm = t.getAttribute("data-m"); rdView.m = rdView.m === rpm ? "" : rpm; save("arcHubRaidView", rdView); rdShow = 60; renderRaidsTab();
@@ -5492,13 +5517,13 @@ footer .wrap { display: grid; gap: 2px; }
       if (ln) {
         loadouts = loadouts.filter(function (l) { return l.name.toLowerCase() !== ln.toLowerCase(); });
         loadouts.push({ name: ln, code: loCode() }); loadouts = loadouts.slice(-20);
-        save("arcHubLoadouts", loadouts); document.getElementById("loName").value = ""; renderLoSaved();
+        save("arcHubLoadouts", loadouts); document.getElementById("loName").value = ""; renderLoSaved(); renderRaids();
       }
     } else if (a === "loLoad") {
       var lo = loadouts[parseInt(t.getAttribute("data-i"), 10)]; if (lo) { loApply(lo.code); }
     } else if (a === "loDel") {
       pushUndo("Deleted a loadout");
-      loadouts.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubLoadouts", loadouts); renderLoSaved();
+      loadouts.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubLoadouts", loadouts); renderLoSaved(); renderRaids();
     } else if (a === "contrast") {
       var cn = !load("arcHubContrast", false); save("arcHubContrast", cn); applyContrast(cn);
     } else if (a === "qCode") {
@@ -5656,6 +5681,7 @@ footer .wrap { display: grid; gap: 2px; }
       if (autoSpend && newL > oldL) { var wr = WORKSHOP.filter(function (w) { return w[0] === v; }); for (var li = oldL; li < newL && li < wr.length; li++) { spend(qItems(wr[li][2]), v + " level " + wr[li][1]); } }
       renderTracker(); return;
     }
+    if (el.id === "rlLo") { var rll = loadouts[parseInt(el.value, 10)]; document.getElementById("rlKit").value = rll ? loValue(rll.code).tot : ""; return; }
     if (el.id === "wsAhead") { wsAhead = parseInt(el.value, 10) || 1; save("arcHubWsAhead", wsAhead); renderTracker(); return; }
     if ((v = el.getAttribute("data-wsplan")) !== null) { if (el.checked) { delete wsPlan[v]; } else { wsPlan[v] = false; } save("arcHubWsPlan", wsPlan); renderTracker(); return; }
     if ((v = el.getAttribute("data-shopsrc")) !== null) { shopSrc[v] = el.checked; save("arcHubShopSrc", shopSrc); renderTracker(); return; }
@@ -5932,7 +5958,7 @@ footer .wrap { display: grid; gap: 2px; }
     var best = xv.slice().sort(function (a, b) { return b.v - a.v; })[0];
     document.getElementById("rdTiles").innerHTML = !inRange.length ? "" :
       tile("sell", "Brought out", coins(out$), xv.length + " extracted raid" + (xv.length === 1 ? "" : "s") + " with a value") +
-      tile(prof < 0 ? "keep" : "", "Profit", pv.length ? rdSigned(prof) : "&ndash;", pv.length ? pv.length + " raid" + (pv.length === 1 ? "" : "s") + " with profit" : "Not sent by ARC Tracker") +
+      tile(prof < 0 ? "keep" : "", "Profit", pv.length ? rdSigned(prof) : "&ndash;", pv.length ? pv.length + " raid" + (pv.length === 1 ? "" : "s") + " with profit" : "Add a kit value when you log a raid") +
       tile("", "Extracted", Math.round(x.length * 100 / inRange.length) + "%", x.length + " of " + inRange.length + " raid" + (inRange.length === 1 ? "" : "s")) +
       tile("keep", "Best raid", best ? coins(best.v) : "&ndash;", best ? esc(best.m) + " &middot; " + sbAgo(best.t) : "No values yet");
     var maps = {}; inRange.forEach(function (r) { (maps[r.m] = maps[r.m] || []).push(r); });
@@ -5940,7 +5966,8 @@ footer .wrap { display: grid; gap: 2px; }
       var g = maps[m], gx = g.filter(function (r) { return r.o === "x"; }), gv = gx.filter(function (r) { return r.v != null; }), tot = gv.reduce(function (a, r) { return a + r.v; }, 0);
       var md = MAPS.filter(function (z) { return z.name === m; })[0], rate = Math.round(gx.length * 100 / g.length);
       return '<button type="button" class="mapt md' + (md && md.diff || 0) + '" data-action="rdPickMap" data-m="' + esc(m) + '" aria-pressed="' + (msel.value === m) + '"><b>' + esc(m) + '</b><span class="s">' + g.length + " raid" + (g.length === 1 ? "" : "s") + " &middot; " + rate + "% extracted</span>" +
-        '<span class="s">Brought out <b>' + coins(tot) + "</b>" + (gv.length ? " &middot; avg " + coins(Math.round(tot / gv.length)) : "") + "</span></button>";
+        '<span class="s">Brought out <b>' + coins(tot) + "</b>" + (gv.length ? " &middot; avg " + coins(Math.round(tot / gv.length)) : "") + "</span>" +
+        (function () { var gp = g.filter(function (r) { return r.p != null; }); return gp.length ? '<span class="s">Profit <b>' + rdSigned(gp.reduce(function (a, r) { return a + r.p; }, 0)) + "</b> over " + gp.length + " raid" + (gp.length === 1 ? "" : "s") + "</span>" : ""; })() + "</button>";
     }).join("");
     document.querySelectorAll(".rdh").forEach(function (h) { h.hidden = !inRange.length; });
     var by = rdView.s;

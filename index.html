@@ -483,7 +483,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .help { grid-column: 1 / -1; font-size: 13px; color: var(--good); }
 .iinfo { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
 .iinfo b { color: var(--fg); }
-.iinfo .good, .krow .good { color: var(--good); }
+.iinfo .good, .krow .good { color: var(--good); } .krow .bad { color: var(--danger); }
 .iinfo .bad, .krow .bad { color: var(--danger); }
 .help b { font-weight: 600; }
 .bar { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
@@ -516,6 +516,28 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .mapkeys ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 10px; }
 .mapkeys li { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
 .mapkeys .btn { margin-top: 6px; }
+/* Quest chain map: one row per step, lines drawn in an SVG behind the nodes; the box scrolls sideways on phones */
+.qcwrap { position: relative; overflow: auto; max-height: 70vh; margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); -webkit-overflow-scrolling: touch; }
+.qcwrap.grab { cursor: grab; } .qcwrap.grabbing, .qcwrap.grabbing .qcn { cursor: grabbing; user-select: none; }
+.qcin { position: relative; padding: 12px; width: max-content; min-width: 100%; box-sizing: border-box; }
+.qcin svg { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+.qcin svg path { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.qcin svg path.on { stroke: var(--accent); stroke-width: 2.5; }
+.qcrow { display: flex; gap: 10px; margin-bottom: 26px; align-items: center; position: relative; }
+.qcrow:last-child { margin-bottom: 0; }
+.qcstep { flex: 0 0 auto; width: 42px; font-size: 11px; color: var(--muted); }
+.qcn { flex: 0 0 auto; width: 128px; min-height: 40px; font: inherit; font-size: 12px; line-height: 1.25; text-align: left; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg, inherit); cursor: pointer; position: relative; z-index: 1; }
+.qcn small { display: block; color: var(--muted); font-size: 10px; }
+.qcn.done { border-color: var(--good); box-shadow: inset 4px 0 0 var(--good); }
+.qcn.open { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.qcn.lock { opacity: .75; border-style: dashed; }
+.qcin.picking .qcn:not(.path) { opacity: .3; }
+.qcn.path { outline: 2px solid var(--accent); outline-offset: 1px; opacity: 1; }
+.qcn.tgt { background: var(--accent); color: var(--accent-fg); }
+.qcn.tgt small { color: var(--accent-fg); }
+.qclegend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.qclegend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; border: 1px solid var(--line); }
+#qcPick { font-size: 16px; }
 .qnext .qnlist { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 8px; }
 .qnext .qnlist li { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
 .qnext .qnlist .qstat { display: inline; }
@@ -1142,7 +1164,7 @@ footer .wrap { display: grid; gap: 2px; }
       <input type="text" id="qQ" placeholder="Search quest, objective, trader, location, item or reward" aria-label="Search quests" autocomplete="off">
       <div class="chips" id="qTraders" role="group" aria-label="Trader"></div>
       <div class="qbar">
-        <select id="qStatus" aria-label="Completion filter"><option value="all">All quests</option><option value="todo">Not completed</option><option value="done">Completed</option></select>
+        <select id="qStatus" aria-label="Completion filter"><option value="all">All quests</option><option value="todo" selected>Not completed</option><option value="done">Completed</option></select>
         <select id="qMap" aria-label="Show quests for a map"><option value="">All maps</option></select>
         <select id="qSort" aria-label="Sort quests"><option value="chain">Wiki order</option><option value="ready">Closest to ready</option></select>
         <label class="tog"><input type="checkbox" id="qLocked"> Show locked</label>
@@ -1153,6 +1175,13 @@ footer .wrap { display: grid; gap: 2px; }
     <div class="sttiles" id="qTiles"></div>
     <div id="qBanner"></div>
     <details class="card qnext" id="qNextCard" open><summary id="qNextSum">Next up</summary><div id="qNext"></div></details>
+    <details class="card" id="qChainCard"><summary>Quest chain map</summary>
+      <p class="muted">Every quest in the order they unlock, one step per row; lines join a quest to the ones it opens. Drag to move around the map. Tap a quest, or pick one below, to light up the path to it and list what is left to do.</p>
+      <div class="stashgrid"><div><label for="qcPick">Show the path to</label><select id="qcPick"><option value="">Pick a quest</option></select></div></div>
+      <div id="qcPath" role="status"></div>
+      <div class="qclegend"><span><i style="border-color:var(--good);box-shadow:inset 3px 0 0 var(--good)"></i>Done</span><span><i style="border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)"></i>Ready to start</span><span><i style="border-style:dashed"></i>Locked</span></div>
+      <div class="qcwrap" id="qcWrap"><div class="qcin" id="qcIn"></div></div>
+    </details>
     <details class="card" id="qNeedsCard"><summary>Materials my unlocked quests need</summary>
       <div id="qNeeds"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn" type="button" data-action="qGoalsAll">Set tracker goals for all of these</button></div>
@@ -1323,6 +1352,16 @@ footer .wrap { display: grid; gap: 2px; }
       <label class="crdeep"><input type="checkbox" id="crDeep" checked> Craft the components too (Mechanical Components, Gun Parts and so on)</label>
       <datalist id="craftList"></datalist>
       <div id="crOut"></div>
+    </div>
+
+    <div class="tool" id="cosTool">
+      <h3>Craft or sell</h3>
+      <p class="muted">Is it worth crafting? Compares what each craftable item sells for with what its materials sell for, so you know whether to craft it or just sell the materials. Your Stash counts show how many you can craft right now.</p>
+      <div class="stashgrid">
+        <div><label for="cosQ">Filter</label><input type="text" id="cosQ" placeholder="Name, like: Bandage" autocomplete="off"></div>
+        <div><label for="cosShow">Show</label><select id="cosShow"><option value="all">Every recipe</option><option value="now">Only what I can craft now</option><option value="gain">Only crafts that gain coins</option></select></div>
+      </div>
+      <div id="cosOut"></div>
     </div>
 
     <div class="tool" id="lootTool">
@@ -1537,7 +1576,7 @@ footer .wrap { display: grid; gap: 2px; }
   var REPORT_EMAIL = "tyler45455@gmail.com";
   var REPORT_ISSUES_URL = "https://github.com/tyler45455/Arc-Raiders-hub/issues/new";
   /* ARC Tracker app key (arc_k1_...) from arctracker.io/developers/apps. It identifies this site and is public by design; each visitor supplies their own user key. */
-  var ARCT_APP_KEY = "arc_k1_eC4e4Pmr-pWcI093-xNvdgAH76nli1a1";
+  var ARCT_APP_KEY = "arc_k1_d-J-eyCKyBVcIVIbJAd9h3nmGVVk6IAF";
 
   /* ---------- storage that survives a blocked browser ---------- */
   var mem = {};
@@ -2255,7 +2294,9 @@ footer .wrap { display: grid; gap: 2px; }
     });
   }
   function arctAny(p) { return !!(p.qAdd.length || p.qDel.length || p.tSet.length || p.wsSet.length || p.bpAdd.length || p.bpDel.length || p.pAdd.length || p.pDel.length || p.rAdd.length || p.rUpd.length); }
+  var ARCT_KEY_HELP = "That key starts with arc_k1_, which is an app key for developers. This box needs your own key, which starts with arc_u1_: in ARC Tracker open Settings, then Developer Access, create a key with every permission ticked, and paste it here.";
   function arctErr(e) {
+    if (/^arc_k1_/i.test(arctSet.u || "")) { return ARCT_KEY_HELP; }
     if (e && e.status === 401) { return "ARC Tracker did not accept the key. Check that you pasted all of it."; }
     if (e && e.status === 403) { return "The key has none of the permissions this needs. Make a new key in ARC Tracker with every permission ticked."; }
     if (e && e.status === 404) { return "ARC Tracker has no game data for this account yet. Sync with the Link app first."; }
@@ -2327,11 +2368,14 @@ footer .wrap { display: grid; gap: 2px; }
     refresh(); renderTools(); renderQuests(); renderRef(); if (curTab === "stash") { renderStash(); } if (curTab === "raids") { renderRaidsTab(); }
     document.getElementById("arctMsg").textContent = (quiet ? "Synced from ARC Tracker: " : "Done: ") + arctSummary(p, true) + "." + arctMissing(p);
     document.getElementById("arctOut").innerHTML = ""; arctPlan = null;
+    if (!quiet) { sbNote = ""; sbBad = false; }
     syncBarRender();
   }
   function arctReady() { return !!(arctSet.u && arctApp()); }
   function arctCheck() {
     var u = document.getElementById("arctUser").value.trim(), a = document.getElementById("arctApp").value.trim(), msg = document.getElementById("arctMsg");
+    /* An app key (arc_k1_, from arctracker.io/developers/apps) pasted into the user key box never works there; the site already has its own app key. */
+    if (/^arc_k1_/i.test(u)) { document.getElementById("arctUser").value = ""; msg.textContent = ARCT_KEY_HELP; return; }
     if (u) { arctSet.u = u; } if (a) { arctSet.a = a; }
     save("arcHubArct", arctSet); arctFill();
     if (!arctSet.u) { msg.textContent = "Paste your ARC Tracker key first."; return; }
@@ -2339,7 +2383,14 @@ footer .wrap { display: grid; gap: 2px; }
     if (arctBusy) { return; }
     arctBusy = true; msg.textContent = "Checking ARC Tracker..."; document.getElementById("arctOut").innerHTML = "";
     syncBarRender();
-    arctFetch().then(function (p) { arctBusy = false; arctPlan = p; arctShow(); syncBarRender(); }, function (e) { arctBusy = false; msg.textContent = arctErr(e); syncBarRender(); });
+    arctFetch().then(function (p) {
+      arctBusy = false; arctPlan = p; arctShow();
+      /* The first sync waits for Apply in the settings panel; say so in the bar and bring the button into view, so it is not missed on a phone. */
+      if (arctPlan) {
+        sbSay("Found " + arctSummary(arctPlan) + ". Press Apply in the panel below to finish.");
+        var ap = document.querySelector('#arctOut [data-action="arctApply"]'); if (ap && ap.scrollIntoView) { ap.scrollIntoView({ block: "center" }); }
+      } else { sbNote = ""; sbBad = false; syncBarRender(); }
+    }, function (e) { arctBusy = false; msg.textContent = arctErr(e); sbSay(arctErr(e), true); });
   }
   function arctFill() {
     var u = document.getElementById("arctUser"), a = document.getElementById("arctApp");
@@ -2375,7 +2426,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (sbNote && Date.now() - sbAt > 3 * 60 * 1000) { sbNote = ""; sbBad = false; }
     var ready = arctReady(), t;
     if (!ready) { t = "Sync your stash, quests and raider level from <b>ARC Tracker</b>."; }
-    else if (!arctSet.last) { t = "<b>ARC Tracker</b> connected" + (arctSet.who ? " as " + esc(arctSet.who) : "") + ". Resync to check your first sync."; }
+    else if (!arctSet.last) { t = "<b>ARC Tracker</b> connected" + (arctSet.who ? " as " + esc(arctSet.who) : "") + ". Press Resync, then Apply, to finish your first sync."; }
     else { t = "<b>ARC Tracker</b> synced " + sbAgo(arctSet.last) + (arctSet.lvl ? " &middot; Raider level " + esc(String(arctSet.lvl)) : "") + "."; }
     if (arctBusy) { t = "Reading your data from <b>ARC Tracker</b>..."; } else if (sbNote) { t += " " + esc(sbNote); }
     tx.innerHTML = t;
@@ -2682,7 +2733,78 @@ footer .wrap { display: grid; gap: 2px; }
     });
     return (qSpotCache[q.name] = { maps: order, by: out });
   }
+  /* Quest chain map: step = longest chain of earlier quests (QPREV), so every quest sits below all the quests it needs. */
+  var qcTarget = load("arcHubQChain", ""), QSTEP = null;
+  function qcSteps() {
+    if (QSTEP) { return QSTEP; }
+    QSTEP = {};
+    function st(n, guard) {
+      if (QSTEP[n] != null) { return QSTEP[n]; }
+      if (guard > 60) { return 0; }
+      var ps = QPREV[n] || [], m = -1;
+      ps.forEach(function (p) { m = Math.max(m, st(p, guard + 1)); });
+      return (QSTEP[n] = m + 1);
+    }
+    QUESTS.forEach(function (q) { st(q.name, 0); });
+    return QSTEP;
+  }
+  function qcUp(name) {
+    var seen = {}, stack = [name];
+    while (stack.length) { var n = stack.pop(); if (seen[n]) { continue; } seen[n] = 1; (QPREV[n] || []).forEach(function (p) { stack.push(p); }); }
+    return seen;
+  }
+  function renderQChain() {
+    var card = document.getElementById("qChainCard"), inn = document.getElementById("qcIn");
+    if (!card || !inn) { return; }
+    var pick = document.getElementById("qcPick");
+    if (pick.options.length < 2) {
+      pick.innerHTML = '<option value="">Pick a quest</option>' + QUESTS.slice().sort(function (a, b) { return a.name < b.name ? -1 : 1; }).map(function (q) { return '<option value="' + esc(q.name) + '">' + esc(q.name) + " (" + esc(q.trader) + ")</option>"; }).join("");
+    }
+    if (qcTarget && !QUESTS.some(function (q) { return q.name === qcTarget; })) { qcTarget = ""; }
+    pick.value = qcTarget;
+    var S = qcSteps(), rows = [], path = qcTarget ? qcUp(qcTarget) : null;
+    QUESTS.forEach(function (q) { var k = S[q.name] || 0; (rows[k] = rows[k] || []).push(q); });
+    var pb = document.getElementById("qcPath");
+    if (path) {
+      var left = QUESTS.filter(function (q) { return path[q.name] && !qDone[q.name]; }).sort(function (a, b) { return S[a.name] - S[b.name]; });
+      pb.innerHTML = '<div class="muted" style="margin-top:8px;">' + (qDone[qcTarget] ? "You have already done " + esc(qcTarget) + "." :
+        left.length === 1 ? esc(qcTarget) + " is ready to start." :
+        "<b>" + left.length + " quests</b> to finish, in this order: " + left.map(function (q) { return esc(q.name) + (q.name === qcTarget ? "" : " <small>(" + esc(q.trader) + ")</small>"); }).join(" &rarr; ")) +
+        ' <button class="btn ghost" type="button" data-action="qcClear">Clear</button></div>';
+    } else { pb.innerHTML = ""; }
+    if (!card.open) { return; }
+    inn.className = "qcin" + (path ? " picking" : "");
+    inn.innerHTML = '<svg id="qcSvg" aria-hidden="true"></svg>' + rows.map(function (row, i) {
+      return '<div class="qcrow"><span class="qcstep">Step ' + (i + 1) + "</span>" + row.map(function (q) {
+        var cls = qDone[q.name] ? " done" : qLocked(q) ? " lock" : " open";
+        if (path && path[q.name]) { cls += " path"; } if (q.name === qcTarget) { cls += " tgt"; }
+        return '<button type="button" class="qcn' + cls + '" data-qc="' + esc(q.name) + '" title="' + esc(q.name + " · " + q.trader + (qDone[q.name] ? " · done" : qLocked(q) ? " · locked" : " · ready")) + '">' + esc(q.name) + "<small>" + esc(q.trader) + "</small></button>";
+      }).join("") + "</div>";
+    }).join("");
+    var svg = document.getElementById("qcSvg"), box = inn.getBoundingClientRect(), pos = {};
+    svg.setAttribute("width", inn.scrollWidth); svg.setAttribute("height", inn.scrollHeight);
+    Array.prototype.forEach.call(inn.querySelectorAll(".qcn"), function (b) {
+      var r = b.getBoundingClientRect();
+      pos[b.getAttribute("data-qc")] = { x: r.left - box.left + r.width / 2, t: r.top - box.top, b: r.bottom - box.top };
+    });
+    var paths = [];
+    Object.keys(QPREV).forEach(function (n) {
+      (QPREV[n] || []).forEach(function (p) {
+        var a = pos[p], c = pos[n]; if (!a || !c) { return; }
+        var on = path && path[n] && path[p], my = (a.b + c.t) / 2;
+        paths.push('<path' + (on ? ' class="on"' : "") + ' d="M' + a.x + " " + a.b + " C" + a.x + " " + my + " " + c.x + " " + my + " " + c.x + " " + c.t + '"/>');
+      });
+    });
+    svg.innerHTML = paths.sort(function (x, y) { return (x.indexOf("on") > 0) - (y.indexOf("on") > 0); }).join("");
+    if (path) {
+      var tb = inn.querySelector(".qcn.tgt"), wrap = document.getElementById("qcWrap");
+      if (tb && wrap && qcScroll) { var tr = tb.getBoundingClientRect(), wr = wrap.getBoundingClientRect(); wrap.scrollLeft += tr.left - wr.left - (wrap.clientWidth - tr.width) / 2; wrap.scrollTop += tr.top - wr.top - (wrap.clientHeight - tr.height) / 2; qcScroll = false; }
+    }
+  }
+  var qcScroll = true, qcDragged = false;
+  function qcSet(name, noScroll) { qcTarget = name || ""; save("arcHubQChain", qcTarget); qcScroll = !noScroll; renderQChain(); }
   function renderQuests() {
+    renderQChain();
     var mats = {};
     allMaterials().forEach(function (m) { mats[m] = true; });
     var traders = [];
@@ -4039,11 +4161,15 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("auditCount").textContent = "(" + tot + " open)";
   }
   var chgView = load("arcHubChgView", "all") === "wiki" ? "wiki" : "all";
+  /* Only the newest few changes show at first, so the page stays short; Show more adds the next batch. */
+  var CHG_FIRST = 5, CHG_STEP = 10, chgShown = CHG_FIRST;
   function renderChanges() {
     var el = document.getElementById("changesList");
     if (el) {
       var days = [], byDay = {}, wikiOnly = chgView === "wiki";
-      DATA_CHANGES.forEach(function (c) { if (wikiOnly && c[2] !== "wiki") { return; } if (!byDay[c[0]]) { byDay[c[0]] = []; days.push(c[0]); } byDay[c[0]].push(c[1]); });
+      var list = DATA_CHANGES.filter(function (c) { return !wikiOnly || c[2] === "wiki"; }), left = Math.max(0, list.length - chgShown);
+      var dayN = {}; list.forEach(function (c) { dayN[c[0]] = (dayN[c[0]] || 0) + 1; });
+      list.slice(0, chgShown).forEach(function (c) { if (!byDay[c[0]]) { byDay[c[0]] = []; days.push(c[0]); } byDay[c[0]].push(c[1]); });
       Array.prototype.forEach.call(document.querySelectorAll("#chgView [data-chgv]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-chgv") === chgView)); });
       var wn = document.getElementById("chgWikiNote");
       if (wn) {
@@ -4053,15 +4179,16 @@ footer .wrap { display: grid; gap: 2px; }
       }
       var kind = function (t) { return /^Fixed/.test(t) ? " fix" : /^New look|look for|restyle/i.test(t) ? " look" : /^New /.test(t) ? " newf" : ""; };
       el.innerHTML = days.map(function (d) {
-        return '<h3 class="chgday">' + esc(d) + " &middot; " + byDay[d].length + " change" + (byDay[d].length === 1 ? "" : "s") + "</h3>" +
+        return '<h3 class="chgday">' + esc(d) + " &middot; " + dayN[d] + " change" + (dayN[d] === 1 ? "" : "s") + "</h3>" +
           byDay[d].map(function (t) { return '<div class="chg' + kind(t) + '"><div>' + esc(t) + "</div></div>"; }).join("");
       }).join("") || '<p class="muted">No wiki updates yet.</p>';
+      if (left) { el.innerHTML += '<div class="acts"><button class="btn ghost" type="button" data-chgmore="1">Show more (' + left + ' older)</button></div>'; }
       var ct = document.getElementById("chgTiles");
       if (ct) {
         var tl2 = function (cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; };
         var allDays = {}; DATA_CHANGES.forEach(function (c) { allDays[c[0]] = 1; }); var nd = Object.keys(allDays).length;
         ct.innerHTML = tl2("", "Site changes", DATA_CHANGES.length, "over " + nd + " day" + (nd === 1 ? "" : "s")) +
-          tl2("sell", "Latest", esc(days[0] || ""), (byDay[days[0]] || []).length + " change" + ((byDay[days[0]] || []).length === 1 ? "" : "s") + " that day") +
+          tl2("sell", "Latest", esc(days[0] || ""), (dayN[days[0]] || 0) + " change" + (dayN[days[0]] === 1 ? "" : "s") + " that day") +
           tl2("keep", "Wiki updates", DATA_CHANGES.filter(function (c) { return c[2] === "wiki"; }).length, "game data changes from the wiki");
       }
     }
@@ -4277,13 +4404,49 @@ footer .wrap { display: grid; gap: 2px; }
       if (ok) { ready++; }
       return '<div class="need"><div>' + esc(m) + ": <b>" + Math.min(have, q) + " / " + q + "</b>" + (ok ? " &#10003;" : " (" + (q - have) + " to go)") + '</div><div class="bar' + (ok ? " done" : "") + '"><i style="width:' + Math.min(100, Math.round(have * 100 / q)) + '%"></i></div></div>';
     }).join("");
-    var made = Object.keys(c.made).filter(function (m) { return m !== name; });
+    var made = Object.keys(c.made).filter(function (m) { return m !== name; }), cr = cosRow(name);
     out.innerHTML = '<div class="proj"><div class="ph"><b>' + qty + "&times; " + esc(name) + ' <span class="muted">' + ready + " of " + keys.length + " materials ready</span></b></div>" +
       '<div class="muted">Workbenches: ' + c.stations.map(esc).join(", ") + "</div>" +
       (made.length ? '<div class="muted">You will also craft: ' + made.map(function (m) { return c.made[m] + "&times; " + esc(m); }).join(", ") + "</div>" : "") +
+      (cr ? '<div class="muted">Craft or sell: one sells for ' + coins(cr.sell) + " and its materials for " + coins(cr.cost) + ", so " + (cr.gain > 0 ? '<span class="good">crafting gains ' + coins(cr.gain) + "</span>" : cr.gain < 0 ? "selling the materials is worth " + coins(-cr.gain) + " more" : "it is the same either way") + ".</div>" : "") +
       rows +
       '<div class="acts" style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="crProj">Save as project</button><button class="btn ghost" type="button" data-action="crLink">Copy link</button><span class="muted" id="crMsg" role="status"></span></div></div>' +
       '<details style="margin-top:10px;"><summary>Recipe tree</summary><ul class="crtree" style="margin-top:6px;">' + craftTree(name, qty, 0, deep) + "</ul></details>";
+  }
+  /* Craft or sell: one craft (counted as making one item) against selling its materials, one level deep, at ITEMINFO sell prices. */
+  function cosRow(n) {
+    var r = ITEMINFO[n] && ITEMINFO[n][3], mats = 0, can = Infinity;
+    if (!r || !(ITEMINFO[n][0] > 0)) { return null; }
+    for (var i = 0; i < r[1].length; i++) {
+      var m = r[1][i][0], q = r[1][i][1], f = ITEMINFO[m];
+      if (!f || f[0] == null) { return null; }
+      mats += f[0] * q; can = Math.min(can, Math.floor((tracker[m] || 0) / q));
+    }
+    return { n: n, st: r[0], mats: r[1], sell: ITEMINFO[n][0], cost: mats, gain: ITEMINFO[n][0] - mats, can: can === Infinity ? 0 : can };
+  }
+  function renderCos() {
+    var out = document.getElementById("cosOut");
+    if (!out) { return; }
+    var q = document.getElementById("cosQ").value.trim().toLowerCase(), show = document.getElementById("cosShow").value, kmap = keepMap();
+    var all = Object.keys(ITEMINFO).map(cosRow).filter(Boolean);
+    var rows = all.filter(function (x) {
+      if (show === "now" && !x.can) { return false; }
+      if (show === "gain" && x.gain <= 0) { return false; }
+      return !q || x.n.toLowerCase().indexOf(q) !== -1 || x.mats.some(function (m) { return m[0].toLowerCase().indexOf(q) !== -1; });
+    });
+    rows.sort(function (a, b) { return show === "now" ? (b.gain * b.can - a.gain * a.can) || (b.gain - a.gain) : (b.gain - a.gain) || (a.n < b.n ? -1 : 1); });
+    var up = all.filter(function (x) { return x.gain > 0; }).length;
+    out.innerHTML = '<div class="muted" style="margin-top:10px;">' + up + " of " + all.length + " recipes sell for more than their materials. " + rows.length + " shown, best first." +
+      " Each craft is counted as making one item, and the materials are valued at their sell price.</div>" +
+      (rows.length ? rows.map(function (x) {
+        var k = kmap[x.n], mk = x.mats.filter(function (m) { return kmap[m[0]]; }).map(function (m) { return m[0]; });
+        var verdict = x.gain > 0 ? '<span class="good">Craft it: +' + coins(x.gain) + "</span>" : x.gain < 0 ? '<span class="bad">Sell the materials: ' + coins(x.gain) + "</span>" : "Same either way";
+        return '<div class="krow"><b>' + esc(x.n) + "</b>" + (k ? '<span class="ktag keep" title="' + esc(k.join("; ")) + '">Keep</span>' : "") +
+          '<span class="muted">' + verdict + " &middot; sells for " + coins(x.sell) + ", materials " + coins(x.cost) + " &middot; " + esc(x.st) +
+          "<br>" + x.mats.map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") +
+          (x.can ? " &middot; <b>you can craft " + x.can + "</b>" + (x.gain > 0 ? ' (<span class="good">+' + coins(x.gain * x.can) + "</span>)" : "") : "") +
+          (mk.length ? " &middot; your quests, projects or goals need " + mk.map(esc).join(", ") : "") + "</span></div>";
+      }).join("") : '<div class="empty-line">' + (show === "now" ? "Your Stash does not have the materials for any of these yet." : "No recipe matches that.") + "</div>");
   }
   function craftApply(arg) {
     var i = arg.lastIndexOf("*"), n = craftFind(i < 0 ? arg : arg.slice(0, i)), q = i < 0 ? 1 : parseInt(arg.slice(i + 1), 10) || 1;
@@ -5103,7 +5266,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (name === "raids") { renderRaidsTab(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); renderRaids(); }
+    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderCos(); renderLoot(); renderSkills(); renderRaids(); }
     if (name === "maps") { renderMaps(); }
     if (name === "updates") { renderTimeline(); markUpdatesSeen(); }
     if (name === "site") { try { renderAudit(); } catch (eA) {} }
@@ -5230,6 +5393,8 @@ footer .wrap { display: grid; gap: 2px; }
       var gq = QUESTS.filter(function (x) { return x.name === t.getAttribute("data-q"); })[0], gm = matSet();
       if (gq) { gq.req.forEach(function (r) { if (gm[r.n]) { goals[r.n] = Math.max(goals[r.n] || 0, r.q); } }); save("arcHubGoals", goals); refresh(); }
       var go = t.textContent; t.textContent = "Goals set"; setTimeout(function () { t.textContent = go; }, 1500);
+    } else if (a === "qcClear") {
+      qcSet("");
     } else if (a === "qGoalsAll") {
       var tt = qTotals(matSet());
       Object.keys(tt).forEach(function (k) { goals[k] = Math.max(goals[k] || 0, tt[k]); });
@@ -5633,6 +5798,32 @@ footer .wrap { display: grid; gap: 2px; }
   });
   document.getElementById("qReady").addEventListener("change", renderQuests);
   document.getElementById("qLocked").addEventListener("change", renderQuests);
+  document.getElementById("qChainCard").addEventListener("toggle", function () { qcScroll = true; renderQChain(); });
+  document.getElementById("qcPick").addEventListener("change", function (e) { qcSet(e.target.value); });
+  /* Left-click drag pans the chain map with a mouse (touch already scrolls); a drag does not count as tapping a quest. */
+  (function () {
+    var w = document.getElementById("qcWrap"), d = null;
+    w.classList.add("grab");
+    w.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "mouse" || e.button !== 0) { return; }
+      d = { x: e.clientX, y: e.clientY, l: w.scrollLeft, t: w.scrollTop, moved: false, id: e.pointerId };
+    });
+    w.addEventListener("pointermove", function (e) {
+      if (!d || e.pointerId !== d.id) { return; }
+      var dx = e.clientX - d.x, dy = e.clientY - d.y;
+      if (!d.moved && Math.abs(dx) + Math.abs(dy) < 5) { return; }
+      if (!d.moved) { d.moved = true; w.classList.add("grabbing"); try { w.setPointerCapture(d.id); } catch (er) {} }
+      w.scrollLeft = d.l - dx; w.scrollTop = d.t - dy; e.preventDefault();
+    });
+    function end(e) {
+      if (!d || (e && e.pointerId !== d.id)) { return; }
+      if (d.moved) { qcDragged = true; setTimeout(function () { qcDragged = false; }, 0); }
+      w.classList.remove("grabbing"); d = null;
+    }
+    w.addEventListener("pointerup", end); w.addEventListener("pointercancel", end);
+    w.addEventListener("dragstart", function (e) { e.preventDefault(); });
+  })();
+  document.getElementById("qcIn").addEventListener("click", function (e) { if (qcDragged) { return; } var b = e.target.closest("[data-qc]"); if (b) { var n = b.getAttribute("data-qc"); qcSet(n === qcTarget ? "" : n, true); } });
   document.getElementById("qStatus").addEventListener("change", renderQuests);
   document.getElementById("arctAdd").addEventListener("change", function (e) { arctSet.add = e.target.checked; save("arcHubArct", arctSet); });
   document.getElementById("arctAuto").addEventListener("change", function (e) { arctSet.auto = e.target.checked; save("arcHubArct", arctSet); if (e.target.checked) { arctSet.last = 0; arctAutoRun(); } });
@@ -5655,6 +5846,9 @@ footer .wrap { display: grid; gap: 2px; }
     ["crItem", "crQty"].forEach(function (id) { document.getElementById(id).addEventListener("input", renderCraft); });
     document.getElementById("crDeep").addEventListener("change", renderCraft);
     document.getElementById("lvQ").addEventListener("input", renderLoot);
+    document.getElementById("cosQ").addEventListener("input", renderCos);
+    document.getElementById("cosShow").addEventListener("change", function () { save("arcHubCos", document.getElementById("cosShow").value); renderCos(); });
+    document.getElementById("cosShow").value = ["all", "now", "gain"].indexOf(load("arcHubCos", "all")) >= 0 ? load("arcHubCos", "all") : "all";
     ["lvSort", "lvGear"].forEach(function (id) { document.getElementById(id).addEventListener("change", function () { save("arcHubLoot", { s: document.getElementById("lvSort").value, g: document.getElementById("lvGear").checked }); renderLoot(); }); });
     document.getElementById("skExp").value = skExp;
     document.getElementById("skExp").addEventListener("input", function () { skExp = Math.max(0, parseInt(this.value, 10) || 0); save("arcHubSkillExp", skExp); renderSkills(); });
@@ -5763,7 +5957,11 @@ footer .wrap { display: grid; gap: 2px; }
   renderChanges();
   document.getElementById("chgView").addEventListener("click", function (e) {
     var b = e.target.closest("[data-chgv]"); if (!b) { return; }
-    chgView = b.getAttribute("data-chgv"); save("arcHubChgView", chgView); renderChanges();
+    chgView = b.getAttribute("data-chgv"); save("arcHubChgView", chgView); chgShown = CHG_FIRST; renderChanges();
+  });
+  document.getElementById("changesList").addEventListener("click", function (e) {
+    if (!e.target.closest("[data-chgmore]")) { return; }
+    chgShown += CHG_STEP; renderChanges();
   });
   document.getElementById("gq").addEventListener("input", gSearch);
   document.getElementById("backupFile").addEventListener("change", backupFileChosen);

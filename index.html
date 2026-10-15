@@ -516,6 +516,27 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .mapkeys ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 10px; }
 .mapkeys li { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
 .mapkeys .btn { margin-top: 6px; }
+/* Quest chain map: one row per step, lines drawn in an SVG behind the nodes; the box scrolls sideways on phones */
+.qcwrap { position: relative; overflow: auto; max-height: 70vh; margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); -webkit-overflow-scrolling: touch; }
+.qcin { position: relative; padding: 12px; width: max-content; min-width: 100%; box-sizing: border-box; }
+.qcin svg { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+.qcin svg path { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.qcin svg path.on { stroke: var(--accent); stroke-width: 2.5; }
+.qcrow { display: flex; gap: 10px; margin-bottom: 26px; align-items: center; position: relative; }
+.qcrow:last-child { margin-bottom: 0; }
+.qcstep { flex: 0 0 auto; width: 42px; font-size: 11px; color: var(--muted); }
+.qcn { flex: 0 0 auto; width: 128px; min-height: 40px; font: inherit; font-size: 12px; line-height: 1.25; text-align: left; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg, inherit); cursor: pointer; position: relative; z-index: 1; }
+.qcn small { display: block; color: var(--muted); font-size: 10px; }
+.qcn.done { border-color: var(--good); box-shadow: inset 4px 0 0 var(--good); }
+.qcn.open { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.qcn.lock { opacity: .75; border-style: dashed; }
+.qcin.picking .qcn:not(.path) { opacity: .3; }
+.qcn.path { outline: 2px solid var(--accent); outline-offset: 1px; opacity: 1; }
+.qcn.tgt { background: var(--accent); color: var(--accent-fg); }
+.qcn.tgt small { color: var(--accent-fg); }
+.qclegend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.qclegend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; border: 1px solid var(--line); }
+#qcPick { font-size: 16px; }
 .qnext .qnlist { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 8px; }
 .qnext .qnlist li { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
 .qnext .qnlist .qstat { display: inline; }
@@ -1153,6 +1174,13 @@ footer .wrap { display: grid; gap: 2px; }
     <div class="sttiles" id="qTiles"></div>
     <div id="qBanner"></div>
     <details class="card qnext" id="qNextCard" open><summary id="qNextSum">Next up</summary><div id="qNext"></div></details>
+    <details class="card" id="qChainCard"><summary>Quest chain map</summary>
+      <p class="muted">Every quest in the order they unlock, one step per row; lines join a quest to the ones it opens. Tap a quest, or pick one below, to light up the path to it and list what is left to do.</p>
+      <div class="stashgrid"><div><label for="qcPick">Show the path to</label><select id="qcPick"><option value="">Pick a quest</option></select></div></div>
+      <div id="qcPath" role="status"></div>
+      <div class="qclegend"><span><i style="border-color:var(--good);box-shadow:inset 3px 0 0 var(--good)"></i>Done</span><span><i style="border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)"></i>Ready to start</span><span><i style="border-style:dashed"></i>Locked</span></div>
+      <div class="qcwrap" id="qcWrap"><div class="qcin" id="qcIn"></div></div>
+    </details>
     <details class="card" id="qNeedsCard"><summary>Materials my unlocked quests need</summary>
       <div id="qNeeds"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn" type="button" data-action="qGoalsAll">Set tracker goals for all of these</button></div>
@@ -2704,7 +2732,78 @@ footer .wrap { display: grid; gap: 2px; }
     });
     return (qSpotCache[q.name] = { maps: order, by: out });
   }
+  /* Quest chain map: step = longest chain of earlier quests (QPREV), so every quest sits below all the quests it needs. */
+  var qcTarget = load("arcHubQChain", ""), QSTEP = null;
+  function qcSteps() {
+    if (QSTEP) { return QSTEP; }
+    QSTEP = {};
+    function st(n, guard) {
+      if (QSTEP[n] != null) { return QSTEP[n]; }
+      if (guard > 60) { return 0; }
+      var ps = QPREV[n] || [], m = -1;
+      ps.forEach(function (p) { m = Math.max(m, st(p, guard + 1)); });
+      return (QSTEP[n] = m + 1);
+    }
+    QUESTS.forEach(function (q) { st(q.name, 0); });
+    return QSTEP;
+  }
+  function qcUp(name) {
+    var seen = {}, stack = [name];
+    while (stack.length) { var n = stack.pop(); if (seen[n]) { continue; } seen[n] = 1; (QPREV[n] || []).forEach(function (p) { stack.push(p); }); }
+    return seen;
+  }
+  function renderQChain() {
+    var card = document.getElementById("qChainCard"), inn = document.getElementById("qcIn");
+    if (!card || !inn) { return; }
+    var pick = document.getElementById("qcPick");
+    if (pick.options.length < 2) {
+      pick.innerHTML = '<option value="">Pick a quest</option>' + QUESTS.slice().sort(function (a, b) { return a.name < b.name ? -1 : 1; }).map(function (q) { return '<option value="' + esc(q.name) + '">' + esc(q.name) + " (" + esc(q.trader) + ")</option>"; }).join("");
+    }
+    if (qcTarget && !QUESTS.some(function (q) { return q.name === qcTarget; })) { qcTarget = ""; }
+    pick.value = qcTarget;
+    var S = qcSteps(), rows = [], path = qcTarget ? qcUp(qcTarget) : null;
+    QUESTS.forEach(function (q) { var k = S[q.name] || 0; (rows[k] = rows[k] || []).push(q); });
+    var pb = document.getElementById("qcPath");
+    if (path) {
+      var left = QUESTS.filter(function (q) { return path[q.name] && !qDone[q.name]; }).sort(function (a, b) { return S[a.name] - S[b.name]; });
+      pb.innerHTML = '<div class="muted" style="margin-top:8px;">' + (qDone[qcTarget] ? "You have already done " + esc(qcTarget) + "." :
+        left.length === 1 ? esc(qcTarget) + " is ready to start." :
+        "<b>" + left.length + " quests</b> to finish, in this order: " + left.map(function (q) { return esc(q.name) + (q.name === qcTarget ? "" : " <small>(" + esc(q.trader) + ")</small>"); }).join(" &rarr; ")) +
+        ' <button class="btn ghost" type="button" data-action="qcClear">Clear</button></div>';
+    } else { pb.innerHTML = ""; }
+    if (!card.open) { return; }
+    inn.className = "qcin" + (path ? " picking" : "");
+    inn.innerHTML = '<svg id="qcSvg" aria-hidden="true"></svg>' + rows.map(function (row, i) {
+      return '<div class="qcrow"><span class="qcstep">Step ' + (i + 1) + "</span>" + row.map(function (q) {
+        var cls = qDone[q.name] ? " done" : qLocked(q) ? " lock" : " open";
+        if (path && path[q.name]) { cls += " path"; } if (q.name === qcTarget) { cls += " tgt"; }
+        return '<button type="button" class="qcn' + cls + '" data-qc="' + esc(q.name) + '" title="' + esc(q.name + " · " + q.trader + (qDone[q.name] ? " · done" : qLocked(q) ? " · locked" : " · ready")) + '">' + esc(q.name) + "<small>" + esc(q.trader) + "</small></button>";
+      }).join("") + "</div>";
+    }).join("");
+    var svg = document.getElementById("qcSvg"), box = inn.getBoundingClientRect(), pos = {};
+    svg.setAttribute("width", inn.scrollWidth); svg.setAttribute("height", inn.scrollHeight);
+    Array.prototype.forEach.call(inn.querySelectorAll(".qcn"), function (b) {
+      var r = b.getBoundingClientRect();
+      pos[b.getAttribute("data-qc")] = { x: r.left - box.left + r.width / 2, t: r.top - box.top, b: r.bottom - box.top };
+    });
+    var paths = [];
+    Object.keys(QPREV).forEach(function (n) {
+      (QPREV[n] || []).forEach(function (p) {
+        var a = pos[p], c = pos[n]; if (!a || !c) { return; }
+        var on = path && path[n] && path[p], my = (a.b + c.t) / 2;
+        paths.push('<path' + (on ? ' class="on"' : "") + ' d="M' + a.x + " " + a.b + " C" + a.x + " " + my + " " + c.x + " " + my + " " + c.x + " " + c.t + '"/>');
+      });
+    });
+    svg.innerHTML = paths.sort(function (x, y) { return (x.indexOf("on") > 0) - (y.indexOf("on") > 0); }).join("");
+    if (path) {
+      var tb = inn.querySelector(".qcn.tgt"), wrap = document.getElementById("qcWrap");
+      if (tb && wrap && qcScroll) { var tr = tb.getBoundingClientRect(), wr = wrap.getBoundingClientRect(); wrap.scrollLeft += tr.left - wr.left - (wrap.clientWidth - tr.width) / 2; wrap.scrollTop += tr.top - wr.top - (wrap.clientHeight - tr.height) / 2; qcScroll = false; }
+    }
+  }
+  var qcScroll = true;
+  function qcSet(name, noScroll) { qcTarget = name || ""; save("arcHubQChain", qcTarget); qcScroll = !noScroll; renderQChain(); }
   function renderQuests() {
+    renderQChain();
     var mats = {};
     allMaterials().forEach(function (m) { mats[m] = true; });
     var traders = [];
@@ -5293,6 +5392,8 @@ footer .wrap { display: grid; gap: 2px; }
       var gq = QUESTS.filter(function (x) { return x.name === t.getAttribute("data-q"); })[0], gm = matSet();
       if (gq) { gq.req.forEach(function (r) { if (gm[r.n]) { goals[r.n] = Math.max(goals[r.n] || 0, r.q); } }); save("arcHubGoals", goals); refresh(); }
       var go = t.textContent; t.textContent = "Goals set"; setTimeout(function () { t.textContent = go; }, 1500);
+    } else if (a === "qcClear") {
+      qcSet("");
     } else if (a === "qGoalsAll") {
       var tt = qTotals(matSet());
       Object.keys(tt).forEach(function (k) { goals[k] = Math.max(goals[k] || 0, tt[k]); });
@@ -5696,6 +5797,9 @@ footer .wrap { display: grid; gap: 2px; }
   });
   document.getElementById("qReady").addEventListener("change", renderQuests);
   document.getElementById("qLocked").addEventListener("change", renderQuests);
+  document.getElementById("qChainCard").addEventListener("toggle", function () { qcScroll = true; renderQChain(); });
+  document.getElementById("qcPick").addEventListener("change", function (e) { qcSet(e.target.value); });
+  document.getElementById("qcIn").addEventListener("click", function (e) { var b = e.target.closest("[data-qc]"); if (b) { var n = b.getAttribute("data-qc"); qcSet(n === qcTarget ? "" : n, true); } });
   document.getElementById("qStatus").addEventListener("change", renderQuests);
   document.getElementById("arctAdd").addEventListener("change", function (e) { arctSet.add = e.target.checked; save("arcHubArct", arctSet); });
   document.getElementById("arctAuto").addEventListener("change", function (e) { arctSet.auto = e.target.checked; save("arcHubArct", arctSet); if (e.target.checked) { arctSet.last = 0; arctAutoRun(); } });

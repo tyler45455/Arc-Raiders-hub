@@ -12,7 +12,7 @@ var vm = require("vm");
 var ROOT = path.join(__dirname, "..");
 var SITE = "https://tyler45455.github.io/Arc-Raiders-hub/";
 var CHECKED = "October 10, 2026";
-var SHARE_ALT = "Arc Raiders Hub: recycling lookup, maps with keys, quests, stash and raid planner";
+var SHARE_ALT = "Speranza Field Guide: recycling lookup, maps with keys, quests, stash and raid planner";
 /* Run the data files the way the site loads them and read window.ARC_DATA. */
 var DATA_FILES = fs.readdirSync(path.join(ROOT, "data")).filter(function (f) { return /\.js$/.test(f); }).sort();
 var SANDBOX = { window: {} };
@@ -75,7 +75,7 @@ function head(o) {
     '<meta property="og:title" content="' + esc(o.ogTitle || o.title) + '">\n' +
     '<meta property="og:description" content="' + esc(o.desc) + '">\n' +
     '<meta property="og:url" content="' + o.url + '">\n' +
-    '<meta property="og:site_name" content="Arc Raiders Hub">\n' +
+    '<meta property="og:site_name" content="Speranza Field Guide">\n' +
     '<meta property="og:image" content="' + o.image + '">\n' +
     '<meta property="og:image:alt" content="' + esc(o.imageAlt) + '">\n' +
     '<meta name="twitter:card" content="summary_large_image">\n' +
@@ -133,25 +133,25 @@ function itemPage(it) {
     (F.s ? "<h2>Also from the wiki</h2><p>" + esc(F.s) + ".</p>" : "");
   var url = SITE + "item/" + slug(it.name) + "/";
   return head({
-    title: it.name + ": where to farm and what it recycles into | Arc Raiders Hub",
+    title: it.name + " in ARC Raiders: where to farm and what it recycles into | Speranza Field Guide",
     desc: (hasFarm ? "Where to farm " + it.name + " in ARC Raiders: area types, sources, traders and quests, plus what it recycles into" :
       it.name + " in ARC Raiders: what it recycles into") + (I[0] != null ? ". Sells for " + I[0].toLocaleString("en-US") + " coins." : (hasFarm ? "." : "")),
     url: url, image: SITE + "og-image.png", imageAlt: SHARE_ALT, icon: "../../", css: ITEM_CSS
-  }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Arc Raiders Hub</a> / <a href="../">Items</a></div>\n' +
+  }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Speranza Field Guide</a> / <a href="../">Items</a></div>\n' +
     "<h1>" + esc(it.name) + "</h1>\n" +
     '<p class="m">Item' + (it.rarity ? " (" + esc(it.rarity) + ")" : "") + ". Fan-made reference, not affiliated with Embark Studios.</p>\n" +
     stats +
     (body || "<p>The wiki lists no sources for this item yet.</p>") + "\n" +
-    '<p><a class="btn" href="' + hashLink("recycle", it.name) + '">Open in Arc Raiders Hub</a></p>\n' +
+    '<p><a class="btn" href="' + hashLink("recycle", it.name) + '">Open in Speranza Field Guide</a></p>\n' +
     '<p class="m">Sources from the ARC Raiders wiki, last checked ' + CHECKED + "." + (I.length ? ' Price, weight and recipe from the wiki and <a href="https://github.com/RaidTheory/arcraiders-data">RaidTheory/arcraiders-data</a>.' : "") + " Double-check numbers in game.</p>\n</div>\n</body>\n</html>\n";
 }
 
 function itemIndex(items) {
   return head({
-    title: "ARC Raiders items: where to farm and recycle | Arc Raiders Hub",
+    title: "ARC Raiders items: where to farm and recycle | Speranza Field Guide",
     desc: "Every ARC Raiders item with what it recycles into, where to farm it, traders and quests.",
     url: SITE + "item/", image: SITE + "og-image.png", imageAlt: SHARE_ALT, icon: "../", css: ITEM_CSS
-  }) + '<body><div class="w"><div class="eb"><a href="../">Arc Raiders Hub</a></div><h1>All items</h1><ul class="idx">' +
+  }) + '<body><div class="w"><div class="eb"><a href="../">Speranza Field Guide</a></div><h1>All items</h1><ul class="idx">' +
     items.map(function (it) { return '<li><a href="' + slug(it.name) + '/">' + esc(it.name) + "</a></li>"; }).join("") +
     "</ul></div></body></html>\n";
 }
@@ -162,14 +162,14 @@ function mapPage(m) {
   var desc = m.name + " map for ARC Raiders: " + rooms.length + " named rooms and areas, difficulty " + m.diff + " of 5, unlock " + m.unlock + ". " + m.desc;
   var img = SITE + "maps/" + s + ".jpg", link = hashLink("maps", m.name);
   return head({
-    title: m.name + " map, rooms and key | Arc Raiders Hub", ogTitle: m.name + " map | Arc Raiders Hub",
+    title: m.name + " map, rooms and keys (ARC Raiders) | Speranza Field Guide", ogTitle: m.name + " map | Speranza Field Guide",
     desc: desc, url: SITE + "map/" + s + "/", image: img, imageAlt: m.name + " overview map", icon: "../../", css: MAP_CSS
-  }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Arc Raiders Hub</a> / Maps</div>\n' +
+  }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Speranza Field Guide</a> / Maps</div>\n' +
     "<h1>" + esc(m.name) + " map</h1>\n<p>" + esc(m.desc) + "</p>\n" +
     '<div class="stats"><span>Difficulty <b>' + "●".repeat(m.diff) + "○".repeat(5 - m.diff) + "</b></span><span>Round <b>" + esc(m.len) +
     "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>\n" +
     '<a href="' + link + '"><img src="../../maps/' + s + '.jpg" alt="' + esc(m.name) + ' overview map" width="1200" loading="eager"></a>\n' +
-    '<p><a class="btn" href="' + link + '">Open the interactive map</a><a class="btn g" href="../../">All of Arc Raiders Hub</a></p>\n' +
+    '<p><a class="btn" href="' + link + '">Open the interactive map</a><a class="btn g" href="../../">Back to Speranza Field Guide</a></p>\n' +
     "<p>The interactive map has a detailed, zoomable version with every room labelled, a key, a room finder and your own pins saved on your device.</p>\n" +
     "<h2>Rooms and areas on " + esc(m.name) + '</h2>\n<ul class="rooms">' + rooms.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>\n" +
     (R.m ? '<p class="m">Markers on the key: ' + esc(R.m) + ".</p>\n" : "") +

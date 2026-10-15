@@ -1,7 +1,7 @@
 {
-  "name": "Arc Raiders Hub",
-  "short_name": "Raiders Hub",
-  "description": "Free ARC Raiders recycling lookup, material tracker, maps and update history.",
+  "name": "Speranza Field Guide",
+  "short_name": "Field Guide",
+  "description": "Free fan-made ARC Raiders companion: recycling lookup, maps with keys, stash and quest tracker, raid planner and patch notes.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

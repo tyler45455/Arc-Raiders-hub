@@ -136,7 +136,7 @@ FILES["quests.json"] = wrap("quests", "quests", quests());
 FILES["maps.json"] = wrap("maps", "maps", maps());
 FILES["keys.json"] = wrap("keys", "keys", keys());
 FILES["index.json"] = {
-  schema: SCHEMA, name: "Arc Raiders Hub data", dataDate: DATA_UPDATED, site: SITE,
+  schema: SCHEMA, name: "Speranza Field Guide data", dataDate: DATA_UPDATED, site: SITE,
   note: "Read-only static files from a fan-made site. Not affiliated with Embark Studios. IDs are lowercase slugs of the English names and match the item/ and map/ page paths.",
   license: "Data comes from the ARC Raiders Wiki (https://arcraiders.wiki), CC BY-SA 4.0, so reuse of these files must credit the wiki and share alike.",
   files: Object.keys(FILES).sort().map(function (f) { return { file: f, url: SITE + "api/v1/" + f, count: FILES[f].count }; })

@@ -2255,7 +2255,9 @@ footer .wrap { display: grid; gap: 2px; }
     });
   }
   function arctAny(p) { return !!(p.qAdd.length || p.qDel.length || p.tSet.length || p.wsSet.length || p.bpAdd.length || p.bpDel.length || p.pAdd.length || p.pDel.length || p.rAdd.length || p.rUpd.length); }
+  var ARCT_KEY_HELP = "That key starts with arc_k1_, which is an app key for developers. This box needs your own key, which starts with arc_u1_: in ARC Tracker open Settings, then Developer Access, create a key with every permission ticked, and paste it here.";
   function arctErr(e) {
+    if (/^arc_k1_/i.test(arctSet.u || "")) { return ARCT_KEY_HELP; }
     if (e && e.status === 401) { return "ARC Tracker did not accept the key. Check that you pasted all of it."; }
     if (e && e.status === 403) { return "The key has none of the permissions this needs. Make a new key in ARC Tracker with every permission ticked."; }
     if (e && e.status === 404) { return "ARC Tracker has no game data for this account yet. Sync with the Link app first."; }
@@ -2332,6 +2334,8 @@ footer .wrap { display: grid; gap: 2px; }
   function arctReady() { return !!(arctSet.u && arctApp()); }
   function arctCheck() {
     var u = document.getElementById("arctUser").value.trim(), a = document.getElementById("arctApp").value.trim(), msg = document.getElementById("arctMsg");
+    /* An app key (arc_k1_, from arctracker.io/developers/apps) pasted into the user key box never works there; the site already has its own app key. */
+    if (/^arc_k1_/i.test(u)) { document.getElementById("arctUser").value = ""; msg.textContent = ARCT_KEY_HELP; return; }
     if (u) { arctSet.u = u; } if (a) { arctSet.a = a; }
     save("arcHubArct", arctSet); arctFill();
     if (!arctSet.u) { msg.textContent = "Paste your ARC Tracker key first."; return; }

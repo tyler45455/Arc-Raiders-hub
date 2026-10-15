@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 14, 2026",
+ "dataDate": "October 15, 2026",
  "count": 396,
  "items": [
   {
@@ -9301,7 +9301,7 @@
    "areaTypes": [],
    "sources": {
     "sellers": [
-     "Apollo (1,920 coins, 6 per day)"
+     "Apollo (1,920 coins, no daily limit)"
     ]
    },
    "sellPrice": 640,

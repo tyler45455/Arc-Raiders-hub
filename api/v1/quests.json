@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 14, 2026",
- "count": 112,
+ "dataDate": "October 15, 2026",
+ "count": 113,
  "quests": [
   {
    "id": "picking-up-the-pieces",
@@ -4159,6 +4159,48 @@
    ],
    "after": [
     "ruins-and-reverberations"
+   ]
+  },
+  {
+   "id": "a-path-not-yours",
+   "name": "A Path Not Yours",
+   "trader": "Nomadic Envoys",
+   "locations": [
+    "The Blue Gate"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "tellurion",
+     "name": "Tellurion",
+     "qty": 1
+    },
+    {
+     "id": "magnet",
+     "name": "Magnet",
+     "qty": 2
+    },
+    {
+     "id": "battery",
+     "name": "Battery",
+     "qty": 2
+    },
+    {
+     "id": "power-cable",
+     "name": "Power Cable",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Find the start of the Nomad trail under the Highway Collapse",
+    "Follow the trail markers to the Nomad hideout",
+    "Retrieve Bilguun's gift from the buried cache beneath the hideout",
+    "(Optional) Loot the secret stash in Bilguun's hideout",
+    "Deliver the Broken Compass to the Nomadic Envoy",
+    "Done in one round; you are given 2 Ziplines for it"
+   ],
+   "after": [
+    "taking-stock"
    ]
   }
  ]

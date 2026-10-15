@@ -483,7 +483,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .help { grid-column: 1 / -1; font-size: 13px; color: var(--good); }
 .iinfo { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
 .iinfo b { color: var(--fg); }
-.iinfo .good, .krow .good { color: var(--good); }
+.iinfo .good, .krow .good { color: var(--good); } .krow .bad { color: var(--danger); }
 .iinfo .bad, .krow .bad { color: var(--danger); }
 .help b { font-weight: 600; }
 .bar { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
@@ -1323,6 +1323,16 @@ footer .wrap { display: grid; gap: 2px; }
       <label class="crdeep"><input type="checkbox" id="crDeep" checked> Craft the components too (Mechanical Components, Gun Parts and so on)</label>
       <datalist id="craftList"></datalist>
       <div id="crOut"></div>
+    </div>
+
+    <div class="tool" id="cosTool">
+      <h3>Craft or sell</h3>
+      <p class="muted">Is it worth crafting? Compares what each craftable item sells for with what its materials sell for, so you know whether to craft it or just sell the materials. Your Stash counts show how many you can craft right now.</p>
+      <div class="stashgrid">
+        <div><label for="cosQ">Filter</label><input type="text" id="cosQ" placeholder="Name, like: Bandage" autocomplete="off"></div>
+        <div><label for="cosShow">Show</label><select id="cosShow"><option value="all">Every recipe</option><option value="now">Only what I can craft now</option><option value="gain">Only crafts that gain coins</option></select></div>
+      </div>
+      <div id="cosOut"></div>
     </div>
 
     <div class="tool" id="lootTool">
@@ -4294,13 +4304,49 @@ footer .wrap { display: grid; gap: 2px; }
       if (ok) { ready++; }
       return '<div class="need"><div>' + esc(m) + ": <b>" + Math.min(have, q) + " / " + q + "</b>" + (ok ? " &#10003;" : " (" + (q - have) + " to go)") + '</div><div class="bar' + (ok ? " done" : "") + '"><i style="width:' + Math.min(100, Math.round(have * 100 / q)) + '%"></i></div></div>';
     }).join("");
-    var made = Object.keys(c.made).filter(function (m) { return m !== name; });
+    var made = Object.keys(c.made).filter(function (m) { return m !== name; }), cr = cosRow(name);
     out.innerHTML = '<div class="proj"><div class="ph"><b>' + qty + "&times; " + esc(name) + ' <span class="muted">' + ready + " of " + keys.length + " materials ready</span></b></div>" +
       '<div class="muted">Workbenches: ' + c.stations.map(esc).join(", ") + "</div>" +
       (made.length ? '<div class="muted">You will also craft: ' + made.map(function (m) { return c.made[m] + "&times; " + esc(m); }).join(", ") + "</div>" : "") +
+      (cr ? '<div class="muted">Craft or sell: one sells for ' + coins(cr.sell) + " and its materials for " + coins(cr.cost) + ", so " + (cr.gain > 0 ? '<span class="good">crafting gains ' + coins(cr.gain) + "</span>" : cr.gain < 0 ? "selling the materials is worth " + coins(-cr.gain) + " more" : "it is the same either way") + ".</div>" : "") +
       rows +
       '<div class="acts" style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="crProj">Save as project</button><button class="btn ghost" type="button" data-action="crLink">Copy link</button><span class="muted" id="crMsg" role="status"></span></div></div>' +
       '<details style="margin-top:10px;"><summary>Recipe tree</summary><ul class="crtree" style="margin-top:6px;">' + craftTree(name, qty, 0, deep) + "</ul></details>";
+  }
+  /* Craft or sell: one craft (counted as making one item) against selling its materials, one level deep, at ITEMINFO sell prices. */
+  function cosRow(n) {
+    var r = ITEMINFO[n] && ITEMINFO[n][3], mats = 0, can = Infinity;
+    if (!r || !(ITEMINFO[n][0] > 0)) { return null; }
+    for (var i = 0; i < r[1].length; i++) {
+      var m = r[1][i][0], q = r[1][i][1], f = ITEMINFO[m];
+      if (!f || f[0] == null) { return null; }
+      mats += f[0] * q; can = Math.min(can, Math.floor((tracker[m] || 0) / q));
+    }
+    return { n: n, st: r[0], mats: r[1], sell: ITEMINFO[n][0], cost: mats, gain: ITEMINFO[n][0] - mats, can: can === Infinity ? 0 : can };
+  }
+  function renderCos() {
+    var out = document.getElementById("cosOut");
+    if (!out) { return; }
+    var q = document.getElementById("cosQ").value.trim().toLowerCase(), show = document.getElementById("cosShow").value, kmap = keepMap();
+    var all = Object.keys(ITEMINFO).map(cosRow).filter(Boolean);
+    var rows = all.filter(function (x) {
+      if (show === "now" && !x.can) { return false; }
+      if (show === "gain" && x.gain <= 0) { return false; }
+      return !q || x.n.toLowerCase().indexOf(q) !== -1 || x.mats.some(function (m) { return m[0].toLowerCase().indexOf(q) !== -1; });
+    });
+    rows.sort(function (a, b) { return show === "now" ? (b.gain * b.can - a.gain * a.can) || (b.gain - a.gain) : (b.gain - a.gain) || (a.n < b.n ? -1 : 1); });
+    var up = all.filter(function (x) { return x.gain > 0; }).length;
+    out.innerHTML = '<div class="muted" style="margin-top:10px;">' + up + " of " + all.length + " recipes sell for more than their materials. " + rows.length + " shown, best first." +
+      " Each craft is counted as making one item, and the materials are valued at their sell price.</div>" +
+      (rows.length ? rows.map(function (x) {
+        var k = kmap[x.n], mk = x.mats.filter(function (m) { return kmap[m[0]]; }).map(function (m) { return m[0]; });
+        var verdict = x.gain > 0 ? '<span class="good">Craft it: +' + coins(x.gain) + "</span>" : x.gain < 0 ? '<span class="bad">Sell the materials: ' + coins(x.gain) + "</span>" : "Same either way";
+        return '<div class="krow"><b>' + esc(x.n) + "</b>" + (k ? '<span class="ktag keep" title="' + esc(k.join("; ")) + '">Keep</span>' : "") +
+          '<span class="muted">' + verdict + " &middot; sells for " + coins(x.sell) + ", materials " + coins(x.cost) + " &middot; " + esc(x.st) +
+          "<br>" + x.mats.map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") +
+          (x.can ? " &middot; <b>you can craft " + x.can + "</b>" + (x.gain > 0 ? ' (<span class="good">+' + coins(x.gain * x.can) + "</span>)" : "") : "") +
+          (mk.length ? " &middot; your quests, projects or goals need " + mk.map(esc).join(", ") : "") + "</span></div>";
+      }).join("") : '<div class="empty-line">' + (show === "now" ? "Your Stash does not have the materials for any of these yet." : "No recipe matches that.") + "</div>");
   }
   function craftApply(arg) {
     var i = arg.lastIndexOf("*"), n = craftFind(i < 0 ? arg : arg.slice(0, i)), q = i < 0 ? 1 : parseInt(arg.slice(i + 1), 10) || 1;
@@ -5120,7 +5166,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (name === "raids") { renderRaidsTab(); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderLoot(); renderSkills(); renderRaids(); }
+    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderCos(); renderLoot(); renderSkills(); renderRaids(); }
     if (name === "maps") { renderMaps(); }
     if (name === "updates") { renderTimeline(); markUpdatesSeen(); }
     if (name === "site") { try { renderAudit(); } catch (eA) {} }
@@ -5672,6 +5718,9 @@ footer .wrap { display: grid; gap: 2px; }
     ["crItem", "crQty"].forEach(function (id) { document.getElementById(id).addEventListener("input", renderCraft); });
     document.getElementById("crDeep").addEventListener("change", renderCraft);
     document.getElementById("lvQ").addEventListener("input", renderLoot);
+    document.getElementById("cosQ").addEventListener("input", renderCos);
+    document.getElementById("cosShow").addEventListener("change", function () { save("arcHubCos", document.getElementById("cosShow").value); renderCos(); });
+    document.getElementById("cosShow").value = ["all", "now", "gain"].indexOf(load("arcHubCos", "all")) >= 0 ? load("arcHubCos", "all") : "all";
     ["lvSort", "lvGear"].forEach(function (id) { document.getElementById(id).addEventListener("change", function () { save("arcHubLoot", { s: document.getElementById("lvSort").value, g: document.getElementById("lvGear").checked }); renderLoot(); }); });
     document.getElementById("skExp").value = skExp;
     document.getElementById("skExp").addEventListener("input", function () { skExp = Math.max(0, parseInt(this.value, 10) || 0); save("arcHubSkillExp", skExp); renderSkills(); });

@@ -327,6 +327,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 @media (max-width: 600px) { .sttiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .sttile { padding: 8px; } .sttile .v { font-size: 18px; } .sttile .k { font-size: 10px; letter-spacing: .02em; } }
 .sttile.sell .v { color: var(--good); } .sttile.keep .v { color: var(--warm); }
 .sttools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.introMore { display: none; }
 .sttools #stQ { flex: 1 1 160px; min-width: 0; width: auto; }
 .stsort { display: flex; align-items: center; gap: 6px; margin: 0; }
 .stsort select { width: auto; }
@@ -769,8 +770,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .tabbar .moretab { display: block; position: relative; flex: 1 1 0; }
   .moretab[aria-current="true"] { color: var(--fg); font-weight: 700; }
   .moretab .newdot { position: absolute; top: 10px; right: 8px; margin: 0; }
-  .moremenu:not([hidden]) { display: grid; position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 210px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.3); padding: 6px; gap: 2px; }
-  .moremenu button { appearance: none; background: none; border: 0; border-radius: 6px; color: var(--fg); font: 600 15px var(--font-body); text-align: left; padding: 12px 14px; cursor: pointer; }
+  .moremenu:not([hidden]) { display: grid; position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 240px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.3); padding: 6px; gap: 0; }
+  .moremenu button { appearance: none; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; color: var(--fg); font: 600 16px var(--font-body); text-align: left; padding: 14px 16px; min-height: 52px; cursor: pointer; }
+  .moremenu button:last-child { border-bottom: 0; }
+  /* Long tab intros fold to two lines on phones; More opens the rest. */
+  .panel > p.intro:not(.open) { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 2px; }
+  .introMore { display: inline-block !important; margin: 0 0 8px; padding: 8px 0; font-size: 15px; }
+  /* Keep the search and filters in reach while scrolling long lists. */
+  #panel-recycle .searchbar, #panel-stash .sttools { position: sticky; top: 0; z-index: 30; background: var(--bg); padding: 8px 0; margin-top: 0; box-shadow: 0 6px 8px -8px rgba(0,0,0,.35); }
   .moremenu button[aria-current="true"] { background: var(--surface2); color: var(--accent); }
   .band .lede, #dataStamp { display: none !important; }
   .band .stamp { margin: 0; }
@@ -6572,6 +6579,19 @@ footer .wrap { display: grid; gap: 2px; }
   }
 
   /* ---------- last verified dates ---------- */
+  /* Phone only (CSS): fold each tab's long intro paragraph to two lines with a More button. */
+  function introInit() {
+    document.querySelectorAll(".panel > h2").forEach(function (h) {
+      var p = h.nextElementSibling;
+      while (p && p.classList.contains("verified")) { p = p.nextElementSibling; }
+      if (!p || p.tagName !== "P" || p.textContent.length < 140) { return; }
+      p.classList.add("intro");
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "linkbtn introMore"; b.textContent = "More";
+      b.addEventListener("click", function () { p.classList.add("open"); b.remove(); });
+      p.parentNode.insertBefore(b, p.nextSibling);
+    });
+  }
   function mapFindInit() {
     var inp = document.getElementById("mapFind"), out = document.getElementById("mapFindRes");
     if (!inp) { return; }
@@ -6832,7 +6852,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

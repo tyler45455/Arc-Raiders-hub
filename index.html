@@ -1765,7 +1765,7 @@ footer .wrap { display: grid; gap: 2px; }
         if (m.name === nextMap) { why.push("your next raid map"); }
         if (!why.length || seen[m.name + x.n]) { return; }
         seen[m.name + x.n] = 1;
-        out.push({ w: bps.length ? 0 : m.name === nextMap ? 1 : 2, h: "<b>" + esc(x.n) + "</b> on " + esc(m.name) + ' <span class="muted">(<span data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span>): " + why.join("; ") + "</span>" });
+        out.push({ w: bps.length ? 0 : m.name === nextMap ? 1 : 2, h: "<b>" + esc(x.n) + "</b> on " + esc(m.name) + ' <span class="muted">(<span data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span>): " + why.map(function (w) { return "<span>" + w + "</span>"; }).join("; ") + "</span>" });
       });
     });
     return out.sort(function (a, b) { return a.w - b.w; }).slice(0, 3).map(function (x) { return x.h; });

@@ -2177,12 +2177,12 @@ footer .wrap { display: grid; gap: 2px; }
         var L = it.name.charAt(0).toUpperCase();
         if (L !== cur) {
           cur = L; letters[L] = true;
-          parts.push('<div class="group-title" id="L-' + L + '"><b>' + L + "</b></div>");
+          parts.push('<div class="group-title" id="L-' + esc(L) + '"><b>' + esc(L) + "</b></div>");
         }
         parts.push(function () { return itemRow(it, ""); });
       });
       az.innerHTML = Object.keys(letters).map(function (L) {
-        return '<button type="button" data-action="jump" data-l="' + L + '" aria-label="Jump to ' + L + '">' + L + "</button>";
+        return '<button type="button" data-action="jump" data-l="' + esc(L) + '" aria-label="Jump to ' + esc(L) + '">' + esc(L) + "</button>";
       }).join("");
       paintRows(out, parts);
       return;
@@ -2249,6 +2249,7 @@ footer .wrap { display: grid; gap: 2px; }
     var msg = document.getElementById("formMsg");
     if (!name) { msg.textContent = "Enter an item name."; return; }
     if (!y) { msg.textContent = 'Use the format "6 Plastic Parts, 1 Processor".'; return; }
+    var ex = items.filter(function (i) { return i.name.toLowerCase() === name.toLowerCase(); })[0]; if (ex) { name = ex.name; }
     customItems = customItems.filter(function (c) { return c.name.toLowerCase() !== name.toLowerCase(); });
     customItems.push({ name: name, rarity: rarity, yields: y });
     save("arcHubCustom", customItems);
@@ -2471,7 +2472,8 @@ footer .wrap { display: grid; gap: 2px; }
       plan.haveQ = !!(r[1].j && r[2].j) && Object.keys(done).length + open > 0;
       if (plan.haveQ) {
         plan.qAdd = Object.keys(done).filter(function (k) { return !qDone[k]; });
-        plan.qDel = Object.keys(qDone).filter(function (k) { return !done[k]; });
+        /* only unmark quests when every completed quest from ARC Tracker was recognised */
+        if (!plan.unknownQ.length) { plan.qDel = Object.keys(qDone).filter(function (k) { return !done[k]; }); }
       }
       /* Stash */
       var stash = r[3].j || [], counts = {};
@@ -2482,7 +2484,7 @@ footer .wrap { display: grid; gap: 2px; }
       });
       plan.haveS = stash.length > 0;
       if (plan.haveS) {
-        Object.keys(tracker).forEach(function (k) { var n = counts[k] || 0; if (n !== tracker[k]) { plan.tSet.push([k, n]); } });
+        Object.keys(tracker).forEach(function (k) { var n = counts[k] || 0; if (n !== tracker[k] && (n > 0 || !plan.unknownI.length)) { plan.tSet.push([k, n]); } });
         if (arctSet.add !== false) { Object.keys(counts).forEach(function (k) { if (!(k in tracker) && counts[k] > 0) { plan.tSet.push([k, counts[k]]); } }); }
       }
       /* Hideout: workshop station levels */
@@ -2743,7 +2745,7 @@ footer .wrap { display: grid; gap: 2px; }
   }
 
   function renderDatalist() {
-    var seenN = {}, all = allMaterials().concat(items.map(function (it) { return it.name; }), (typeof FARM2 === "object" && FARM2) ? Object.keys(FARM2) : []);
+    var seenN = {}, all = allMaterials().concat(items.map(function (it) { return it.name; }), ARC.FARM2 ? Object.keys(ARC.FARM2) : []);
     document.getElementById("matList").innerHTML = all.filter(function (m) { if (seenN[m]) { return false; } seenN[m] = 1; return true; }).map(function (m) { return '<option value="' + esc(m) + '"></option>'; }).join("");
   }
 
@@ -4047,9 +4049,9 @@ footer .wrap { display: grid; gap: 2px; }
       return;
     }
     if (k === "recycle") { showTab("recycle"); document.getElementById("searchBox").value = v; renderResults(); writeHash(); }
-    else if (k === "quests") { showTab("quests"); document.getElementById("qQ").value = v; renderQuests(); }
-    else if (k === "gear") { showTab("gear"); document.getElementById("gearQ").value = v; renderGear(); }
-    else { refSec = k; document.getElementById("refQ").value = v; showTab("ref"); renderRef(); }
+    else if (k === "quests") { showTab("quests"); qTrader = ""; document.getElementById("qMap").value = ""; document.getElementById("qStatus").value = "all"; document.getElementById("qLocked").checked = true; document.getElementById("qReady").checked = false; document.getElementById("qQ").value = v; renderQuests(); }
+    else if (k === "gear") { gearCat = "weapons"; showTab("gear"); document.getElementById("gearQ").value = v; renderGear(); }
+    else { refSec = k; if (k === "enemies") { document.getElementById("enType").value = "all"; document.getElementById("enMap").value = ""; document.getElementById("enNeed").checked = false; } if (k === "blueprints") { document.getElementById("bpStatus").value = "all"; } document.getElementById("refQ").value = v; showTab("ref"); renderRef(); }
     document.getElementById("gres").hidden = true; document.getElementById("gq").value = "";
     window.scrollTo(0, 0);
   }
@@ -4074,13 +4076,17 @@ footer .wrap { display: grid; gap: 2px; }
     g.fillStyle = "#a39a86"; g.font = "20px 'IBM Plex Sans', Arial, sans-serif"; g.fillText("Speranza Field Guide, a fan-made ARC Raiders companion. tyler45455.github.io/Arc-Raiders-hub", 56, H - 44);
     c.toBlob(function (blob) {
       if (!blob) { return; }
+      function dl() {
+        var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      }
       try {
         var f = new window.File([blob], file, { type: "image/png" });
-        if (window.navigator.canShare && window.navigator.canShare({ files: [f] })) { window.navigator.share({ files: [f], title: title }).catch(function () {}); return; }
+        /* if the share sheet fails (not just cancelled), download the picture instead */
+        if (window.navigator.canShare && window.navigator.canShare({ files: [f] })) { window.navigator.share({ files: [f], title: title }).catch(function (e) { if (!e || e.name !== "AbortError") { dl(); } }); return; }
       } catch (e) {}
-      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      dl();
     }, "image/png");
   }
   function shareTracker() {
@@ -5155,7 +5161,7 @@ footer .wrap { display: grid; gap: 2px; }
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave, condWatch: condWatch, condRegion: load("arcHubCondRegion", "auto") };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave, condWatch: condWatch, condRegion: load("arcHubCondRegion", "auto"), pins: pins, weekly: weekly, board: board, skills: skBuild, skExp: skExp };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -5254,7 +5260,7 @@ footer .wrap { display: grid; gap: 2px; }
     var msg = document.getElementById("backupMsg"), d;
     try { d = JSON.parse(document.getElementById("backup").value); } catch (e) { msg.textContent = "That does not look like a Speranza Field Guide backup."; return; }
     if (!d || d.app !== "arc-raiders-hub") { msg.textContent = "That does not look like a Speranza Field Guide backup."; return; }
-    if (d.v > 2) { msg.textContent = "This backup is from a newer version of the site. Importing what this version understands."; }
+    var newer = d.v > 2;
     pushUndo("Imported a backup");
     tracker = numMap(d.tracker); goals = numMap(d.goals);
     look = {}; if (d.look && typeof d.look === "object" && !Array.isArray(d.look)) { Object.keys(d.look).forEach(function (k) { if (k.length < 80) { look[k] = 1; } }); } else { Object.keys(goals).concat(Object.keys(tracker)).forEach(function (k) { look[k] = 1; }); }
@@ -5290,7 +5296,13 @@ footer .wrap { display: grid; gap: 2px; }
     save("arcHubTracker", tracker); save("arcHubGoals", goals); save("arcHubFavs", favs);
     save("arcHubCustom", customItems); save("arcHubProjects", projects); save("arcHubCheck", checklist);
     refresh(); renderTools(); renderQuests(); renderRef(); updateFavToggle(); updateGoalToggle();
-    msg.textContent = "Imported. Your data has been replaced with the backup.";
+    /* Map pins, weekly targets, squad board and skill build (added to backups later; older backups leave them as they are). */
+    oo = objOf(d.pins); if (oo) { pins = {}; Object.keys(oo).forEach(function (k) { if (k.length < 60 && Array.isArray(oo[k])) { var L = oo[k].filter(function (p) { return p && p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1; }).slice(0, 60).map(function (p) { return { x: +p.x, y: +p.y, t: typeof p.t === "string" ? p.t.slice(0, 40) : "" }; }); if (L.length) { pins[k] = L; } } }); save("arcHubPins", pins); }
+    if (Array.isArray(d.weekly)) { weekly = d.weekly.filter(function (w) { return w && typeof w.m === "string" && w.m.length < 80 && w.t > 0; }).slice(0, 30).map(function (w) { return { m: w.m, t: parseInt(w.t, 10) || 1, b: Math.max(0, parseInt(w.b, 10) || 0), s: +w.s || Date.now() }; }); save("arcHubWeekly", weekly); renderWeek(); }
+    if (Array.isArray(d.board)) { board = d.board.filter(function (x) { return x && typeof x.t === "string"; }).slice(-60).map(function (x) { return { w: typeof x.w === "string" ? x.w.slice(0, 40) : "", t: x.t.slice(0, 120), d: !!x.d }; }); save("arcHubBoard", board); renderSb(); }
+    oo = objOf(d.skills); if (oo) { skBuild = {}; Object.keys(oo).forEach(function (k) { var v = parseInt(oo[k], 10); if (k.length < 80 && v > 0 && v < 100) { skBuild[k] = v; } }); save("arcHubSkills", skBuild); renderSkills(); }
+    if (d.skExp !== undefined) { skExp = Math.max(0, parseInt(d.skExp, 10) || 0); save("arcHubSkillExp", skExp); }
+    msg.textContent = newer ? "Imported. This backup is from a newer version of the site, so only what this version understands was loaded." : "Imported. Your data has been replaced with the backup.";
   }
 
   function readHash() {
@@ -5862,7 +5874,7 @@ footer .wrap { display: grid; gap: 2px; }
       var link = window.location.href.split("#")[0] + "#tools/sb=" + encodeURIComponent(board.map(function (x) { return (x.w || "") + "|" + x.t + "|" + (x.d ? 1 : 0); }).join("~"));
       copyText(link, function (ok) { t.textContent = ok ? "Link copied" : "Copy failed"; });
     } else if (a === "sbLoad") {
-      sbShared.forEach(function (x) { board.push(x); }); board = board.slice(0, 60); save("arcHubBoard", board); sbShared = []; renderSb();
+      sbShared.forEach(function (x) { board.push(x); }); board = board.slice(-60); save("arcHubBoard", board); sbShared = []; renderSb();
     } else if (a === "sbDismiss") {
       sbShared = []; renderSb();
     } else if (a === "shopWhere") {
@@ -6947,14 +6959,18 @@ footer .wrap { display: grid; gap: 2px; }
   }
   function verifiedInit() {
     var dates = [];
-    document.querySelectorAll("footer table tr").forEach(function (tr) {
+    document.querySelectorAll("#freshBody tr").forEach(function (tr) {
       var td = tr.querySelectorAll("td");
-      if (td.length === 2) { dates.push(td[1].textContent.replace(/\s*\(.*$/, "").trim()); }
+      if (td.length === 2) { dates.push(td[1].textContent.replace(/\s*\(.*?\)/, "").trim()); }
     });
-    var map = { recycle: 0, gear: 1, quests: 2, ref: 3, tools: 4, maps: 6, updates: 6 };
+    /* match each tab to its footer row by the row's label (rows follow ARC.FRESHNESS order) */
+    var map = { recycle: "Sell prices", gear: "Weapons", quests: "Quests", ref: "Reference", tools: "Project presets", maps: "Maps", updates: "Maps" };
+    var rows = ARC.FRESHNESS || [];
     Object.keys(map).forEach(function (t) {
+      var n = -1;
+      rows.forEach(function (r, i) { if (n < 0 && r[0].indexOf(map[t]) === 0) { n = i; } });
       var h = document.querySelector("#panel-" + t + " h2");
-      if (h && dates[map[t]]) { h.insertAdjacentHTML("afterend", '<div class="verified">' + (/^checked/i.test(dates[map[t]]) ? "" : "Checked ") + esc(dates[map[t]]) + "</div>"); }
+      if (h && dates[n]) { h.insertAdjacentHTML("afterend", '<div class="verified">' + (/^checked/i.test(dates[n]) ? "" : "Checked ") + esc(dates[n]) + "</div>"); }
     });
   }
 

@@ -1,0 +1,22 @@
+name: Probe official condition page
+on:
+  pull_request:
+    paths: [".github/workflows/probe-conditions.yml"]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch arcraiders.com map conditions
+        run: |
+          curl -sSL -A "Mozilla/5.0" -D headers.txt https://arcraiders.com/map-conditions -o page.html || true
+          head -30 headers.txt; wc -c page.html
+          echo "---- script srcs"; grep -o '<script[^>]*src="[^"]*"' page.html | head -40
+          echo "---- api-ish urls"; grep -oE 'https?://[^"'"'"' <>]+' page.html | grep -iE 'api|json|condition|event|schedule|graphql|sanity|contentful' | sort -u | head -40
+          echo "---- next data"; grep -o '__NEXT_DATA__' page.html | head -2; grep -c 'self.__next_f' page.html || true
+          echo "---- condition context"; python3 - <<'PY'
+          import re
+          s=open('page.html',encoding='utf-8',errors='replace').read()
+          for kw in ['Redirection','Bird City','mapCondition','map_condition','conditions','region']:
+              for m in list(re.finditer(re.escape(kw), s))[:3]:
+                  print('==',kw, repr(s[max(0,m.start()-300):m.start()+300]))
+          PY

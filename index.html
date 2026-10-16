@@ -1763,7 +1763,7 @@ footer .wrap { display: grid; gap: 2px; }
   var condNotify = load("arcHubCondNotify", false), condNotified = load("arcHubCondNotified", {});
   function condAlertOn() { return !!condNotify && !!window.Notification && window.Notification.permission === "granted"; }
   function condShow(title, body) {
-    var opt = { body: body, icon: "icons/icon-192.png", tag: title };
+    var opt = { body: body, icon: "icons/icon-192.png", tag: body };
     try {
       if (window.navigator.serviceWorker && window.navigator.serviceWorker.controller) { window.navigator.serviceWorker.ready.then(function (r) { r.showNotification(title, opt); }); return; }
     } catch (e) {}
@@ -1801,7 +1801,9 @@ footer .wrap { display: grid; gap: 2px; }
         "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + tx(what + " starts in 10 minutes"), "TRIGGER:-PT10M", "END:VALARM", "END:VEVENT");
     });
     L.push("END:VCALENDAR");
-    return { text: L.join("\r\n") + "\r\n", n: ev.length };
+    /* Calendar lines longer than 75 characters are folded onto continuation lines that start with a space. */
+    var F = []; L.forEach(function (l) { F.push(l.slice(0, 75)); for (var i = 75; i < l.length; i += 74) { F.push(" " + l.slice(i, i + 74)); } });
+    return { text: F.join("\r\n") + "\r\n", n: ev.length };
   }
   function condIcsSave(btn) {
     var c = condIcs();
@@ -5033,12 +5035,13 @@ footer .wrap { display: grid; gap: 2px; }
     var wOn = [], wNext = [];
     Object.keys(condWatch).forEach(function (k) {
       var pr = k.split("|"), c = condNow(pr[0], cnw), a = c.act.filter(function (x) { return x.n === pr[1]; })[0], nx = c.next.filter(function (x) { return x.n === pr[1]; })[0];
-      if (a) { wOn.push("<li>&#9733; <b>" + esc(pr[1]) + "</b> on " + esc(pr[0]) + ' is on now <span class="muted" data-cend="' + a.e + '">ends in ' + condLeft(a.e - Date.now()) + "</span></li>"); }
+      if (a) { wOn.push("<li>&#9733; <b>" + esc(pr[1]) + "</b> on " + esc(pr[0]) + ' <span>is on now</span> <span class="muted" data-cend="' + a.e + '">ends in ' + condLeft(a.e - Date.now()) + "</span></li>"); }
       else if (nx) { wNext.push({ s: nx.s, h: "<li>&#9734; <b>" + esc(pr[1]) + "</b> on " + esc(pr[0]) + ' <span class="muted">at ' + condClock(nx.s) + ' (<span data-cstart="' + nx.s + '">in ' + condLeft(nx.s - Date.now()) + "</span>)</span></li>" }); }
     });
     wNext.sort(function (a, b) { return a.s - b.s; });
     if (wOn.length) { html = homeCard("Your starred condition is on", '<ul class="homelist">' + wOn.join("") + "</ul>", '<button class="btn" type="button" data-tab="maps">Open Maps</button>', "new") + html; }
-    if (CSCHED.rows.length) { html += homeCard("Map conditions right now", (cl.length ? '<ul class="homelist">' + cl.join("") + "</ul>" : '<p class="muted">No scheduled conditions on any map right now.</p>') +
+    if (CSCHED.rows.length && condUntil() < Date.now()) { html += homeCard("Map conditions right now", '<p class="muted">The map condition schedule on this page is out of date. Reload the page to get the latest one.</p>', '<button class="btn ghost" type="button" data-tab="maps">Open Maps</button>', "cond"); }
+    else if (CSCHED.rows.length) { html += homeCard("Map conditions right now", (cl.length ? '<ul class="homelist">' + cl.join("") + "</ul>" : '<p class="muted">No scheduled conditions on any map right now.</p>') +
       (wNext.length ? '<p class="muted" style="margin-bottom:2px;">Your starred conditions next:</p><ul class="homelist">' + wNext.slice(0, 3).map(function (x) { return x.h; }).join("") + "</ul>" : '<p class="muted">Star a condition on a map card and Home will flag it when it starts.</p>'), '<button class="btn ghost" type="button" data-tab="maps">Open Maps</button>', "cond"); }
     var w = homeWs();
     html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> level " + esc(w.lvl) + ": <b>" + w.pct + "%</b> of the materials</p>" + homeBar(w.pct) +
@@ -5151,7 +5154,7 @@ footer .wrap { display: grid; gap: 2px; }
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave, condWatch: condWatch };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave, condWatch: condWatch, condRegion: load("arcHubCondRegion", "auto") };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -5276,6 +5279,7 @@ footer .wrap { display: grid; gap: 2px; }
     oo = objOf(d.notes); if (oo) { mapNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 60) { mapNotes[k] = oo[k].slice(0, 2000); } }); save("arcHubMapNotes", mapNotes); }
     if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
     oo = objOf(d.condWatch); if (oo) { condWatch = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 80 && k.indexOf("|") > 0) { condWatch[k] = 1; } }); save("arcHubCondWatch", condWatch); }
+    if (typeof d.condRegion === "string" && (d.condRegion === "auto" || COND_REGIONS.some(function (x) { return x[0] === d.condRegion; }))) { save("arcHubCondRegion", d.condRegion); }
     oo = objOf(d.keys); if (oo) { keyHave = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 80) { keyHave[k] = 1; } }); save("arcHubKeyHave", keyHave); }
     oo = objOf(d.inotes); if (oo) { itemNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 80) { itemNotes[k] = oo[k].slice(0, 300); } }); save("arcHubNotes", itemNotes); }
     oo = objOf(d.trials); if (oo) { trials = {}; Object.keys(oo).forEach(function (k) { var x = oo[k]; if (x && typeof x === "object" && k.length < 20) { trials[k] = { d: !!x.d, p: Math.max(0, parseInt(x.p, 10) || 0) }; } }); save("arcHubTrials", trials); }
@@ -6886,7 +6890,7 @@ footer .wrap { display: grid; gap: 2px; }
     for (var e = 0; e < toolEntries.length; e++) { if (toolEntries[e].tools.indexOf(i) !== -1) { return e; } }
     return 0;
   }
-  function toolShow(i) {
+  function toolShow(i, quiet) {
     var tools = document.querySelectorAll("#panel-tools > .tool");
     if (!tools.length) { return; }
     i = parseInt(i, 10); if (!(i >= 0 && i < tools.length)) { i = 0; }
@@ -6898,7 +6902,8 @@ footer .wrap { display: grid; gap: 2px; }
     toolPickOpen(false);
     if (curTab === "tools") {
       toolCount("tool-open", tools[i]);
-      if (members[0] !== i && prev !== i) { try { tools[i].scrollIntoView({ block: "start" }); } catch (e) {} }
+      /* Deferred so it runs after callers that scroll the page to the top. */
+      if (members[0] !== i && !quiet) { setTimeout(function () { try { tools[i].scrollIntoView({ block: "start" }); } catch (e) {} }, 0); }
     }
   }
   function toolPickOpen(on) {
@@ -6937,7 +6942,7 @@ footer .wrap { display: grid; gap: 2px; }
       ["click", "input", "change"].forEach(function (ev) { t.addEventListener(ev, function () { toolCount("tool-use", t); }); });
     });
     tools[0].parentNode.insertBefore(box, tools[0]);
-    toolShow(toolIdx);
+    toolShow(toolIdx, true);
   }
   function verifiedInit() {
     var dates = [];

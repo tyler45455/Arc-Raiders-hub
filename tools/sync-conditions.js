@@ -4,7 +4,8 @@
    times for each server region; its default times are Europe's.
    The page cannot be read from the browser (other sites are blocked), so the hourly workflow
    (.github/workflows/conditions-feed.yml) runs this and publishes the result on the conditions-data branch,
-   which the site reads live. The daily item data workflow also refreshes the built-in copy in data/conditions.js.
+   which the site reads live. When the daily item data workflow finds item changes, it also refreshes the
+   built-in copy in data/conditions.js that the site falls back to.
    Usage: node tools/sync-conditions.js [--html page.html] [--json out.json] [--js] [--print]
    --html FILE  reads a saved copy of the page instead of downloading it.
    --json FILE  writes the schedule as JSON (what the conditions-data branch serves).

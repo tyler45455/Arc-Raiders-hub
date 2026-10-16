@@ -6,21 +6,10 @@ var ARC = window.ARC_DATA = window.ARC_DATA || {};
 
 ARC.COND_SCHEDULE = {
   source: "arcraiders.com/map-conditions",
-  fetched: 1792162571000,
+  fetched: 1792172741933,
   offsets: {"brazil":21600000,"east-asia":-18000000,"north-america":25200000,"oceania":-32400000},
   major: ["ARC Frigate","Close Scrutiny","Electromagnetic Storm","Hidden Bunker","Hurricane","Locked Gate","Night Raid"],
   rows: [
-    ["Dam Battlegrounds","Night Raid",1792134000000,1792137600000],
-    ["Pendola Pass","ARC Frigate",1792134000000,1792137600000],
-    ["Riven Tides","Beachcombing",1792134000000,1792137600000],
-    ["Spaceport","Launch Tower Loot",1792134000000,1792137600000],
-    ["Buried City","Bird City",1792137600000,1792141200000],
-    ["Spaceport","ARC Frigate",1792137600000,1792141200000],
-    ["Stella Montis","Night Raid",1792137600000,1792141200000],
-    ["Buried City","Night Raid",1792141200000,1792144800000],
-    ["Dam Battlegrounds","Prospecting Probes",1792141200000,1792144800000],
-    ["Spaceport","Launch Tower Loot",1792141200000,1792144800000],
-    ["The Blue Gate","ARC Frigate",1792141200000,1792144800000],
     ["Pendola Pass","ARC Frigate",1792144800000,1792148400000],
     ["Riven Tides","Beachcombing",1792144800000,1792148400000],
     ["Riven Tides","Night Raid",1792144800000,1792148400000],
@@ -48,7 +37,6 @@ ARC.COND_SCHEDULE = {
     ["Spaceport","Prospecting Probes",1792162800000,1792166400000],
     ["The Blue Gate","Close Scrutiny",1792162800000,1792166400000],
     ["Pendola Pass","Night Raid",1792166400000,1792170000000],
-    ["Pendola Pass","Redirection",1792166400000,1792170000000],
     ["Riven Tides","Beachcombing",1792166400000,1792170000000],
     ["Spaceport","Matriarch",1792166400000,1792170000000],
     ["The Blue Gate","ARC Frigate",1792166400000,1792170000000],
@@ -156,6 +144,7 @@ ARC.COND_SCHEDULE = {
     ["Spaceport","Hidden Bunker",1792252800000,1792256400000],
     ["Spaceport","Prospecting Probes",1792252800000,1792256400000],
     ["Pendola Pass","Night Raid",1792256400000,1792260000000],
+    ["Pendola Pass","Redirection",1792256400000,1792260000000],
     ["Riven Tides","Beachcombing",1792256400000,1792260000000],
     ["Spaceport","Matriarch",1792256400000,1792260000000],
     ["The Blue Gate","ARC Frigate",1792256400000,1792260000000],
@@ -187,6 +176,17 @@ ARC.COND_SCHEDULE = {
     ["Pendola Pass","ARC Frigate",1792281600000,1792285200000],
     ["Riven Tides","Beachcombing",1792281600000,1792285200000],
     ["Spaceport","Matriarch",1792281600000,1792285200000],
-    ["Stella Montis","Night Raid",1792281600000,1792285200000]
+    ["Stella Montis","Night Raid",1792281600000,1792285200000],
+    ["Buried City","Bird City",1792285200000,1792288800000],
+    ["Spaceport","ARC Frigate",1792285200000,1792288800000],
+    ["The Blue Gate","Night Raid",1792285200000,1792288800000],
+    ["Buried City","ARC Frigate",1792288800000,1792292400000],
+    ["Dam Battlegrounds","Prospecting Probes",1792288800000,1792292400000],
+    ["Spaceport","Matriarch",1792288800000,1792292400000],
+    ["The Blue Gate","Night Raid",1792288800000,1792292400000],
+    ["Buried City","Night Raid",1792292400000,1792296000000],
+    ["Pendola Pass","ARC Frigate",1792292400000,1792296000000],
+    ["Riven Tides","Beachcombing",1792292400000,1792296000000],
+    ["Spaceport","Harvester",1792292400000,1792296000000]
   ]
 };

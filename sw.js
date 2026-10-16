@@ -1,6 +1,6 @@
 /* Offline support: always try the network first so visitors get the newest site,
    and fall back to the last saved copy when there is no connection. */
-var CACHE = "arc-hub-86ff3f4dfc"; /* set by tools/build-pages.js */
+var CACHE = "arc-hub-f660a04b5e"; /* set by tools/build-pages.js */
 var CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "data/conditions.js", "data/gear.js", "data/items.js", "data/maps.js", "data/quests.js", "data/reference.js", "data/updates.js"];
 
 self.addEventListener("install", function (e) {
@@ -25,7 +25,10 @@ self.addEventListener("fetch", function (e) {
       }
       return res;
     }).catch(function () {
-      return caches.match(req).then(function (hit) { return hit || caches.match("index.html"); });
+      return caches.match(req).then(function (hit) { if (hit) { return hit; }
+        /* offline page that was never cached: send navigations to the cached home page (at its own address, so its relative links work); anything else fails cleanly */
+        if (req.mode !== "navigate") { return Response.error(); }
+        return req.url.split("?")[0] === self.registration.scope ? caches.match("index.html") : Response.redirect(self.registration.scope); });
     })
   );
 });

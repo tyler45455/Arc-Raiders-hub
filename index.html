@@ -314,6 +314,8 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
   .undobar { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
 }
 .subtabs { margin: 14px 0 12px; }
+.chipwrap { position: relative; }
+.chipmore { display: none; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); z-index: 1; width: 32px; height: 32px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font-size: 22px; line-height: 1; cursor: pointer; }
 /* Phones get a "Tool: name" button that opens every tool as a grid, instead of a long sideways strip. */
 #toolPick { display: none; width: 100%; justify-content: space-between; align-items: center; gap: 10px; margin: 14px 0 4px; padding: 10px 14px; font-size: 15px; text-align: left; }
 #toolPick b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -758,6 +760,8 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .chips.subtabs,#qTraders,#gearCats,#refChips,#mapChips,#chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;-webkit-overflow-scrolling:touch}
   .chips.subtabs::-webkit-scrollbar,#qTraders::-webkit-scrollbar,#gearCats::-webkit-scrollbar,#refChips::-webkit-scrollbar,#mapChips::-webkit-scrollbar,#chips::-webkit-scrollbar{display:none}
   .chips.subtabs>*,#qTraders>*,#gearCats>*,#refChips>*,#mapChips>*,#chips>*{flex:none}
+  .chipwrap.more>.chips{-webkit-mask-image:linear-gradient(to right,#000 78%,transparent);mask-image:linear-gradient(to right,#000 78%,transparent)}
+  .chipwrap.more>.chipmore{display:block}
   #toolPick{display:flex}
   #toolTabs{display:none}
   #toolTabs.open{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 12px;padding:0;overflow:visible}
@@ -6957,6 +6961,22 @@ footer .wrap { display: grid; gap: 2px; }
     tools[0].parentNode.insertBefore(box, tools[0]);
     toolShow(toolIdx, true);
   }
+  /* phones: filter button rows scroll sideways; fade the edge and show an arrow while more buttons are off screen */
+  function chipHintInit() {
+    if (!window.ResizeObserver) { return; }
+    document.querySelectorAll(".chips.subtabs,#qTraders,#gearCats,#refChips,#mapChips,#chips").forEach(function (row) {
+      var w = document.createElement("div"); w.className = "chipwrap";
+      row.parentNode.insertBefore(w, row); w.appendChild(row);
+      var b = document.createElement("button"); b.type = "button"; b.className = "chipmore"; b.setAttribute("aria-label", "Show more buttons"); b.textContent = "\u203a";
+      w.appendChild(b);
+      function upd() { w.classList.toggle("more", row.scrollWidth > row.clientWidth + 4 && row.scrollLeft + row.clientWidth < row.scrollWidth - 4); }
+      row.addEventListener("scroll", upd, { passive: true });
+      b.addEventListener("click", function () { row.scrollBy({ left: Math.round(row.clientWidth * 0.7), behavior: "smooth" }); });
+      new ResizeObserver(upd).observe(row);
+      new MutationObserver(upd).observe(row, { childList: true });
+      upd();
+    });
+  }
   function verifiedInit() {
     var dates = [];
     document.querySelectorAll("#freshBody tr").forEach(function (tr) {
@@ -7130,7 +7150,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condAlert(); condFetch(); setInterval(condFetch, 1800000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condAlert(); condFetch(); setInterval(condFetch, 1800000); installInit(); chipHintInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

@@ -6,17 +6,32 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch arcraiders.com map conditions
+      - name: Read the schedule JSON from arcraiders.com
         run: |
-          curl -sSL -A "Mozilla/5.0" -D headers.txt https://arcraiders.com/map-conditions -o page.html || true
-          head -30 headers.txt; wc -c page.html
-          echo "---- script srcs"; grep -o '<script[^>]*src="[^"]*"' page.html | head -40
-          echo "---- api-ish urls"; grep -oE 'https?://[^"'"'"' <>]+' page.html | grep -iE 'api|json|condition|event|schedule|graphql|sanity|contentful' | sort -u | head -40
-          echo "---- next data"; grep -o '__NEXT_DATA__' page.html | head -2; grep -c 'self.__next_f' page.html || true
-          echo "---- condition context"; python3 - <<'PY'
-          import re
-          s=open('page.html',encoding='utf-8',errors='replace').read()
-          for kw in ['Redirection','Bird City','mapCondition','map_condition','conditions','region']:
-              for m in list(re.finditer(re.escape(kw), s))[:3]:
-                  print('==',kw, repr(s[max(0,m.start()-300):m.start()+300]))
+          curl -sSL -A "Mozilla/5.0" https://arcraiders.com/map-conditions -o page.html
+          python3 - <<'PY'
+          import re, json
+          s = open('page.html', encoding='utf-8').read()
+          # Next.js flight chunks: self.__next_f.push([1,"..."])
+          chunks = re.findall(r'self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)', s)
+          flight = "".join(json.loads('"' + c + '"') for c in chunks)
+          i = flight.find('"liveEntries"')
+          print("flight len", len(flight), "liveEntries at", i)
+          # find the enclosing object start
+          st = flight.rfind('{"conditions"', 0, i)
+          if st < 0: st = flight.rfind('{', 0, flight.rfind('"conditions"', 0, i))
+          dec = json.JSONDecoder()
+          try:
+              obj, end = dec.raw_decode(flight[st:])
+          except Exception as e:
+              print("decode failed", e); print(flight[i-3000:i+6000]); raise SystemExit
+          print("TOP KEYS", list(obj.keys()))
+          for k, v in obj.items():
+              if isinstance(v, list):
+                  print("==", k, len(v)); print(json.dumps(v[:4], indent=0)[:2500])
+              else:
+                  print("==", k, json.dumps(v)[:800])
+          for kw in ['region', 'Region']:
+              for m in list(re.finditer(kw, flight))[:15]:
+                  print("--", repr(flight[max(0,m.start()-200):m.start()+200]))
           PY

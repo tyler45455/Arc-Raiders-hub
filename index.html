@@ -606,6 +606,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .ktag.go { color: var(--good); border-color: var(--good); }
 .condnow { border: 1px solid var(--line); border-left: 3px solid var(--good); border-radius: 8px; padding: 8px 12px; margin: 10px 0; background: var(--surface); }
 .condnow h4 { margin: 0 0 4px; }
+.trrow .trhint { flex-basis: 100%; margin: -2px 0 0 26px; font-size: .92em; }
 .condnow ul { margin: 4px 0; padding-left: 18px; }
 .condnow .condsrc { font-size: 13px; margin: 6px 0 0; }
 .condnow select { font-size: 16px; }
@@ -1730,6 +1731,11 @@ footer .wrap { display: grid; gap: 2px; }
       var k = m.name + "|" + n, on = !!condWatch[k];
       return '<button type="button" class="chip" data-action="condWatch" data-k="' + esc(k) + '" aria-pressed="' + on + '">' + (on ? "&#9733; " : "&#9734; ") + esc(n) + "</button>";
     }).join("") + "</div>";
+    if (Object.keys(condWatch).length) {
+      h += '<div class="acts"><button class="btn ghost" type="button" data-action="condNotify">' + (condAlertOn() ? "Notifications on (tap to turn off)" : "Notify me when a starred one starts") + "</button>" +
+        '<button class="btn ghost" type="button" data-action="condIcs">Add starred times to my calendar</button></div>' +
+        '<p class="muted" style="margin:4px 0 0;">Notifications work while the site is open in a tab. The calendar file covers the next day or so, as far as the official schedule goes.</p>';
+    }
     var nm = function (id) { return COND_REGIONS.filter(function (x) { return x[0] === id; })[0][1]; };
     var opts = '<option value="auto"' + (reg === "auto" ? " selected" : "") + ">Auto (" + esc(nm(auto)) + ")</option>" +
       COND_REGIONS.map(function (x) { return '<option value="' + x[0] + '"' + (reg === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>"; }).join("");
@@ -1742,6 +1748,7 @@ footer .wrap { display: grid; gap: 2px; }
   function condSigNow() { var n = new Date(); return MAPS.map(function (m) { return condNow(m.name, n).act.map(function (x) { return x.n; }).join("+"); }).join("|"); }
   function condTick() {
     var t = Date.now(), sig = condSigNow();
+    condAlert();
     if (condSig && sig !== condSig) {
       condSig = sig;
       if (curTab === "maps") { renderMaps(); } else if (curTab === "home") { renderHome(); }
@@ -1750,6 +1757,60 @@ footer .wrap { display: grid; gap: 2px; }
     condSig = sig;
     document.querySelectorAll("[data-cend]").forEach(function (el) { el.textContent = "ends in " + condLeft(+el.getAttribute("data-cend") - t); });
     document.querySelectorAll("[data-cstart]").forEach(function (el) { el.textContent = "in " + condLeft(+el.getAttribute("data-cstart") - t); });
+  }
+  /* Optional browser notification when a starred condition starts, while the site is open in a tab.
+     Conditions already alerted are remembered until they end, so a reload does not alert again. */
+  var condNotify = load("arcHubCondNotify", false), condNotified = load("arcHubCondNotified", {});
+  function condAlertOn() { return !!condNotify && !!window.Notification && window.Notification.permission === "granted"; }
+  function condShow(title, body) {
+    var opt = { body: body, icon: "icons/icon-192.png", tag: title };
+    try {
+      if (window.navigator.serviceWorker && window.navigator.serviceWorker.controller) { window.navigator.serviceWorker.ready.then(function (r) { r.showNotification(title, opt); }); return; }
+    } catch (e) {}
+    try { new window.Notification(title, opt); } catch (e2) {}
+  }
+  function condAlert() {
+    if (!condAlertOn()) { return; }
+    var n = new Date(), t = n.getTime(), ch = false;
+    Object.keys(condNotified).forEach(function (k) { if (condNotified[k] < t) { delete condNotified[k]; ch = true; } });
+    Object.keys(condWatch).forEach(function (k) {
+      var pr = k.split("|");
+      condNow(pr[0], n).act.forEach(function (x) {
+        if (x.n !== pr[1] || condNotified[k + "|" + x.s]) { return; }
+        condNotified[k + "|" + x.s] = x.e; ch = true;
+        condShow(x.n + " is on", x.n + " on " + pr[0] + " has started. It ends in " + condLeft(x.e - t) + ".");
+      });
+    });
+    if (ch) { save("arcHubCondNotified", condNotified); }
+  }
+  /* Calendar file (.ics) with the upcoming times of your starred conditions, as far as the schedule goes. */
+  function condIcs() {
+    var now = Date.now(), ev = [], reg = condRegion();
+    Object.keys(condWatch).forEach(function (k) { var pr = k.split("|"); condSpans(pr[0]).forEach(function (x) { if (x.n === pr[1] && x.e > now) { ev.push([pr[0], x]); } }); });
+    if (!ev.length) { return null; }
+    ev.sort(function (a, b) { return a[1].s - b[1].s; });
+    function d(ms) { return new Date(ms).toISOString().replace(/[-:]/g, "").replace(/\.\d+/, ""); }
+    function tx(v) { return String(v).replace(/[\\;,]/g, function (c) { return "\\" + c; }); }
+    var rn = COND_REGIONS.filter(function (x) { return x[0] === reg; })[0][1];
+    var L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Speranza Field Guide//Map conditions//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
+    ev.forEach(function (v) {
+      var what = v[1].n + " on " + v[0];
+      L.push("BEGIN:VEVENT", "UID:" + v[1].s + "-" + (v[0] + "-" + v[1].n).toLowerCase().replace(/[^a-z0-9]+/g, "-") + "@speranza-field-guide", "DTSTAMP:" + d(now),
+        "DTSTART:" + d(v[1].s), "DTEND:" + d(v[1].e), "SUMMARY:" + tx("ARC Raiders: " + what),
+        "DESCRIPTION:" + tx("Map condition on " + rn + " servers. Schedule from arcraiders.com/map-conditions via the Speranza Field Guide."),
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + tx(what + " starts in 10 minutes"), "TRIGGER:-PT10M", "END:VALARM", "END:VEVENT");
+    });
+    L.push("END:VCALENDAR");
+    return { text: L.join("\r\n") + "\r\n", n: ev.length };
+  }
+  function condIcsSave(btn) {
+    var c = condIcs();
+    if (!c) { btn.textContent = "Nothing starred is scheduled yet"; return; }
+    var blob = new window.Blob([c.text], { type: "text/calendar" }), a = document.createElement("a");
+    a.href = window.URL.createObjectURL(blob); a.download = "starred-map-conditions.ics";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { window.URL.revokeObjectURL(a.href); }, 4000);
+    btn.textContent = c.n + " time" + (c.n === 1 ? "" : "s") + " saved to a calendar file";
   }
   /* Live conditions worth knowing about for your plans: ones that drop a wishlist blueprint, major ones (double
      Trial points) and anything on the map your quest route sends you to next. */
@@ -3245,6 +3306,7 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (refSec === "trials") {
       total = 1; n = 1;
       var TW = ["Open containers in the Comissary Supermarket", "Harvest plants", "Damage Bullies", "Deal damage using a Skulker Targeter", "Damage ARC with a Bantam"];
+      var TWH = [{ room: "Commissary Supermarket" }, { cond: "Lush Blooms" }, { enemy: "Bully" }, { item: "Skulker Targeter" }, { item: "Bantam" }];
       var TR = [["Disarm mines during Locked Gate", "300 per mine", "Locked Gate"], ["Download information inside the bunker", "1,200 per data", "Hidden Bunker"], ["Get hit by lightning", "30 per damage", "Electromagnetic Storm"], ["Loot Bird Nests", "180 per nest", "Bird City"], ["Search frozen Raider containers", "1,000 per container", "Cold Snap"], ["Throw snowballs at Bastions", "200 per hit", "Cold Snap"], ["Throw snowballs at Rocketeers", "250 per hit", "Cold Snap"]];
       out += '<div class="qcard"><div class="qh"><b>Season 6</b><span class="qmeta">Began October 8, 2026</span></div>' +
         '<div class="refgrid"><div>Trials unlock at level 15. Each week has 5 challenges, and matching actions earn points toward them. Points are counted when you extract, and only your best score per challenge counts.</div>' +
@@ -3252,9 +3314,9 @@ footer .wrap { display: grid; gap: 2px; }
         '<div><span class="k">Divisions: </span>after your first point in a week you join a division of 100 Raiders (first come, first served), ranked on combined personal-best scores. Ranks update on Mondays.</div>' +
         '<div><span class="k">Ranks: </span>14 ranks, most with three sub-ranks. Cantina Legend is for the top 1,000 players in Hotshot. In a new season you start two ranks below your last placement.</div>' +
         '<div><span class="k">Season rewards: </span>cosmetics and emotes based on final rank. The wiki has not listed Season 6 rewards or an end date yet.</div></div></div>' +
-        '<div class="qcard"><div class="qh"><b>Week 2</b><span class="qmeta">October 13 to 19, 2026</span></div><p class="muted" id="trSum" style="margin:4px 0;">' + trSummary() + '. Tick challenges off and note your points. Rewards come at 1,000, 2,000 and 3,000.</p>' + TW.map(function (x, i) {
+        '<div class="qcard"><div class="qh"><b>Week 2</b><span class="qmeta">October 13 to 19, 2026</span></div><p class="muted" id="trSum" style="margin:4px 0;">' + trSummary() + '. Tick challenges off and note your points. Rewards come at 1,000, 2,000 and 3,000.</p>' + trMajor() + TW.map(function (x, i) {
         var tr = trials[trKey(i)] || {};
-        return '<div class="trrow' + (tr.d ? " done" : "") + '"><input type="checkbox" id="tr' + i + '" data-trial="' + i + '"' + (tr.d ? " checked" : "") + '><label for="tr' + i + '">' + esc(x) + '</label><input type="number" min="0" inputmode="numeric" data-trialp="' + i + '" value="' + (tr.p || "") + '" placeholder="points" aria-label="Your points for ' + esc(x) + '"><span class="trtier" id="trt' + i + '">' + trTier(tr.p || 0) + "</span></div>";
+        return '<div class="trrow' + (tr.d ? " done" : "") + '"><input type="checkbox" id="tr' + i + '" data-trial="' + i + '"' + (tr.d ? " checked" : "") + '><label for="tr' + i + '">' + esc(x) + '</label><input type="number" min="0" inputmode="numeric" data-trialp="' + i + '" value="' + (tr.p || "") + '" placeholder="points" aria-label="Your points for ' + esc(x) + '"><span class="trtier" id="trt' + i + '">' + trTier(tr.p || 0) + "</span>" + trHint(TWH[i]) + "</div>";
       }).join("") +
         '<p class="muted" style="margin-top:8px;">Point values for these challenges are not on the wiki yet.</p>' +
         '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" href="' + esc(qWiki("Trials")) + '">Trials on the wiki</a></div></div>' +
@@ -4513,19 +4575,29 @@ footer .wrap { display: grid; gap: 2px; }
   }
 
   /* ---------- raid prep + trials ---------- */
+  /* Items your quests ask for, added up, shown with a tick when your stash already has enough. */
+  function bringFor(qs) { var b = {}; qs.forEach(function (q) { q.req.forEach(function (r) { b[r.n] = (b[r.n] || 0) + r.q; }); }); return b; }
+  function bringChips(b) { return '<div class="chips">' + Object.keys(b).sort().map(function (n) { var ok = (tracker[n] || 0) >= b[n]; return '<span class="y' + (ok ? " ok" : "") + '"><b>' + b[n] + "&times;</b> " + esc(n) + (ok ? " &#10003;" : "") + "</span>"; }).join("") + "</div>"; }
+  /* Raid checklist for the Home "Next raid" card: what those quests need and the keys for that map you own. */
+  function raidCheck(map, qs) {
+    var b = bringFor(qs), bk = Object.keys(b), miss = bk.filter(function (n) { return (tracker[n] || 0) < b[n]; }).length;
+    var keys = KEYS.filter(function (k) { return k[1] === map && keyOwned(k[0]); }).map(function (k) { return k[0]; });
+    var h = "";
+    if (bk.length) { h += '<p class="muted" style="margin-bottom:2px;">Items these quests need (' + (miss ? miss + " still missing" : "you have them all") + "):</p>" + bringChips(b); }
+    if (keys.length) { h += '<p class="muted" style="margin-bottom:2px;">Take your keys for this map:</p><div class="chips">' + keys.map(function (k) { return '<span class="y ok">' + esc(k) + "</span>"; }).join("") + "</div>"; }
+    return h;
+  }
   function prepHtml(map) {
     var act = qActive(), here = act.filter(function (q) { return q.loc.indexOf(map) !== -1; });
     var anyN = act.filter(function (q) { return q.loc.indexOf("Any") !== -1 && q.loc.indexOf(map) === -1; }).length;
-    var bring = {};
-    here.forEach(function (q) { q.req.forEach(function (r) { bring[r.n] = (bring[r.n] || 0) + r.q; }); });
-    var bk = Object.keys(bring).sort();
+    var bring = bringFor(here), bk = Object.keys(bring);
     var h = '<div class="prep"><h3>Raid prep for ' + esc(map) + "</h3>";
     if (!here.length) { h += '<p class="muted">No active quests are tied to this map' + (anyN ? ", but " + anyN + " work on any map" : "") + ".</p>"; }
     else {
       h += '<p class="muted">' + here.length + " active quest" + (here.length === 1 ? "" : "s") + " here" + (anyN ? " (plus " + anyN + " that work on any map)" : "") + ":</p><ul class=\"mapnotes\">" + here.slice(0, 12).map(function (q) { return "<li>" + esc(q.name) + " <span class=\"muted\">(" + esc(q.trader) + ")</span></li>"; }).join("") + "</ul>";
       var ns = qrStops({ map: map, qs: here }).length;
       if (ns) { h += '<p><button class="btn" type="button" data-action="qSpotsHere" data-m="' + esc(map) + '">Show my quest spots on the map (' + ns + ")</button></p>"; }
-      if (bk.length) { h += '<p class="muted">Bring:</p><div class="chips">' + bk.map(function (n) { var ok = (tracker[n] || 0) >= bring[n]; return '<span class="y' + (ok ? " ok" : "") + '"><b>' + bring[n] + "&times;</b> " + esc(n) + (ok ? " &#10003;" : "") + "</span>"; }).join("") + "</div>"; }
+      if (bk.length) { h += '<p class="muted">Bring:</p>' + bringChips(bring); }
     }
     var en = ENEMIES.filter(function (e) { return e[1] !== "Container" && enInfo(e).all.indexOf(map) !== -1; });
     if (en.length) { h += '<p class="muted">ARC seen here (tap for its card):</p><div class="chips">' + en.map(function (e) { var f = enInfo(e); return '<button type="button" class="chip" data-action="enOpen" data-n="' + esc(e[0]) + '">' + esc(e[0]) + (f.lv !== null && f.lv >= 3 ? " &#9888;" : "") + "</button>"; }).join("") + "</div>"; }
@@ -4539,6 +4611,34 @@ footer .wrap { display: grid; gap: 2px; }
     return h + "</div>";
   }
   function trKey(i) { return "s6w2:" + i; }
+  /* Trials helper: where to go for each weekly challenge, from map rooms, the live condition schedule,
+     enemy sightings and your stash. */
+  function trHint(h) {
+    if (!h) { return ""; }
+    var t = "", n = new Date();
+    if (h.room) {
+      var ms = MAPS.filter(function (m) { return (ROOMS[mapSlug(m)] || { r: [] }).r.some(function (r) { return r[0] === h.room; }); }).map(function (m) { return m.name; });
+      if (ms.length) { t = "Go to " + ms.map(esc).join(" or ") + " (" + esc(h.room) + ")."; }
+    } else if (h.cond) {
+      var on = [], nx = null;
+      MAPS.forEach(function (m) { var c = condNow(m.name, n); c.act.forEach(function (x) { if (x.n === h.cond) { on.push(esc(m.name) + ' <span data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span>"); } }); c.next.forEach(function (x) { if (x.n === h.cond && (!nx || x.s < nx.s)) { nx = { s: x.s, m: m.name }; } }); });
+      t = on.length ? esc(h.cond) + " (more plants) is on now: " + on.join(", ") + "." : nx ? "Next " + esc(h.cond) + " (more plants): " + esc(nx.m) + " at " + condClock(nx.s) + '. Plants grow on every map.' : "Plants grow on every map.";
+    } else if (h.enemy) {
+      var e = ENEMIES.filter(function (x) { return x[0] === h.enemy; })[0], em = e ? enInfo(e).all : [];
+      if (em.length) { t = h.enemy + " sightings: " + em.map(esc).join(", ") + "."; }
+    } else if (h.item) {
+      var have = 0; Object.keys(tracker).forEach(function (k) { if (k === h.item || k.indexOf(h.item + " ") === 0) { have += tracker[k] || 0; } });
+      t = "Any map. Bring a " + esc(h.item) + (have ? " (you have " + have + ")." : " (none in your stash).");
+    }
+    return t ? '<div class="trhint muted">' + t + "</div>" : "";
+  }
+  /* Major conditions double Trial points: what is on now, or the next one. */
+  function trMajor() {
+    var major = CSCHED.major && CSCHED.major.length ? CSCHED.major : (/Major: ([^.]*)\./.exec(CONDITIONS) || [0, ""])[1].split(", "), n = new Date(), on = [], nx = null;
+    MAPS.forEach(function (m) { var c = condNow(m.name, n); c.act.forEach(function (x) { if (major.indexOf(x.n) !== -1) { on.push("<b>" + esc(x.n) + "</b> on " + esc(m.name)); } }); c.next.forEach(function (x) { if (major.indexOf(x.n) !== -1 && (!nx || x.s < nx.s)) { nx = { s: x.s, n: x.n, m: m.name }; } }); });
+    var t = on.length ? "Double points right now (major condition): " + on.join(", ") + "." : nx ? "Next major condition (double points): <b>" + esc(nx.n) + "</b> on " + esc(nx.m) + " at " + condClock(nx.s) + "." : "";
+    return t ? '<p class="muted" style="margin:4px 0;">' + t + "</p>" : "";
+  }
   function trTier(p) { return p >= 3000 ? "Epic tier" : p >= 2000 ? "Rare tier" : p >= 1000 ? "Uncommon tier" : p > 0 ? "Keep going" : ""; }
   function trSummary() { var n = 0; for (var i = 0; i < 5; i++) { if (trials[trKey(i)] && trials[trKey(i)].d) { n++; } } return n + " of 5 done"; }
 
@@ -4916,7 +5016,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (route.length) {
       var r0 = route[0], mi = -1; MAPS.forEach(function (m, k) { if (m.name === r0.map) { mi = k; } });
       var ctips = condTips(r0.map);
-      html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" +
+      html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" + raidCheck(r0.map, r0.qs) +
         (ctips.length ? '<p class="muted" style="margin-bottom:2px;">Best right now:</p><ul class="homelist condtips">' + ctips.map(function (h) { return "<li>" + h + "</li>"; }).join("") + "</ul>" : "") +
         '<p class="muted">' + nq + " active quest" + (nq === 1 ? "" : "s") + " in " + route.length + " raid" + (route.length === 1 ? "" : "s") + ".</p>",
         (qrStops(r0).length ? '<button class="btn" type="button" data-action="qrRoute" data-r="0">Show route on map</button>' : "") + (mi >= 0 ? '<button class="btn' + (qrStops(r0).length ? " ghost" : "") + '" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>', "raid");
@@ -5654,6 +5754,18 @@ footer .wrap { display: grid; gap: 2px; }
       var cwk = t.getAttribute("data-k");
       if (condWatch[cwk]) { delete condWatch[cwk]; } else { condWatch[cwk] = 1; }
       save("arcHubCondWatch", condWatch); renderMaps();
+    } else if (a === "condIcs") {
+      condIcsSave(t);
+    } else if (a === "condNotify") {
+      if (condAlertOn()) { condNotify = false; save("arcHubCondNotify", false); renderMaps(); }
+      else if (!window.Notification) { t.textContent = "This browser can't show notifications (on iPhone, add the site to your Home Screen first)"; }
+      else if (window.Notification.permission === "denied") { t.textContent = "Notifications are blocked for this site in your browser settings"; }
+      else {
+        window.Notification.requestPermission().then(function (pm) {
+          if (pm === "granted") { condNotify = true; save("arcHubCondNotify", true); renderMaps(); condAlert(); }
+          else { t.textContent = "Notifications were not allowed"; }
+        }).catch(function () {});
+      }
     } else if (a === "keyHave") {
       var khk = KEYS[parseInt(t.getAttribute("data-k"), 10)];
       if (khk) { if (keyHave[khk[0]]) { delete keyHave[khk[0]]; } else { keyHave[khk[0]] = 1; } save("arcHubKeyHave", keyHave); renderMaps(); }
@@ -6996,7 +7108,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condFetch(); setInterval(condFetch, 1800000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condAlert(); condFetch(); setInterval(condFetch, 1800000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

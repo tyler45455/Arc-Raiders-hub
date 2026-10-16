@@ -42,6 +42,9 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "Trials helper: each weekly challenge in Reference, Trials now says where to go (map, live condition, enemy sightings or what to bring from your stash), and the week card shows which major condition doubles points right now or next."],
+    ["Oct 16, 2026", "Starred map conditions can now notify you when they start (while the site is open in a tab) and can be saved to your phone or computer calendar with a 10-minute reminder."],
+    ["Oct 16, 2026", "Raid checklist: the Next raid card on Home lists the items those quests need (ticked when your stash has enough) and the keys you own for that map."],
     ["Oct 16, 2026", "Map condition times now come from the official ARC Raiders map conditions page and follow your server region (picked from your timezone; change it on any map card). The schedule refreshes every hour. The earlier community schedule was wrong on North American servers and missed conditions like Beachcombing and ARC Frigate."],
     ["Oct 16, 2026", "Faster first load: item rows are built as they appear on screen, the Maps tab is only drawn when you open it, and a few slow lookups are cached."],
     ["Oct 16, 2026", "Star any condition on a map card and Home flags it when it starts, with a countdown; until then Home shows when your starred conditions come up next."],

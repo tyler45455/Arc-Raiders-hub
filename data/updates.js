@@ -41,6 +41,8 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "Maps now show only the conditions that can happen on that map, taken from each map's wiki page. Before, every map listed every condition, so Beachcombing showed up everywhere even though it only happens on Riven Tides.", "wiki"],
+    ["Oct 16, 2026", "The site now counts how often each tool in the Tools tab is opened and used (anonymous counts only, no cookies or personal data), so tools that hardly anyone uses can be retired later to keep the tab tidy."],
     ["Oct 16, 2026", "Daily check: added the Bully Fragmenter (epic, sells for 5,000 coins, dropped by the Bully and the Courier) and the quest Bait, Fetch, Blast (Apollo, Pendola Pass, after Tracks Of The Beast). Pendola Pass now unlocks after 25 rounds. The Bully now lists its attacks, weak points, drops and Pendola Pass, and the Skulker its attack, XP, weak points and the Skulker Targeter drop. Integrated Binoculars sell for 0 coins (built into the Looting Mk. 3 (Cautious)).", "wiki"],
     ["Oct 15, 2026", "Added Google's site check file so the site can be listed and tracked in Google Search Console."],
     ["Oct 15, 2026", "New name: the site is now Speranza Field Guide, so it no longer shares a name with other ARC Raiders sites and Discords. The web address, your saved stash, quests and settings stay the same."],

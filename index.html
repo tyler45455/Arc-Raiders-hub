@@ -1643,6 +1643,18 @@ footer .wrap { display: grid; gap: 2px; }
         return '<button class="chip" type="button" data-action="openRoom" data-mapi="' + MAPS.indexOf(m) + '" data-room="' + i + '">' + esc(r[0]) + "</button>";
       }).join("") + "</div></details>";
   }
+  /* Only the conditions that the map's wiki page lists for it, split into minor and major using ARC.CONDITIONS. */
+  function condsHtml(m) {
+    if (!m.conds) { return '<p class="muted">' + esc(CONDITIONS) + "</p>"; }
+    if (!m.conds.length) { return '<p class="muted">No map conditions happen on this map.</p>'; }
+    var major = (/Major: ([^.]*)\./.exec(CONDITIONS) || [0, ""])[1].split(", ");
+    var off = function (c) { return new RegExp(c + " is currently disabled").test(CONDITIONS) ? c + " (currently disabled)" : c; };
+    var mi = m.conds.filter(function (c) { return major.indexOf(c) === -1 && !/disabled/.test(off(c)); });
+    var ma = m.conds.filter(function (c) { return major.indexOf(c) !== -1; });
+    var dis = m.conds.filter(function (c) { return /disabled/.test(off(c)); });
+    return '<p class="muted">Conditions on this map. ' + (mi.length ? "Minor: " + esc(mi.join(", ")) + ". " : "") + (ma.length ? "Major: " + esc(ma.join(", ")) + ". " : "") +
+      (dis.length ? esc(dis.join(", ")) + (dis.length === 1 ? " is" : " are") + " currently disabled." : "") + "</p>";
+  }
   function renderMaps() {
     document.getElementById("mapChips").innerHTML = MAPS.map(function (m, i) {
       return '<button class="chip" data-map="' + i + '" aria-pressed="' + (i === curMap) + '">' + esc(m.name) + "</button>";
@@ -1653,7 +1665,7 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + (m.detail ? "-detail" : "") + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3><p>" + esc(m.desc) + "</p>" +
       '<div class="mapstats"><span>Difficulty <b class="dots">' + dots + "</b></span><span>Round <b>" + esc(m.len) + "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>" +
       '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
-      '<p class="muted">' + esc(CONDITIONS) + "</p>" +
+      condsHtml(m) +
       '<div class="mapnote"><label for="mapNote" class="muted">Your notes for this map (saved in this browser)</label><textarea id="mapNote" rows="3" maxlength="2000" placeholder="Good loot rooms, spawns to avoid...">' + esc(mapNotes[m.name] || "") + "</textarea></div>" +
       roomsHtml(m) +
       keysHtml(m) +
@@ -5264,6 +5276,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (name === "stash") { renderTracker(); }
     if (name === "gear") { renderGear(); }
     if (name === "raids") { renderRaidsTab(); }
+    if (name === "tools") { toolCount("tool-open", document.querySelectorAll("#panel-tools > .tool")[toolIdx]); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
     if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderCos(); renderLoot(); renderSkills(); renderRaids(); }
@@ -6501,6 +6514,17 @@ footer .wrap { display: grid; gap: 2px; }
     });
   }
   var toolIdx = load("arcHubToolTab", 0);
+  /* Anonymous tool counts for deciding which tools to retire: one GoatCounter event per tool per visit when it is
+     opened ("tool-open/<name>") and when someone clicks or types in it ("tool-use/<name>"). No cookies, no personal data. */
+  var toolSent = {};
+  function toolCount(kind, t) {
+    var h = t && t.querySelector("h3"), name = t && (t.getAttribute("data-en") || (h ? h.textContent.trim() : ""));
+    if (!name) { return; }
+    var key = kind + "/" + name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    if (toolSent[key]) { return; }
+    toolSent[key] = true;
+    try { if (window.goatcounter && window.goatcounter.count) { window.goatcounter.count({ path: key, title: "Tool " + kind.replace("tool-", "") + ": " + name, event: true }); } } catch (e) {}
+  }
   function toolShow(i) {
     var tools = document.querySelectorAll("#panel-tools > .tool");
     if (!tools.length) { return; }
@@ -6509,6 +6533,7 @@ footer .wrap { display: grid; gap: 2px; }
     Array.prototype.forEach.call(tools, function (t, k) { t.hidden = k !== i; });
     Array.prototype.forEach.call(document.querySelectorAll("#toolTabs .chip"), function (b, k) { b.setAttribute("aria-pressed", k === i ? "true" : "false"); });
     toolPickOpen(false);
+    if (curTab === "tools") { toolCount("tool-open", tools[i]); }
   }
   function toolPickOpen(on) {
     var pick = document.getElementById("toolPick"), nav = document.getElementById("toolTabs");
@@ -6531,6 +6556,11 @@ footer .wrap { display: grid; gap: 2px; }
     pick.type = "button"; pick.className = "btn ghost"; pick.id = "toolPick"; pick.setAttribute("data-action", "toolPick"); pick.setAttribute("aria-controls", "toolTabs");
     var box = document.createElement("div");
     box.id = "toolNav"; box.appendChild(pick); box.appendChild(nav);
+    Array.prototype.forEach.call(tools, function (t) {
+      var h = t.querySelector("h3");
+      if (h) { t.setAttribute("data-en", h.textContent.trim()); }
+      ["click", "input", "change"].forEach(function (ev) { t.addEventListener(ev, function () { toolCount("tool-use", t); }); });
+    });
     tools[0].parentNode.insertBefore(box, tools[0]);
     toolShow(toolIdx);
   }

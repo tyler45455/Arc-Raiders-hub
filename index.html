@@ -4483,6 +4483,7 @@ footer .wrap { display: grid; gap: 2px; }
     var bar = document.getElementById("undoBar"); if (!bar) { return; }
     document.getElementById("undoText").textContent = label;
     bar.hidden = false;
+    var ub = bar.querySelector(".btn"); if (ub) { ub.hidden = false; }
     clearTimeout(undoTimer); undoTimer = setTimeout(function () { bar.hidden = true; }, 9000);
   }
   function doUndo() {
@@ -4864,7 +4865,7 @@ footer .wrap { display: grid; gap: 2px; }
       Object.keys(tot).forEach(function (m) {
         var q = Math.max(0, tot[m] - (tracker[m] || 0));
         if (q && recipeOf(m)) { var c = craftCalc(m, q, true); Object.keys(c.leaf).forEach(function (x) { leaf[x] = (leaf[x] || 0) + c.leaf[x]; }); }
-        else if (q) { leaf[m] = (leaf[m] || 0) + q; }
+        else if (!recipeOf(m)) { leaf[m] = (leaf[m] || 0) + tot[m]; }  /* gross: the table subtracts your stash itself */
       });
       tot = leaf;
     }

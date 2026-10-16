@@ -35,12 +35,14 @@ ARC.FRESHNESS = [
     ["Reference: enemies, traders, workshop, blueprints", "October 16, 2026", "daily"],
     ["Project presets", "October 10, 2026", "daily"],
     ["Trials (Season 6, Week 2)", "October 14, 2026", "daily"],
-    ["Maps and update history", "October 16, 2026", "daily"]
+    ["Maps and update history", "October 16, 2026", "daily"],
+    ["Map condition schedule (from MetaForge)", "October 16, 2026", "daily"]
   ];
 
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "Live map conditions: each map now shows which conditions are on right now with a countdown to when they end, what is coming up next and when, and switches by itself when they change. Home has a Map conditions right now card, and the map list tags each map's current condition. The schedule comes from MetaForge's community feed and is refreshed daily; if your server runs a few hours off, shift the times on the map card."],
     ["Oct 16, 2026", "Cleaner phone layout: long tab intros fold to two lines with a More button, the search box on Recycle and the filters on Stash stay at the top while you scroll, and the More menu has bigger buttons that are easier to tap."],
     ["Oct 16, 2026", "Maps follow your quests: the map your quest route sends you to next gets a star and a Next raid tag, Raid prep has a Show my quest spots on the map button that pins your active quest spots in walking order, and keys are marked You have it or Missing (from your stash, or tick I have it yourself)."],
     ["Oct 16, 2026", "Smarter search: the Search everything box now also finds tools (type a tool name and press Enter to open it), maps, map conditions (like Night Raid, showing which maps get it) and quests that need the item you typed."],

@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "The map condition schedule is now checked three times an hour, because GitHub often runs scheduled jobs late or skips them."],
     ["Oct 16, 2026", "Trials helper: each weekly challenge in Reference, Trials now says where to go (map, live condition, enemy sightings or what to bring from your stash), and the week card shows which major condition doubles points right now or next."],
     ["Oct 16, 2026", "Starred map conditions can now notify you when they start (while the site is open in a tab) and can be saved to your phone or computer calendar with a 10-minute reminder."],
     ["Oct 16, 2026", "Raid checklist: the Next raid card on Home lists the items those quests need (ticked when your stash has enough) and the keys you own for that map."],

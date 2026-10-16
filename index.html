@@ -1035,7 +1035,7 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- STASH -->
   <section class="panel" id="panel-stash" role="tabpanel" aria-labelledby="tab-stash" hidden>
     <h2>Stash</h2>
-    <p class="muted">Everything in your stash, what to keep for your quests, workbench and Outpost upgrades and projects, and what is safe to sell. Type counts on the cards or add items below. Set a Want amount on any card to mark a material you are looking for, even one you have none of yet. Items you tag Keep are always kept. Sync from ARC Tracker with the bar at the top of the page.</p>
+    <p class="muted">Everything you have, split into what to keep and what is safe to sell. Change Have or Want on any card.</p>
     <div class="sttiles" id="stTiles"></div>
     <div class="sttools">
       <div class="seg" role="group" aria-label="Show">
@@ -1159,7 +1159,7 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- GEAR -->
   <section class="panel" id="panel-gear" role="tabpanel" aria-labelledby="tab-gear" hidden>
     <h2>Weapons &amp; gear</h2>
-    <p class="muted">Stats for every weapon plus augments, shields, healing, utility, grenades, traps and mines, from the ARC Raiders Wiki. A dash means the wiki does not list that value. Sell prices are in Coins; weapons list upgrade levels I to IV. Rarity, weight and sell price for gear come from each item&rsquo;s own wiki page. Grenade damage is as listed on the wiki; a dash means the grenade does no listed damage.</p>
+    <p class="muted">Stats for every weapon and piece of gear from the ARC Raiders Wiki. A dash means the wiki lists no value.</p>
     <div class="chips" id="gearCats" role="group" aria-label="Category"></div>
     <div class="gearrow">
       <input type="text" id="gearQ" placeholder="Filter by name, class, ammo or rarity" aria-label="Filter" autocomplete="off">
@@ -5173,8 +5173,8 @@ footer .wrap { display: grid; gap: 2px; }
   var HINTS = {
     home: "<b>Home.</b> A summary of your progress: the next raid from the Quest route planner, the workshop upgrade you are closest to, your goals, raid log stats and what your stash is worth. Each card has a button that opens the full tool.",
     recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set a Want amount on a Stash card and items that help it show a green &ldquo;Helps your goals&rdquo; line.",
-    stash: "<b>Stash.</b> Every item you have, split into what to keep (needed by active quests, workbench and Outpost upgrades, projects or Want amounts) and what is safe to sell, with its value and what it crafts. Change Have or Want on any card. Looking for shows the materials you want. Sync from ARC Tracker with the bar at the top.",
-    gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
+    stash: "<b>Stash.</b> Every item you have, split into what to keep (needed by active quests, workbench and Outpost upgrades, projects or Want amounts) and what is safe to sell, with its value and what it crafts. Change Have or Want on any card. Looking for shows the materials you want, even ones you have none of yet. Items you tag Keep are always kept. Sync from ARC Tracker with the bar at the top.",
+    gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices (in Coins) and mod slots; weapons list upgrade levels I to IV.",
     quests: "<b>Quests.</b> Search or tap a trader to filter. Tick &ldquo;Mark as completed&rdquo; to unlock the next quests, or turn on &ldquo;Show locked&rdquo; to see everything. Items you track show how many you have.",
     ref: "<b>Reference.</b> Pick a section, then search inside it. Enemy drops you track are highlighted, workshop costs can be added to the Project helper, and you can tick the blueprints you own.",
     tools: "<b>Tools.</b> A raid checklist, project presets that fill from your tracker, weapon compare, a loadout builder and item compare. The shopping list and workshop planner are here too. Back up your data from Home.",
@@ -6170,7 +6170,8 @@ footer .wrap { display: grid; gap: 2px; }
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { syncBarRender(); arctTick(); } });
 
   renderHint();
-  setHint(!load("arcHubHint", false));
+  /* The tab intro is the one explanation; the longer how-to box opens only from the How to use button (or the first-visit tour). */
+  setHint(false);
   applyTheme(load("arcHubTheme", "auto"));
   applyDisp();
   renderTimeline();

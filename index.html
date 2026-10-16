@@ -1035,7 +1035,7 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- STASH -->
   <section class="panel" id="panel-stash" role="tabpanel" aria-labelledby="tab-stash" hidden>
     <h2>Stash</h2>
-    <p class="muted">Everything in your stash, what to keep for your quests, workbench and Outpost upgrades and projects, and what is safe to sell. Type counts on the cards or add items below. Set a Want amount on any card to mark a material you are looking for, even one you have none of yet. Items you tag Keep are always kept. Sync from ARC Tracker with the bar at the top of the page.</p>
+    <p class="muted">Everything you have, split into what to keep and what is safe to sell. Change Have or Want on any card.</p>
     <div class="sttiles" id="stTiles"></div>
     <div class="sttools">
       <div class="seg" role="group" aria-label="Show">
@@ -1159,7 +1159,7 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- GEAR -->
   <section class="panel" id="panel-gear" role="tabpanel" aria-labelledby="tab-gear" hidden>
     <h2>Weapons &amp; gear</h2>
-    <p class="muted">Stats for every weapon plus augments, shields, healing, utility, grenades, traps and mines, from the ARC Raiders Wiki. A dash means the wiki does not list that value. Sell prices are in Coins; weapons list upgrade levels I to IV. Rarity, weight and sell price for gear come from each item&rsquo;s own wiki page. Grenade damage is as listed on the wiki; a dash means the grenade does no listed damage.</p>
+    <p class="muted">Stats for every weapon and piece of gear from the ARC Raiders Wiki. A dash means the wiki lists no value.</p>
     <div class="chips" id="gearCats" role="group" aria-label="Category"></div>
     <div class="gearrow">
       <input type="text" id="gearQ" placeholder="Filter by name, class, ammo or rarity" aria-label="Filter" autocomplete="off">
@@ -1660,18 +1660,30 @@ footer .wrap { display: grid; gap: 2px; }
       }).join("") + "</div></details>";
   }
   /* Only the conditions that the map's wiki page lists for it, split into minor and major using ARC.CONDITIONS. */
-  /* ---------- live map conditions (schedule from MetaForge, data/conditions.js) ---------- */
-  var CSCHED = ARC.COND_SCHEDULE || { rows: [] };
-  function condShiftH() { var h = parseInt(load("arcHubCondShift", 0), 10); return h >= -12 && h <= 12 ? h : 0; }
-  /* Every scheduled window for one map from yesterday to tomorrow, as real times; back-to-back hours of the same
-     condition are joined so the countdown runs to when it really ends. */
-  function condSpans(map, now) {
-    var base = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()), sh = condShiftH() * 3600000, by = {};
-    CSCHED.rows.forEach(function (r) {
-      if (r[0] !== map) { return; }
-      var L = by[r[1]] = by[r[1]] || [];
-      [-1, 0, 1].forEach(function (d) { r[2].forEach(function (w) { L.push([base + d * 86400000 + w[0] * 60000 + sh, base + d * 86400000 + w[1] * 60000 + sh]); }); });
-    });
+  /* ---------- live map conditions (official schedule from arcraiders.com/map-conditions) ---------- */
+  /* data/conditions.js is a built-in copy; the hourly conditions-feed workflow publishes a fresher one on the
+     conditions-data branch, which condFetch reads. rows: [map, condition, start, end] in Europe time (ms);
+     offsets: ms to add for each other server region. */
+  var CSCHED = ARC.COND_SCHEDULE || { rows: [], offsets: {} };
+  var COND_URL = "https://raw.githubusercontent.com/tyler45455/Arc-Raiders-hub/conditions-data/conditions.json";
+  var COND_REGIONS = [["europe", "Europe"], ["north-america", "North America"], ["brazil", "South America"], ["east-asia", "Asia"], ["oceania", "Oceania"]];
+  /* Starred conditions ("map|condition"): Home flags them when they start. */
+  var condWatch = load("arcHubCondWatch", {});
+  function condAutoRegion() {
+    var tz = ""; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    if (/^America\/(Sao_Paulo|Fortaleza|Recife|Bahia|Belem|Manaus|Cuiaba|Porto_Velho|Boa_Vista|Rio_Branco|Noronha|Araguaina|Maceio|Santarem|Campo_Grande|Argentina|Buenos_Aires|Montevideo|Santiago|Asuncion|Lima|Bogota|Caracas|La_Paz|Guayaquil)/.test(tz)) { return "brazil"; }
+    if (/^(America|US|Canada|Pacific\/Honolulu)\b/.test(tz)) { return "north-america"; }
+    if (/^(Australia|Pacific)\//.test(tz)) { return "oceania"; }
+    if (/^Asia\//.test(tz)) { return "east-asia"; }
+    return "europe";
+  }
+  function condRegion() { var r = load("arcHubCondRegion", "auto"); return r && r !== "auto" && COND_REGIONS.some(function (x) { return x[0] === r; }) ? r : condAutoRegion(); }
+  function condOff() { var r = condRegion(); return r === "europe" ? 0 : (CSCHED.offsets && CSCHED.offsets[r]) || 0; }
+  /* Scheduled windows for one map in your region; back-to-back hours of the same condition are joined so the
+     countdown runs to when it really ends. */
+  function condSpans(map) {
+    var off = condOff(), by = {};
+    CSCHED.rows.forEach(function (r) { if (r[0] === map) { (by[r[1]] = by[r[1]] || []).push([r[2] + off, r[3] + off]); } });
     var out = [];
     Object.keys(by).forEach(function (n) {
       var L = by[n].sort(function (a, b) { return a[0] - b[0]; }), cur = null;
@@ -1679,27 +1691,50 @@ footer .wrap { display: grid; gap: 2px; }
     });
     return out;
   }
+  /* The latest time the schedule covers in your region; past it the copy is out of date. */
+  function condUntil() { var m = 0; CSCHED.rows.forEach(function (r) { if (r[3] > m) { m = r[3]; } }); return m + condOff(); }
+  var condFetching = false;
+  function condFetch() {
+    if (condFetching || !window.fetch) { return; }
+    condFetching = true;
+    fetch(COND_URL, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      condFetching = false;
+      if (!d || !Array.isArray(d.rows) || !d.rows.length || (d.fetched || 0) <= (CSCHED.fetched || 0)) { return; }
+      CSCHED = d; condSig = "";
+      if (curTab === "maps") { renderMaps(); } else if (curTab === "home") { renderHome(); }
+    }).catch(function () { condFetching = false; });
+  }
   function condNow(map, now) {
-    var sp = condSpans(map, now), t = now.getTime(), seen = {};
+    var sp = condSpans(map), t = now.getTime(), seen = {};
     var act = sp.filter(function (x) { return x.s <= t && t < x.e; }).sort(function (a, b) { return a.e - b.e; });
     var next = sp.filter(function (x) { return x.s > t && x.s - t < 86400000; }).sort(function (a, b) { return a.s - b.s; }).filter(function (x) { if (seen[x.n]) { return false; } seen[x.n] = 1; return true; });
-    return { act: act, next: next, has: sp.length > 0 };
+    return { act: act, next: next, has: sp.length > 0, stale: condUntil() < t };
   }
   function condLeft(ms) { var m = Math.max(1, Math.ceil(ms / 60000)); return m < 60 ? m + "m" : Math.floor(m / 60) + "h " + (m % 60) + "m"; }
-  function condClock(ms) { try { return new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); } catch (e) { return new Date(ms).toTimeString().slice(0, 5); } }
+  var condFmt = null;
+  function condClock(ms) {
+    try { condFmt = condFmt || new Intl.DateTimeFormat([], { hour: "numeric", minute: "2-digit" }); return condFmt.format(new Date(ms)); } catch (e) { return new Date(ms).toTimeString().slice(0, 5); }
+  }
   function condLive(m) {
     if (!m.conds || !m.conds.length) { return ""; }
-    var c = condNow(m.name, new Date()), sh = condShiftH();
+    var c = condNow(m.name, new Date()), reg = load("arcHubCondRegion", "auto"), auto = condAutoRegion();
     var h = '<div class="condnow"><h4>Conditions right now</h4>';
-    if (!c.has) { h += '<p class="muted">The schedule has no times for ' + esc(m.name) + " yet.</p>"; }
+    if (c.stale) { h += '<p class="muted">The schedule copy on this page is out of date. Reload the page, or check the official page below.</p>'; }
     else {
       h += c.act.length ? "<ul>" + c.act.map(function (x) { return '<li><b>' + esc(x.n) + '</b> <span class="ktag go" data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span></li>"; }).join("") + "</ul>" :
-        '<p>No scheduled condition right now.</p>';
+        "<p>No condition on " + esc(m.name) + " right now.</p>";
       if (c.next.length) { h += '<p class="muted">Coming up: ' + c.next.slice(0, 4).map(function (x) { return "<b>" + esc(x.n) + "</b> at " + condClock(x.s) + ' (<span data-cstart="' + x.s + '">in ' + condLeft(x.s - Date.now()) + "</span>)"; }).join(", ") + ".</p>"; }
+      else if (!c.act.length) { h += '<p class="muted">Nothing scheduled here in the next 24 hours.</p>'; }
     }
-    var opts = ""; for (var i = -6; i <= 6; i++) { opts += '<option value="' + i + '"' + (i === sh ? " selected" : "") + ">" + (i === 0 ? "No shift" : (i > 0 ? "+" : "") + i + " h") + "</option>"; }
-    h += '<p class="muted condsrc">Schedule from <a href="' + esc(CSCHED.url || "https://metaforge.app/arc-raiders") + '" target="_blank" rel="noopener">MetaForge</a> (community data, checked daily, may miss some conditions). ' +
-      '<label>Times off for your server? Shift <select id="condShift" aria-label="Shift the condition schedule">' + opts + "</select></label></p></div>";
+    h += '<p class="muted" style="margin-bottom:2px;">Star one to have Home flag it when it starts:</p><div class="chips">' + m.conds.slice().sort().map(function (n) {
+      var k = m.name + "|" + n, on = !!condWatch[k];
+      return '<button type="button" class="chip" data-action="condWatch" data-k="' + esc(k) + '" aria-pressed="' + on + '">' + (on ? "&#9733; " : "&#9734; ") + esc(n) + "</button>";
+    }).join("") + "</div>";
+    var nm = function (id) { return COND_REGIONS.filter(function (x) { return x[0] === id; })[0][1]; };
+    var opts = '<option value="auto"' + (reg === "auto" ? " selected" : "") + ">Auto (" + esc(nm(auto)) + ")</option>" +
+      COND_REGIONS.map(function (x) { return '<option value="' + x[0] + '"' + (reg === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>"; }).join("");
+    h += '<p class="muted condsrc"><label>Server region <select id="condRegion" aria-label="Server region for map conditions">' + opts + "</select></label> " +
+      'Times are in your own clock. Schedule from the official <a href="https://arcraiders.com/map-conditions" target="_blank" rel="noopener">ARC Raiders map conditions page</a>, refreshed every hour.</p></div>';
     return h;
   }
   /* Called every 30 seconds: refresh the countdowns, and redraw when a condition starts or ends. */
@@ -1715,6 +1750,25 @@ footer .wrap { display: grid; gap: 2px; }
     condSig = sig;
     document.querySelectorAll("[data-cend]").forEach(function (el) { el.textContent = "ends in " + condLeft(+el.getAttribute("data-cend") - t); });
     document.querySelectorAll("[data-cstart]").forEach(function (el) { el.textContent = "in " + condLeft(+el.getAttribute("data-cstart") - t); });
+  }
+  /* Live conditions worth knowing about for your plans: ones that drop a wishlist blueprint, major ones (double
+     Trial points) and anything on the map your quest route sends you to next. */
+  function condTips(nextMap) {
+    var n = new Date(), major = (CSCHED.major && CSCHED.major.length ? CSCHED.major : (/Major: ([^.]*)\./.exec(CONDITIONS) || [0, ""])[1].split(", ")), out = [], seen = {};
+    MAPS.forEach(function (m) {
+      var act = condNow(m.name, n).act; if (!act.length) { return; }
+      var bw = bpForMap(m.name);
+      act.forEach(function (x) {
+        var why = [], bps = bw.filter(function (b) { return b[1].conds.indexOf(x.n) !== -1; }).map(function (b) { return b[0][0]; });
+        if (bps.length) { why.push("your wishlist blueprint" + (bps.length === 1 ? " " : "s ") + bps.slice(0, 2).map(esc).join(", ") + (bps.length > 2 ? " and more" : "") + " can drop"); }
+        if (major.indexOf(x.n) !== -1) { why.push("major condition, Trial points count double"); }
+        if (m.name === nextMap) { why.push("your next raid map"); }
+        if (!why.length || seen[m.name + x.n]) { return; }
+        seen[m.name + x.n] = 1;
+        out.push({ w: bps.length ? 0 : m.name === nextMap ? 1 : 2, h: "<b>" + esc(x.n) + "</b> on " + esc(m.name) + ' <span class="muted">(<span data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span>): " + why.map(function (w) { return "<span>" + w + "</span>"; }).join("; ") + "</span>" });
+      });
+    });
+    return out.sort(function (a, b) { return a.w - b.w; }).slice(0, 3).map(function (x) { return x.h; });
   }
   function condsHtml(m) {
     if (!m.conds) { return '<p class="muted">' + esc(CONDITIONS) + "</p>"; }
@@ -1732,6 +1786,7 @@ footer .wrap { display: grid; gap: 2px; }
     try { var r = qrPlan(parseInt(qrSet.per, 10) || 4)[0]; return r && r.map !== "Any map" ? r : null; } catch (e) { return null; }
   }
   function renderMaps() {
+    if (curTab !== "maps") { return; }  /* drawn when the Maps tab opens (showTab calls this) */
     var nr = nextRaidMap();
     document.getElementById("mapChips").innerHTML = MAPS.map(function (m, i) {
       return '<button class="chip" data-map="' + i + '" aria-pressed="' + (i === curMap) + '">' + esc(m.name) + (nr && nr.map === m.name ? " &#9733;" : "") + "</button>";
@@ -1750,8 +1805,8 @@ footer .wrap { display: grid; gap: 2px; }
       prepHtml(m.name) +
       '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
     document.getElementById("mapCard").className = "mapcard md" + (m.diff || 0);
-    var cs = document.getElementById("condShift");
-    if (cs) { cs.addEventListener("change", function () { save("arcHubCondShift", parseInt(cs.value, 10) || 0); condSig = ""; renderMaps(); }); }
+    var cs = document.getElementById("condRegion");
+    if (cs) { cs.addEventListener("change", function () { save("arcHubCondRegion", cs.value); condSig = ""; renderMaps(); }); }
     var cnow = new Date();
     var runs = {};
     raids.forEach(function (r) { var k = runs[r.m] = runs[r.m] || { n: 0, x: 0 }; k.n++; if (r.o === "x") { k.x++; } });
@@ -2016,13 +2071,15 @@ footer .wrap { display: grid; gap: 2px; }
 
   /* Long lists: draw the first rows now and the rest in small batches, so the page shows sooner. */
   var rowJob = 0, rowRest = null;
+  /* parts holds HTML strings or functions that build one; rows are built only when they are painted. */
   function paintRows(out, parts) {
     var job = ++rowJob, i = 24;
-    out.innerHTML = parts.slice(0, i).join("");
+    function html(a, b) { return parts.slice(a, b).map(function (p) { return typeof p === "function" ? p() : p; }).join(""); }
+    out.innerHTML = html(0, i);
     rowRest = function (all) {
       if (job !== rowJob) { return; }
       var n = all ? parts.length : i + 60;
-      if (i < n) { out.insertAdjacentHTML("beforeend", parts.slice(i, n).join("")); i = n; }
+      if (i < n) { out.insertAdjacentHTML("beforeend", html(i, n)); i = n; }
       if (i >= parts.length) { rowRest = null; return; }
       if (!all) { setTimeout(rowRest, 30); }
     };
@@ -2046,7 +2103,7 @@ footer .wrap { display: grid; gap: 2px; }
         return d || a.name.localeCompare(b.name);
       });
       az.innerHTML = "";
-      if (flat.length) { paintRows(out, flat.map(function (it) { return itemRow(it, ""); })); } else { out.innerHTML = '<div class="empty-line">Nothing matches.</div>'; }
+      if (flat.length) { paintRows(out, flat.map(function (it) { return function () { return itemRow(it, ""); }; })); } else { out.innerHTML = '<div class="empty-line">Nothing matches.</div>'; }
       return;
     }
 
@@ -2059,7 +2116,7 @@ footer .wrap { display: grid; gap: 2px; }
           cur = L; letters[L] = true;
           parts.push('<div class="group-title" id="L-' + L + '"><b>' + L + "</b></div>");
         }
-        parts.push(itemRow(it, ""));
+        parts.push(function () { return itemRow(it, ""); });
       });
       az.innerHTML = Object.keys(letters).map(function (L) {
         return '<button type="button" data-action="jump" data-l="' + L + '" aria-label="Jump to ' + L + '">' + L + "</button>";
@@ -3436,13 +3493,15 @@ footer .wrap { display: grid; gap: 2px; }
   }
 
   var changedCache = {};
+  var updText = null;
   function changedIn(name) {
     if (changedCache[name] !== undefined) { return changedCache[name]; }
     var out = [];
     if (name.length >= 5) {
       var re = new RegExp("\\b" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i");
-      UPDATES.forEach(function (u) {
-        if (re.test(u.points.join(" | ") + " " + u.body)) { out.push(u.title); }
+      if (!updText || updText.length !== UPDATES.length) { updText = UPDATES.map(function (u) { return u.points.join(" | ") + " " + u.body; }); }
+      UPDATES.forEach(function (u, ui) {
+        if (re.test(updText[ui])) { out.push(u.title); }
       });
     }
     changedCache[name] = out;
@@ -4856,7 +4915,9 @@ footer .wrap { display: grid; gap: 2px; }
     }
     if (route.length) {
       var r0 = route[0], mi = -1; MAPS.forEach(function (m, k) { if (m.name === r0.map) { mi = k; } });
+      var ctips = condTips(r0.map);
       html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" +
+        (ctips.length ? '<p class="muted" style="margin-bottom:2px;">Best right now:</p><ul class="homelist condtips">' + ctips.map(function (h) { return "<li>" + h + "</li>"; }).join("") + "</ul>" : "") +
         '<p class="muted">' + nq + " active quest" + (nq === 1 ? "" : "s") + " in " + route.length + " raid" + (route.length === 1 ? "" : "s") + ".</p>",
         (qrStops(r0).length ? '<button class="btn" type="button" data-action="qrRoute" data-r="0">Show route on map</button>' : "") + (mi >= 0 ? '<button class="btn' + (qrStops(r0).length ? " ghost" : "") + '" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>', "raid");
     } else {
@@ -4869,7 +4930,16 @@ footer .wrap { display: grid; gap: 2px; }
     }
     var cnw = new Date(), cl = [];
     MAPS.forEach(function (m, k) { condNow(m.name, cnw).act.forEach(function (x) { cl.push("<li><b>" + esc(x.n) + "</b> on " + esc(m.name) + ' <span class="muted" data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span></li>"); }); });
-    if (CSCHED.rows.length) { html += homeCard("Map conditions right now", cl.length ? '<ul class="homelist">' + cl.join("") + "</ul>" : '<p class="muted">No scheduled conditions on any map right now.</p>', '<button class="btn ghost" type="button" data-tab="maps">Open Maps</button>', "cond"); }
+    var wOn = [], wNext = [];
+    Object.keys(condWatch).forEach(function (k) {
+      var pr = k.split("|"), c = condNow(pr[0], cnw), a = c.act.filter(function (x) { return x.n === pr[1]; })[0], nx = c.next.filter(function (x) { return x.n === pr[1]; })[0];
+      if (a) { wOn.push("<li>&#9733; <b>" + esc(pr[1]) + "</b> on " + esc(pr[0]) + ' is on now <span class="muted" data-cend="' + a.e + '">ends in ' + condLeft(a.e - Date.now()) + "</span></li>"); }
+      else if (nx) { wNext.push({ s: nx.s, h: "<li>&#9734; <b>" + esc(pr[1]) + "</b> on " + esc(pr[0]) + ' <span class="muted">at ' + condClock(nx.s) + ' (<span data-cstart="' + nx.s + '">in ' + condLeft(nx.s - Date.now()) + "</span>)</span></li>" }); }
+    });
+    wNext.sort(function (a, b) { return a.s - b.s; });
+    if (wOn.length) { html = homeCard("Your starred condition is on", '<ul class="homelist">' + wOn.join("") + "</ul>", '<button class="btn" type="button" data-tab="maps">Open Maps</button>', "new") + html; }
+    if (CSCHED.rows.length) { html += homeCard("Map conditions right now", (cl.length ? '<ul class="homelist">' + cl.join("") + "</ul>" : '<p class="muted">No scheduled conditions on any map right now.</p>') +
+      (wNext.length ? '<p class="muted" style="margin-bottom:2px;">Your starred conditions next:</p><ul class="homelist">' + wNext.slice(0, 3).map(function (x) { return x.h; }).join("") + "</ul>" : '<p class="muted">Star a condition on a map card and Home will flag it when it starts.</p>'), '<button class="btn ghost" type="button" data-tab="maps">Open Maps</button>', "cond"); }
     var w = homeWs();
     html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> level " + esc(w.lvl) + ": <b>" + w.pct + "%</b> of the materials</p>" + homeBar(w.pct) +
       (w.miss.length ? '<p class="muted">Still need ' + w.miss.slice(0, 4).map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") + (w.miss.length > 4 ? " and " + (w.miss.length - 4) + " more" : "") + ".</p>" : '<p class="muted">You have everything. Upgrade it in game, then raise the level in the planner.</p>')
@@ -4981,7 +5051,7 @@ footer .wrap { display: grid; gap: 2px; }
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave, condWatch: condWatch };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -5105,6 +5175,7 @@ footer .wrap { display: grid; gap: 2px; }
     oo = objOf(d.tags); if (oo) { itemTags = {}; Object.keys(oo).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(oo[k]) !== -1 && k.length < 80) { itemTags[k] = oo[k]; } }); save("arcHubTags", itemTags); }
     oo = objOf(d.notes); if (oo) { mapNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 60) { mapNotes[k] = oo[k].slice(0, 2000); } }); save("arcHubMapNotes", mapNotes); }
     if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
+    oo = objOf(d.condWatch); if (oo) { condWatch = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 80 && k.indexOf("|") > 0) { condWatch[k] = 1; } }); save("arcHubCondWatch", condWatch); }
     oo = objOf(d.keys); if (oo) { keyHave = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 80) { keyHave[k] = 1; } }); save("arcHubKeyHave", keyHave); }
     oo = objOf(d.inotes); if (oo) { itemNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 80) { itemNotes[k] = oo[k].slice(0, 300); } }); save("arcHubNotes", itemNotes); }
     oo = objOf(d.trials); if (oo) { trials = {}; Object.keys(oo).forEach(function (k) { var x = oo[k]; if (x && typeof x === "object" && k.length < 20) { trials[k] = { d: !!x.d, p: Math.max(0, parseInt(x.p, 10) || 0) }; } }); save("arcHubTrials", trials); }
@@ -5173,8 +5244,8 @@ footer .wrap { display: grid; gap: 2px; }
   var HINTS = {
     home: "<b>Home.</b> A summary of your progress: the next raid from the Quest route planner, the workshop upgrade you are closest to, your goals, raid log stats and what your stash is worth. Each card has a button that opens the full tool.",
     recycle: "<b>New here?</b> Type an item to see what it recycles into, or a material to see which items give the most. Press <code>/</code> to jump to search. Set a Want amount on a Stash card and items that help it show a green &ldquo;Helps your goals&rdquo; line.",
-    stash: "<b>Stash.</b> Every item you have, split into what to keep (needed by active quests, workbench and Outpost upgrades, projects or Want amounts) and what is safe to sell, with its value and what it crafts. Change Have or Want on any card. Looking for shows the materials you want. Sync from ARC Tracker with the bar at the top.",
-    gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices and mod slots. Stats come from the ARC Raiders Wiki, so a dash means the wiki has no value yet.",
+    stash: "<b>Stash.</b> Every item you have, split into what to keep (needed by active quests, workbench and Outpost upgrades, projects or Want amounts) and what is safe to sell, with its value and what it crafts. Change Have or Want on any card. Looking for shows the materials you want, even ones you have none of yet. Items you tag Keep are always kept. Sync from ARC Tracker with the bar at the top.",
+    gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices (in Coins) and mod slots; weapons list upgrade levels I to IV.",
     quests: "<b>Quests.</b> Search or tap a trader to filter. Tick &ldquo;Mark as completed&rdquo; to unlock the next quests, or turn on &ldquo;Show locked&rdquo; to see everything. Items you track show how many you have.",
     ref: "<b>Reference.</b> Pick a section, then search inside it. Enemy drops you track are highlighted, workshop costs can be added to the Project helper, and you can tick the blueprints you own.",
     tools: "<b>Tools.</b> A raid checklist, project presets that fill from your tracker, weapon compare, a loadout builder and item compare. The shopping list and workshop planner are here too. Back up your data from Home.",
@@ -5579,6 +5650,10 @@ footer .wrap { display: grid; gap: 2px; }
       var wol = t.textContent; t.textContent = "Added to Tools"; setTimeout(function () { t.textContent = wol; }, 1500);
     } else if (a === "keyShow") {
       keyOpen(parseInt(t.getAttribute("data-k"), 10));
+    } else if (a === "condWatch") {
+      var cwk = t.getAttribute("data-k");
+      if (condWatch[cwk]) { delete condWatch[cwk]; } else { condWatch[cwk] = 1; }
+      save("arcHubCondWatch", condWatch); renderMaps();
     } else if (a === "keyHave") {
       var khk = KEYS[parseInt(t.getAttribute("data-k"), 10)];
       if (khk) { if (keyHave[khk[0]]) { delete keyHave[khk[0]]; } else { keyHave[khk[0]] = 1; } save("arcHubKeyHave", keyHave); renderMaps(); }
@@ -6170,7 +6245,8 @@ footer .wrap { display: grid; gap: 2px; }
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { syncBarRender(); arctTick(); } });
 
   renderHint();
-  setHint(!load("arcHubHint", false));
+  /* The tab intro is the one explanation; the longer how-to box opens only from the How to use button (or the first-visit tour). */
+  setHint(false);
   applyTheme(load("arcHubTheme", "auto"));
   applyDisp();
   renderTimeline();
@@ -6412,7 +6488,7 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("dataStamp").textContent = last ? "Data checked daily, last on " + last : "Data checked against the wiki on " + DATA_UPDATED;
     document.getElementById("dataStamp2").textContent = last ? "Last daily data check: " + last + "." + ch : "Last data check: " + DATA_UPDATED + ".";
     document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
-      var when = r[2] === "daily" ? "Checked daily" + (last ? " (last " + last + ")" : "") + "; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
+      var when = r[2] === "hourly" ? "Checked every hour" : r[2] === "daily" ? "Checked daily" + (last ? " (last " + last + ")" : "") + "; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
       return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";
     }).join("");
   }
@@ -6920,7 +6996,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condFetch(); setInterval(condFetch, 1800000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

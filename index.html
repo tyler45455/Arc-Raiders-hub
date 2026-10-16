@@ -1216,7 +1216,7 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- TOOLS -->
   <section class="panel" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools" hidden>
     <h2>Tools</h2>
-    <p class="muted">The shopping list and workshop planner are at the end of the list. A pre-raid checklist, a project helper that compares what you need with your tracker, and a side-by-side item compare. Saved in this browser only.</p>
+    <p class="muted">Pick a tool from the list. Tools that do similar jobs are grouped: What&rsquo;s it worth?, Weapons, and Crafting and shopping. Saved in this browser only.</p>
 
     <div class="tool printable">
       <h3>Raid checklist</h3>
@@ -6525,40 +6525,63 @@ footer .wrap { display: grid; gap: 2px; }
     toolSent[key] = true;
     try { if (window.goatcounter && window.goatcounter.count) { window.goatcounter.count({ path: key, title: "Tool " + kind.replace("tool-", "") + ": " + name, event: true }); } } catch (e) {}
   }
+  /* Tools that answer the same question share one entry in the tool picker and show together. */
+  var TOOL_GROUPS = [["What's it worth?", ["Keep or recycle?", "Loot value", "Stash worth"]],
+    ["Weapons", ["Compare weapons", "Shots to kill", "Weapon upgrade path"]],
+    ["Crafting and shopping", ["Crafting planner", "Shopping list", "Workshop planner"]]];
+  var toolEntries = [];
+  function toolEntryOf(i) {
+    for (var e = 0; e < toolEntries.length; e++) { if (toolEntries[e].tools.indexOf(i) !== -1) { return e; } }
+    return 0;
+  }
   function toolShow(i) {
     var tools = document.querySelectorAll("#panel-tools > .tool");
     if (!tools.length) { return; }
     i = parseInt(i, 10); if (!(i >= 0 && i < tools.length)) { i = 0; }
+    var prev = toolIdx;
     toolIdx = i; save("arcHubToolTab", i);
-    Array.prototype.forEach.call(tools, function (t, k) { t.hidden = k !== i; });
-    Array.prototype.forEach.call(document.querySelectorAll("#toolTabs .chip"), function (b, k) { b.setAttribute("aria-pressed", k === i ? "true" : "false"); });
+    var en = toolEntryOf(i), members = toolEntries.length ? toolEntries[en].tools : [i];
+    Array.prototype.forEach.call(tools, function (t, k) { t.hidden = members.indexOf(k) === -1; });
+    Array.prototype.forEach.call(document.querySelectorAll("#toolTabs .chip"), function (b, k) { b.setAttribute("aria-pressed", k === en ? "true" : "false"); });
     toolPickOpen(false);
-    if (curTab === "tools") { toolCount("tool-open", tools[i]); }
+    if (curTab === "tools") {
+      toolCount("tool-open", tools[i]);
+      if (members[0] !== i && prev !== i) { try { tools[i].scrollIntoView({ block: "start" }); } catch (e) {} }
+    }
   }
   function toolPickOpen(on) {
     var pick = document.getElementById("toolPick"), nav = document.getElementById("toolTabs");
     if (!pick || !nav) { return; }
-    var tools = document.querySelectorAll("#panel-tools > .tool"), h = tools[toolIdx] && tools[toolIdx].querySelector("h3");
+    var tools = document.querySelectorAll("#panel-tools > .tool"), en = toolEntries[toolEntryOf(toolIdx)];
+    var h = tools[toolIdx] && tools[toolIdx].querySelector("h3"), label = en && en.label ? en.label : (h ? h.textContent : "Tool");
     nav.classList.toggle("open", on);
     pick.setAttribute("aria-expanded", on ? "true" : "false");
-    pick.innerHTML = "<b>" + esc(h ? h.textContent : "Tool") + "</b><span>" + (on ? "&#9650;" : "All " + tools.length + " &#9660;") + "</span>";
+    pick.innerHTML = "<b>" + esc(label) + "</b><span>" + (on ? "&#9650;" : "All " + (toolEntries.length || tools.length) + " &#9660;") + "</span>";
   }
   function toolsSubInit() {
     var tools = document.querySelectorAll("#panel-tools > .tool");
     if (!tools.length || document.getElementById("toolTabs")) { return; }
+    var names = Array.prototype.map.call(tools, function (t) { var h = t.querySelector("h3"); return h ? h.textContent.trim() : ""; });
+    toolEntries = [];
+    var done = {};
+    names.forEach(function (n, i) {
+      if (done[i]) { return; }
+      var g = TOOL_GROUPS.filter(function (x) { return x[1].indexOf(n) !== -1; })[0];
+      var idx = g ? g[1].map(function (m) { return names.indexOf(m); }).filter(function (k) { return k !== -1; }).sort(function (a, b) { return a - b; }) : [i];
+      idx.forEach(function (k) { done[k] = true; });
+      toolEntries.push({ label: g ? g[0] : "", tools: idx });
+    });
     var nav = document.createElement("div");
     nav.className = "chips subtabs"; nav.id = "toolTabs"; nav.setAttribute("role", "group"); nav.setAttribute("aria-label", "Tools");
-    nav.innerHTML = Array.prototype.map.call(tools, function (t, i) {
-      var h = t.querySelector("h3");
-      return '<button type="button" class="chip" data-action="toolTab" data-ti="' + i + '" aria-pressed="false">' + esc(h ? h.textContent : "Tool " + (i + 1)) + "</button>";
+    nav.innerHTML = toolEntries.map(function (e) {
+      return '<button type="button" class="chip" data-action="toolTab" data-ti="' + e.tools[0] + '" aria-pressed="false">' + esc(e.label || names[e.tools[0]] || "Tool") + "</button>";
     }).join("");
     var pick = document.createElement("button");
     pick.type = "button"; pick.className = "btn ghost"; pick.id = "toolPick"; pick.setAttribute("data-action", "toolPick"); pick.setAttribute("aria-controls", "toolTabs");
     var box = document.createElement("div");
     box.id = "toolNav"; box.appendChild(pick); box.appendChild(nav);
-    Array.prototype.forEach.call(tools, function (t) {
-      var h = t.querySelector("h3");
-      if (h) { t.setAttribute("data-en", h.textContent.trim()); }
+    Array.prototype.forEach.call(tools, function (t, i) {
+      if (names[i]) { t.setAttribute("data-en", names[i]); }
       ["click", "input", "change"].forEach(function (ev) { t.addEventListener(ev, function () { toolCount("tool-use", t); }); });
     });
     tools[0].parentNode.insertBefore(box, tools[0]);

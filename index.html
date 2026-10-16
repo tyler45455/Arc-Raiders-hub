@@ -1716,6 +1716,25 @@ footer .wrap { display: grid; gap: 2px; }
     document.querySelectorAll("[data-cend]").forEach(function (el) { el.textContent = "ends in " + condLeft(+el.getAttribute("data-cend") - t); });
     document.querySelectorAll("[data-cstart]").forEach(function (el) { el.textContent = "in " + condLeft(+el.getAttribute("data-cstart") - t); });
   }
+  /* Live conditions worth knowing about for your plans: ones that drop a wishlist blueprint, major ones (double
+     Trial points) and anything on the map your quest route sends you to next. */
+  function condTips(nextMap) {
+    var n = new Date(), major = (/Major: ([^.]*)\./.exec(CONDITIONS) || [0, ""])[1].split(", "), out = [], seen = {};
+    MAPS.forEach(function (m) {
+      var act = condNow(m.name, n).act; if (!act.length) { return; }
+      var bw = bpForMap(m.name);
+      act.forEach(function (x) {
+        var why = [], bps = bw.filter(function (b) { return b[1].conds.indexOf(x.n) !== -1; }).map(function (b) { return b[0][0]; });
+        if (bps.length) { why.push("your wishlist blueprint" + (bps.length === 1 ? " " : "s ") + bps.slice(0, 2).map(esc).join(", ") + (bps.length > 2 ? " and more" : "") + " can drop"); }
+        if (major.indexOf(x.n) !== -1) { why.push("major condition, Trial points count double"); }
+        if (m.name === nextMap) { why.push("your next raid map"); }
+        if (!why.length || seen[m.name + x.n]) { return; }
+        seen[m.name + x.n] = 1;
+        out.push({ w: bps.length ? 0 : m.name === nextMap ? 1 : 2, h: "<b>" + esc(x.n) + "</b> on " + esc(m.name) + ' <span class="muted">(<span data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span>): " + why.join("; ") + "</span>" });
+      });
+    });
+    return out.sort(function (a, b) { return a.w - b.w; }).slice(0, 3).map(function (x) { return x.h; });
+  }
   function condsHtml(m) {
     if (!m.conds) { return '<p class="muted">' + esc(CONDITIONS) + "</p>"; }
     if (!m.conds.length) { return '<p class="muted">No map conditions happen on this map.</p>'; }
@@ -4856,7 +4875,9 @@ footer .wrap { display: grid; gap: 2px; }
     }
     if (route.length) {
       var r0 = route[0], mi = -1; MAPS.forEach(function (m, k) { if (m.name === r0.map) { mi = k; } });
+      var ctips = condTips(r0.map);
       html += homeCard("Next raid: " + esc(r0.map), '<ul class="homelist">' + r0.qs.map(function (q) { return "<li><b>" + esc(q.name) + '</b> <span class="muted">' + esc(q.trader) + "</span></li>"; }).join("") + "</ul>" +
+        (ctips.length ? '<p class="muted" style="margin-bottom:2px;">Best right now:</p><ul class="homelist condtips">' + ctips.map(function (h) { return "<li>" + h + "</li>"; }).join("") + "</ul>" : "") +
         '<p class="muted">' + nq + " active quest" + (nq === 1 ? "" : "s") + " in " + route.length + " raid" + (route.length === 1 ? "" : "s") + ".</p>",
         (qrStops(r0).length ? '<button class="btn" type="button" data-action="qrRoute" data-r="0">Show route on map</button>' : "") + (mi >= 0 ? '<button class="btn' + (qrStops(r0).length ? " ghost" : "") + '" type="button" data-action="qrMap" data-i="' + mi + '">Open map and raid prep</button>' : "") + '<button class="btn ghost" type="button" data-action="homeTool" data-tool="routeTool">Full quest route</button>', "raid");
     } else {

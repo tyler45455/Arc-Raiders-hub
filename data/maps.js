@@ -21,7 +21,7 @@ ARC.MAPS = [
     { name: "Stella Montis", detail: true, diff: 4, len: "30 min", unlock: "24 rounds", wiki: "Stella_Montis",
       desc: "A remote research facility among snowy peaks, reportedly humanity's last preservation site.",
       notes: ["Added in North Line (1.2.0).", "The Aphelion blueprint drops here since Cold Snap (1.7.0)."] },
-    { name: "Pendola Pass", detail: true, diff: 3, len: "30 min", unlock: "Not listed on the wiki", wiki: "Pendola_Pass",
+    { name: "Pendola Pass", detail: true, diff: 3, len: "30 min", unlock: "25 rounds", wiki: "Pendola_Pass",
       desc: "A mountaintop observatory that now draws orbital attention.",
       notes: ["Added in Frozen Trail 2.0 with the Frigate and Redirection conditions.", "The only map testing Dynamic Loot Zones, where zone loot values vary between raids."] },
     { name: "Practice Range", diff: 0, len: "2 hours", unlock: "4 rounds", wiki: "Practice_Range",

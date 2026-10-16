@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 15, 2026",
- "count": 396,
+ "dataDate": "October 16, 2026",
+ "count": 397,
  "items": [
   {
    "id": "arc-alloy",
@@ -2592,6 +2592,32 @@
    "weightKg": 2,
    "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/broken-taser/"
+  },
+  {
+   "id": "bully-fragmenter",
+   "name": "Bully Fragmenter",
+   "rarity": "Epic",
+   "canRecycle": true,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "foundIn": [
+     "Also dropped by the Courier"
+    ],
+    "arcEnemies": [
+     "Bully"
+    ],
+    "questRewards": [
+     "Bait, Fetch, Blast"
+    ]
+   },
+   "sellPrice": 5000,
+   "weightKg": 0.4,
+   "stackSize": 3,
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/bully-fragmenter/"
   },
   {
    "id": "burletta-i",
@@ -7542,6 +7568,9 @@
      "Built into the Looting Mk. 3 (Cautious) augment; it cannot be dropped"
     ]
    },
+   "sellPrice": 0,
+   "weightKg": 0,
+   "stackSize": null,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/integrated-binoculars/"
   },
   {

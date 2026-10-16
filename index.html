@@ -3710,8 +3710,29 @@ footer .wrap { display: grid; gap: 2px; }
     function m(n) { return nameMatch(n, q); }
     var groups = [];
     function grp(title, arr) { if (arr.length) { groups.push([title, arr]); } }
+    var toolHits = [];
+    Array.prototype.forEach.call(document.querySelectorAll("#panel-tools > .tool"), function (t, ti) {
+      var h = t.querySelector("h3"), n = t.getAttribute("data-en") || (h ? h.textContent.trim() : "");
+      var g = TOOL_GROUPS.filter(function (x) { return x[1].indexOf(n) !== -1; })[0];
+      if (n && (m(n) || (g && m(g[0])))) { toolHits.push({ l: n, s: g ? g[0] : "Tool", go: ["tool", ti], w: n.toLowerCase().indexOf(q) === 0 ? 0 : 1 }); }
+    });
+    toolHits.sort(function (a, b) { return a.w - b.w; });
+    /* A tool whose name starts with what you typed goes first, so Enter opens it. */
+    if (toolHits.length && toolHits[0].w === 0) { grp("Tools", toolHits.slice(0, 4)); }
     grp("Items", items.filter(function (it) { return m(it.name); }).slice(0, 5).map(function (it) { return { l: it.name, s: it.rarity || "", go: ["recycle", it.name] }; }));
-    grp("Quests", QUESTS.filter(function (x) { return m(x.name) || m(x.trader || ""); }).slice(0, 5).map(function (x) { return { l: x.name, s: x.trader || "", go: ["quests", x.name] }; }));
+    var qHits = [];
+    QUESTS.forEach(function (x) {
+      if (m(x.name) || m(x.trader || "")) { qHits.push({ l: x.name, s: x.trader || "", go: ["quests", x.name], w: 0 }); return; }
+      var need = x.req.filter(function (r) { return m(r.n); })[0];
+      if (need) { qHits.push({ l: x.name, s: "Needs " + need.q + "\u00d7 " + need.n, go: ["quests", x.name], w: 1 }); }
+    });
+    qHits.sort(function (a, b) { return a.w - b.w; });
+    grp("Quests", qHits.slice(0, 6));
+    grp("Maps", MAPS.map(function (mp, mi) { return { l: mp.name, s: mp.unlock && mp.unlock !== "None" ? "Unlocks after " + mp.unlock : "Open from the start", go: ["map", mi], mp: mp }; }).filter(function (r) { return m(r.mp.name); }).slice(0, 4));
+    var condHits = [];
+    MAPS.forEach(function (mp, mi) { (mp.conds || []).forEach(function (c) { if (m(c)) { condHits.push({ l: c, s: "Can happen on " + mp.name, go: ["map", mi] }); } }); });
+    grp("Map conditions", condHits.slice(0, 8));
+    if (toolHits.length && toolHits[0].w !== 0) { grp("Tools", toolHits.slice(0, 4)); }
     grp("Enemies", ENEMIES.filter(function (e) { return m(e[0]); }).slice(0, 4).map(function (e) { return { l: e[0], s: e[1], go: ["enemies", e[0]] }; }));
     grp("Blueprints", BPS.filter(function (b) { return m(b[0]); }).slice(0, 5).map(function (b) { return { l: b[0], s: b[1], go: ["blueprints", b[0]] }; }));
     var ampAll = q.length >= 4 && ("amplification".indexOf(q) === 0 || "amplify".indexOf(q) === 0 || "upgrade".indexOf(q) === 0);
@@ -3803,6 +3824,12 @@ footer .wrap { display: grid; gap: 2px; }
       return;
     }
     if (k === "back") { gSearch(); return; }
+    if (k === "tool" || k === "map") {
+      document.getElementById("gres").hidden = true; document.getElementById("gq").value = "";
+      if (k === "tool") { showTab("tools"); toolShow(v); } else { curMap = v; showTab("maps"); renderMaps(); writeHash(); }
+      window.scrollTo(0, 0);
+      return;
+    }
     if (k === "area") { gArea(v); return; }
     if (k === "room") {
       curMap = v; showTab("maps"); renderMaps(); writeHash();
@@ -4278,7 +4305,7 @@ footer .wrap { display: grid; gap: 2px; }
 
   /* ---------- tour ---------- */
   var TOUR = [
-    ["#gq", "Search everything here: items, quests, enemies, blueprints and weapons.", "recycle"],
+    ["#gq", "Search everything here: items, quests, enemies, keys, maps, map rooms, map conditions and tools.", "recycle"],
     ["#searchBox", "Recycle: type an item to see what it breaks down into, or a material to see every item that gives it.", "recycle"],
     ["#tab-home", "Home: your next raid, the workshop upgrade you are closest to, goals, raid stats and stash worth on one screen.", "home"],
     ["#syncBar", "Connect ARC Tracker here to copy your stash, quests, workshop levels and raider level. Resync pulls the newest data from ARC Tracker on any page.", "recycle"],

@@ -327,6 +327,7 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 @media (max-width: 600px) { .sttiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .sttile { padding: 8px; } .sttile .v { font-size: 18px; } .sttile .k { font-size: 10px; letter-spacing: .02em; } }
 .sttile.sell .v { color: var(--good); } .sttile.keep .v { color: var(--warm); }
 .sttools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.introMore { display: none; }
 .sttools #stQ { flex: 1 1 160px; min-width: 0; width: auto; }
 .stsort { display: flex; align-items: center; gap: 6px; margin: 0; }
 .stsort select { width: auto; }
@@ -603,6 +604,9 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .ktag { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
 .ktag.keep { color: var(--warm); border-color: var(--warm); }
 .ktag.go { color: var(--good); border-color: var(--good); }
+.mapkeys li.khave { border-left: 3px solid var(--good); padding-left: 8px; }
+.mapkeys li.kmiss { border-left: 3px solid var(--line); padding-left: 8px; }
+.nextraid { margin: 4px 0 8px; }
 .ktag.want { color: var(--accent); border-color: var(--accent); }
 .offstate { color: var(--muted); }
 .offbar { background: var(--warm); color: #14110d; text-align: center; padding: 6px 12px; font-size: 13px; }
@@ -766,8 +770,14 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .tabbar .moretab { display: block; position: relative; flex: 1 1 0; }
   .moretab[aria-current="true"] { color: var(--fg); font-weight: 700; }
   .moretab .newdot { position: absolute; top: 10px; right: 8px; margin: 0; }
-  .moremenu:not([hidden]) { display: grid; position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 210px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.3); padding: 6px; gap: 2px; }
-  .moremenu button { appearance: none; background: none; border: 0; border-radius: 6px; color: var(--fg); font: 600 15px var(--font-body); text-align: left; padding: 12px 14px; cursor: pointer; }
+  .moremenu:not([hidden]) { display: grid; position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 240px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.3); padding: 6px; gap: 0; }
+  .moremenu button { appearance: none; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; color: var(--fg); font: 600 16px var(--font-body); text-align: left; padding: 14px 16px; min-height: 52px; cursor: pointer; }
+  .moremenu button:last-child { border-bottom: 0; }
+  /* Long tab intros fold to two lines on phones; More opens the rest. */
+  .panel > p.intro:not(.open) { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 2px; }
+  .introMore { display: inline-block !important; margin: 0 0 8px; padding: 8px 0; font-size: 15px; }
+  /* Keep the search and filters in reach while scrolling long lists. */
+  #panel-recycle .searchbar, #panel-stash .sttools { position: sticky; top: 0; z-index: 30; background: var(--bg); padding: 8px 0; margin-top: 0; box-shadow: 0 6px 8px -8px rgba(0,0,0,.35); }
   .moremenu button[aria-current="true"] { background: var(--surface2); color: var(--accent); }
   .band .lede, #dataStamp { display: none !important; }
   .band .stamp { margin: 0; }
@@ -1655,14 +1665,20 @@ footer .wrap { display: grid; gap: 2px; }
     return '<p class="muted">Conditions on this map. ' + (mi.length ? "Minor: " + esc(mi.join(", ")) + ". " : "") + (ma.length ? "Major: " + esc(ma.join(", ")) + ". " : "") +
       (dis.length ? esc(dis.join(", ")) + (dis.length === 1 ? " is" : " are") + " currently disabled." : "") + "</p>";
   }
+  /* The map the Home "Next raid" card points to, so the Maps tab can mark it. */
+  function nextRaidMap() {
+    try { var r = qrPlan(parseInt(qrSet.per, 10) || 4)[0]; return r && r.map !== "Any map" ? r : null; } catch (e) { return null; }
+  }
   function renderMaps() {
+    var nr = nextRaidMap();
     document.getElementById("mapChips").innerHTML = MAPS.map(function (m, i) {
-      return '<button class="chip" data-map="' + i + '" aria-pressed="' + (i === curMap) + '">' + esc(m.name) + "</button>";
+      return '<button class="chip" data-map="' + i + '" aria-pressed="' + (i === curMap) + '">' + esc(m.name) + (nr && nr.map === m.name ? " &#9733;" : "") + "</button>";
     }).join("");
     var m = MAPS[curMap];
+    var nrLine = nr && nr.map === m.name ? '<p class="nextraid"><span class="ktag keep">Next raid</span> Your quest route sends you here next for ' + nr.qs.length + " quest" + (nr.qs.length === 1 ? "" : "s") + ": " + nr.qs.map(function (q) { return esc(q.name); }).join(", ") + ".</p>" : "";
     var dots = m.diff ? new Array(m.diff + 1).join("\u25CF") + new Array(6 - m.diff).join("\u25CB") : "n/a";
     var slug = m.wiki.toLowerCase().replace(/_/g, "-");
-    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + (m.detail ? "-detail" : "") + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3><p>" + esc(m.desc) + "</p>" +
+    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + (m.detail ? "-detail" : "") + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3>" + nrLine + "<p>" + esc(m.desc) + "</p>" +
       '<div class="mapstats"><span>Difficulty <b class="dots">' + dots + "</b></span><span>Round <b>" + esc(m.len) + "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>" +
       '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
       condsHtml(m) +
@@ -1677,7 +1693,7 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("mapTable").innerHTML = MAPS.map(function (x, i) {
       var d = x.diff ? new Array(x.diff + 1).join("\u25CF") + new Array(6 - x.diff).join("\u25CB") : "n/a", r = runs[x.name];
       return '<button type="button" class="mapt md' + (x.diff || 0) + '" data-map="' + i + '" aria-pressed="' + (i === curMap) + '"><b>' + esc(x.name) + '</b><span class="s">Difficulty <span class="dots">' + d + "</span></span>" +
-        '<span class="s">' + esc(x.len) + " &middot; Unlock: " + esc(x.unlock) + "</span>" + (r ? '<span class="ktag go">' + r.n + " raid" + (r.n === 1 ? "" : "s") + " &middot; " + Math.round(r.x * 100 / r.n) + "% extracted</span>" : "") + "</button>";
+        '<span class="s">' + esc(x.len) + " &middot; Unlock: " + esc(x.unlock) + "</span>" + (nr && nr.map === x.name ? '<span class="ktag keep">Next raid</span>' : "") + (r ? '<span class="ktag go">' + r.n + " raid" + (r.n === 1 ? "" : "s") + " &middot; " + Math.round(r.x * 100 / r.n) + "% extracted</span>" : "") + "</button>";
     }).join("");
     var tot = raids.length, ext = raids.filter(function (r) { return r.o === "x"; }).length, fav = Object.keys(runs).sort(function (a, b) { return runs[b].n - runs[a].n; })[0];
     function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
@@ -1800,7 +1816,12 @@ footer .wrap { display: grid; gap: 2px; }
   function verdictChip(it) {
     if (!curV) { return ""; }
     if (curV.k[it.name]) { return '<span class="verd keep">' + curV.k[it.name] + "</span>"; }
-    if (curV.any && !goalHelp(it).length) { return '<span class="verd free">Free to sell or recycle</span>'; }
+    if (wsNeededFor(it.name).length) { return '<span class="verd keep">Keep: needed for workshop</span>'; }
+    if (goalHelp(it).length) { return '<span class="verd free">Recycle: helps your goals</span>'; }
+    /* Nothing needs it: say which way is worth more coins, using sell price against the parts it breaks into. */
+    var f = ITEMINFO[it.name], pv = partsValue(it);
+    if (f && f[0] != null && pv !== null) { return '<span class="verd free">' + (pv > f[0] ? (mode === "rec" ? "Recycle" : "Salvage") + " it: parts worth more" : "Sell it: worth more than its parts") + "</span>"; }
+    if (curV.any) { return '<span class="verd free">Free to sell or recycle</span>'; }
     return "";
   }
   function itemRow(it, hl) {
@@ -1820,7 +1841,7 @@ footer .wrap { display: grid; gap: 2px; }
       '<a class="btn ghost minor" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
       (itemNotes[it.name] && noteEdit !== it.name ? '<div class="inote">' + esc(itemNotes[it.name]) + "</div>" : "") +
       (noteEdit === it.name ? '<div class="noted"><textarea data-notefor="' + esc(it.name) + '" rows="2" maxlength="300" placeholder="Your note, like: needed for Expedition 6" aria-label="Note for ' + esc(it.name) + '">' + esc(itemNotes[it.name] || "") + '</textarea><div><button class="btn" type="button" data-action="noteDone">Done</button></div></div>' : "") +
-      '<div class="detail">' + yieldChips(it, hl) + "</div>" + infoLine(it) + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
+      '<div class="detail">' + yieldChips(it, hl) + "</div>" + infoLine(it) + cosLine(it) + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
   }
 
   function need(m) { var g = goals[m]; return g ? Math.max(0, g - (tracker[m] || 0)) : 0; }
@@ -1834,8 +1855,29 @@ footer .wrap { display: grid; gap: 2px; }
     try { q = qNeededFor(it.name); } catch (e) { q = []; }
     var pr = [];
     try { pr = projNeeded(it.name); } catch (e2) { pr = []; }
+    var ws = wsNeededFor(it.name);
     return (q.length ? '<div class="qwarn">Needed for quest: ' + q.map(esc).join(", ") + " (hand it in instead of recycling)</div>" : "") +
-      (pr.length ? '<div class="qwarn">Needed for project: ' + pr.map(esc).join(", ") + "</div>" : "");
+      (pr.length ? '<div class="qwarn">Needed for project: ' + pr.map(esc).join(", ") + "</div>" : "") +
+      (ws.length ? '<div class="qwarn">Needed for workshop: ' + ws.slice(0, 4).map(esc).join(", ") + (ws.length > 4 ? " and " + (ws.length - 4) + " more" : "") + "</div>" : "");
+  }
+  /* Workshop levels you have not built yet that use this item, like "Gunsmith 2 (8\u00d7)". */
+  function wsNeededFor(name) {
+    var out = [];
+    (WORKSHOP || []).forEach(function (w) {
+      if ((parseInt(w[1], 10) || 0) <= (wsDone[w[0]] || 0)) { return; }
+      String(w[2]).split("; ").forEach(function (c) {
+        var m = /^(\d+)\u00d7 (.+)$/.exec(c);
+        if (m && m[2] === name) { out.push(w[0] + " " + w[1] + " (" + m[1] + "\u00d7)"); }
+      });
+    });
+    return out;
+  }
+  /* One line on whether crafting this item is worth more than selling what it is made from. */
+  function cosLine(it) {
+    var x = cosRow(it.name);
+    if (!x) { return ""; }
+    return '<div class="iinfo">Craft or sell: ' + (x.gain > 0 ? '<span class="good">crafting it gains ' + coins(x.gain) + "</span>" : x.gain < 0 ? '<span class="bad">selling the materials is worth ' + coins(-x.gain) + " more</span>" : "the same either way") +
+      " (sells for " + coins(x.sell) + ", materials " + coins(x.cost) + ")</div>";
   }
   function coins(n) { return Number(n).toLocaleString("en-US"); }
   function isoDay(d) { var p = String(d).split("-"); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }); }
@@ -3665,14 +3707,19 @@ footer .wrap { display: grid; gap: 2px; }
     curMap = mr[0]; showTab("maps"); renderMaps(); writeHash();
     lbOpen(mapDetailSrc(MAPS[mr[0]]), MAPS[mr[0]].name, mr[1] >= 0 ? mr[1] : undefined, kk[0] + ": " + kk[3] + " How to get it: " + keyGet(kk) + (mr[1] < 0 ? " The wiki does not name a spot on the map for this door." : ""));
   }
+  /* Keys you have: ticked by hand here, or found in your stash counts. */
+  var keyHave = load("arcHubKeyHave", {});
+  function keyOwned(n) { return !!keyHave[n] || (tracker[n] || 0) > 0; }
   function keysHtml(m) {
     var list = [];
     KEYS.forEach(function (k, ki) { if (k[1] === m.name) { list.push([k, ki]); } });
     if (!list.length) { return ""; }
-    return '<details class="mapkeys"><summary>Keys for ' + esc(m.name) + " (" + list.length + ")</summary><ul>" + list.map(function (x) {
-      var k = x[0], has = keyMapRoom(k)[1] >= 0;
-      return "<li><b>" + esc(k[0]) + "</b><div>" + esc(k[3]) + "</div><div class=\"muted\">How to get it: " + esc(keyGet(k)) + "</div>" +
-        (has ? '<button class="btn ghost" type="button" data-action="keyShow" data-k="' + x[1] + '">Show the door on the map</button>' : "") + "</li>";
+    var own = list.filter(function (x) { return keyOwned(x[0][0]); }).length;
+    return '<details class="mapkeys"' + (own ? " open" : "") + "><summary>Keys for " + esc(m.name) + " (" + list.length + (own ? ", you have " + own : "") + ")</summary><ul>" + list.map(function (x) {
+      var k = x[0], has = keyMapRoom(k)[1] >= 0, ok = keyOwned(k[0]), inStash = (tracker[k[0]] || 0) > 0;
+      return '<li class="' + (ok ? "khave" : "kmiss") + '"><b>' + esc(k[0]) + '</b> <span class="ktag ' + (ok ? "go" : "") + '">' + (ok ? "You have it" : "Missing") + "</span><div>" + esc(k[3]) + "</div>" + (ok ? "" : '<div class="muted">How to get it: ' + esc(keyGet(k)) + "</div>") +
+        '<div class="acts">' + (has ? '<button class="btn ghost" type="button" data-action="keyShow" data-k="' + x[1] + '">Show the door on the map</button>' : "") +
+        (inStash ? "" : '<button class="btn ghost" type="button" data-action="keyHave" data-k="' + x[1] + '">' + (ok ? "I don't have it" : "I have it") + "</button>") + "</div></li>";
     }).join("") + "</ul></details>";
   }
   function keyMapRoom(k) { var mi = -1, ri = -1; MAPS.forEach(function (m, i) { if (m.name === k[1]) { mi = i; } }); if (mi >= 0 && k[2]) { (ROOMS[mapSlug(MAPS[mi])] || { r: [] }).r.forEach(function (r, i) { if (r[0] === k[2]) { ri = i; } }); } return [mi, ri]; }
@@ -3684,8 +3731,29 @@ footer .wrap { display: grid; gap: 2px; }
     function m(n) { return nameMatch(n, q); }
     var groups = [];
     function grp(title, arr) { if (arr.length) { groups.push([title, arr]); } }
+    var toolHits = [];
+    Array.prototype.forEach.call(document.querySelectorAll("#panel-tools > .tool"), function (t, ti) {
+      var h = t.querySelector("h3"), n = t.getAttribute("data-en") || (h ? h.textContent.trim() : "");
+      var g = TOOL_GROUPS.filter(function (x) { return x[1].indexOf(n) !== -1; })[0];
+      if (n && (m(n) || (g && m(g[0])))) { toolHits.push({ l: n, s: g ? g[0] : "Tool", go: ["tool", ti], w: n.toLowerCase().indexOf(q) === 0 ? 0 : 1 }); }
+    });
+    toolHits.sort(function (a, b) { return a.w - b.w; });
+    /* A tool whose name starts with what you typed goes first, so Enter opens it. */
+    if (toolHits.length && toolHits[0].w === 0) { grp("Tools", toolHits.slice(0, 4)); }
     grp("Items", items.filter(function (it) { return m(it.name); }).slice(0, 5).map(function (it) { return { l: it.name, s: it.rarity || "", go: ["recycle", it.name] }; }));
-    grp("Quests", QUESTS.filter(function (x) { return m(x.name) || m(x.trader || ""); }).slice(0, 5).map(function (x) { return { l: x.name, s: x.trader || "", go: ["quests", x.name] }; }));
+    var qHits = [];
+    QUESTS.forEach(function (x) {
+      if (m(x.name) || m(x.trader || "")) { qHits.push({ l: x.name, s: x.trader || "", go: ["quests", x.name], w: 0 }); return; }
+      var need = x.req.filter(function (r) { return m(r.n); })[0];
+      if (need) { qHits.push({ l: x.name, s: "Needs " + need.q + "\u00d7 " + need.n, go: ["quests", x.name], w: 1 }); }
+    });
+    qHits.sort(function (a, b) { return a.w - b.w; });
+    grp("Quests", qHits.slice(0, 6));
+    grp("Maps", MAPS.map(function (mp, mi) { return { l: mp.name, s: mp.unlock && mp.unlock !== "None" ? "Unlocks after " + mp.unlock : "Open from the start", go: ["map", mi], mp: mp }; }).filter(function (r) { return m(r.mp.name); }).slice(0, 4));
+    var condHits = [];
+    MAPS.forEach(function (mp, mi) { (mp.conds || []).forEach(function (c) { if (m(c)) { condHits.push({ l: c, s: "Can happen on " + mp.name, go: ["map", mi] }); } }); });
+    grp("Map conditions", condHits.slice(0, 8));
+    if (toolHits.length && toolHits[0].w !== 0) { grp("Tools", toolHits.slice(0, 4)); }
     grp("Enemies", ENEMIES.filter(function (e) { return m(e[0]); }).slice(0, 4).map(function (e) { return { l: e[0], s: e[1], go: ["enemies", e[0]] }; }));
     grp("Blueprints", BPS.filter(function (b) { return m(b[0]); }).slice(0, 5).map(function (b) { return { l: b[0], s: b[1], go: ["blueprints", b[0]] }; }));
     var ampAll = q.length >= 4 && ("amplification".indexOf(q) === 0 || "amplify".indexOf(q) === 0 || "upgrade".indexOf(q) === 0);
@@ -3777,6 +3845,12 @@ footer .wrap { display: grid; gap: 2px; }
       return;
     }
     if (k === "back") { gSearch(); return; }
+    if (k === "tool" || k === "map") {
+      document.getElementById("gres").hidden = true; document.getElementById("gq").value = "";
+      if (k === "tool") { showTab("tools"); toolShow(v); } else { curMap = v; showTab("maps"); renderMaps(); writeHash(); }
+      window.scrollTo(0, 0);
+      return;
+    }
     if (k === "area") { gArea(v); return; }
     if (k === "room") {
       curMap = v; showTab("maps"); renderMaps(); writeHash();
@@ -4252,7 +4326,7 @@ footer .wrap { display: grid; gap: 2px; }
 
   /* ---------- tour ---------- */
   var TOUR = [
-    ["#gq", "Search everything here: items, quests, enemies, blueprints and weapons.", "recycle"],
+    ["#gq", "Search everything here: items, quests, enemies, keys, maps, map rooms, map conditions and tools.", "recycle"],
     ["#searchBox", "Recycle: type an item to see what it breaks down into, or a material to see every item that gives it.", "recycle"],
     ["#tab-home", "Home: your next raid, the workshop upgrade you are closest to, goals, raid stats and stash worth on one screen.", "home"],
     ["#syncBar", "Connect ARC Tracker here to copy your stash, quests, workshop levels and raider level. Resync pulls the newest data from ARC Tracker on any page.", "recycle"],
@@ -4325,6 +4399,8 @@ footer .wrap { display: grid; gap: 2px; }
     if (!here.length) { h += '<p class="muted">No active quests are tied to this map' + (anyN ? ", but " + anyN + " work on any map" : "") + ".</p>"; }
     else {
       h += '<p class="muted">' + here.length + " active quest" + (here.length === 1 ? "" : "s") + " here" + (anyN ? " (plus " + anyN + " that work on any map)" : "") + ":</p><ul class=\"mapnotes\">" + here.slice(0, 12).map(function (q) { return "<li>" + esc(q.name) + " <span class=\"muted\">(" + esc(q.trader) + ")</span></li>"; }).join("") + "</ul>";
+      var ns = qrStops({ map: map, qs: here }).length;
+      if (ns) { h += '<p><button class="btn" type="button" data-action="qSpotsHere" data-m="' + esc(map) + '">Show my quest spots on the map (' + ns + ")</button></p>"; }
       if (bk.length) { h += '<p class="muted">Bring:</p><div class="chips">' + bk.map(function (n) { var ok = (tracker[n] || 0) >= bring[n]; return '<span class="y' + (ok ? " ok" : "") + '"><b>' + bring[n] + "&times;</b> " + esc(n) + (ok ? " &#10003;" : "") + "</span>"; }).join("") + "</div>"; }
     }
     var en = ENEMIES.filter(function (e) { return e[1] !== "Container" && enInfo(e).all.indexOf(map) !== -1; });
@@ -4837,7 +4913,7 @@ footer .wrap { display: grid; gap: 2px; }
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -4961,6 +5037,7 @@ footer .wrap { display: grid; gap: 2px; }
     oo = objOf(d.tags); if (oo) { itemTags = {}; Object.keys(oo).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(oo[k]) !== -1 && k.length < 80) { itemTags[k] = oo[k]; } }); save("arcHubTags", itemTags); }
     oo = objOf(d.notes); if (oo) { mapNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 60) { mapNotes[k] = oo[k].slice(0, 2000); } }); save("arcHubMapNotes", mapNotes); }
     if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
+    oo = objOf(d.keys); if (oo) { keyHave = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 80) { keyHave[k] = 1; } }); save("arcHubKeyHave", keyHave); }
     oo = objOf(d.inotes); if (oo) { itemNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 80) { itemNotes[k] = oo[k].slice(0, 300); } }); save("arcHubNotes", itemNotes); }
     oo = objOf(d.trials); if (oo) { trials = {}; Object.keys(oo).forEach(function (k) { var x = oo[k]; if (x && typeof x === "object" && k.length < 20) { trials[k] = { d: !!x.d, p: Math.max(0, parseInt(x.p, 10) || 0) }; } }); save("arcHubTrials", trials); }
     if (Array.isArray(d.raids)) { raids = rlClean(d.raids); save("arcHubRaids", raids); }
@@ -5434,6 +5511,9 @@ footer .wrap { display: grid; gap: 2px; }
       var wol = t.textContent; t.textContent = "Added to Tools"; setTimeout(function () { t.textContent = wol; }, 1500);
     } else if (a === "keyShow") {
       keyOpen(parseInt(t.getAttribute("data-k"), 10));
+    } else if (a === "keyHave") {
+      var khk = KEYS[parseInt(t.getAttribute("data-k"), 10)];
+      if (khk) { if (keyHave[khk[0]]) { delete keyHave[khk[0]]; } else { keyHave[khk[0]] = 1; } save("arcHubKeyHave", keyHave); renderMaps(); }
     } else if (a === "qNextMore") {
       qNextAll = !qNextAll; renderQuests();
     } else if (a === "qFocus") {
@@ -5648,6 +5728,9 @@ footer .wrap { display: grid; gap: 2px; }
         var cx = document.createElement("button"); cx.type = "button"; cx.className = "tipx"; cx.setAttribute("data-action", "partialTip"); cx.setAttribute("aria-label", "Close"); cx.textContent = "\u00d7"; tip.appendChild(tx); tip.appendChild(cx);
         var hd = prow.querySelector(".head"); hd.parentNode.insertBefore(tip, hd.nextSibling); t.setAttribute("aria-expanded", "true");
       }
+    } else if (a === "qSpotsHere") {
+      var qshm = t.getAttribute("data-m");
+      qrRouteOpen({ map: qshm, qs: qActive().filter(function (q) { return q.loc.indexOf(qshm) !== -1; }) }, "Your quest spots on " + qshm);
     } else if (a === "qrRoute") {
       var qrri = parseInt(t.getAttribute("data-r"), 10) || 0, qrrs = document.getElementById("qrPer"), qrrp = parseInt(qrSet.per || (qrrs && qrrs.value), 10) || 4, qrr = qrPlan(qrrp)[qrri];
       if (qrr) { qrRouteOpen(qrr, "Raid " + (qrri + 1) + " route"); }
@@ -6496,6 +6579,19 @@ footer .wrap { display: grid; gap: 2px; }
   }
 
   /* ---------- last verified dates ---------- */
+  /* Phone only (CSS): fold each tab's long intro paragraph to two lines with a More button. */
+  function introInit() {
+    document.querySelectorAll(".panel > h2").forEach(function (h) {
+      var p = h.nextElementSibling;
+      while (p && p.classList.contains("verified")) { p = p.nextElementSibling; }
+      if (!p || p.tagName !== "P" || p.textContent.length < 140) { return; }
+      p.classList.add("intro");
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "linkbtn introMore"; b.textContent = "More";
+      b.addEventListener("click", function () { p.classList.add("open"); b.remove(); });
+      p.parentNode.insertBefore(b, p.nextSibling);
+    });
+  }
   function mapFindInit() {
     var inp = document.getElementById("mapFind"), out = document.getElementById("mapFindRes");
     if (!inp) { return; }
@@ -6756,7 +6852,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

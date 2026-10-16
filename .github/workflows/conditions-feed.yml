@@ -4,9 +4,11 @@ name: Hourly map condition schedule
 # conditions.json on the conditions-data branch. The site reads that file live (the official page itself
 # cannot be read from another website). Only the data branch changes; main is untouched.
 # Run it by hand from the Actions tab with "Run workflow".
+# GitHub often delays or drops scheduled runs (the daily jobs have started hours late), so it is scheduled three
+# times an hour; a run only publishes when the schedule itself changed.
 on:
   schedule:
-    - cron: "7 * * * *"
+    - cron: "7,27,47 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -38,6 +40,9 @@ jobs:
           else
             git checkout -q --orphan conditions-data
             printf 'Map condition schedule for the Speranza Field Guide, refreshed every hour by .github/workflows/conditions-feed.yml on main.\nSource: https://arcraiders.com/map-conditions\n' > README.md
+          fi
+          if [ -f conditions.json ] && node -e 'const f=require("fs"),a=JSON.parse(f.readFileSync("conditions.json")),b=JSON.parse(f.readFileSync(process.argv[1]));process.exit(JSON.stringify(a.rows)===JSON.stringify(b.rows)&&JSON.stringify(a.offsets)===JSON.stringify(b.offsets)?0:1)' "$RUNNER_TEMP/conditions.json"; then
+            echo "Schedule unchanged; nothing to publish."; exit 0
           fi
           cp "$RUNNER_TEMP/conditions.json" conditions.json
           git add -A

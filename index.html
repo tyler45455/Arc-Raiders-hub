@@ -1662,6 +1662,8 @@ footer .wrap { display: grid; gap: 2px; }
   /* Only the conditions that the map's wiki page lists for it, split into minor and major using ARC.CONDITIONS. */
   /* ---------- live map conditions (schedule from MetaForge, data/conditions.js) ---------- */
   var CSCHED = ARC.COND_SCHEDULE || { rows: [] };
+  /* Starred conditions ("map|condition"): Home flags them when they start. */
+  var condWatch = load("arcHubCondWatch", {});
   function condShiftH() { var h = parseInt(load("arcHubCondShift", 0), 10); return h >= -12 && h <= 12 ? h : 0; }
   /* Every scheduled window for one map from yesterday to tomorrow, as real times; back-to-back hours of the same
      condition are joined so the countdown runs to when it really ends. */
@@ -1696,6 +1698,13 @@ footer .wrap { display: grid; gap: 2px; }
       h += c.act.length ? "<ul>" + c.act.map(function (x) { return '<li><b>' + esc(x.n) + '</b> <span class="ktag go" data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span></li>"; }).join("") + "</ul>" :
         '<p>No scheduled condition right now.</p>';
       if (c.next.length) { h += '<p class="muted">Coming up: ' + c.next.slice(0, 4).map(function (x) { return "<b>" + esc(x.n) + "</b> at " + condClock(x.s) + ' (<span data-cstart="' + x.s + '">in ' + condLeft(x.s - Date.now()) + "</span>)"; }).join(", ") + ".</p>"; }
+    }
+    var names = []; CSCHED.rows.forEach(function (r) { if (r[0] === m.name && names.indexOf(r[1]) === -1) { names.push(r[1]); } });
+    if (names.length) {
+      h += '<p class="muted" style="margin-bottom:2px;">Star one to have Home flag it when it starts:</p><div class="chips">' + names.sort().map(function (n) {
+        var k = m.name + "|" + n, on = !!condWatch[k];
+        return '<button type="button" class="chip" data-action="condWatch" data-k="' + esc(k) + '" aria-pressed="' + on + '">' + (on ? "&#9733; " : "&#9734; ") + esc(n) + "</button>";
+      }).join("") + "</div>";
     }
     var opts = ""; for (var i = -6; i <= 6; i++) { opts += '<option value="' + i + '"' + (i === sh ? " selected" : "") + ">" + (i === 0 ? "No shift" : (i > 0 ? "+" : "") + i + " h") + "</option>"; }
     h += '<p class="muted condsrc">Schedule from <a href="' + esc(CSCHED.url || "https://metaforge.app/arc-raiders") + '" target="_blank" rel="noopener">MetaForge</a> (community data, checked daily, may miss some conditions). ' +
@@ -4890,7 +4899,16 @@ footer .wrap { display: grid; gap: 2px; }
     }
     var cnw = new Date(), cl = [];
     MAPS.forEach(function (m, k) { condNow(m.name, cnw).act.forEach(function (x) { cl.push("<li><b>" + esc(x.n) + "</b> on " + esc(m.name) + ' <span class="muted" data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span></li>"); }); });
-    if (CSCHED.rows.length) { html += homeCard("Map conditions right now", cl.length ? '<ul class="homelist">' + cl.join("") + "</ul>" : '<p class="muted">No scheduled conditions on any map right now.</p>', '<button class="btn ghost" type="button" data-tab="maps">Open Maps</button>', "cond"); }
+    var wOn = [], wNext = [];
+    Object.keys(condWatch).forEach(function (k) {
+      var pr = k.split("|"), c = condNow(pr[0], cnw), a = c.act.filter(function (x) { return x.n === pr[1]; })[0], nx = c.next.filter(function (x) { return x.n === pr[1]; })[0];
+      if (a) { wOn.push("<li>&#9733; <b>" + esc(pr[1]) + "</b> on " + esc(pr[0]) + ' is on now <span class="muted" data-cend="' + a.e + '">ends in ' + condLeft(a.e - Date.now()) + "</span></li>"); }
+      else if (nx) { wNext.push({ s: nx.s, h: "<li>&#9734; <b>" + esc(pr[1]) + "</b> on " + esc(pr[0]) + ' <span class="muted">at ' + condClock(nx.s) + ' (<span data-cstart="' + nx.s + '">in ' + condLeft(nx.s - Date.now()) + "</span>)</span></li>" }); }
+    });
+    wNext.sort(function (a, b) { return a.s - b.s; });
+    if (wOn.length) { html = homeCard("Your starred condition is on", '<ul class="homelist">' + wOn.join("") + "</ul>", '<button class="btn" type="button" data-tab="maps">Open Maps</button>', "new") + html; }
+    if (CSCHED.rows.length) { html += homeCard("Map conditions right now", (cl.length ? '<ul class="homelist">' + cl.join("") + "</ul>" : '<p class="muted">No scheduled conditions on any map right now.</p>') +
+      (wNext.length ? '<p class="muted" style="margin-bottom:2px;">Your starred conditions next:</p><ul class="homelist">' + wNext.slice(0, 3).map(function (x) { return x.h; }).join("") + "</ul>" : '<p class="muted">Star a condition on a map card and Home will flag it when it starts.</p>'), '<button class="btn ghost" type="button" data-tab="maps">Open Maps</button>', "cond"); }
     var w = homeWs();
     html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> level " + esc(w.lvl) + ": <b>" + w.pct + "%</b> of the materials</p>" + homeBar(w.pct) +
       (w.miss.length ? '<p class="muted">Still need ' + w.miss.slice(0, 4).map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") + (w.miss.length > 4 ? " and " + (w.miss.length - 4) + " more" : "") + ".</p>" : '<p class="muted">You have everything. Upgrade it in game, then raise the level in the planner.</p>')
@@ -5002,7 +5020,7 @@ footer .wrap { display: grid; gap: 2px; }
     [tracker, goals].forEach(function (o) { Object.keys(o).forEach(function (n) { ids.items[n] = idOf(n); }); });
     favs.forEach(function (n) { ids.items[n] = idOf(n); });
     Object.keys(qDone).forEach(function (n) { ids.quests[n] = idOf(n); });
-    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave };
+    return { app: "arc-raiders-hub", v: 2, exportedAt: new Date().toISOString(), dataDate: ARC.DATA_UPDATED, ids: ids, tracker: tracker, goals: goals, look: look, favs: favs, custom: customItems, projects: projects, checklist: checklist, quests: qDone, blueprints: bpOwned, bpWant: bpWant, enSeen: enSeen, ws: wsDone, plan: wsPlan, tags: itemTags, notes: mapNotes, loadouts: loadouts, repeat: rchk, inotes: itemNotes, trials: trials, hist: hist, raids: raids, keys: keyHave, condWatch: condWatch };
   }
   function snapText() {
     return JSON.stringify(backupObj());
@@ -5126,6 +5144,7 @@ footer .wrap { display: grid; gap: 2px; }
     oo = objOf(d.tags); if (oo) { itemTags = {}; Object.keys(oo).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(oo[k]) !== -1 && k.length < 80) { itemTags[k] = oo[k]; } }); save("arcHubTags", itemTags); }
     oo = objOf(d.notes); if (oo) { mapNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 60) { mapNotes[k] = oo[k].slice(0, 2000); } }); save("arcHubMapNotes", mapNotes); }
     if (Array.isArray(d.loadouts)) { loadouts = d.loadouts.filter(function (l) { return l && typeof l.name === "string" && typeof l.code === "string" && l.code.indexOf("lo=") === 0 && l.code.length < 600; }).map(function (l) { return { name: l.name.slice(0, 40), code: l.code }; }).slice(0, 20); save("arcHubLoadouts", loadouts); }
+    oo = objOf(d.condWatch); if (oo) { condWatch = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 80 && k.indexOf("|") > 0) { condWatch[k] = 1; } }); save("arcHubCondWatch", condWatch); }
     oo = objOf(d.keys); if (oo) { keyHave = {}; Object.keys(oo).forEach(function (k) { if (oo[k] && k.length < 80) { keyHave[k] = 1; } }); save("arcHubKeyHave", keyHave); }
     oo = objOf(d.inotes); if (oo) { itemNotes = {}; Object.keys(oo).forEach(function (k) { if (typeof oo[k] === "string" && k.length < 80) { itemNotes[k] = oo[k].slice(0, 300); } }); save("arcHubNotes", itemNotes); }
     oo = objOf(d.trials); if (oo) { trials = {}; Object.keys(oo).forEach(function (k) { var x = oo[k]; if (x && typeof x === "object" && k.length < 20) { trials[k] = { d: !!x.d, p: Math.max(0, parseInt(x.p, 10) || 0) }; } }); save("arcHubTrials", trials); }
@@ -5600,6 +5619,10 @@ footer .wrap { display: grid; gap: 2px; }
       var wol = t.textContent; t.textContent = "Added to Tools"; setTimeout(function () { t.textContent = wol; }, 1500);
     } else if (a === "keyShow") {
       keyOpen(parseInt(t.getAttribute("data-k"), 10));
+    } else if (a === "condWatch") {
+      var cwk = t.getAttribute("data-k");
+      if (condWatch[cwk]) { delete condWatch[cwk]; } else { condWatch[cwk] = 1; }
+      save("arcHubCondWatch", condWatch); renderMaps();
     } else if (a === "keyHave") {
       var khk = KEYS[parseInt(t.getAttribute("data-k"), 10)];
       if (khk) { if (keyHave[khk[0]]) { delete keyHave[khk[0]]; } else { keyHave[khk[0]] = 1; } save("arcHubKeyHave", keyHave); renderMaps(); }

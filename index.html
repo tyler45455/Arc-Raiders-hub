@@ -1800,7 +1800,12 @@ footer .wrap { display: grid; gap: 2px; }
   function verdictChip(it) {
     if (!curV) { return ""; }
     if (curV.k[it.name]) { return '<span class="verd keep">' + curV.k[it.name] + "</span>"; }
-    if (curV.any && !goalHelp(it).length) { return '<span class="verd free">Free to sell or recycle</span>'; }
+    if (wsNeededFor(it.name).length) { return '<span class="verd keep">Keep: needed for workshop</span>'; }
+    if (goalHelp(it).length) { return '<span class="verd free">Recycle: helps your goals</span>'; }
+    /* Nothing needs it: say which way is worth more coins, using sell price against the parts it breaks into. */
+    var f = ITEMINFO[it.name], pv = partsValue(it);
+    if (f && f[0] != null && pv !== null) { return '<span class="verd free">' + (pv > f[0] ? (mode === "rec" ? "Recycle" : "Salvage") + " it: parts worth more" : "Sell it: worth more than its parts") + "</span>"; }
+    if (curV.any) { return '<span class="verd free">Free to sell or recycle</span>'; }
     return "";
   }
   function itemRow(it, hl) {
@@ -1820,7 +1825,7 @@ footer .wrap { display: grid; gap: 2px; }
       '<a class="btn ghost minor" target="_blank" rel="noopener" href="' + esc(reportUrl(it.name)) + '">Report</a></div>' +
       (itemNotes[it.name] && noteEdit !== it.name ? '<div class="inote">' + esc(itemNotes[it.name]) + "</div>" : "") +
       (noteEdit === it.name ? '<div class="noted"><textarea data-notefor="' + esc(it.name) + '" rows="2" maxlength="300" placeholder="Your note, like: needed for Expedition 6" aria-label="Note for ' + esc(it.name) + '">' + esc(itemNotes[it.name] || "") + '</textarea><div><button class="btn" type="button" data-action="noteDone">Done</button></div></div>' : "") +
-      '<div class="detail">' + yieldChips(it, hl) + "</div>" + infoLine(it) + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
+      '<div class="detail">' + yieldChips(it, hl) + "</div>" + infoLine(it) + cosLine(it) + helpLine(it) + questLine(it) + changedLine(it) + "</div>";
   }
 
   function need(m) { var g = goals[m]; return g ? Math.max(0, g - (tracker[m] || 0)) : 0; }
@@ -1834,8 +1839,29 @@ footer .wrap { display: grid; gap: 2px; }
     try { q = qNeededFor(it.name); } catch (e) { q = []; }
     var pr = [];
     try { pr = projNeeded(it.name); } catch (e2) { pr = []; }
+    var ws = wsNeededFor(it.name);
     return (q.length ? '<div class="qwarn">Needed for quest: ' + q.map(esc).join(", ") + " (hand it in instead of recycling)</div>" : "") +
-      (pr.length ? '<div class="qwarn">Needed for project: ' + pr.map(esc).join(", ") + "</div>" : "");
+      (pr.length ? '<div class="qwarn">Needed for project: ' + pr.map(esc).join(", ") + "</div>" : "") +
+      (ws.length ? '<div class="qwarn">Needed for workshop: ' + ws.slice(0, 4).map(esc).join(", ") + (ws.length > 4 ? " and " + (ws.length - 4) + " more" : "") + "</div>" : "");
+  }
+  /* Workshop levels you have not built yet that use this item, like "Gunsmith 2 (8\u00d7)". */
+  function wsNeededFor(name) {
+    var out = [];
+    (WORKSHOP || []).forEach(function (w) {
+      if ((parseInt(w[1], 10) || 0) <= (wsDone[w[0]] || 0)) { return; }
+      String(w[2]).split("; ").forEach(function (c) {
+        var m = /^(\d+)\u00d7 (.+)$/.exec(c);
+        if (m && m[2] === name) { out.push(w[0] + " " + w[1] + " (" + m[1] + "\u00d7)"); }
+      });
+    });
+    return out;
+  }
+  /* One line on whether crafting this item is worth more than selling what it is made from. */
+  function cosLine(it) {
+    var x = cosRow(it.name);
+    if (!x) { return ""; }
+    return '<div class="iinfo">Craft or sell: ' + (x.gain > 0 ? '<span class="good">crafting it gains ' + coins(x.gain) + "</span>" : x.gain < 0 ? '<span class="bad">selling the materials is worth ' + coins(-x.gain) + " more</span>" : "the same either way") +
+      " (sells for " + coins(x.sell) + ", materials " + coins(x.cost) + ")</div>";
   }
   function coins(n) { return Number(n).toLocaleString("en-US"); }
   function isoDay(d) { var p = String(d).split("-"); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }); }

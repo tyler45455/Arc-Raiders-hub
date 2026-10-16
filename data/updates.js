@@ -41,6 +41,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "Answers right on the item: every item in Recycle now shows a quick verdict (keep it, recycle it or sell it, depending on what your quests, projects, goals and workshop still need and which is worth more coins), a Craft or sell line for craftable items, and which workshop levels you have not built yet still need it."],
     ["Oct 16, 2026", "Tools tab is shorter: tools that do the same job now share one entry. Keep or recycle, Loot value and Stash worth are under What's it worth?; Compare weapons, Shots to kill and Weapon upgrade path are under Weapons; Crafting planner, Shopping list and Workshop planner are under Crafting and shopping. The list went from 22 entries to 16, and every tool still works the same."],
     ["Oct 16, 2026", "Maps now show only the conditions that can happen on that map, taken from each map's wiki page. Before, every map listed every condition, so Beachcombing showed up everywhere even though it only happens on Riven Tides.", "wiki"],
     ["Oct 16, 2026", "The site now counts how often each tool in the Tools tab is opened and used (anonymous counts only, no cookies or personal data), so tools that hardly anyone uses can be retired later to keep the tab tidy."],

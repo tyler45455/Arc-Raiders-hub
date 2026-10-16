@@ -1,7 +1,7 @@
 name: Daily item data sync
 
 # Every day, re-reads sell prices, weights, stack sizes, recipes and the extra "where to find"
-# details from RaidTheory/arcraiders-data, plus the map condition schedule from MetaForge, and opens (or updates) a pull request when anything changed.
+# details from RaidTheory/arcraiders-data and opens (or updates) a pull request when anything changed.
 # Run it by hand from the Actions tab with "Run workflow".
 on:
   schedule:
@@ -29,9 +29,6 @@ jobs:
         id: sync
         run: |
           node tools/sync-item-data.js "$RUNNER_TEMP/rt" --summary "$RUNNER_TEMP/summary.md"
-          # Map condition schedule from MetaForge's feed; a failed download keeps the old copy.
-          if node tools/sync-conditions.js > "$RUNNER_TEMP/cond.txt"; then grep -q "updated" "$RUNNER_TEMP/cond.txt" && { echo; echo "Map condition schedule changed (from MetaForge)."; } >> "$RUNNER_TEMP/summary.md" || true; else echo "Map condition schedule download failed; kept the old copy."; fi
-          cat "$RUNNER_TEMP/cond.txt" || true
           if git diff --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
       - name: Rebuild pages, sw.js and public JSON
         if: steps.sync.outputs.changed == 'true'

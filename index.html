@@ -1660,20 +1660,30 @@ footer .wrap { display: grid; gap: 2px; }
       }).join("") + "</div></details>";
   }
   /* Only the conditions that the map's wiki page lists for it, split into minor and major using ARC.CONDITIONS. */
-  /* ---------- live map conditions (schedule from MetaForge, data/conditions.js) ---------- */
-  var CSCHED = ARC.COND_SCHEDULE || { rows: [] };
+  /* ---------- live map conditions (official schedule from arcraiders.com/map-conditions) ---------- */
+  /* data/conditions.js is a built-in copy; the hourly conditions-feed workflow publishes a fresher one on the
+     conditions-data branch, which condFetch reads. rows: [map, condition, start, end] in Europe time (ms);
+     offsets: ms to add for each other server region. */
+  var CSCHED = ARC.COND_SCHEDULE || { rows: [], offsets: {} };
+  var COND_URL = "https://raw.githubusercontent.com/tyler45455/Arc-Raiders-hub/conditions-data/conditions.json";
+  var COND_REGIONS = [["europe", "Europe"], ["north-america", "North America"], ["brazil", "South America"], ["east-asia", "Asia"], ["oceania", "Oceania"]];
   /* Starred conditions ("map|condition"): Home flags them when they start. */
   var condWatch = load("arcHubCondWatch", {});
-  function condShiftH() { var h = parseInt(load("arcHubCondShift", 0), 10); return h >= -12 && h <= 12 ? h : 0; }
-  /* Every scheduled window for one map from yesterday to tomorrow, as real times; back-to-back hours of the same
-     condition are joined so the countdown runs to when it really ends. */
-  function condSpans(map, now) {
-    var base = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()), sh = condShiftH() * 3600000, by = {};
-    CSCHED.rows.forEach(function (r) {
-      if (r[0] !== map) { return; }
-      var L = by[r[1]] = by[r[1]] || [];
-      [-1, 0, 1].forEach(function (d) { r[2].forEach(function (w) { L.push([base + d * 86400000 + w[0] * 60000 + sh, base + d * 86400000 + w[1] * 60000 + sh]); }); });
-    });
+  function condAutoRegion() {
+    var tz = ""; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    if (/^America\/(Sao_Paulo|Fortaleza|Recife|Bahia|Belem|Manaus|Cuiaba|Porto_Velho|Boa_Vista|Rio_Branco|Noronha|Araguaina|Maceio|Santarem|Campo_Grande|Argentina|Buenos_Aires|Montevideo|Santiago|Asuncion|Lima|Bogota|Caracas|La_Paz|Guayaquil)/.test(tz)) { return "brazil"; }
+    if (/^(America|US|Canada|Pacific\/Honolulu)\b/.test(tz)) { return "north-america"; }
+    if (/^(Australia|Pacific)\//.test(tz)) { return "oceania"; }
+    if (/^Asia\//.test(tz)) { return "east-asia"; }
+    return "europe";
+  }
+  function condRegion() { var r = load("arcHubCondRegion", "auto"); return r && r !== "auto" && COND_REGIONS.some(function (x) { return x[0] === r; }) ? r : condAutoRegion(); }
+  function condOff() { var r = condRegion(); return r === "europe" ? 0 : (CSCHED.offsets && CSCHED.offsets[r]) || 0; }
+  /* Scheduled windows for one map in your region; back-to-back hours of the same condition are joined so the
+     countdown runs to when it really ends. */
+  function condSpans(map) {
+    var off = condOff(), by = {};
+    CSCHED.rows.forEach(function (r) { if (r[0] === map) { (by[r[1]] = by[r[1]] || []).push([r[2] + off, r[3] + off]); } });
     var out = [];
     Object.keys(by).forEach(function (n) {
       var L = by[n].sort(function (a, b) { return a[0] - b[0]; }), cur = null;
@@ -1681,11 +1691,24 @@ footer .wrap { display: grid; gap: 2px; }
     });
     return out;
   }
+  /* The latest time the schedule covers in your region; past it the copy is out of date. */
+  function condUntil() { var m = 0; CSCHED.rows.forEach(function (r) { if (r[3] > m) { m = r[3]; } }); return m + condOff(); }
+  var condFetching = false;
+  function condFetch() {
+    if (condFetching || !window.fetch) { return; }
+    condFetching = true;
+    fetch(COND_URL, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      condFetching = false;
+      if (!d || !Array.isArray(d.rows) || !d.rows.length || (d.fetched || 0) <= (CSCHED.fetched || 0)) { return; }
+      CSCHED = d; condSig = "";
+      if (curTab === "maps") { renderMaps(); } else if (curTab === "home") { renderHome(); }
+    }).catch(function () { condFetching = false; });
+  }
   function condNow(map, now) {
-    var sp = condSpans(map, now), t = now.getTime(), seen = {};
+    var sp = condSpans(map), t = now.getTime(), seen = {};
     var act = sp.filter(function (x) { return x.s <= t && t < x.e; }).sort(function (a, b) { return a.e - b.e; });
     var next = sp.filter(function (x) { return x.s > t && x.s - t < 86400000; }).sort(function (a, b) { return a.s - b.s; }).filter(function (x) { if (seen[x.n]) { return false; } seen[x.n] = 1; return true; });
-    return { act: act, next: next, has: sp.length > 0 };
+    return { act: act, next: next, has: sp.length > 0, stale: condUntil() < t };
   }
   function condLeft(ms) { var m = Math.max(1, Math.ceil(ms / 60000)); return m < 60 ? m + "m" : Math.floor(m / 60) + "h " + (m % 60) + "m"; }
   var condFmt = null;
@@ -1694,24 +1717,24 @@ footer .wrap { display: grid; gap: 2px; }
   }
   function condLive(m) {
     if (!m.conds || !m.conds.length) { return ""; }
-    var c = condNow(m.name, new Date()), sh = condShiftH();
+    var c = condNow(m.name, new Date()), reg = load("arcHubCondRegion", "auto"), auto = condAutoRegion();
     var h = '<div class="condnow"><h4>Conditions right now</h4>';
-    if (!c.has) { h += '<p class="muted">The schedule has no times for ' + esc(m.name) + " yet.</p>"; }
+    if (c.stale) { h += '<p class="muted">The schedule copy on this page is out of date. Reload the page, or check the official page below.</p>'; }
     else {
       h += c.act.length ? "<ul>" + c.act.map(function (x) { return '<li><b>' + esc(x.n) + '</b> <span class="ktag go" data-cend="' + x.e + '">ends in ' + condLeft(x.e - Date.now()) + "</span></li>"; }).join("") + "</ul>" :
-        '<p>No scheduled condition right now.</p>';
+        "<p>No condition on " + esc(m.name) + " right now.</p>";
       if (c.next.length) { h += '<p class="muted">Coming up: ' + c.next.slice(0, 4).map(function (x) { return "<b>" + esc(x.n) + "</b> at " + condClock(x.s) + ' (<span data-cstart="' + x.s + '">in ' + condLeft(x.s - Date.now()) + "</span>)"; }).join(", ") + ".</p>"; }
+      else if (!c.act.length) { h += '<p class="muted">Nothing scheduled here in the next 24 hours.</p>'; }
     }
-    var names = []; CSCHED.rows.forEach(function (r) { if (r[0] === m.name && names.indexOf(r[1]) === -1) { names.push(r[1]); } });
-    if (names.length) {
-      h += '<p class="muted" style="margin-bottom:2px;">Star one to have Home flag it when it starts:</p><div class="chips">' + names.sort().map(function (n) {
-        var k = m.name + "|" + n, on = !!condWatch[k];
-        return '<button type="button" class="chip" data-action="condWatch" data-k="' + esc(k) + '" aria-pressed="' + on + '">' + (on ? "&#9733; " : "&#9734; ") + esc(n) + "</button>";
-      }).join("") + "</div>";
-    }
-    var opts = ""; for (var i = -6; i <= 6; i++) { opts += '<option value="' + i + '"' + (i === sh ? " selected" : "") + ">" + (i === 0 ? "No shift" : (i > 0 ? "+" : "") + i + " h") + "</option>"; }
-    h += '<p class="muted condsrc">Schedule from <a href="' + esc(CSCHED.url || "https://metaforge.app/arc-raiders") + '" target="_blank" rel="noopener">MetaForge</a> (community data, checked daily, may miss some conditions). ' +
-      '<label>Times off for your server? Shift <select id="condShift" aria-label="Shift the condition schedule">' + opts + "</select></label></p></div>";
+    h += '<p class="muted" style="margin-bottom:2px;">Star one to have Home flag it when it starts:</p><div class="chips">' + m.conds.slice().sort().map(function (n) {
+      var k = m.name + "|" + n, on = !!condWatch[k];
+      return '<button type="button" class="chip" data-action="condWatch" data-k="' + esc(k) + '" aria-pressed="' + on + '">' + (on ? "&#9733; " : "&#9734; ") + esc(n) + "</button>";
+    }).join("") + "</div>";
+    var nm = function (id) { return COND_REGIONS.filter(function (x) { return x[0] === id; })[0][1]; };
+    var opts = '<option value="auto"' + (reg === "auto" ? " selected" : "") + ">Auto (" + esc(nm(auto)) + ")</option>" +
+      COND_REGIONS.map(function (x) { return '<option value="' + x[0] + '"' + (reg === x[0] ? " selected" : "") + ">" + esc(x[1]) + "</option>"; }).join("");
+    h += '<p class="muted condsrc"><label>Server region <select id="condRegion" aria-label="Server region for map conditions">' + opts + "</select></label> " +
+      'Times are in your own clock. Schedule from the official <a href="https://arcraiders.com/map-conditions" target="_blank" rel="noopener">ARC Raiders map conditions page</a>, refreshed every hour.</p></div>';
     return h;
   }
   /* Called every 30 seconds: refresh the countdowns, and redraw when a condition starts or ends. */
@@ -1731,7 +1754,7 @@ footer .wrap { display: grid; gap: 2px; }
   /* Live conditions worth knowing about for your plans: ones that drop a wishlist blueprint, major ones (double
      Trial points) and anything on the map your quest route sends you to next. */
   function condTips(nextMap) {
-    var n = new Date(), major = (/Major: ([^.]*)\./.exec(CONDITIONS) || [0, ""])[1].split(", "), out = [], seen = {};
+    var n = new Date(), major = (CSCHED.major && CSCHED.major.length ? CSCHED.major : (/Major: ([^.]*)\./.exec(CONDITIONS) || [0, ""])[1].split(", ")), out = [], seen = {};
     MAPS.forEach(function (m) {
       var act = condNow(m.name, n).act; if (!act.length) { return; }
       var bw = bpForMap(m.name);
@@ -1782,8 +1805,8 @@ footer .wrap { display: grid; gap: 2px; }
       prepHtml(m.name) +
       '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
     document.getElementById("mapCard").className = "mapcard md" + (m.diff || 0);
-    var cs = document.getElementById("condShift");
-    if (cs) { cs.addEventListener("change", function () { save("arcHubCondShift", parseInt(cs.value, 10) || 0); condSig = ""; renderMaps(); }); }
+    var cs = document.getElementById("condRegion");
+    if (cs) { cs.addEventListener("change", function () { save("arcHubCondRegion", cs.value); condSig = ""; renderMaps(); }); }
     var cnow = new Date();
     var runs = {};
     raids.forEach(function (r) { var k = runs[r.m] = runs[r.m] || { n: 0, x: 0 }; k.n++; if (r.o === "x") { k.x++; } });
@@ -6465,7 +6488,7 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("dataStamp").textContent = last ? "Data checked daily, last on " + last : "Data checked against the wiki on " + DATA_UPDATED;
     document.getElementById("dataStamp2").textContent = last ? "Last daily data check: " + last + "." + ch : "Last data check: " + DATA_UPDATED + ".";
     document.getElementById("freshBody").innerHTML = (ARC.FRESHNESS || []).map(function (r) {
-      var when = r[2] === "daily" ? "Checked daily" + (last ? " (last " + last + ")" : "") + "; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
+      var when = r[2] === "hourly" ? "Checked every hour" : r[2] === "daily" ? "Checked daily" + (last ? " (last " + last + ")" : "") + "; last change " + r[1] : r[1] + (r[2] ? " (" + r[2] + ")" : "");
       return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(when) + "</td></tr>";
     }).join("");
   }
@@ -6973,7 +6996,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condFetch(); setInterval(condFetch, 1800000); installInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

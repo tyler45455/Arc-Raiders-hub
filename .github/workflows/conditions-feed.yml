@@ -1,0 +1,45 @@
+name: Hourly map condition schedule
+
+# Every hour, reads the official map condition schedule from arcraiders.com/map-conditions and publishes it as
+# conditions.json on the conditions-data branch. The site reads that file live (the official page itself
+# cannot be read from another website). Only the data branch changes; main is untouched.
+# Run it by hand from the Actions tab with "Run workflow".
+on:
+  schedule:
+    - cron: "7 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: conditions-feed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Read the official schedule
+        run: node tools/sync-conditions.js --json "$RUNNER_TEMP/conditions.json" --print
+      - name: Publish on the conditions-data branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir "$RUNNER_TEMP/pub" && cd "$RUNNER_TEMP/pub"
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          if git fetch -q --depth 1 origin conditions-data; then
+            git checkout -q -b conditions-data FETCH_HEAD
+          else
+            git checkout -q --orphan conditions-data
+            printf 'Map condition schedule for the Speranza Field Guide, refreshed every hour by .github/workflows/conditions-feed.yml on main.\nSource: https://arcraiders.com/map-conditions\n' > README.md
+          fi
+          cp "$RUNNER_TEMP/conditions.json" conditions.json
+          git add -A
+          git commit -q -m "Map condition schedule $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q origin conditions-data

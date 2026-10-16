@@ -36,12 +36,17 @@ ARC.FRESHNESS = [
     ["Project presets", "October 10, 2026", "daily"],
     ["Trials (Season 6, Week 2)", "October 14, 2026", "daily"],
     ["Maps and update history", "October 16, 2026", "daily"],
-    ["Map condition schedule (from MetaForge)", "October 16, 2026", "daily"]
+    ["Map condition schedule (official, by server region)", "October 16, 2026", "hourly"]
   ];
 
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "Map condition times now come from the official ARC Raiders map conditions page and follow your server region (picked from your timezone; change it on any map card). The schedule refreshes every hour. The earlier community schedule was wrong on North American servers and missed conditions like Beachcombing and ARC Frigate."],
+    ["Oct 16, 2026", "Faster first load: item rows are built as they appear on screen, the Maps tab is only drawn when you open it, and a few slow lookups are cached."],
+    ["Oct 16, 2026", "Star any condition on a map card and Home flags it when it starts, with a countdown; until then Home shows when your starred conditions come up next."],
+    ["Oct 16, 2026", "The Next raid card on Home now lists the best live conditions right now: ones that can drop a blueprint on your wishlist, major conditions (Trial points count double), and anything on your next raid map."],
+    ["Oct 16, 2026", "Each tab now starts with one short explanation. The yellow how-to box only opens from the How to use button, and the Stash and Gear intros are shorter."],
     ["Oct 16, 2026", "Live map conditions: each map now shows which conditions are on right now with a countdown to when they end, what is coming up next and when, and switches by itself when they change. Home has a Map conditions right now card, and the map list tags each map's current condition. The schedule comes from MetaForge's community feed and is refreshed daily; if your server runs a few hours off, shift the times on the map card."],
     ["Oct 16, 2026", "Cleaner phone layout: long tab intros fold to two lines with a More button, the search box on Recycle and the filters on Stash stay at the top while you scroll, and the More menu has bigger buttons that are easier to tap."],
     ["Oct 16, 2026", "Maps follow your quests: the map your quest route sends you to next gets a star and a Next raid tag, Raid prep has a Show my quest spots on the map button that pins your active quest spots in walking order, and keys are marked You have it or Missing (from your stash, or tick I have it yourself)."],

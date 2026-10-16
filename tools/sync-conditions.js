@@ -95,7 +95,9 @@ async function main() {
       "   tools/sync-conditions.js; do not edit by hand. The site reads a fresher copy from the conditions-data branch\n" +
       "   and uses this one only when that fails. rows: [map, condition, start, end] in ms, Europe times;\n" +
       "   offsets: ms to add for each other server region. */\n" +
-      "var ARC = window.ARC_DATA = window.ARC_DATA || {};\n\nARC.COND_SCHEDULE = " + JSON.stringify(d, null, 1).replace(/\n\s*(\d|")/g, function (x, c) { return c === '"' ? x : c; }).replace(/\[\n\s*"/g, '["').replace(/\n\s*\]/g, "]") + ";\n");
+      "var ARC = window.ARC_DATA = window.ARC_DATA || {};\n\nARC.COND_SCHEDULE = {\n  source: " + JSON.stringify(d.source) + ",\n  fetched: " + d.fetched +
+      ",\n  offsets: " + JSON.stringify(d.offsets) + ",\n  major: " + JSON.stringify(d.major) + ",\n  rows: [\n" +
+      d.rows.map(function (r) { return "    " + JSON.stringify(r); }).join(",\n") + "\n  ]\n};\n");
   }
   if (a.indexOf("--print") !== -1 || (ji === -1 && a.indexOf("--js") === -1)) { printNow(d); }
 }

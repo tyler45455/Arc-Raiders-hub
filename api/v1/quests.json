@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 15, 2026",
- "count": 113,
+ "dataDate": "October 16, 2026",
+ "count": 114,
  "quests": [
   {
    "id": "picking-up-the-pieces",
@@ -4017,6 +4017,40 @@
    ],
    "after": [
     "exploring-pendola-pass"
+   ]
+  },
+  {
+   "id": "bait-fetch-blast",
+   "name": "Bait, Fetch, Blast",
+   "trader": "Apollo",
+   "locations": [
+    "Pendola Pass"
+   ],
+   "requires": [
+    {
+     "id": "bully-fragmenter",
+     "name": "Bully Fragmenter",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "bully-fragmenter",
+     "name": "Bully Fragmenter",
+     "qty": 1
+    },
+    {
+     "id": "wolfpack",
+     "name": "Wolfpack",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Either destroy a Bully, destroy the head of a Bully and destroy 4 Bully legs",
+    "Or deliver a Bully Fragmenter to Apollo"
+   ],
+   "after": [
+    "tracks-of-the-beast"
    ]
   },
   {

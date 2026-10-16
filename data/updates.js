@@ -18,29 +18,30 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 15, 2026";
+ARC.DATA_UPDATED = "October 16, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
    Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
-    ["Sell prices, weights, recipes and where to find items", "October 15, 2026", "daily"],
-    ["Quests, objectives and quest chain", "October 15, 2026", "daily"],
+    ["Sell prices, weights, recipes and where to find items", "October 16, 2026", "daily"],
+    ["Quests, objectives and quest chain", "October 16, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
     ["Recycling and salvage data", "October 9, 2026", "daily"],
     ["Weapons & gear", "October 9, 2026", "daily"],
-    ["Reference: enemies, traders, workshop, blueprints", "October 15, 2026", "daily"],
+    ["Reference: enemies, traders, workshop, blueprints", "October 16, 2026", "daily"],
     ["Project presets", "October 10, 2026", "daily"],
     ["Trials (Season 6, Week 2)", "October 14, 2026", "daily"],
-    ["Maps and update history", "October 10, 2026", "daily"]
+    ["Maps and update history", "October 16, 2026", "daily"]
   ];
 
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "Daily check: added the Bully Fragmenter (epic, sells for 5,000 coins, dropped by the Bully and the Courier) and the quest Bait, Fetch, Blast (Apollo, Pendola Pass, after Tracks Of The Beast). Pendola Pass now unlocks after 25 rounds. The Bully now lists its attacks, weak points, drops and Pendola Pass, and the Skulker its attack, XP, weak points and the Skulker Targeter drop. Integrated Binoculars sell for 0 coins (built into the Looting Mk. 3 (Cautious)).", "wiki"],
     ["Oct 15, 2026", "Added Google's site check file so the site can be listed and tracked in Google Search Console."],
     ["Oct 15, 2026", "New name: the site is now Speranza Field Guide, so it no longer shares a name with other ARC Raiders sites and Discords. The web address, your saved stash, quests and settings stay the same."],
     ["Oct 15, 2026", "Easier to find and nicer to share: clearer page titles and descriptions for Google, a new link preview image, a full preview card on every item and map page when shared on Discord, Reddit or X, and the sitemap now tells Google when the data last changed."],

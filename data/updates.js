@@ -41,6 +41,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 16, 2026", "Maps follow your quests: the map your quest route sends you to next gets a star and a Next raid tag, Raid prep has a Show my quest spots on the map button that pins your active quest spots in walking order, and keys are marked You have it or Missing (from your stash, or tick I have it yourself)."],
     ["Oct 16, 2026", "Smarter search: the Search everything box now also finds tools (type a tool name and press Enter to open it), maps, map conditions (like Night Raid, showing which maps get it) and quests that need the item you typed."],
     ["Oct 16, 2026", "Answers right on the item: every item in Recycle now shows a quick verdict (keep it, recycle it or sell it, depending on what your quests, projects, goals and workshop still need and which is worth more coins), a Craft or sell line for craftable items, and which workshop levels you have not built yet still need it."],
     ["Oct 16, 2026", "Tools tab is shorter: tools that do the same job now share one entry. Keep or recycle, Loot value and Stash worth are under What's it worth?; Compare weapons, Shots to kill and Weapon upgrade path are under Weapons; Crafting planner, Shopping list and Workshop planner are under Crafting and shopping. The list went from 22 entries to 16, and every tool still works the same."],

@@ -1688,7 +1688,10 @@ footer .wrap { display: grid; gap: 2px; }
     return { act: act, next: next, has: sp.length > 0 };
   }
   function condLeft(ms) { var m = Math.max(1, Math.ceil(ms / 60000)); return m < 60 ? m + "m" : Math.floor(m / 60) + "h " + (m % 60) + "m"; }
-  function condClock(ms) { try { return new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); } catch (e) { return new Date(ms).toTimeString().slice(0, 5); } }
+  var condFmt = null;
+  function condClock(ms) {
+    try { condFmt = condFmt || new Intl.DateTimeFormat([], { hour: "numeric", minute: "2-digit" }); return condFmt.format(new Date(ms)); } catch (e) { return new Date(ms).toTimeString().slice(0, 5); }
+  }
   function condLive(m) {
     if (!m.conds || !m.conds.length) { return ""; }
     var c = condNow(m.name, new Date()), sh = condShiftH();
@@ -1760,6 +1763,7 @@ footer .wrap { display: grid; gap: 2px; }
     try { var r = qrPlan(parseInt(qrSet.per, 10) || 4)[0]; return r && r.map !== "Any map" ? r : null; } catch (e) { return null; }
   }
   function renderMaps() {
+    if (curTab !== "maps") { return; }  /* drawn when the Maps tab opens (showTab calls this) */
     var nr = nextRaidMap();
     document.getElementById("mapChips").innerHTML = MAPS.map(function (m, i) {
       return '<button class="chip" data-map="' + i + '" aria-pressed="' + (i === curMap) + '">' + esc(m.name) + (nr && nr.map === m.name ? " &#9733;" : "") + "</button>";
@@ -2044,13 +2048,15 @@ footer .wrap { display: grid; gap: 2px; }
 
   /* Long lists: draw the first rows now and the rest in small batches, so the page shows sooner. */
   var rowJob = 0, rowRest = null;
+  /* parts holds HTML strings or functions that build one; rows are built only when they are painted. */
   function paintRows(out, parts) {
     var job = ++rowJob, i = 24;
-    out.innerHTML = parts.slice(0, i).join("");
+    function html(a, b) { return parts.slice(a, b).map(function (p) { return typeof p === "function" ? p() : p; }).join(""); }
+    out.innerHTML = html(0, i);
     rowRest = function (all) {
       if (job !== rowJob) { return; }
       var n = all ? parts.length : i + 60;
-      if (i < n) { out.insertAdjacentHTML("beforeend", parts.slice(i, n).join("")); i = n; }
+      if (i < n) { out.insertAdjacentHTML("beforeend", html(i, n)); i = n; }
       if (i >= parts.length) { rowRest = null; return; }
       if (!all) { setTimeout(rowRest, 30); }
     };
@@ -2074,7 +2080,7 @@ footer .wrap { display: grid; gap: 2px; }
         return d || a.name.localeCompare(b.name);
       });
       az.innerHTML = "";
-      if (flat.length) { paintRows(out, flat.map(function (it) { return itemRow(it, ""); })); } else { out.innerHTML = '<div class="empty-line">Nothing matches.</div>'; }
+      if (flat.length) { paintRows(out, flat.map(function (it) { return function () { return itemRow(it, ""); }; })); } else { out.innerHTML = '<div class="empty-line">Nothing matches.</div>'; }
       return;
     }
 
@@ -2087,7 +2093,7 @@ footer .wrap { display: grid; gap: 2px; }
           cur = L; letters[L] = true;
           parts.push('<div class="group-title" id="L-' + L + '"><b>' + L + "</b></div>");
         }
-        parts.push(itemRow(it, ""));
+        parts.push(function () { return itemRow(it, ""); });
       });
       az.innerHTML = Object.keys(letters).map(function (L) {
         return '<button type="button" data-action="jump" data-l="' + L + '" aria-label="Jump to ' + L + '">' + L + "</button>";
@@ -3464,13 +3470,15 @@ footer .wrap { display: grid; gap: 2px; }
   }
 
   var changedCache = {};
+  var updText = null;
   function changedIn(name) {
     if (changedCache[name] !== undefined) { return changedCache[name]; }
     var out = [];
     if (name.length >= 5) {
       var re = new RegExp("\\b" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i");
-      UPDATES.forEach(function (u) {
-        if (re.test(u.points.join(" | ") + " " + u.body)) { out.push(u.title); }
+      if (!updText || updText.length !== UPDATES.length) { updText = UPDATES.map(function (u) { return u.points.join(" | ") + " " + u.body; }); }
+      UPDATES.forEach(function (u, ui) {
+        if (re.test(updText[ui])) { out.push(u.title); }
       });
     }
     changedCache[name] = out;

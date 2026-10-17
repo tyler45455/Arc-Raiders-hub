@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 16, 2026",
- "count": 397,
+ "dataDate": "October 17, 2026",
+ "count": 398,
  "items": [
   {
    "id": "arc-alloy",
@@ -96,6 +96,9 @@
    "sources": {
     "foundIn": [
      "Harvester Payload"
+    ],
+    "arcEnemies": [
+     "Bastion"
     ]
    },
    "sellPrice": 100,
@@ -134,6 +137,7 @@
      "Pop",
      "Queen",
      "Sentinel",
+     "Skulker",
      "Surveyor",
      "Vaporizer"
     ]
@@ -409,6 +413,7 @@
      "Pop",
      "Queen",
      "Sentinel",
+     "Skulker",
      "Snitch",
      "Tick",
      "Turbine",
@@ -4583,6 +4588,47 @@
     ]
    },
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/electrical-components/"
+  },
+  {
+   "id": "emperor-gateway-conduit",
+   "name": "Emperor Gateway Conduit",
+   "rarity": "Legendary",
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [],
+   "sources": {
+    "foundIn": [
+     "Final reward on the Frozen Trail Premium Reward Pass"
+    ],
+    "other": [
+     "Legendary key that opens the Fallen Emperor on Pendola Pass"
+    ]
+   },
+   "sellPrice": 1000,
+   "weightKg": 0.5,
+   "stackSize": 1,
+   "craft": {
+    "at": "Workbench 1",
+    "ingredients": [
+     {
+      "id": "arc-insulated-coupler",
+      "name": "ARC Insulated Coupler",
+      "qty": 1
+     },
+     {
+      "id": "arc-conductive-coupler",
+      "name": "ARC Conductive Coupler",
+      "qty": 1
+     },
+     {
+      "id": "arc-plated-coupler",
+      "name": "ARC Plated Coupler",
+      "qty": 1
+     }
+    ]
+   },
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/emperor-gateway-conduit/"
   },
   {
    "id": "epoxy-bucket",

@@ -361,7 +361,9 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .lkadd, .stadd { margin: 14px 0 0; }
 .lkfoot { margin-top: 12px; }
 .lkfoot #trackerSummary:empty { display: none; }
-.homegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 12px; }
+/* Masonry-style columns: each card keeps its own height and the next card fills in right below it, so there are no empty gaps. */
+.homegrid { columns: 3 300px; column-gap: 12px; }
+.homegrid > .homecard { break-inside: avoid; margin: 0 0 12px; }
 .homecard h3 { margin: 0; font-size: 17px; }
 #homeCust .hcrow { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
 #homeCust .hcrow:last-child { border-bottom: 0; }
@@ -899,6 +901,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .stcard, .homecard { transition: transform .15s, box-shadow .15s; }
 @media (hover: hover) { .stcard:hover, .homecard:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(40, 28, 8, .06), 0 14px 28px -16px rgba(40, 28, 8, .4); } }
 .homecard { border-left-width: 4px; }
+/* Home cards take their own height (no stretched empty space); content packs at the top with buttons at their natural size. */
+.homecard { display: flex; flex-direction: column; gap: 8px; }
+.homecard > * { margin-top: 0; margin-bottom: 0; }
+.homecard .acts { margin-top: auto; padding-top: 4px; align-items: flex-start; }
+.homecard .acts .btn { align-self: flex-start; }
+.homecard ul.homelist { margin: 0; }
 .homecard h3 { font-family: var(--font-display); font-size: 21px; text-transform: uppercase; letter-spacing: .02em; }
 .sttile { position: relative; overflow: hidden; padding-top: 13px; }
 .sttile::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: #7be8e4; }

@@ -18,21 +18,21 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 16, 2026";
+ARC.DATA_UPDATED = "October 17, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
    Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
-    ["Sell prices, weights, recipes and where to find items", "October 16, 2026", "daily"],
+    ["Sell prices, weights, recipes and where to find items", "October 17, 2026", "daily"],
     ["Quests, objectives and quest chain", "October 16, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
     ["Recycling and salvage data", "October 9, 2026", "daily"],
     ["Weapons & gear", "October 9, 2026", "daily"],
-    ["Reference: enemies, traders, workshop, blueprints", "October 16, 2026", "daily"],
+    ["Reference: enemies, traders, workshop, blueprints", "October 17, 2026", "daily"],
     ["Project presets", "October 10, 2026", "daily"],
     ["Trials (Season 6, Week 2)", "October 14, 2026", "daily"],
     ["Maps and update history", "October 16, 2026", "daily"],
@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 17, 2026", "Daily check: added the Emperor Gateway Conduit (legendary key for the Fallen Emperor on Pendola Pass, crafted from the three ARC couplers or earned at the end of the Frozen Trail Premium pass); Bastions now drop ARC Conductive Coupler; Skulkers also drop ARC Thermo Lining, Heavy Ammo, ARC Coolant, Advanced ARC Powercell and ARC Data Module.", "wiki"],
     ["Oct 16, 2026", "On phones, rows of filter buttons that scroll sideways now fade at the edge and show an arrow when more buttons are off screen. Tap the arrow or swipe to see them."],
     ["Oct 16, 2026", "Fixes from a full-site check: the Undo button stays usable after an undo; the weapon upgrade planner no longer counts raw materials twice; backups now include map pins, the weekly plan, the squad board and skill builds; ARC Tracker sync no longer unticks quests or empties stash items it could not recognise; adding an item with different capitals no longer makes a duplicate; picking a quest, weapon, enemy or blueprint from search clears filters that would hide it; Share as image downloads the picture if sharing fails; the \"Checked\" date under each tab heading now shows that section's own date; offline, pages you never opened go to the home page instead of loading broken."],
     ["Oct 16, 2026", "Fixes: opening Shopping list, Workshop planner or Shots to kill from Home or search now scrolls to that tool; two starred conditions starting together now each get a notification; Home says when the condition schedule is out of date instead of showing nothing; the server region is now saved in backups; the starred line on Home translates fully; calendar files follow the standard line length."],

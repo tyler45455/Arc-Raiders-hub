@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 17, 2026", "Fixed the Home card sizing: cards now fit their content and stack neatly in columns, with no big empty gaps or stretched buttons."],
     ["Oct 17, 2026", "New stash worth chart on the Home Stash card: your stash value day by day for up to 90 days, with how much it changed over the last 7 days and overall. It uses the daily snapshots the site already keeps, so it starts with your past days, each valued at today's sell prices."],
     ["Oct 17, 2026", "New Customize Home at the bottom of Home: untick a card to hide it (including the stat tiles) and use the arrows to move cards up or down. Your layout is saved in this browser, and Back to the default layout undoes it."],
     ["Oct 17, 2026", "Daily check: added the Emperor Gateway Conduit (legendary key for the Fallen Emperor on Pendola Pass, crafted from the three ARC couplers or earned at the end of the Frozen Trail Premium pass); Bastions now drop ARC Conductive Coupler; Skulkers also drop ARC Thermo Lining, Heavy Ammo, ARC Coolant, Advanced ARC Powercell and ARC Data Module.", "wiki"],

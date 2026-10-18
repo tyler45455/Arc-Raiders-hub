@@ -867,6 +867,25 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .rdvals > div { display: grid; }
 .rdvals .k { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .rdvals b { font-size: 20px; }
+/* Raid calendar: a month grid, each day tinted green or red by that day's profit (stronger = bigger). */
+.rdcal { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px; max-width: 560px; }
+.rdcal .calbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.rdcal .calbar b { font-size: 15px; }
+.rdcal .calbar .btn { padding: 4px 10px; }
+.rdcal .calg { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.rdcal .calw { font-size: 11px; color: var(--muted); text-align: center; }
+.rdcal .cald { font: inherit; color: inherit; min-height: 52px; padding: 3px 2px; border: 1px solid var(--line); border-radius: 6px; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 1px; font-size: 12px; line-height: 1.2; min-width: 0; overflow: hidden; }
+.rdcal .cald.has { cursor: pointer; background: var(--surface2); }
+.rdcal .cald.has:hover { border-color: var(--fg); }
+.rdcal .cald.today .dn { font-weight: 700; text-decoration: underline; }
+.rdcal .cald[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: -1px; }
+.rdcal .cald .dn { font-size: 12px; }
+.rdcal .cald .dc { font-size: 10px; color: var(--muted); }
+.rdcal .cald .dp { font-size: 11px; font-weight: 600; white-space: nowrap; }
+.rdcal .cald.up .dp { color: var(--good); } .rdcal .cald.down .dp { color: var(--danger); }
+.rdcal .calsum { margin-top: 8px; font-size: 13px; }
+.rdcal .calsum .pos { color: var(--good); font-weight: 600; } .rdcal .calsum .neg { color: var(--danger); font-weight: 600; }
+.rddaynote { margin: 0 0 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
 .rdvals b.pos { color: var(--good); } .rdvals b.neg { color: var(--danger); }
 .rlrow .pos { color: var(--good); font-weight: 600; } .rlrow .neg { color: var(--danger); font-weight: 600; }
 .homecard b.pos { color: var(--good); } .homecard b.neg { color: var(--danger); }
@@ -1105,7 +1124,10 @@ footer .wrap { display: grid; gap: 2px; }
     </div>
     <h3 class="rdh">By map</h3>
     <div class="mapgrid" id="rdMaps"></div>
+    <h3 class="rdh rdcalh">Calendar</h3>
+    <div class="rdcal" id="rdCal"></div>
     <h3 class="rdh">Raids</h3>
+    <div class="rddaynote" id="rdDayNote" hidden></div>
     <div class="stgrid" id="rdOut" aria-live="polite"></div>
     <div class="acts" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="rdMore" id="rdMore" hidden>Show more</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="raidTool">Log a raid by hand</button></div>
   </section>
@@ -5974,6 +5996,8 @@ footer .wrap { display: grid; gap: 2px; }
       if (!document.getElementById("rlLo").value) { document.getElementById("rlKit").value = ""; }
       document.getElementById("rlMsg").textContent = "Logged."; renderRaids();
     } else if (a === "rdMore") { rdShow += 60; renderRaidsTab();
+    } else if (a === "rdCalMv") { var cmv = new Date(rdCal.y, rdCal.m + (parseInt(t.getAttribute("data-d"), 10) || 0), 1); rdCal = { y: cmv.getFullYear(), m: cmv.getMonth() }; renderRaidsTab();
+    } else if (a === "rdCalDay") { var cdk = t.getAttribute("data-k"); rdDay = rdDay === cdk ? "" : cdk; rdShow = 60; renderRaidsTab(); if (rdDay) { var rdo = document.getElementById("rdDayNote"); if (rdo && rdo.scrollIntoView) { rdo.scrollIntoView({ block: "nearest", behavior: "smooth" }); } }
     } else if (a === "rdPickMap") { var rpm = t.getAttribute("data-m"); rdView.m = rdView.m === rpm ? "" : rpm; save("arcHubRaidView", rdView); rdShow = 60; renderRaidsTab();
     } else if (a === "rlDel") {
       var rli = parseInt(t.getAttribute("data-i"), 10);
@@ -6613,6 +6637,42 @@ footer .wrap { display: grid; gap: 2px; }
   var rdView = load("arcHubRaidView", { f: "all", m: "", w: "0", s: "new" }), rdShow = 60;
   function rdDur(d) { return d ? Math.floor(d / 60) + ":" + ("0" + (d % 60)).slice(-2) : ""; }
   function rdSigned(n) { return (n > 0 ? "+" : n < 0 ? "&minus;" : "") + coins(Math.abs(n)); }
+  /* Raid calendar: month shown (not saved, starts on this month) and the day picked to filter the list ("" = none). */
+  var rdCal = null, rdDay = "";
+  function rdKey(t) { var d = new Date(t); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function rdShort(n) { var a = Math.abs(n), v = a >= 1e6 ? (a / 1e6).toFixed(1).replace(/\.0$/, "") + "m" : a >= 1e3 ? Math.round(a / 1e3) + "k" : String(a); return (n > 0 ? "+" : n < 0 ? "&minus;" : "") + v; }
+  function renderRaidCal(list) {
+    var box = document.getElementById("rdCal");
+    if (!box) { return; }
+    var now = new Date();
+    if (!rdCal) { var lastT = list.length ? Math.max.apply(null, list.map(function (r) { return r.t; })) : now.getTime(), ld = new Date(lastT); rdCal = { y: ld.getFullYear(), m: ld.getMonth() }; }
+    var y = rdCal.y, m = rdCal.m, first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate(), pre = first.getDay();
+    var by = {};
+    list.forEach(function (r) { var k = rdKey(r.t), g = by[k] || (by[k] = { n: 0, x: 0, p: 0, pn: 0 }); g.n++; if (r.o === "x") { g.x++; } if (r.p != null) { g.p += r.p; g.pn++; } });
+    var mk = y + "-" + ("0" + (m + 1)).slice(-2) + "-", inM = Object.keys(by).filter(function (k) { return k.indexOf(mk) === 0; });
+    var top = Math.max.apply(null, [1].concat(inM.map(function (k) { return by[k].pn ? Math.abs(by[k].p) : 0; })));
+    var tk = rdKey(now.getTime()), cells = "";
+    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach(function (w) { cells += '<div class="calw" aria-hidden="true">' + w + "</div>"; });
+    for (var i = 0; i < pre; i++) { cells += '<div aria-hidden="true"></div>'; }
+    for (var d = 1; d <= days; d++) {
+      var k = mk + ("0" + d).slice(-2), g = by[k], cls = "cald" + (k === tk ? " today" : ""), st = "", lab = new Date(y, m, d).toLocaleDateString([], { month: "long", day: "numeric" });
+      if (!g) { cells += '<div class="' + cls + '"><span class="dn">' + d + "</span></div>"; continue; }
+      cls += " has" + (g.pn ? (g.p >= 0 ? " up" : " down") : "");
+      if (g.pn && g.p !== 0) { st = ' style="background:color-mix(in srgb, var(--' + (g.p > 0 ? "good" : "danger") + ") " + Math.round(12 + 38 * Math.min(1, Math.abs(g.p) / top)) + '%, var(--surface2))"'; }
+      lab += ": " + g.n + " raid" + (g.n === 1 ? "" : "s") + ", " + g.x + " extracted" + (g.pn ? ", profit " + (g.p < 0 ? "minus " : "") + coins(Math.abs(g.p)) : "");
+      cells += '<button type="button" class="' + cls + '"' + st + ' data-action="rdCalDay" data-k="' + k + '" aria-pressed="' + (rdDay === k) + '" aria-label="' + esc(lab) + '" title="' + esc(lab) + '"><span class="dn">' + d + '</span><span class="dc">' + g.n + "&times;</span>" + (g.pn ? '<span class="dp">' + rdShort(g.p) + "</span>" : "") + "</button>";
+    }
+    var mn = inM.reduce(function (a, k) { return a + by[k].n; }, 0), mp = inM.reduce(function (a, k) { return a + by[k].p; }, 0), mpn = inM.some(function (k) { return by[k].pn; });
+    var withP = inM.filter(function (k) { return by[k].pn; }).sort(function (a, b) { return by[b].p - by[a].p; });
+    function dayName(k) { var p = k.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString([], { month: "short", day: "numeric" }); }
+    function sg(n) { return '<span class="' + (n >= 0 ? "pos" : "neg") + '">' + rdSigned(n) + "</span>"; }
+    var sum = !mn ? "No raids this month." : "<b>" + mn + "</b> raid" + (mn === 1 ? "" : "s") + " on " + inM.length + " day" + (inM.length === 1 ? "" : "s") + (mpn ? " &middot; profit " + sg(mp) : "") +
+      (withP.length > 1 ? " &middot; best day " + dayName(withP[0]) + " (" + sg(by[withP[0]].p) + ") &middot; worst " + dayName(withP[withP.length - 1]) + " (" + sg(by[withP[withP.length - 1]].p) + ")" : "") +
+      '<div class="muted" style="margin-top:2px;">Green days made money and red days lost it; the stronger the color, the bigger the swing. Tap a day to see its raids.</div>';
+    var atNow = y === now.getFullYear() && m === now.getMonth();
+    box.innerHTML = '<div class="calbar"><button type="button" class="btn ghost" data-action="rdCalMv" data-d="-1" aria-label="Previous month">&lsaquo;</button><b>' + first.toLocaleDateString([], { month: "long", year: "numeric" }) + '</b><button type="button" class="btn ghost" data-action="rdCalMv" data-d="1" aria-label="Next month"' + (atNow ? " disabled" : "") + ">&rsaquo;</button></div>" +
+      '<div class="calg">' + cells + '</div><div class="calsum">' + sum + "</div>";
+  }
   function renderRaidsTab() {
     var out = document.getElementById("rdOut");
     if (!out) { return; }
@@ -6625,7 +6685,13 @@ footer .wrap { display: grid; gap: 2px; }
     Array.prototype.forEach.call(document.querySelectorAll("[data-rdf]"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-rdf") === rdView.f ? "true" : "false"); });
     var since = 0, w = parseInt(rdView.w, 10) || 0;
     if (w === 1) { var d0 = new Date(); d0.setHours(0, 0, 0, 0); since = d0.getTime(); } else if (w) { since = Date.now() - w * 864e5; }
-    var inRange = raids.filter(function (r) { return r.t >= since && (!msel.value || r.m === msel.value); });
+    var byMap = raids.filter(function (r) { return !msel.value || r.m === msel.value; });
+    renderRaidCal(byMap);
+    var dn = document.getElementById("rdDayNote");
+    if (rdDay && !byMap.some(function (r) { return rdKey(r.t) === rdDay; })) { rdDay = ""; }
+    dn.hidden = !rdDay;
+    if (rdDay) { var dp = rdDay.split("-"); dn.innerHTML = "<span>Showing raids from <b>" + new Date(+dp[0], +dp[1] - 1, +dp[2]).toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }) + '</b></span><button type="button" class="btn ghost" style="padding:3px 10px;" data-action="rdCalDay" data-k="' + rdDay + '">Show all days</button>'; }
+    var inRange = byMap.filter(function (r) { return rdDay ? rdKey(r.t) === rdDay : r.t >= since; });
     var list = inRange.filter(function (r) { return rdView.f === "all" || r.o === rdView.f; });
     function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
     var x = inRange.filter(function (r) { return r.o === "x"; }), xv = x.filter(function (r) { return r.v != null; }), pv = inRange.filter(function (r) { return r.p != null; });
@@ -6644,7 +6710,8 @@ footer .wrap { display: grid; gap: 2px; }
         '<span class="s">Brought out <b>' + coins(tot) + "</b>" + (gv.length ? " &middot; avg " + coins(Math.round(tot / gv.length)) : "") + "</span>" +
         (function () { var gp = g.filter(function (r) { return r.p != null; }); return gp.length ? '<span class="s">Profit <b>' + rdSigned(gp.reduce(function (a, r) { return a + r.p; }, 0)) + "</b> over " + gp.length + " raid" + (gp.length === 1 ? "" : "s") + "</span>" : ""; })() + "</button>";
     }).join("");
-    document.querySelectorAll(".rdh").forEach(function (h) { h.hidden = !inRange.length; });
+    document.querySelectorAll(".rdh").forEach(function (h) { h.hidden = !(h.classList.contains("rdcalh") ? byMap.length : inRange.length); });
+    document.getElementById("rdCal").hidden = !byMap.length;
     var by = rdView.s;
     list.sort(function (a, b) {
       if (by === "value") { return (b.v || 0) - (a.v || 0) || b.t - a.t; }

@@ -361,8 +361,14 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .lkadd, .stadd { margin: 14px 0 0; }
 .lkfoot { margin-top: 12px; }
 .lkfoot #trackerSummary:empty { display: none; }
-.homegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 12px; }
+/* Masonry-style columns: each card keeps its own height and the next card fills in right below it, so there are no empty gaps. */
+.homegrid { columns: 3 300px; column-gap: 12px; }
+.homegrid > .homecard { break-inside: avoid; margin: 0 0 12px; }
 .homecard h3 { margin: 0; font-size: 17px; }
+#homeCust .hcrow { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+#homeCust .hcrow:last-child { border-bottom: 0; }
+#homeCust .hcrow label { flex: 1; display: flex; align-items: center; gap: 8px; min-height: 36px; }
+#homeCust .hcrow .btn { min-width: 40px; padding: 6px 10px; }
 .homecard p { margin: 0; }
 .homecard .acts { display: flex; gap: 6px; flex-wrap: wrap; }
 .homelist { margin: 0; padding-left: 18px; }
@@ -863,6 +869,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .rdvals b { font-size: 20px; }
 .rdvals b.pos { color: var(--good); } .rdvals b.neg { color: var(--danger); }
 .rlrow .pos { color: var(--good); font-weight: 600; } .rlrow .neg { color: var(--danger); font-weight: 600; }
+.homecard b.pos { color: var(--good); } .homecard b.neg { color: var(--danger); }
 .rdh { margin: 14px 0 6px; }
 
 /* Polish pass: header in one row, softer cards with depth, game-style numbers, four-colour accents */
@@ -894,6 +901,12 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .stcard, .homecard { transition: transform .15s, box-shadow .15s; }
 @media (hover: hover) { .stcard:hover, .homecard:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(40, 28, 8, .06), 0 14px 28px -16px rgba(40, 28, 8, .4); } }
 .homecard { border-left-width: 4px; }
+/* Home cards take their own height (no stretched empty space); content packs at the top with buttons at their natural size. */
+.homecard { display: flex; flex-direction: column; gap: 8px; }
+.homecard > * { margin-top: 0; margin-bottom: 0; }
+.homecard .acts { margin-top: auto; padding-top: 4px; align-items: flex-start; }
+.homecard .acts .btn { align-self: flex-start; }
+.homecard ul.homelist { margin: 0; }
 .homecard h3 { font-family: var(--font-display); font-size: 21px; text-transform: uppercase; letter-spacing: .02em; }
 .sttile { position: relative; overflow: hidden; padding-top: 13px; }
 .sttile::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: #7be8e4; }
@@ -972,6 +985,11 @@ footer .wrap { display: grid; gap: 2px; }
     <div class="sttiles" id="homeTiles"></div>
     <div class="homegrid" id="homeOut"></div>
     <label class="qchk" style="margin-top:14px;"><input type="checkbox" id="homeStart"> Open the site on this screen</label>
+    <details class="card" id="homeCustCard"><summary>Customize Home</summary>
+      <p class="muted" style="margin-top:8px;">Untick a card to hide it, and use the arrows to move it up or down. New-update and starred-condition alerts always show at the top.</p>
+      <div id="homeCust"></div>
+      <div class="acts" style="margin-top:8px;"><button class="btn ghost" type="button" id="homeCustReset">Back to the default layout</button></div>
+    </details>
     <details class="card" id="backupCard">
       <summary>Back up or move your data</summary>
       <p class="muted" style="margin-top:8px;"><b>Reset everything to default</b> (the red button below) clears quests, tracker, goals, projects, checklists, notes, pins, loadouts and every other saved setting back to zero. It keeps your language, theme and contrast choices. Export a backup first if you might want it back.</p>
@@ -4563,6 +4581,27 @@ footer .wrap { display: grid; gap: 2px; }
     hist = hist.slice(-90); save("arcHubHist", hist);
   }
   function histSoon() { clearTimeout(histTimer); histTimer = setTimeout(function () { recordHist(); if (document.getElementById("histCard").open) { renderHist(); } }, 900); }
+  /* Stash worth over time: the daily tracker snapshots in hist (last 90 days), each priced at today's sell prices. */
+  function worthOf(v) { var t = 0; Object.keys(v || {}).forEach(function (n) { var f = ITEMINFO[n]; if (f && f[0] != null && v[n] > 0) { t += f[0] * v[n]; } }); return t; }
+  function worthChart() {
+    var pts = hist.map(function (h) { return [h.d, worthOf(h.v)]; }), today = histDay();
+    if (pts.length && pts[pts.length - 1][0] === today) { pts.pop(); }
+    pts.push([today, worthOf(tracker)]);
+    while (pts.length > 1 && !pts[0][1]) { pts.shift(); }
+    if (pts.length < 2) { return '<p class="muted">Your stash value is saved once a day. Come back tomorrow to see it change over time.</p>'; }
+    var W = 300, H = 110, pl = 34, pb = 18, vals = pts.map(function (x) { return x[1]; }), max = Math.max.apply(null, vals) || 1, min = Math.min.apply(null, vals);
+    var lo = min > max * 0.5 ? Math.floor(min * 0.9) : 0, span = (max - lo) || 1;
+    var xy = pts.map(function (x, i) { return [pl + (W - pl - 6) * i / (pts.length - 1), 6 + (H - pb - 10) * (1 - (x[1] - lo) / span)]; });
+    var k = function (n) { return n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1000 ? Math.round(n / 1000) + "k" : String(n); };
+    var first = pts[0][1], last = pts[pts.length - 1][1], d = last - first, wk = null;
+    for (var i = pts.length - 2; i >= 0; i--) { if ((Date.parse(today) - Date.parse(pts[i][0])) / 864e5 >= 7) { wk = last - pts[i][1]; break; } }
+    return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Stash value over time" style="width:100%;height:auto;margin-top:6px;"><line class="hax" x1="' + pl + '" y1="' + (H - pb) + '" x2="' + W + '" y2="' + (H - pb) + '"/><line class="hax" x1="' + pl + '" y1="6" x2="' + pl + '" y2="' + (H - pb) + '"/>' +
+      '<polyline class="hline" points="' + xy.map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ") + '"/>' +
+      xy.map(function (p, j) { return '<circle class="hdot" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.5"><title>' + esc(pts[j][0]) + ": " + coins(pts[j][1]) + " coins</title></circle>"; }).join("") +
+      '<text class="htxt" x="2" y="12">' + k(max) + '</text><text class="htxt" x="2" y="' + (H - pb) + '">' + k(lo) + '</text><text class="htxt" x="' + pl + '" y="' + (H - 4) + '">' + esc(pts[0][0].slice(5)) + '</text><text class="htxt" x="' + W + '" y="' + (H - 4) + '" text-anchor="end">today</text></svg>' +
+      '<p class="muted">' + (wk !== null ? 'Last 7 days: <b class="' + (wk >= 0 ? "pos" : "neg") + '">' + (wk >= 0 ? "+" : "") + coins(wk) + "</b>. " : "") +
+      "Since " + esc(pts[0][0]) + ': <b class="' + (d >= 0 ? "pos" : "neg") + '">' + (d >= 0 ? "+" : "") + coins(d) + "</b> coins. Each day is valued at today's sell prices.</p>";
+  }
   function renderHist() {
     var sel = document.getElementById("histMat"), out = document.getElementById("histOut");
     var names = {}; Object.keys(tracker).forEach(function (k) { names[k] = 1; }); hist.forEach(function (h) { Object.keys(h.v).forEach(function (k) { names[k] = 1; }); });
@@ -5011,6 +5050,30 @@ footer .wrap { display: grid; gap: 2px; }
   }
   function homeCard(title, body, btn, kind) { return '<div class="proj homecard' + (kind ? " hk-" + kind : "") + '"><h3>' + title + "</h3>" + body + (btn ? '<div class="acts">' + btn + "</div>" : "") + "</div>"; }
   function homeBar(pct) { return '<div class="bar' + (pct >= 100 ? " done" : "") + '"><i style="width:' + Math.min(100, pct) + '%"></i></div>'; }
+  /* Customize Home: which cards show and in what order (kinds match homeCard's 4th argument; "tiles" is the stat row). */
+  var HOME_PARTS = [["tiles", "Stat tiles (quests, extracts, stash value)"], ["raid", "Next raid"], ["cond", "Map conditions"], ["ws", "Closest workshop upgrade"], ["goal", "Goals"], ["raids", "Raids"], ["stash", "Stash"]];
+  function homeLay() {
+    var l = load("arcHubHomeLay", null) || {}, o = Array.isArray(l.o) ? l.o.filter(function (k) { return HOME_PARTS.some(function (p) { return p[0] === k; }); }) : [];
+    HOME_PARTS.forEach(function (p) { if (o.indexOf(p[0]) < 0) { o.push(p[0]); } });
+    return { o: o, h: l.h && typeof l.h === "object" ? l.h : {} };
+  }
+  function homeApply() {
+    var L = homeLay(), out = document.getElementById("homeOut"), tl = document.getElementById("homeTiles");
+    if (tl) { tl.hidden = !!L.h.tiles; }
+    if (!out) { return; }
+    L.o.forEach(function (k) {
+      Array.prototype.forEach.call(out.querySelectorAll(".homecard.hk-" + k), function (c) { if (L.h[k]) { c.remove(); } else { out.appendChild(c); } });
+    });
+  }
+  function renderHomeCust() {
+    var box = document.getElementById("homeCust"); if (!box) { return; }
+    var L = homeLay(), name = {}; HOME_PARTS.forEach(function (p) { name[p[0]] = p[1]; });
+    box.innerHTML = L.o.map(function (k, i) {
+      return '<div class="hcrow"><label><input type="checkbox" data-hshow="' + k + '"' + (L.h[k] ? "" : " checked") + "> " + esc(name[k]) + "</label>" +
+        '<button class="btn ghost" type="button" data-hmv="' + k + '" data-d="-1" aria-label="Move ' + esc(name[k]) + ' up"' + (i ? "" : " disabled") + ">&uarr;</button>" +
+        '<button class="btn ghost" type="button" data-hmv="' + k + '" data-d="1" aria-label="Move ' + esc(name[k]) + ' down"' + (i < L.o.length - 1 ? "" : " disabled") + ">&darr;</button></div>";
+    }).join("");
+  }
   function renderHome() {
     var out = document.getElementById("homeOut");
     if (!out) { return; }
@@ -5085,12 +5148,13 @@ footer .wrap { display: grid; gap: 2px; }
     var sb = "";
     if (Object.keys(tracker).some(function (n) { return tracker[n] > 0; })) {
       var wd = worthData();
-      sb += "<p>Your tracked items sell for <b>" + coins(wd.tot.coins) + "</b> coins.</p>" + (wd.rows.length ? '<p class="muted">Spare items: ' + coins(wd.tot.spareCoins) + " coins, about " + wd.tot.spareSlots + " slot" + (wd.tot.spareSlots === 1 ? "" : "s") + ".</p>" : "");
+      sb += "<p>Your tracked items sell for <b>" + coins(wd.tot.coins) + "</b> coins.</p>" + worthChart() + (wd.rows.length ? '<p class="muted">Spare items: ' + coins(wd.tot.spareCoins) + " coins, about " + wd.tot.spareSlots + " slot" + (wd.tot.spareSlots === 1 ? "" : "s") + ".</p>" : "");
     }
     var bw = BPS.filter(function (b) { return bpWant[b[0]] && !bpOwned[b[0]]; }).length;
     if (bw) { sb += '<p class="muted">' + bw + " blueprint" + (bw === 1 ? "" : "s") + " on your wishlist.</p>"; }
     html += homeCard("Stash", sb || '<p class="muted">Add what you have in the Stash tab to see what it is worth.</p>', '<button class="btn ghost" type="button" data-tab="stash">Open Stash</button>' + (bw ? '<button class="btn ghost" type="button" data-tab="ref">Blueprints</button>' : ""), "stash");
     out.innerHTML = html;
+    homeApply();
   }
   /* Shots to kill: enemy health / weapon damage. Fire Rate x 15 = rounds per minute (the wiki lists Kettle as "30 (450 RPM)"). */
   var kSet = load("arcHubKill", {});
@@ -7158,6 +7222,20 @@ footer .wrap { display: grid; gap: 2px; }
   if (!readHash().tab && homeStart && homeHasData()) { showTab("home", true); }
   document.getElementById("homeStart").checked = homeStart;
   document.getElementById("homeStart").addEventListener("change", function (e) { homeStart = e.target.checked; save("arcHubHomeStart", homeStart); });
+  renderHomeCust();
+  document.getElementById("homeCust").addEventListener("change", function (e) {
+    var k = e.target.getAttribute("data-hshow"); if (!k) { return; }
+    var L = homeLay(); if (e.target.checked) { delete L.h[k]; } else { L.h[k] = 1; }
+    save("arcHubHomeLay", L); renderHome();
+  });
+  document.getElementById("homeCust").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-hmv]"); if (!b) { return; }
+    var L = homeLay(), k = b.getAttribute("data-hmv"), i = L.o.indexOf(k), j = i + parseInt(b.getAttribute("data-d"), 10);
+    if (i < 0 || j < 0 || j >= L.o.length) { return; }
+    L.o[i] = L.o[j]; L.o[j] = k; save("arcHubHomeLay", L); renderHomeCust(); renderHome();
+    var nb = document.querySelector('#homeCust [data-hmv="' + k + '"][data-d="' + b.getAttribute("data-d") + '"]'); if (nb && !nb.disabled) { nb.focus(); }
+  });
+  document.getElementById("homeCustReset").addEventListener("click", function () { save("arcHubHomeLay", null); renderHomeCust(); renderHome(); });
   whatsNew(); offlineBadge();
   try {
     if ("serviceWorker" in window.navigator && /^https?:$/.test(window.location.protocol)) { window.navigator.serviceWorker.register("sw.js"); }

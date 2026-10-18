@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 18, 2026", "New Where to farm section at the bottom of the Maps tab: every item the wiki gives a location for, with its best map, ARC drops, traders and quest rewards. Search it or filter to what your stash still needs, and open an item for the matching spots on each map."],
     ["Oct 18, 2026", "New raid calendar in the Raids tab: a month view with each day colored green or red by that day's profit, plus the month's best and worst days. Tap a day to see just its raids."],
     ["Oct 17, 2026", "Fixed the Home card sizing: cards now fit their content and stack neatly in columns, with no big empty gaps or stretched buttons."],
     ["Oct 17, 2026", "New stash worth chart on the Home Stash card: your stash value day by day for up to 90 days, with how much it changed over the last 7 days and overall. It uses the daily snapshots the site already keeps, so it starts with your past days, each valued at today's sell prices."],

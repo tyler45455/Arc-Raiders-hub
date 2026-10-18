@@ -381,6 +381,9 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .farmmap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
 .farmmap > b { min-width: 130px; }
 .farmmap .chip { padding: 4px 10px; font-size: 14px; }
+.farmrow { border-top: 1px solid var(--line); padding: 8px 2px; }
+.farmrow > summary { cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.farmrow > summary .tag { font-size: 12px; padding: 1px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
 @media (max-width: 600px) { .farmmap > b { min-width: 0; flex-basis: 100%; } .farmmap .chip { padding: 3px 9px; font-size: 13px; } }
 .chglist { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; max-width: 75ch; }
 .chg { display: flex; flex-direction: column; gap: 2px; padding-left: 12px; border-left: 3px solid var(--line); }
@@ -1540,6 +1543,11 @@ footer .wrap { display: grid; gap: 2px; }
     <div class="mapcard" id="mapCard" aria-live="polite"></div>
     <h3>All maps</h3>
     <div class="mapgrid" id="mapTable"></div>
+    <h3 id="farmH">Where to farm</h3>
+    <p class="muted">Every item the wiki says where to find, with the best map for it. Open an item to see the matching spots on each map, the ARC that drop it, traders and quests.</p>
+    <div class="gearrow"><input type="text" id="farmQ" placeholder="Search an item, like ARC Alloy or Wires" aria-label="Search where to farm" autocomplete="off"><select id="farmF" aria-label="Which items"><option value="all">Show: all items</option><option value="need">Show: what my stash still needs</option><option value="arc">Show: dropped by ARC</option><option value="trader">Show: sold by traders</option><option value="quest">Show: quest rewards</option></select></div>
+    <p class="muted" id="farmCount" role="status"></p>
+    <div id="farmList"></div>
     <p class="muted">Map data from the ARC Raiders Wiki (CC BY-SA 4.0). Map art belongs to Embark Studios and is not reproduced here.</p>
   </section>
 
@@ -1894,6 +1902,7 @@ footer .wrap { display: grid; gap: 2px; }
   }
   function renderMaps() {
     if (curTab !== "maps") { return; }  /* drawn when the Maps tab opens (showTab calls this) */
+    renderFarmList();
     var nr = nextRaidMap();
     document.getElementById("mapChips").innerHTML = MAPS.map(function (m, i) {
       return '<button class="chip" data-map="' + i + '" aria-pressed="' + (i === curMap) + '">' + esc(m.name) + (nr && nr.map === m.name ? " &#9733;" : "") + "</button>";
@@ -6506,9 +6515,9 @@ footer .wrap { display: grid; gap: 2px; }
         if (sc) { hits.push({ n: r[0], sc: sc, ri: ri }); }
       });
       hits.sort(function (a, b) { return b.sc - a.sc || a.n.localeCompare(b.n); });
-      if (hits.length) { per.push({ mi: mi, name: mp.name, best: hits[0].sc, hits: hits.slice(0, 4) }); }
+      if (hits.length) { per.push({ mi: mi, name: mp.name, best: hits[0].sc, n: hits.length, hits: hits.slice(0, 4) }); }
     }); }
-    per.sort(function (a, b) { return b.best - a.best || a.name.localeCompare(b.name); });
+    per.sort(function (a, b) { return b.best - a.best || b.n - a.n || a.name.localeCompare(b.name); });
     if (per.length) {
       any = true;
       html += '<div class="muted" style="margin-top:8px;">Places on each map with a matching area type (tap one to see it on the map):</div>' +
@@ -6526,6 +6535,61 @@ footer .wrap { display: grid; gap: 2px; }
     if (T.length && !any) { html += '<div class="muted" style="margin-top:8px;">No labelled room on the maps matches this type.</div>'; }
     html += '<div class="muted" style="margin-top:8px;font-size:12px;">Wiki sources last checked October 10, 2026.</div><div class="muted" style="font-size:12px;">Sources come from the ARC Raiders wiki. Places are matched by the icons on the in-game maps, so ' + esc(m) + " can still turn up elsewhere.</div></div>";
     return html;
+  }
+  /* Maps tab, "Where to farm": every item with wiki location data, best map first; details render when opened. */
+  var farmSig = "", farmBestCache = {};
+  function farmHasPlace(n) { var G = FARM2[n] || {}; return !!(FARM[n] || (G.t && G.t.length) || (G.s && G.s.length) || (G.a && G.a.length) || (G.v && G.v.length) || (G.q && G.q.length)); }
+  function farmBest(n) {
+    if (n in farmBestCache) { return farmBestCache[n]; }
+    var T = (FARM[n] && FARM[n].t) || (FARM2[n] && FARM2[n].t) || [], best = null;
+    if (T.length) { MAPS.forEach(function (mp) {
+      var R = ROOMS[mapSlug(mp)]; if (!R) { return; }
+      /* same order as farmWhere: rooms matching the most area types first, then the most matching rooms */
+      var sc = 0, c = 0;
+      R.r.forEach(function (r) { var k = r[3] ? r[3].filter(function (x) { return T.indexOf(x) !== -1; }).length : 0; if (k) { c++; sc = Math.max(sc, k); } });
+      if (c && (!best || sc > best.sc || (sc === best.sc && (c > best.c || (c === best.c && mp.name.localeCompare(best.m) < 0))))) { best = { m: mp.name, c: c, sc: sc }; }
+    }); }
+    return (farmBestCache[n] = best);
+  }
+  function renderFarmList() {
+    var box = document.getElementById("farmList"); if (!box) { return; }
+    var q = document.getElementById("farmQ").value.trim().toLowerCase(), f = document.getElementById("farmF").value;
+    var need = {};
+    if (f === "need") { shopData(true).forEach(function (r) { if (r.miss) { need[r.n] = 1; } }); }
+    var sig = q + "|" + f + "|" + Object.keys(need).join(",");
+    if (sig === farmSig) { return; }
+    farmSig = sig;
+    var seen = {}, names = Object.keys(FARM).concat(Object.keys(FARM2)).filter(function (n) { if (seen[n]) { return false; } seen[n] = 1; return farmHasPlace(n); }).sort();
+    var total = names.length;
+    names = names.filter(function (n) {
+      var G = FARM2[n] || {};
+      if (q && n.toLowerCase().indexOf(q) === -1) { return false; }
+      if (f === "need") { return !!need[n]; }
+      if (f === "arc") { return !!(G.a && G.a.length); }
+      if (f === "trader") { return !!(G.v && G.v.length); }
+      if (f === "quest") { return !!(G.q && G.q.length); }
+      return true;
+    });
+    document.getElementById("farmCount").textContent = names.length === total ? total + " items with location data" : names.length + " of " + total + " items with location data";
+    box.innerHTML = names.length ? names.slice(0, 400).map(function (n) {
+      var G = FARM2[n] || {}, b = farmBest(n), tags = [];
+      if (b) { tags.push("Best map: " + b.m + " (" + b.c + " spots)"); }
+      if (G.a && G.a.length) { tags.push("ARC drop"); }
+      if (G.v && G.v.length) { tags.push("Trader"); }
+      if (G.q && G.q.length) { tags.push("Quest reward"); }
+      if (!tags.length && G.s && G.s.length) { tags.push(G.s[0].length > 60 ? G.s[0].slice(0, 57) + "..." : G.s[0]); }
+      return '<details class="farmrow" data-n="' + esc(n) + '"><summary><b>' + esc(n) + "</b> " + tags.map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join(" ") + '</summary><div class="farmbody"></div></details>';
+    }).join("") : '<div class="empty-line">' + (f === "need" && !Object.keys(need).length ? "Your stash plan has nothing missing right now. Set Want amounts in the Stash tab." : "No item with location data matches that.") + "</div>";
+  }
+  function farmListInit() {
+    var qi = document.getElementById("farmQ"), fs = document.getElementById("farmF"), box = document.getElementById("farmList");
+    if (!qi || !fs || !box) { return; }
+    qi.addEventListener("input", renderFarmList);
+    fs.addEventListener("change", renderFarmList);
+    box.addEventListener("toggle", function (e) {
+      var d = e.target; if (!d.open || !d.classList || !d.classList.contains("farmrow")) { return; }
+      var b = d.querySelector(".farmbody"); if (b && !b.childNodes.length) { b.innerHTML = farmWhere(d.getAttribute("data-n")); }
+    }, true);
   }
   function renderFarm() {
     var sel = document.getElementById("ffMat"), out = document.getElementById("ffOut");
@@ -7281,7 +7345,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condAlert(); condFetch(); setInterval(condFetch, 1800000); installInit(); chipHintInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condAlert(); condFetch(); setInterval(condFetch, 1800000); installInit(); farmListInit(); chipHintInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
   initLang();
   renderPlan(); renderWeek(); renderSb();
   document.getElementById("planMap").addEventListener("change", renderPlan);

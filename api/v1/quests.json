@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 17, 2026",
- "count": 114,
+ "dataDate": "October 20, 2026",
+ "count": 116,
  "quests": [
   {
    "id": "picking-up-the-pieces",
@@ -4017,6 +4017,120 @@
    ],
    "after": [
     "exploring-pendola-pass"
+   ]
+  },
+  {
+   "id": "nothing-ventured",
+   "name": "Nothing Ventured",
+   "trader": "Apollo",
+   "locations": [
+    "Any",
+    "Buried City",
+    "Stella Montis"
+   ],
+   "requires": [
+    {
+     "id": "comet-igniter",
+     "name": "Comet Igniter",
+     "qty": 3
+    },
+    {
+     "id": "rocketeer-driver",
+     "name": "Rocketeer Driver",
+     "qty": 3
+    },
+    {
+     "id": "arc-circuitry",
+     "name": "ARC Circuitry",
+     "qty": 6
+    },
+    {
+     "id": "arc-motion-core",
+     "name": "ARC Motion Core",
+     "qty": 6
+    }
+   ],
+   "rewards": [
+    {
+     "id": "deadline",
+     "name": "Deadline",
+     "qty": 1
+    },
+    {
+     "id": "wolfpack",
+     "name": "Wolfpack",
+     "qty": 1
+    },
+    {
+     "id": "deadline-blueprint",
+     "name": "Deadline Blueprint",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Destroy 3 Comets",
+    "Destroy 5 Rocketeers",
+    "Destroy 2 Sentinels",
+    "Deliver 3 Comet Igniters to Apollo",
+    "Deliver 3 Rocketeer Drivers to Apollo",
+    "Deliver 6 ARC Circuitry to Apollo",
+    "Deliver 6 ARC Motion Cores to Apollo",
+    "(Optional) Destroy a Bombardier on Buried City",
+    "(Optional) Destroy a Bastion on Stella Montis",
+    "Apollo hands you 1 Magnetic Accelerator, 3 Heavy Gun Parts and 1 Exodus Modules at the start; the Deadline Blueprint is a bonus reward"
+   ],
+   "after": []
+  },
+  {
+   "id": "nothing-gained",
+   "name": "Nothing Gained",
+   "trader": "Apollo",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "queen-reactor",
+     "name": "Queen Reactor",
+     "qty": 1
+    },
+    {
+     "id": "matriarch-reactor",
+     "name": "Matriarch Reactor",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "queen-reactor",
+     "name": "Queen Reactor",
+     "qty": 1
+    },
+    {
+     "id": "matriarch-reactor",
+     "name": "Matriarch Reactor",
+     "qty": 1
+    },
+    {
+     "id": "bettina-iii",
+     "name": "Bettina III",
+     "qty": 1
+    },
+    {
+     "id": "bronze-statuette",
+     "name": "Bronze Statuette",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Destroy a Matriarch",
+    "Destroy a Queen",
+    "Deliver a Queen Reactor to Apollo",
+    "Deliver a Matriarch Reactor to Apollo",
+    "The Bronze Statuette is a bonus reward"
+   ],
+   "after": [
+    "nothing-ventured"
    ]
   },
   {

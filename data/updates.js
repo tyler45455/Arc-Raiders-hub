@@ -18,7 +18,7 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 17, 2026";
+ARC.DATA_UPDATED = "October 20, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
@@ -26,7 +26,7 @@ ARC.DATA_UPDATED = "October 17, 2026";
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
     ["Sell prices, weights, recipes and where to find items", "October 17, 2026", "daily"],
-    ["Quests, objectives and quest chain", "October 16, 2026", "daily"],
+    ["Quests, objectives and quest chain", "October 20, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 20, 2026", "Daily check: added Apollo's two new hidden quests, Nothing Ventured (Comets, Rocketeers and Sentinels; rewards Deadline, Wolfpack and a bonus Deadline Blueprint) and Nothing Gained (a Queen and a Matriarch; rewards their reactors and Bettina III).", "wiki"],
     ["Oct 18, 2026", "New Where to farm section at the bottom of the Maps tab: every item the wiki gives a location for, with its best map, ARC drops, traders and quest rewards. Search it or filter to what your stash still needs, and open an item for the matching spots on each map."],
     ["Oct 18, 2026", "New raid calendar in the Raids tab: a month view with each day colored green or red by that day's profit, plus the month's best and worst days. Tap a day to see just its raids."],
     ["Oct 17, 2026", "Fixed the Home card sizing: cards now fit their content and stack neatly in columns, with no big empty gaps or stretched buttons."],

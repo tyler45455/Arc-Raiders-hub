@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 23, 2026",
+ "dataDate": "October 24, 2026",
  "count": 398,
  "items": [
   {
@@ -2143,6 +2143,9 @@
    ],
    "areaTypes": [],
    "sources": {
+    "sellers": [
+     "Apollo (4,800 coins, 3 per day)"
+    ],
     "questRewards": [
      "Test Case (quantity: 3×)",
      "What Goes Around (quantity: 3×)"
@@ -3229,6 +3232,9 @@
    ],
    "areaTypes": [],
    "sources": {
+    "sellers": [
+     "Lance (15,000 coins, 1 per day)"
+    ],
     "other": [
      "Craft it (Gear Bench; recipe shown with the item)"
     ]
@@ -6808,6 +6814,9 @@
    ],
    "areaTypes": [],
    "sources": {
+    "sellers": [
+     "Apollo (4,800 coins, 3 per day)"
+    ],
     "questRewards": [
      "A First Foothold",
      "Building A Library",
@@ -8472,6 +8481,9 @@
    ],
    "areaTypes": [],
    "sources": {
+    "sellers": [
+     "Lance (15,000 coins, 1 per day)"
+    ],
     "other": [
      "Craft it (Gear Bench; recipe shown with the item)"
     ]
@@ -10182,7 +10194,7 @@
    "areaTypes": [],
    "sources": {
     "sellers": [
-     "Apollo (1,410 coins, 6 per day)"
+     "Apollo (1,410 coins, 3 per day)"
     ],
     "questRewards": [
      "A Toxic Trail (3x)",
@@ -12167,6 +12179,9 @@
     "foundIn": [
      "Scavenging (no specific containers listed)"
     ],
+    "sellers": [
+     "Apollo (2,400 coins, 3 per day)"
+    ],
     "questRewards": [
      "A First Foothold (3x)",
      "Safe Passage (3x)"
@@ -13016,6 +13031,9 @@
    ],
    "areaTypes": [],
    "sources": {
+    "sellers": [
+     "Tian Wen"
+    ],
     "other": [
      "Craft it (Gunsmith; recipe shown with the item)"
     ]
@@ -13139,8 +13157,7 @@
      "Scavenging (no specific containers listed)"
     ],
     "sellers": [
-     "Lance (6,000 coins, 3 per day)",
-     "Shani (40 Cred, 3 per day)"
+     "Lance (6,000 coins, 3 per day)"
     ],
     "questRewards": [
      "Celeste's Childhood Drawings (3x)",
@@ -13478,6 +13495,9 @@
    ],
    "areaTypes": [],
    "sources": {
+    "sellers": [
+     "Apollo (6,300 coins, 3 per day)"
+    ],
     "other": [
      "Craft it (Explosives Station; recipe shown with the item)"
     ]
@@ -13532,8 +13552,7 @@
      "Scavenging (no specific containers listed)"
     ],
     "sellers": [
-     "Lance (3,600 coins, up to 5 per day)",
-     "Shani (40 Cred, up to 5 per day)"
+     "Lance (3,600 coins, up to 5 per day)"
     ],
     "questRewards": [
      "A Reveal in Ruins (1x)",
@@ -13885,6 +13904,9 @@
    ],
    "areaTypes": [],
    "sources": {
+    "sellers": [
+     "Lance (15,000 coins, 1 per day)"
+    ],
     "other": [
      "Craft it (Gear Bench; recipe shown with the item)"
     ]
@@ -14037,6 +14059,9 @@
    "sources": {
     "foundIn": [
      "Scavenging (no specific containers listed)"
+    ],
+    "sellers": [
+     "Apollo (3,000 coins, 3 per day)"
     ],
     "questRewards": [
      "Clamoring for Attention (3x)",
@@ -14707,6 +14732,9 @@
    "sources": {
     "foundIn": [
      "Scavenging (no specific containers listed)"
+    ],
+    "sellers": [
+     "Apollo (3,000 coins, 3 per day)"
     ],
     "questRewards": [
      "Sparks Fly (6x)"
@@ -15892,7 +15920,7 @@
      "Scavenging (no specific containers listed)"
     ],
     "sellers": [
-     "Apollo (3,000 coins, limit 3 per day)"
+     "Apollo (3,000 coins, 2 per day)"
     ],
     "questRewards": [
      "A Lay Of The Land (3x)",

@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 25, 2026", "ARC Tracker sync now brings in ammo and every other item the game data lists (trinkets, quest items and more), with prices and stack sizes, so your Stash matches ARC Tracker."],
     ["Oct 25, 2026", "Added 4 Emperor drops used to craft amplified weapons: Fluted Rotor Core, Pneumatic Actuator, Pressure Regulator and Propellant Valve Assembly."],
     ["Oct 25, 2026", "Fixed: Stash slot count. Amplified Fragments now stack to 50 (they were counted as 1 slot each), and right after a sync the site shows ARC Tracker's own slot count."],
     ["Oct 25, 2026", "Fixed: ARC Tracker sync now removes items you no longer have from your Stash, even when ARC Tracker lists something the site doesn't know yet."],

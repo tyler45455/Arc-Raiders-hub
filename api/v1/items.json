@@ -2,7 +2,7 @@
  "schema": 1,
  "kind": "items",
  "dataDate": "October 25, 2026",
- "count": 398,
+ "count": 402,
  "items": [
   {
    "id": "arc-alloy",
@@ -5909,6 +5909,29 @@
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/flow-controller/"
   },
   {
+   "id": "fluted-rotor-core",
+   "name": "Fluted Rotor Core",
+   "rarity": "Epic",
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "arcEnemies": [
+     "Emperor"
+    ],
+    "other": [
+     "Used to craft amplified weapons"
+    ]
+   },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 3,
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/fluted-rotor-core/"
+  },
+  {
    "id": "fossilized-lightning",
    "name": "Fossilized Lightning",
    "rarity": null,
@@ -9775,6 +9798,30 @@
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/photoelectric-cloak/"
   },
   {
+   "id": "pneumatic-actuator",
+   "name": "Pneumatic Actuator",
+   "rarity": "Epic",
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "arcEnemies": [
+     "Emperor",
+     "ARC Frigate"
+    ],
+    "other": [
+     "Used to craft amplified weapons"
+    ]
+   },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 3,
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/pneumatic-actuator/"
+  },
+  {
    "id": "polluted-air-filter",
    "name": "Polluted Air Filter",
    "rarity": null,
@@ -10056,6 +10103,32 @@
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/powered-descender/"
   },
   {
+   "id": "pressure-regulator",
+   "name": "Pressure Regulator",
+   "rarity": "Epic",
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "foundIn": [
+     "Harvester Payload"
+    ],
+    "arcEnemies": [
+     "Emperor"
+    ],
+    "other": [
+     "Used to craft amplified weapons"
+    ]
+   },
+   "sellPrice": 5000,
+   "weightKg": 0.5,
+   "stackSize": 3,
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/pressure-regulator/"
+  },
+  {
    "id": "prickly-pear",
    "name": "Prickly Pear",
    "rarity": null,
@@ -10171,6 +10244,29 @@
    "weightKg": 2,
    "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/projector/"
+  },
+  {
+   "id": "propellant-valve-assembly",
+   "name": "Propellant Valve Assembly",
+   "rarity": "Epic",
+   "canRecycle": false,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [
+    "ARC"
+   ],
+   "sources": {
+    "arcEnemies": [
+     "Emperor"
+    ],
+    "other": [
+     "Used to craft amplified weapons"
+    ]
+   },
+   "sellPrice": null,
+   "weightKg": null,
+   "stackSize": null,
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/propellant-valve-assembly/"
   },
   {
    "id": "pulse-mine",

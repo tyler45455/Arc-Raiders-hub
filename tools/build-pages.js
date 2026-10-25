@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Regenerates item/, map/ and sitemap.xml from the data in data/*.js, and
+/* Regenerates item/, map/, update/ and sitemap.xml from the data in data/*.js, and
    stamps the offline cache name in sw.js.
    Usage: node tools/build-pages.js          (writes the files)
           node tools/build-pages.js --check  (exits 1 if any file would change)
@@ -177,6 +177,46 @@ function mapPage(m) {
     '<p class="m">Free fan-made reference, not affiliated with Embark Studios. Map data from the ARC Raiders Wiki (CC BY-SA 4.0).</p>\n</div>\n</body>\n</html>\n';
 }
 
+/* One shareable summary page per game update in ARC.UPDATES, with post text ready to copy. */
+var UPD_CSS = ITEM_CSS + "ul.pts li{margin:6px 0}textarea{width:100%;min-height:190px;background:#151515;color:#f1e8d4;border:1px solid #6c6554;border-radius:8px;padding:10px;font:16px/1.45 ui-monospace,Consolas,monospace}\n" +
+  "button.btn{border:0;cursor:pointer;font:inherit;font-weight:700}.btn.g{background:transparent;border:1px solid #6c6554;color:#f1e8d4}\n";
+function updSlug(u) { return slug(u.title); }
+function updPost(u) {
+  return "ARC Raiders " + u.title + " (" + u.date + ") in short:\n\n" + u.body + "\n\n" +
+    u.points.map(function (p) { return "- " + p; }).join("\n") + "\n\nFull summary: " + SITE + "update/" + updSlug(u) + "/";
+}
+function updatePage(u, i, all) {
+  var s = updSlug(u), prev = all[i + 1], next = all[i - 1];
+  var desc = "ARC Raiders " + u.title + " (" + u.date + ") summed up: " + u.body + " " + u.points.length + " key changes, with a ready-to-share summary.";
+  return head({
+    title: "ARC Raiders " + u.title + " patch notes summary | Speranza Field Guide", ogTitle: "ARC Raiders " + u.title + " in short",
+    desc: desc, url: SITE + "update/" + s + "/", image: SITE + "og-image.png", imageAlt: SHARE_ALT, icon: "../../", css: UPD_CSS
+  }) + '<body>\n<div class="w">\n<div class="eb"><a href="../../">Speranza Field Guide</a> / <a href="../">Game updates</a></div>\n' +
+    "<h1>" + esc(u.title) + "</h1>\n" +
+    '<div class="stats"><span>Released <b>' + esc(u.date) + "</b></span>" + (u.ver ? "<span>Version <b>" + esc(u.ver) + "</b></span>" : "") +
+    (u.latest ? "<span><b>Latest update</b></span>" : "") + "</div>\n<p>" + esc(u.body) + "</p>\n" +
+    '<h2>Key changes</h2>\n<ul class="pts">' + u.points.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul>\n" +
+    '<p><a class="btn" href="../../#updates">See what it means for your stash and quests</a><a class="btn g" href="../../">Open Speranza Field Guide</a></p>\n' +
+    "<h2>Share this summary</h2>\n<p class=\"m\">Ready to paste into Reddit, Discord or a video description.</p>\n" +
+    '<textarea id="post" readonly>' + esc(updPost(u)) + "</textarea>\n" +
+    '<p><button class="btn" id="copy" type="button">Copy post text</button></p>\n' +
+    "<script>document.getElementById(\"copy\").onclick=function(){var t=document.getElementById(\"post\"),b=this;t.select();" +
+    "(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).catch(function(){document.execCommand(\"copy\");})" +
+    ".then(function(){b.textContent=\"Copied\";setTimeout(function(){b.textContent=\"Copy post text\";},1500);});};</script>\n" +
+    "<p class=\"m\">" + (prev ? '<a href="../' + updSlug(prev) + '/">Previous: ' + esc(prev.title) + "</a>" : "") +
+    (prev && next ? " · " : "") + (next ? '<a href="../' + updSlug(next) + '/">Next: ' + esc(next.title) + "</a>" : "") + "</p>\n" +
+    '<p class="m">Free fan-made reference, not affiliated with Embark Studios. Update details from the ARC Raiders Wiki (CC BY-SA 4.0).</p>\n</div>\n</body>\n</html>\n';
+}
+function updateIndex(all) {
+  return head({
+    title: "ARC Raiders game updates and patch notes, summed up | Speranza Field Guide", ogTitle: "ARC Raiders game updates, summed up",
+    desc: "Every ARC Raiders game update since launch in short, newest first: " + all.length + " updates through " + all[0].title + ".",
+    url: SITE + "update/", image: SITE + "og-image.png", imageAlt: SHARE_ALT, icon: "../", css: ITEM_CSS
+  }) + '<body>\n<div class="w">\n<div class="eb"><a href="../">Speranza Field Guide</a> / Game updates</div>\n<h1>Game updates</h1>\n' +
+    "<ul>" + all.map(function (u) { return '<li><a href="' + updSlug(u) + '/">' + esc(u.title) + '</a> <span class="m">' + esc(u.date) + "</span></li>"; }).join("") + "</ul>\n" +
+    '<p class="m">Free fan-made reference, not affiliated with Embark Studios.</p>\n</div>\n</body>\n</html>\n';
+}
+
 function sitemap(maps, items) {
   /* lastmod is the day the site's data last changed (ARC.DATA_UPDATED), so Google knows when to re-read. */
   var d = new Date(grab("DATA_UPDATED") + " UTC"), mod = "<lastmod>" + d.toISOString().slice(0, 10) + "</lastmod>";
@@ -184,6 +224,7 @@ function sitemap(maps, items) {
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     u("", "<changefreq>weekly</changefreq>") +
     maps.map(function (m) { return u("map/" + mapSlug(m) + "/"); }).join("") +
+    u("update/") + grab("UPDATES").map(function (x) { return u("update/" + updSlug(x) + "/"); }).join("") +
     u("item/") +
     items.map(function (it) { return slug(it.name); }).sort(byCode).map(function (s) { return u("item/" + s + "/"); }).join("") +
     "</urlset>\n";
@@ -196,6 +237,9 @@ var out = {};
 items.forEach(function (it) { out["item/" + slug(it.name) + "/index.html"] = itemPage(it); });
 out["item/index.html"] = itemIndex(items);
 maps.forEach(function (m) { out["map/" + mapSlug(m) + "/index.html"] = mapPage(m); });
+var UPDATES = grab("UPDATES");
+UPDATES.forEach(function (x, i) { out["update/" + updSlug(x) + "/index.html"] = updatePage(x, i, UPDATES); });
+out["update/index.html"] = updateIndex(UPDATES);
 out["sitemap.xml"] = sitemap(maps, items);
 
 /* sw.js: list the data files for offline use and name the cache after a hash of
@@ -218,7 +262,7 @@ Object.keys(out).forEach(function (rel) {
   if (!check) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, out[rel]); }
 });
 /* Pages whose item or map is no longer in the data. */
-["item", "map"].forEach(function (dir) {
+["item", "map", "update"].forEach(function (dir) {
   fs.readdirSync(path.join(ROOT, dir)).forEach(function (d) {
     var rel = dir + "/" + d + "/index.html";
     if (fs.existsSync(path.join(ROOT, rel)) && !out[rel]) {
@@ -227,5 +271,5 @@ Object.keys(out).forEach(function (rel) {
     }
   });
 });
-console.log(items.length + " items, " + maps.length + " maps. " + (changed.length ? (check ? "Out of date:\n  " : "Updated:\n  ") + changed.join("\n  ") : "Everything is up to date."));
+console.log(items.length + " items, " + maps.length + " maps, " + UPDATES.length + " updates. " + (changed.length ? (check ? "Out of date:\n  " : "Updated:\n  ") + changed.join("\n  ") : "Everything is up to date."));
 if (check && changed.length) { process.exit(1); }

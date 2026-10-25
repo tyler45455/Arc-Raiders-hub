@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 25, 2026", "New shareable summary page for every game update, with post text ready to copy for Reddit, Discord or video descriptions. Open one from Update history (\"Summary page to share\") or the Game updates list."],
     ["Oct 25, 2026", "Daily check: Trials moved to Season 6 Week 3 (Oct 20 to 26). Hydra now shows its health (1050), XP (500, plus 500 for its core and 400 for its turret), weaker back plating, and that it also sits inside the Emperor.", "wiki"],
     ["Oct 24, 2026", "Daily check: trader stock refreshed from the wiki. Apollo now sells Dockmaster's Detector, Shrapnel, Tagging, Trigger 'Nade, Heavy Fuze and Blaze grenades and the Surge Coil, and no longer the Gas Mine or Jolt Mine. Lance now sells the three Mk. 3 augments (Cautious, Flanking, Healing). Old Shani Cred listings removed from Mk. 2 augments, Sterilized Bandage, Surge Shield Recharger and Extended Light Mag II.", "wiki"],
     ["Oct 23, 2026", "Daily check: the Matriarch now also drops the ARC Insulated Coupler, per the wiki.", "wiki"],

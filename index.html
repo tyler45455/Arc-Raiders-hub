@@ -2531,7 +2531,7 @@ footer .wrap { display: grid; gap: 2px; }
       }
       /* Stash */
       var stash = r[3].j || [], counts = {};
-      var iix = arctIndex(allMaterials().concat(items.map(function (it) { return it.name; })));
+      var iix = arctIndex(allMaterials().concat(items.map(function (it) { return it.name; }), Object.keys(ITEMINFO)));
       stash.forEach(function (e) {
         var n = arctFind(iix, e);
         if (n) { counts[n] = (counts[n] || 0) + arctQty(e); } else { plan.unknownI.push(arctName(e) || arctId(e)); }

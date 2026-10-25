@@ -63,6 +63,9 @@ function benches(d) { var b = d.craftBench; return Array.isArray(b) ? b : [b]; }
 var names = Object.keys(OLD);
 function want(n) { if (names.indexOf(n) < 0) { names.push(n); } }
 ours.forEach(function (n) { if (byName[n]) { want(n); } });
+/* Everything else in the data set (ammo, trinkets, quest items) can sit in the stash too, so the Stash
+   and the ARC Tracker sync need its price and stack size even when the site has no page for it. */
+Object.keys(D).forEach(function (id) { want(D[id].name.en); });
 Object.keys(D).forEach(function (id) { Object.keys(D[id].recipe || {}).forEach(function (k) { if (D[k]) { want(D[k].name.en); } }); });
 var NEW = {};
 names.sort(function (a, b) { a = a.toLowerCase(); b = b.toLowerCase(); return a < b ? -1 : a > b ? 1 : 0; }).forEach(function (n) {

@@ -2538,7 +2538,10 @@ footer .wrap { display: grid; gap: 2px; }
       });
       plan.haveS = stash.length > 0;
       if (plan.haveS) {
-        Object.keys(tracker).forEach(function (k) { var n = counts[k] || 0; if (n !== tracker[k] && (n > 0 || !plan.unknownI.length)) { plan.tSet.push([k, n]); } });
+        /* Anything ARC Tracker no longer lists is gone from the stash. Only an unmatched name that looks like the same item keeps its old count. */
+        var unk = plan.unknownI.map(function (x) { return qNormA(x || ""); }).filter(Boolean);
+        function maybeSame(k) { var a = qNormA(k); return unk.some(function (u) { return u.indexOf(a) !== -1 || a.indexOf(u) !== -1; }); }
+        Object.keys(tracker).forEach(function (k) { var n = counts[k] || 0; if (n !== tracker[k] && (n > 0 || !maybeSame(k))) { plan.tSet.push([k, n]); } });
         if (arctSet.add !== false) { Object.keys(counts).forEach(function (k) { if (!(k in tracker) && counts[k] > 0) { plan.tSet.push([k, counts[k]]); } }); }
       }
       /* Hideout: workshop station levels */

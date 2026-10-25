@@ -18,7 +18,7 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 24, 2026";
+ARC.DATA_UPDATED = "October 25, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
@@ -32,9 +32,9 @@ ARC.FRESHNESS = [
     ["Enemy sightings from players", "October 12, 2026", "daily"],
     ["Recycling and salvage data", "October 22, 2026", "daily"],
     ["Weapons & gear", "October 9, 2026", "daily"],
-    ["Reference: enemies, traders, workshop, blueprints", "October 24, 2026", "daily"],
+    ["Reference: enemies, traders, workshop, blueprints", "October 25, 2026", "daily"],
     ["Project presets", "October 10, 2026", "daily"],
-    ["Trials (Season 6, Week 2)", "October 14, 2026", "daily"],
+    ["Trials (Season 6, Week 3)", "October 25, 2026", "daily"],
     ["Maps and update history", "October 16, 2026", "daily"],
     ["Map condition schedule (official, by server region)", "October 16, 2026", "hourly"]
   ];
@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 25, 2026", "Daily check: Trials moved to Season 6 Week 3 (Oct 20 to 26). Hydra now shows its health (1050), XP (500, plus 500 for its core and 400 for its turret), weaker back plating, and that it also sits inside the Emperor.", "wiki"],
     ["Oct 24, 2026", "Daily check: trader stock refreshed from the wiki. Apollo now sells Dockmaster's Detector, Shrapnel, Tagging, Trigger 'Nade, Heavy Fuze and Blaze grenades and the Surge Coil, and no longer the Gas Mine or Jolt Mine. Lance now sells the three Mk. 3 augments (Cautious, Flanking, Healing). Old Shani Cred listings removed from Mk. 2 augments, Sterilized Bandage, Surge Shield Recharger and Extended Light Mag II.", "wiki"],
     ["Oct 23, 2026", "Daily check: the Matriarch now also drops the ARC Insulated Coupler, per the wiki.", "wiki"],
     ["Oct 22, 2026", "Daily check: Snap Hook now recycles into 1 Power Rod and 2 Steel Cable (was 3 Rope), per the wiki.", "wiki"],

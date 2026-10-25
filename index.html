@@ -2537,6 +2537,8 @@ footer .wrap { display: grid; gap: 2px; }
         if (n) { counts[n] = (counts[n] || 0) + arctQty(e); } else { plan.unknownI.push(arctName(e) || arctId(e)); }
       });
       plan.haveS = stash.length > 0;
+      /* Each stash entry is one slot in the game, so its count is the real slots used. */
+      plan.slots = stash.filter(function (e) { return e && typeof e === "object" && typeof e.slotIndex === "number"; }).length;
       if (plan.haveS) {
         /* Anything ARC Tracker no longer lists is gone from the stash. Only an unmatched name that looks like the same item keeps its old count. */
         var unk = plan.unknownI.map(function (x) { return qNormA(x || ""); }).filter(Boolean);
@@ -2621,7 +2623,9 @@ footer .wrap { display: grid; gap: 2px; }
     if (!o) { return; }
     o.textContent = arctRawProfile ? JSON.stringify(arctRawProfile, null, 2).slice(0, 4000) + (arctRawRounds && arctRawRounds.length ? "\n\nNewest raids:\n" + JSON.stringify(arctRawRounds, null, 2).slice(0, 4000) : "") : "Nothing yet. Press Resync or Check ARC Tracker to load it.";
   }
+  function trackerSig() { return Object.keys(tracker).filter(function (k) { return tracker[k] > 0; }).sort().map(function (k) { return k + ":" + tracker[k]; }).join("|"); }
   function arctWho(p) {
+    if (p.slots) { arctSet.slots = p.slots; arctSet.slotsSig = trackerSig(); }
     if (p.who) { arctSet.who = p.who; arctSet.name = p.name || ""; }
     var lvChanged = false;
     if (p.lvl) { lvChanged = arctSet.lvl !== p.lvl; arctSet.lvl = p.lvl; } else if (p.profileOk && arctSet.lvl) { delete arctSet.lvl; lvChanged = true; }
@@ -6909,6 +6913,8 @@ footer .wrap { display: grid; gap: 2px; }
       if (r.keep) { T.keepN++; T.keepV += r.value - r.sellValue; }
       if (r.want) { T.wantN++; T.wantLeft += Math.max(0, r.want - r.have); }
     });
+    /* Right after a sync, ARC Tracker's own slot count beats the estimate from stack sizes (the game splits stacks). */
+    if (arctSet.slots && arctSet.slotsSig === trackerSig()) { T.slots = arctSet.slots; }
     var cap = parseInt(stash.cap, 10) || 0, held = rows.filter(function (r) { return r.have > 0; }).length;
     function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
     tiles.innerHTML = tile("", "Stash value", coins(T.value), held + " item" + (held === 1 ? "" : "s") + " &middot; " + T.slots + (cap ? " of " + cap : "") + " slots") +

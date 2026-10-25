@@ -25,7 +25,7 @@ ARC.DATA_UPDATED = "October 25, 2026";
    Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
-    ["Sell prices, weights, recipes and where to find items", "October 24, 2026", "daily"],
+    ["Sell prices, weights, recipes and where to find items", "October 25, 2026", "daily"],
     ["Quests, objectives and quest chain", "October 20, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 25, 2026", "Fixed: Stash slot count. Amplified Fragments now stack to 50 (they were counted as 1 slot each), and right after a sync the site shows ARC Tracker's own slot count."],
     ["Oct 25, 2026", "Fixed: ARC Tracker sync now removes items you no longer have from your Stash, even when ARC Tracker lists something the site doesn't know yet."],
     ["Oct 25, 2026", "New shareable summary page for every game update, with post text ready to copy for Reddit, Discord or video descriptions. Open one from Update history (\"Summary page to share\") or the Game updates list."],
     ["Oct 25, 2026", "Daily check: Trials moved to Season 6 Week 3 (Oct 20 to 26). Hydra now shows its health (1050), XP (500, plus 500 for its core and 400 for its turret), weaker back plating, and that it also sits inside the Emperor.", "wiki"],

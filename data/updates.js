@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 26, 2026", "Enemy cards in Reference now show \"Your best gun\": the weapon in your Stash that kills that enemy fastest, with body hits, time and how it handles the armor. It uses the same numbers as Shots to kill."],
     ["Oct 26, 2026", "Enemy cards now list the maps the wiki gives for the Queen and the Matriarch (Dam Battlegrounds, Spaceport and The Blue Gate, through their map conditions), and the Shredder card notes it is no longer only on Stella Montis. The wiki names no maps for the other enemies.", "wiki"],
     ["Oct 26, 2026", "The Stash no longer calls your weapons, augments and shields safe to sell: they count as Keep, and a \"Sell it anyway\" button on the card moves one to Sell. The spare-items total on Home skips them too."],
     ["Oct 26, 2026", "Search everything now finds blueprints when you type the word: \"anvil blueprint\" goes straight to the Anvil blueprint, and \"blueprint\" on its own lists them."],

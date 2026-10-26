@@ -3081,6 +3081,23 @@ footer .wrap { display: grid; gap: 2px; }
   }
   var EN_LV = ["Low", "Medium", "High", "Very high", "Boss"];
   var enPick = "";
+  /* Weapons in the Stash, as [label, weapon, tier]: "Bettina IV" is tier IV; Amplified counts as IV since no Amplified stats are published. */
+  function myWeapons() {
+    var W = {}, out = [];
+    kWeapons().forEach(function (w) { W[w.name] = w; });
+    Object.keys(tracker).forEach(function (n) {
+      if (!(tracker[n] > 0)) { return; }
+      var amp = /^Amplified /.test(n), b = n.replace(/^Amplified /, ""), m = / (I|II|III|IV)$/.exec(b), base = m ? b.slice(0, -m[0].length) : b;
+      if (W[base]) { out.push([n, W[base], amp ? 3 : m ? UP_T.indexOf(m[1]) : 0]); }
+    });
+    return out;
+  }
+  /* The fastest kill among the player's own weapons, ranked like the Shots to kill table. */
+  function enBest(f) {
+    var rows = myWeapons().map(function (x) { var st = kStat(x[1], x[2]); return { n: x[0], st: st, c: kCalc(f.hp, st), pn: kPenNote(f.armor, st.pen) }; }).filter(function (r) { return r.c; });
+    rows.sort(function (a, b) { var pa = a.pn === "bad" ? 1 : 0, pb = b.pn === "bad" ? 1 : 0; return pa - pb || (a.c.total === null ? 1e9 : a.c.total) - (b.c.total === null ? 1e9 : b.c.total) || a.c.shots - b.c.shots; });
+    return rows[0] || null;
+  }
   function enCard(e, f, drops, miss) {
     var qs = enQuests(e[0]), act = {}; qActive().forEach(function (q) { act[q.name] = 1; });
     var meta = [e[1] === "Container" ? "Husk or container" : e[1]];
@@ -3095,6 +3112,10 @@ footer .wrap { display: grid; gap: 2px; }
       (f.rep.length ? '<div class="qrow"><span class="lbl">Players saw it</span>' + f.rep.map(function (m) { return '<span class="y">' + esc(m) + "</span>"; }).join("") + '<span class="muted">from sighting reports</span></div>' : "") +
       (e[1] !== "Container" ? '<div class="qrow ensee"><span class="lbl">Seen it?</span><select data-ensel="' + esc(e[0]) + '" aria-label="Map you saw ' + esc(e[0]) + ' on">' + MAPS.filter(function (m) { return !/practice/i.test(m.name); }).map(function (m) { return '<option value="' + esc(m.name) + '"' + (m.name === enPick ? " selected" : "") + ">" + esc(m.name) + "</option>"; }).join("") + '</select><button type="button" class="btn ghost" data-action="enSeen" data-n="' + esc(e[0]) + '">Report a sighting</button>' +
         ((enSeen[e[0]] || []).length ? '<span class="muted">You reported: ' + enSeen[e[0]].map(esc).join(", ") + "</span>" : "") + "</div>" : "") +
+      (function () {
+        var b = e[1] !== "Container" && f.hp > 0 ? enBest(f) : null;
+        return b ? '<div class="qrow"><span class="lbl">Your best gun</span><span class="y hl">' + esc(b.n) + "</span>" + '<span class="muted">' + b.c.shots + " body hit" + (b.c.shots === 1 ? "" : "s") + (b.c.total !== null && b.c.shots > 1 ? ", about " + b.c.total.toFixed(1) + " s" : "") + (b.pn ? ". " + K_PEN_TXT[b.pn] : "") + ". Aim for weak points to kill faster.</span></div>" : "";
+      })() +
       (drops.length ? '<div class="qrow"><span class="lbl">Drops</span>' + drops.map(function (d) { return '<span class="y' + (miss[d] ? " hl" : "") + '">' + esc(d) + (miss[d] ? " <b>(need " + miss[d] + ")</b>" : "") + "</span>"; }).join("") + "</div>" : "") +
       (qs.length ? '<div class="qrow"><span class="lbl">Quests</span>' + qs.map(function (q) { return '<span class="y' + (act[q.name] ? " hl" : "") + '">' + esc(q.name) + (qDone[q.name] ? " &#10003;" : act[q.name] ? " (active)" : "") + "</span>"; }).join("") + "</div>" : "") +
       '<div class="acts">' + (e[1] !== "Container" && f.hp > 0 ? '<button type="button" class="btn ghost" data-action="killOpen" data-n="' + esc(e[0]) + '">Shots to kill</button>' : "") + '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(reportUrl(e[0])) + '">Report a mistake</a></div></div>';

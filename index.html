@@ -5568,6 +5568,11 @@ footer .wrap { display: grid; gap: 2px; }
       var nx = order[(order.indexOf(cur2) + 1) % order.length];
       if (nx) { itemTags[tn] = nx; } else { delete itemTags[tn]; }
       save("arcHubTags", itemTags); renderResults();
+    } else if (a === "gearSell") {
+      pushUndo("Changed tag");
+      var gn = t.getAttribute("data-item");
+      if (itemTags[gn] === "sell") { delete itemTags[gn]; } else { itemTags[gn] = "sell"; }
+      save("arcHubTags", itemTags); renderStash();
     } else if (a === "contrast") {
       var cn = !load("arcHubContrast", false); save("arcHubContrast", cn); applyContrast(cn);
     } else if (a === "qCode") {
@@ -6159,6 +6164,12 @@ footer .wrap { display: grid; gap: 2px; }
     });
     return { t: t, why: why };
   }
+  /* Weapons (any tier, Amplified too), augments and shields stay Keep on the Stash unless tagged Sell. */
+  var GEARNAMES = null;
+  function isGear(n) {
+    if (!GEARNAMES) { GEARNAMES = {}; GEARDATA.weapons.concat(GEARDATA.augments, GEARDATA.shields).forEach(function (g) { GEARNAMES[g[0]] = 1; }); }
+    return !!GEARNAMES[String(n).replace(/^Amplified /, "").replace(/ (I|II|III|IV)$/, "")];
+  }
   function stashRows() {
     var nd = stashNeeds(), rows = [], seen = {};
     Object.keys(tracker).concat(Object.keys(goals)).forEach(function (n) {
@@ -6166,8 +6177,8 @@ footer .wrap { display: grid; gap: 2px; }
       var have = tracker[n] || 0, want = goals[n] > 0 ? goals[n] : 0;
       if (!(have > 0) && !want) { return; }
       var f = ITEMINFO[n], price = f && f[0] != null ? f[0] : null, st = (f && f[2]) || 1, need = nd.t[n] || 0, tag = itemTags[n] || "";
-      var keep = tag === "keep" ? have : Math.min(have, need), sell = have - keep;
-      rows.push({ n: n, have: have, want: want, keep: keep, sell: sell, need: need, why: nd.why[n] || [], tag: tag, price: price,
+      var gear = isGear(n), keep = tag === "keep" || (gear && tag !== "sell") ? have : Math.min(have, need), sell = have - keep;
+      rows.push({ n: n, gear: gear, have: have, want: want, keep: keep, sell: sell, need: need, why: nd.why[n] || [], tag: tag, price: price,
         value: price === null ? 0 : price * have, sellValue: price === null ? 0 : price * sell,
         slots: swSlots(have, st), free: swSlots(have, st) - swSlots(have - sell, st), rar: String(rarityMap[n] || "Common").toLowerCase() });
     });
@@ -6184,6 +6195,7 @@ footer .wrap { display: grid; gap: 2px; }
   function stashCard(r) {
     var why = r.why.filter(function (w) { return w.k !== "goal"; }).map(function (w) { return '<li><span class="stk">' + STASH_KINDS[w.k] + "</span>" + esc(w.l) + " &middot; " + w.q + "</li>"; });
     if (r.tag === "keep") { why.unshift('<li><span class="stk">Tag</span>You tagged this Keep</li>'); }
+    else if (r.gear && r.tag !== "sell") { why.unshift('<li><span class="stk">Gear</span>Weapons and gear stay Keep unless you choose Sell it anyway.</li>'); }
     var verdict = (r.want ? (r.have >= r.want ? '<span class="ktag go">Want ' + r.want + " &middot; found &#10003;</span>" : '<span class="ktag want">Want ' + r.want + " &middot; " + (r.want - r.have) + " to go</span>") : "") +
       (r.keep ? '<span class="ktag keep">Keep ' + r.keep + "</span>" : "") +
       (r.sell ? '<span class="ktag go">Sell ' + r.sell + (r.price === null ? "" : " &middot; " + coins(r.sellValue)) + "</span>" : "") +
@@ -6195,6 +6207,7 @@ footer .wrap { display: grid; gap: 2px; }
       (verdict ? '<div class="stverdict">' + verdict + "</div>" : "") +
       (why.length ? '<ul class="stwhy">' + why.join("") + "</ul>" : r.want ? "" : '<div class="muted" style="font-size:13px;">Nothing you track needs this.</div>') +
       stashUsed(r.n) +
+      (r.gear && r.have ? '<button class="btn ghost minor" type="button" data-action="gearSell" data-item="' + ek + '">' + (r.tag === "sell" ? "Keep it instead" : "Sell it anyway") + "</button>" : "") +
       '<div class="stwant"><label class="stedit">Have <input type="number" min="0" inputmode="numeric" data-sthave="' + ek + '" value="' + r.have + '" aria-label="How many ' + ek + ' you have"></label>' +
       '<label class="stedit">Want <input type="number" min="0" inputmode="numeric" data-goal="' + ek + '" value="' + (r.want || "") + '" placeholder="any" aria-label="How many ' + ek + ' you want"></label></div></div>';
   }
@@ -6275,7 +6288,7 @@ footer .wrap { display: grid; gap: 2px; }
       var f = ITEMINFO[n], price = f && f[0] != null ? f[0] : null, st = (f && f[2]) || 1;
       tot.slots += swSlots(have, st);
       if (price === null) { tot.unpriced++; } else { tot.coins += price * have; }
-      if (itemTags[n] === "keep") { return; }
+      if (itemTags[n] === "keep" || (isGear(n) && itemTags[n] !== "sell")) { return; }
       var spare = Math.max(0, have - (needs[n] || 0));
       if (!spare) { return; }
       var r = { n: n, have: have, spare: spare, price: price, coins: price === null ? 0 : price * spare, slots: swSlots(have, st) - swSlots(have - spare, st), sell: itemTags[n] === "sell" };

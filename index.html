@@ -474,6 +474,8 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .stadd-grid { grid-template-columns: 3fr 1fr 1fr auto; }
 @media (max-width: 600px) { .stadd-grid { grid-template-columns: 1fr 1fr; } .stadd-grid > div:first-child, .stadd-grid > .btn { grid-column: 1 / -1; } }
 .stused { font-size: 13px; }
+.moveqr { background: #fff; padding: 8px; border-radius: 8px; width: 240px; max-width: 100%; margin-top: 8px; }
+.moveqr svg { display: block; width: 100%; height: auto; }
 .stused summary { cursor: pointer; color: var(--muted); list-style: none; }
 .stused summary::-webkit-details-marker { display: none; }
 .stused summary b { color: var(--fg); font-weight: 600; }
@@ -1044,6 +1046,10 @@ footer .wrap { display: grid; gap: 2px; }
         <button class="btn ghost" type="button" data-action="importData">Import</button>
         <button class="btn ghost" type="button" data-action="makeCode">Copy transfer code</button>
       </div>
+      <h4 style="margin:12px 0 4px;">Move to your phone or PC</h4>
+      <p class="muted">Shows a QR code. Scan it with the other device's camera and open the link: your Wants, tags, notes, favourites, starred conditions and keys are added there. ARC Tracker already syncs your stash and quests on each device, so only a device without ARC Tracker also gets your stash counts.</p>
+      <div class="acts"><button class="btn ghost" type="button" data-action="moveQr">Show QR code</button></div>
+      <div id="moveBox" hidden></div>
       <div style="margin-top:8px;"><button class="btn danger" type="button" data-action="resetEverything" id="resetEverythingBtn">Reset everything to default</button></div>
       <div class="muted" id="backupMsg" style="margin-top:8px;" role="status"></div>
       <h4 style="margin:12px 0 4px;">Automatic snapshots</h4>
@@ -4799,6 +4805,67 @@ footer .wrap { display: grid; gap: 2px; }
       new window.Response(cs.readable).arrayBuffer().then(function (buf) { done("ARH2." + b64FromBytes(new Uint8Array(buf))); }, function () { done("ARH1." + b64FromBytes(raw)); });
     } else { done("ARH1." + b64FromBytes(raw)); }
   }
+  /* Phone/PC move: the settings that live only in this browser, packed into a link the other device opens from a QR code.
+     The receiving side merges them in (see moveIn), so nothing already there is lost. */
+  function moveObj() {
+    var o = { app: "arc-raiders-hub", mv: 1, goals: goals, tags: itemTags, inotes: itemNotes, notes: mapNotes, favs: favs, bpWant: bpWant, keys: keyHave, condWatch: condWatch, condRegion: load("arcHubCondRegion", "auto") };
+    if (!arctSet.last) { o.tracker = tracker; }
+    return o;
+  }
+  function packText(txt) {
+    var raw = new window.TextEncoder().encode(txt);
+    if (typeof window.CompressionStream !== "function") { return Promise.resolve("ARH1." + b64FromBytes(raw)); }
+    var cs = new window.CompressionStream("deflate-raw"), w = cs.writable.getWriter();
+    w.write(raw); w.close();
+    return new window.Response(cs.readable).arrayBuffer().then(function (buf) { return "ARH2." + b64FromBytes(new Uint8Array(buf)); });
+  }
+  function unpackText(v) {
+    if (v.indexOf("ARH1.") === 0) { return Promise.resolve(new window.TextDecoder().decode(bytesFromB64(v.slice(5)))); }
+    if (v.indexOf("ARH2.") !== 0 || typeof window.DecompressionStream !== "function") { return Promise.reject(new Error("bad")); }
+    var ds = new window.DecompressionStream("deflate-raw"), w = ds.writable.getWriter();
+    w.write(bytesFromB64(v.slice(5))); w.close();
+    return new window.Response(ds.readable).arrayBuffer().then(function (buf) { return new window.TextDecoder().decode(buf); });
+  }
+  var qrLoad = null;
+  function moveQr() {
+    var box = document.getElementById("moveBox");
+    box.hidden = false; box.innerHTML = '<p class="muted">Making the code&hellip;</p>';
+    if (!qrLoad) {
+      qrLoad = new Promise(function (ok, bad) { var sc = document.createElement("script"); sc.src = "vendor/qrcode.js"; sc.onload = ok; sc.onerror = function () { qrLoad = null; bad(); }; document.head.appendChild(sc); });
+    }
+    Promise.all([qrLoad, packText(JSON.stringify(moveObj()))]).then(function (r) {
+      var url = window.location.origin + window.location.pathname + "#move/" + r[1];
+      if (url.length > 2800) { box.innerHTML = '<p class="muted">Too much to fit in one QR code. Use Copy transfer code above instead.</p>'; return; }
+      var qr = window.qrcode(0, "L"); qr.addData(url); qr.make();
+      box.innerHTML = '<div class="moveqr" data-url="' + esc(url) + '">' + qr.createSvgTag({ cellSize: 4, margin: 3, scalable: true, alt: "QR code to move your settings" }) + "</div>" +
+        '<p class="muted">Point the other device&rsquo;s camera at this and open the link. The code holds your settings, so don&rsquo;t share it publicly.</p>';
+    }, function () { box.innerHTML = '<p class="muted">Could not make the QR code here. Use Copy transfer code above instead.</p>'; });
+  }
+  function moveIn(code) {
+    try { window.history.replaceState(null, "", "#home"); } catch (e) {}
+    unpackText(code).then(function (txt) {
+      var d = JSON.parse(txt);
+      if (!d || d.app !== "arc-raiders-hub" || !d.mv) { throw new Error("bad"); }
+      function obj(o) { return o && typeof o === "object" && !Array.isArray(o) ? o : {}; }
+      var g = numMap(d.goals), tg = obj(d.tags), inn = obj(d.inotes), mn = obj(d.notes), tr = d.tracker && !arctSet.last ? numMap(d.tracker) : null;
+      var n = Object.keys(g).length + Object.keys(tg).length + Object.keys(inn).length + Object.keys(mn).length;
+      if (!window.confirm("Bring in your settings from the other device? " + Object.keys(g).length + " Wants, " + Object.keys(tg).length + " tags and " + (Object.keys(inn).length + Object.keys(mn).length) + " notes" + (tr ? ", plus " + Object.keys(tr).length + " stash counts" : "") + ". They are added to what is here; matching items take the other device's values.")) { return; }
+      pushUndo("Brought in settings from another device");
+      Object.keys(g).forEach(function (k) { goals[k] = g[k]; look[k] = 1; });
+      Object.keys(tg).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(tg[k]) !== -1 && k.length < 80) { itemTags[k] = tg[k]; } });
+      Object.keys(inn).forEach(function (k) { if (typeof inn[k] === "string" && k.length < 80) { itemNotes[k] = inn[k].slice(0, 300); } });
+      Object.keys(mn).forEach(function (k) { if (typeof mn[k] === "string" && k.length < 60) { mapNotes[k] = mn[k].slice(0, 2000); } });
+      if (Array.isArray(d.favs)) { d.favs.forEach(function (x) { if (typeof x === "string" && favs.indexOf(canonItem(x)) === -1 && favs.length < 500) { favs.push(canonItem(x)); } }); }
+      [[d.bpWant, bpWant], [d.keys, keyHave], [d.condWatch, condWatch]].forEach(function (p) { Object.keys(obj(p[0])).forEach(function (k) { if (p[0][k] && k.length < 80) { p[1][k] = 1; } }); });
+      if (tr) { Object.keys(tr).forEach(function (k) { tracker[k] = tr[k]; }); save("arcHubTracker", tracker); }
+      if (typeof d.condRegion === "string" && (d.condRegion === "auto" || COND_REGIONS.some(function (x) { return x[0] === d.condRegion; }))) { save("arcHubCondRegion", d.condRegion); }
+      save("arcHubGoals", goals); save("arcHubLook", look); save("arcHubTags", itemTags); save("arcHubNotes", itemNotes); save("arcHubMapNotes", mapNotes);
+      save("arcHubFavs", favs); save("arcHubBPWant", bpWant); save("arcHubKeyHave", keyHave); save("arcHubCondWatch", condWatch);
+      refresh(); renderQuests(); renderRef(); renderStash(); updateFavToggle(); updateGoalToggle();
+      showTab("stash");
+      sbSay(n ? "Settings brought in from your other device." : "Nothing to bring in from that code.");
+    }).catch(function () { window.alert("That move code could not be read. Make a new QR code on the other device and try again."); });
+  }
   function importAny() {
     var ta = document.getElementById("backup"), v = ta.value.trim(), msg = document.getElementById("backupMsg");
     try {
@@ -4925,6 +4992,7 @@ footer .wrap { display: grid; gap: 2px; }
   }
   function applyHash() {
     var r = readHash();
+    if (r.tab === "move" && r.arg) { moveIn(r.arg); return; }
     /* Old links: the Tools tab is gone, so a crafting link opens the planner in the item lookup and the rest open Home. */
     if (r.tab === "tools") { if (/^craft=/.test(r.arg)) { showTab("recycle", true); craftApply(r.arg.slice(6)); return; } r.tab = "home"; r.arg = ""; }
     if (r.tab === "tracker") { r.tab = "stash"; }
@@ -5375,6 +5443,8 @@ footer .wrap { display: grid; gap: 2px; }
       downloadBackup();
     } else if (a === "pickBackup") {
       document.getElementById("backupFile").click();
+    } else if (a === "moveQr") {
+      moveQr();
     } else if (a === "makeCode") {
       makeCode();
     } else if (a === "snapRestore") {

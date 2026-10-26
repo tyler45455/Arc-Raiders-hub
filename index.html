@@ -318,9 +318,6 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .chipwrap { position: relative; }
 .chipmore { display: none; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); z-index: 1; width: 32px; height: 32px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font-size: 22px; line-height: 1; cursor: pointer; }
 /* Phones get a "Tool: name" button that opens every tool as a grid, instead of a long sideways strip. */
-#toolPick { display: none; width: 100%; justify-content: space-between; align-items: center; gap: 10px; margin: 14px 0 4px; padding: 10px 14px; font-size: 15px; text-align: left; }
-#toolPick b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#toolPick span { flex: none; color: var(--muted); font-size: 13px; }
 .stsync { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 14px; color: var(--muted); }
 .sttiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 12px 0; }
 .sttile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-width: 0; }
@@ -711,7 +708,7 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .dispbox { position: absolute; right: 0; top: calc(100% + 4px); z-index: 45; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 200px; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
 .dispbox .btn { width: 100%; text-align: left; }
 html.raid .eyebrow, html.raid #helpBtn, html.raid #fbBtn, html.raid #contrastBtn, html.raid #themeBtn, html.raid #installBtn, html.raid #trReport, html.raid footer, html.raid #hint,
-html.raid #tab-recycle, html.raid #tab-gear, html.raid #tab-quests, html.raid #tab-ref, html.raid #tab-tools, html.raid #tab-frozen, html.raid #tab-updates, html.raid #tab-site { display: none !important; }
+html.raid #tab-recycle, html.raid #tab-gear, html.raid #tab-quests, html.raid #tab-ref, html.raid #tab-frozen, html.raid #tab-updates, html.raid #tab-site { display: none !important; }
 html.raid body { zoom: 1.08; }
 html[data-text="large"] body { zoom: 1.12; }
 html[data-text="larger"] body { zoom: 1.28; }
@@ -772,11 +769,7 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .chips.subtabs>*,#qTraders>*,#gearCats>*,#refChips>*,#mapChips>*,#chips>*{flex:none}
   .chipwrap.more>.chips{-webkit-mask-image:linear-gradient(to right,#000 78%,transparent);mask-image:linear-gradient(to right,#000 78%,transparent)}
   .chipwrap.more>.chipmore{display:block}
-  #toolPick{display:flex}
-  #toolTabs{display:none}
-  #toolTabs.open{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 12px;padding:0;overflow:visible}
-  #toolTabs.open .chip{border-radius:8px;padding:9px 10px;font-size:14px;text-align:left;white-space:normal;line-height:1.25}
-}
+  }
 /* phone: bottom bar shows the main tabs plus a More menu */
 .topbtns .langsel { width: auto; }
 .tabbar { display: flex; align-items: stretch; }
@@ -980,7 +973,6 @@ footer .wrap { display: grid; gap: 2px; }
       <button class="tab sec" role="tab" id="tab-gear" data-tab="gear" aria-selected="false">Gear</button>
       <button class="tab" role="tab" id="tab-quests" data-tab="quests" aria-selected="false">Quests</button>
       <button class="tab sec" role="tab" id="tab-ref" data-tab="ref" aria-selected="false">Reference</button>
-      <button class="tab sec" role="tab" id="tab-tools" data-tab="tools" aria-selected="false">Tools</button>
       <button class="tab" role="tab" id="tab-maps" data-tab="maps" aria-selected="false">Maps</button>
       <button class="tab sec" role="tab" id="tab-frozen" data-tab="frozen" aria-selected="false">Frozen Trail</button>
       <button class="tab sec" role="tab" id="tab-updates" data-tab="updates" aria-selected="false">Updates<span class="newdot" id="newDot" hidden></span></button>
@@ -1004,9 +996,30 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- HOME -->
   <section class="panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" hidden>
     <h2>Home</h2>
-    <p class="muted">Your next raid, the closest workshop upgrade, goals and raid stats at a glance. Tap any card's button to open the full tool.</p>
+    <p class="muted">Your next raid, the closest workshop upgrade, goals and raid stats at a glance. Tap any card's button to see more.</p>
     <div class="sttiles" id="homeTiles"></div>
     <div class="homegrid" id="homeOut"></div>
+    <details class="card tool" id="routeTool"><summary>Quest route planner</summary>
+      <p class="muted">Groups your active quests into raids, busiest map first, so you finish several per trip. Quests that work on any map fill the spare room. Tick a quest when it is done and the plan updates.</p>
+      <div class="stashgrid">
+        <div><label for="qrPer">Quests per raid</label><select id="qrPer"><option value="2">Up to 2</option><option value="3">Up to 3</option><option value="4" selected>Up to 4</option><option value="6">Up to 6</option><option value="99">No limit</option></select></div>
+      </div>
+      <div id="qrOut" aria-live="polite"></div>
+    </details>
+    <details class="card tool" id="weekTool"><summary>Weekly goals</summary>
+      <p class="muted">Set a target for the next 7 days. Progress counts what you add to the tracker from now on.</p>
+      <div class="stashgrid">
+        <div><label for="wkMat">Material</label><input type="text" id="wkMat" list="itemList" autocomplete="off"></div>
+        <div><label for="wkNum">Target</label><input type="number" min="1" inputmode="numeric" id="wkNum"></div>
+      </div>
+      <div class="acts" style="margin-top:8px;"><button class="btn" type="button" data-action="wkAdd">Start weekly goal</button></div>
+      <div id="wkOut"></div>
+    </details>
+    <details class="card tool" id="wsTool"><summary>Workshop planner</summary>
+      <p class="muted">Tick how many levels of each station you have finished. Pick how far to plan ahead: those levels count as needs on the Stash tab (untick &ldquo;Include&rdquo; to leave a station out), and the upgrade path below lists them in order with everything they need and where to find it.</p>
+      <div id="wsPlanner"></div>
+    </details>
+    <datalist id="itemList"></datalist>
     <label class="qchk" style="margin-top:14px;"><input type="checkbox" id="homeStart"> Open the site on this screen</label>
     <details class="card" id="homeCustCard"><summary>Customize Home</summary>
       <p class="muted" style="margin-top:8px;">Untick a card to hide it, and use the arrows to move it up or down. New-update and starred-condition alerts always show at the top.</p>
@@ -1076,6 +1089,16 @@ footer .wrap { display: grid; gap: 2px; }
       <div class="muted" id="formMsg" style="margin-top:8px;" role="status"></div>
       <div id="customList"></div>
     </details>
+    <details class="card tool" id="craftTool"><summary>Crafting planner</summary>
+      <p class="muted">Pick something to craft and how many. It works out every part down to basic materials, uses components your tracker already has, and lists the workbenches you need.</p>
+      <div class="stashgrid">
+        <div><label for="crItem">Item to craft</label><input type="text" id="crItem" list="craftList" placeholder="Like: Rattler I" autocomplete="off"></div>
+        <div><label for="crQty">How many</label><input type="number" min="1" max="99" inputmode="numeric" id="crQty" value="1"></div>
+      </div>
+      <label class="crdeep"><input type="checkbox" id="crDeep" checked> Craft the components too (Mechanical Components, Gun Parts and so on)</label>
+      <datalist id="craftList"></datalist>
+      <div id="crOut"></div>
+    </details>
   </section>
 
   <!-- STASH -->
@@ -1114,7 +1137,7 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- RAIDS -->
   <section class="panel" id="panel-raids" role="tabpanel" aria-labelledby="tab-raids" hidden>
     <h2>Raids</h2>
-    <p class="muted">Every raid synced from ARC Tracker, plus any you log by hand in Tools, with what you brought out and your profit when ARC Tracker sends it.</p>
+    <p class="muted">Every raid synced from ARC Tracker, plus any you log by hand below, with what you brought out and your profit when ARC Tracker sends it.</p>
     <div class="sttiles four" id="rdTiles"></div>
     <div class="sttools">
       <div class="seg" role="group" aria-label="Show">
@@ -1134,6 +1157,20 @@ footer .wrap { display: grid; gap: 2px; }
     <div class="rddaynote" id="rdDayNote" hidden></div>
     <div class="stgrid" id="rdOut" aria-live="polite"></div>
     <div class="acts" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="rdMore" id="rdMore" hidden>Show more</button><button class="btn ghost" type="button" data-action="homeTool" data-tool="raidTool">Log a raid by hand</button></div>
+    <details class="card tool" id="raidTool"><summary>Raid log</summary>
+      <p class="muted">Log each raid in a few taps to see your extract rate, average haul and profit on every map. Add what your kit was worth (or pick a saved loadout) and profit is the haul minus the kit; a death counts as losing the kit. Saved in this browser and included in backups.</p>
+      <div class="stashgrid">
+        <div><label for="rlMap">Map</label><select id="rlMap"></select></div>
+        <div><label for="rlOut">Result</label><select id="rlOut"><option value="x">Extracted</option><option value="d">Died</option></select></div>
+        <div><label for="rlVal">Haul value (coins, optional)</label><input type="number" min="0" max="10000000" inputmode="numeric" id="rlVal"></div>
+        <div><label for="rlKit">Kit value (coins, optional)</label><input type="number" min="0" max="10000000" inputmode="numeric" id="rlKit"></div>
+        <div><label for="rlLo">Or use a saved loadout</label><select id="rlLo"><option value="">None</option></select></div>
+        <div><label for="rlNote">Note (optional)</label><input type="text" id="rlNote" maxlength="60" autocomplete="off" placeholder="Like: Matriarch, duo"></div>
+      </div>
+      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn" type="button" data-action="rlAdd">Log raid</button><span class="muted" id="rlMsg" role="status"></span></div>
+      <div id="rlStats"></div>
+      <div id="rlList"></div>
+    </details>
   </section>
 
   <!-- FROZEN TRAIL -->
@@ -1275,220 +1312,7 @@ footer .wrap { display: grid; gap: 2px; }
     </div>
     <div class="muted" id="refCount" role="status"></div>
     <div id="refOut"></div>
-  </section>
-
-  <!-- TOOLS -->
-  <section class="panel" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools" hidden>
-    <h2>Tools</h2>
-    <p class="muted">Pick a tool from the list. Tools that do similar jobs are grouped: What&rsquo;s it worth?, Weapons, and Crafting and shopping. Saved in this browser only.</p>
-
-    <div class="tool printable">
-      <h3>Raid checklist</h3>
-      <p class="muted">Tick things off before you drop in. Edit the list to match how you play.</p>
-      <div id="ckShared"></div>
-      <div id="checklist"></div>
-      <div class="muted" id="ckMsg" role="status"></div>
-      <div class="addrow"><input type="text" id="chkNew" placeholder="Add a checklist item" aria-label="New checklist item"><button class="btn" type="button" data-action="chkAdd">Add</button></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn ghost" type="button" data-action="chkUntick">Untick all</button>
-        <button class="btn ghost" type="button" data-action="chkDefaults">Restore defaults</button>
-        <button class="btn ghost" type="button" data-action="ckLink">Copy squad link</button>
-      </div>
-    </div>
-
-    <div class="tool printable">
-      <h3>Daily and weekly tasks</h3>
-      <p class="muted">Tick things off and they reset on their own: daily tasks at midnight, weekly tasks on Monday (your device&rsquo;s time).</p>
-      <div class="muted" id="resetCd"></div>
-      <div id="repeatList"></div>
-      <div class="rcadd"><input type="text" id="rcNew" placeholder="Add a task" aria-label="New repeating task"><select id="rcPer" aria-label="How often"><option value="daily">Daily</option><option value="weekly">Weekly</option></select><button class="btn" type="button" data-action="rchkAdd">Add</button></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="printChecks">Print checklists</button></div>
-    </div>
-
-    <div class="tool">
-      <h3>Project helper</h3>
-      <p class="muted">Pick a project below to add its stages from the wiki, or type your own. Each saved stage shows how close your tracker is. Custom format: <code>200 Metal Parts, 50 Wires</code></p>
-      <div class="presetbox">
-        <label for="presetSel">Project presets (from the wiki)</label>
-        <select id="presetSel" aria-label="Project preset"></select>
-        <div class="muted" id="presetNote"></div>
-        <div class="chips" id="presetStages"></div>
-      </div>
-      <div class="form-grid" style="grid-template-columns: 1fr 2fr auto;">
-        <div><label for="pName">Project name</label><input type="text" id="pName" placeholder="Workbench upgrade"></div>
-        <div><label for="pNeeds">Needs</label><input type="text" id="pNeeds" placeholder="200 Metal Parts, 50 Wires" list="matList"></div>
-        <button class="btn" type="button" data-action="projAdd">Save</button>
-      </div>
-      <div class="muted" id="projMsg" style="margin-top:8px;" role="status"></div>
-      <div id="projList"></div>
-    </div>
-
-    <div class="tool">
-      <h3>Compare weapons</h3>
-      <p class="muted">Pick two weapons to see their stats side by side. The better value in each row is highlighted.</p>
-      <div class="cmp-grid"><select id="wcA" aria-label="First weapon"></select><select id="wcB" aria-label="Second weapon"></select></div>
-      <div id="wcOut"></div>
-    </div>
-
-    <div class="tool">
-      <h3>Loadout builder</h3>
-      <p class="muted">Choose an augment, shield, weapons and items to see your carried weight against the augment&rsquo;s weight limit.</p>
-      <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
-        <div><label for="loAug">Augment</label><select id="loAug"></select></div>
-        <div><label for="loShield">Shield</label><select id="loShield"></select></div>
-        <div><label for="loW1">Weapon 1</label><select id="loW1"></select></div>
-        <div><label for="loW2">Weapon 2</label><select id="loW2"></select></div>
-      </div>
-      <div id="loItems" style="display:grid;gap:6px;margin-top:8px;"></div>
-      <div id="loOut"></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="loShare">Copy loadout link</button><button class="btn ghost" type="button" data-action="shareLoadout">Share as image</button><span class="muted" id="loMsg" role="status"></span></div>
-      <div class="rcadd" style="grid-template-columns:1fr auto;"><input type="text" id="loName" placeholder="Name this loadout" aria-label="Loadout name" maxlength="40"><button class="btn" type="button" data-action="loSave">Save loadout</button></div>
-      <div id="loSaved"></div>
-    </div>
-
-    <div class="tool">
-      <h3>Keep or recycle?</h3>
-      <p class="muted">Sorts every item using your active quests, saved projects and tracker goals. Not a replacement for judgement, but it catches the items you would regret recycling.</p>
-      <div id="keepOut"></div>
-    </div>
-
-    <div class="tool">
-      <h3>Compare items</h3>
-      <p class="muted">Pick two items to see what each breaks down into, using the Recycle or Salvage setting from the lookup tab.</p>
-      <div class="cmp-grid">
-        <input type="text" id="cmpA" list="itemList" placeholder="First item" aria-label="First item" autocomplete="off">
-        <input type="text" id="cmpB" list="itemList" placeholder="Second item" aria-label="Second item" autocomplete="off">
-      </div>
-      <datalist id="itemList"></datalist>
-      <div id="cmpOut"></div>
-    </div>
-
-    <div class="tool" id="planTool">
-      <h3>Pre-raid planner</h3>
-      <p class="muted">Pick a map. It uses what you still need to suggest rooms to visit, ARC enemies to hunt and quests that fit.</p>
-      <select id="planMap" aria-label="Map"></select>
-      <div id="planOut"></div>
-    </div>
-
-    <div class="tool" id="weekTool">
-      <h3>Weekly goals</h3>
-      <p class="muted">Set a target for the next 7 days. Progress counts what you add to the tracker from now on.</p>
-      <div class="stashgrid">
-        <div><label for="wkMat">Material</label><input type="text" id="wkMat" list="itemList" autocomplete="off"></div>
-        <div><label for="wkNum">Target</label><input type="number" min="1" inputmode="numeric" id="wkNum"></div>
-      </div>
-      <div class="acts" style="margin-top:8px;"><button class="btn" type="button" data-action="wkAdd">Start weekly goal</button></div>
-      <div id="wkOut"></div>
-    </div>
-
-    <div class="tool" id="sbTool">
-      <h3>Squad board</h3>
-      <p class="muted">Split up who brings or farms what. Copy the link and send it to your squad, and they can load it into their own board.</p>
-      <div class="stashgrid">
-        <div><label for="sbWho">Who</label><input type="text" id="sbWho" maxlength="20" autocomplete="off"></div>
-        <div><label for="sbWhat">Task</label><input type="text" id="sbWhat" maxlength="40" placeholder="Like: 20 Wires" autocomplete="off"></div>
-      </div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="sbAdd">Add to board</button><button class="btn ghost" type="button" data-action="sbCopy">Copy board link</button><button class="btn ghost" type="button" data-action="sbClear">Clear board</button></div>
-      <div id="sbShared"></div>
-      <div id="sbOut"></div>
-    </div>
-
-    <div class="tool" id="craftTool">
-      <h3>Crafting planner</h3>
-      <p class="muted">Pick something to craft and how many. It works out every part down to basic materials, uses components your tracker already has, and lists the workbenches you need.</p>
-      <div class="stashgrid">
-        <div><label for="crItem">Item to craft</label><input type="text" id="crItem" list="craftList" placeholder="Like: Rattler I" autocomplete="off"></div>
-        <div><label for="crQty">How many</label><input type="number" min="1" max="99" inputmode="numeric" id="crQty" value="1"></div>
-      </div>
-      <label class="crdeep"><input type="checkbox" id="crDeep" checked> Craft the components too (Mechanical Components, Gun Parts and so on)</label>
-      <datalist id="craftList"></datalist>
-      <div id="crOut"></div>
-    </div>
-
-    <div class="tool" id="cosTool">
-      <h3>Craft or sell</h3>
-      <p class="muted">Is it worth crafting? Compares what each craftable item sells for with what its materials sell for, so you know whether to craft it or just sell the materials. Your Stash counts show how many you can craft right now.</p>
-      <div class="stashgrid">
-        <div><label for="cosQ">Filter</label><input type="text" id="cosQ" placeholder="Name, like: Bandage" autocomplete="off"></div>
-        <div><label for="cosShow">Show</label><select id="cosShow"><option value="all">Every recipe</option><option value="now">Only what I can craft now</option><option value="gain">Only crafts that gain coins</option></select></div>
-      </div>
-      <div id="cosOut"></div>
-    </div>
-
-    <div class="tool" id="lootTool">
-      <h3>Loot value</h3>
-      <p class="muted">What is worth the space in your bag. Ranks items by sell price per kilogram or per stash slot (a full stack). Items your active quests, projects, goals or Keep tags need are marked so you do not sell them by mistake.</p>
-      <div class="stashgrid">
-        <div><label for="lvQ">Filter</label><input type="text" id="lvQ" placeholder="Name, like: Battery" autocomplete="off"></div>
-        <div><label for="lvSort">Rank by</label><select id="lvSort"><option value="kg">Coins per kg</option><option value="slot">Coins per slot</option><option value="price">Sell price</option></select></div>
-      </div>
-      <label class="crdeep"><input type="checkbox" id="lvGear"> Include weapons, augments and shields</label>
-      <div id="lvOut"></div>
-      <details id="lvChanges" style="margin-top:12px;"><summary><b>Price changes</b> <span class="muted" id="lvChCount"></span></summary><div id="lvChOut"></div></details>
-    </div>
-
-    <div class="tool" id="skillTool">
-      <h3>Skill build planner</h3>
-      <p class="muted">Laid out like the in-game tree. Tap a skill to add a point; a skill stays locked until the one before it has a point, and the large nodes also need 10, 30 or 40 points in that tree. You earn 76 points from levels, plus up to 5 per completed Expedition.</p>
-      <div class="stashgrid">
-        <div><label for="skExp">Expedition bonus points</label><input type="number" min="0" max="200" inputmode="numeric" id="skExp" value="0"></div>
-      </div>
-      <div id="skSum" class="muted" style="margin-top:8px;" role="status"></div>
-      <div class="chips" id="skTabs" role="group" aria-label="Skill tree" style="margin-top:8px;"></div>
-      <div id="skOut"></div>
-      <div id="skInfo" class="proj" aria-live="polite"></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="skLink">Copy build link</button><button class="btn ghost" type="button" data-action="shareSkills">Share as image</button><button class="btn ghost" type="button" data-action="skReset">Clear build</button><span class="muted" id="skMsg" role="status"></span></div>
-    </div>
-
-    <div class="tool" id="raidTool">
-      <h3>Raid log</h3>
-      <p class="muted">Log each raid in a few taps to see your extract rate, average haul and profit on every map. Add what your kit was worth (or pick a saved loadout) and profit is the haul minus the kit; a death counts as losing the kit. Saved in this browser and included in backups.</p>
-      <div class="stashgrid">
-        <div><label for="rlMap">Map</label><select id="rlMap"></select></div>
-        <div><label for="rlOut">Result</label><select id="rlOut"><option value="x">Extracted</option><option value="d">Died</option></select></div>
-        <div><label for="rlVal">Haul value (coins, optional)</label><input type="number" min="0" max="10000000" inputmode="numeric" id="rlVal"></div>
-        <div><label for="rlKit">Kit value (coins, optional)</label><input type="number" min="0" max="10000000" inputmode="numeric" id="rlKit"></div>
-        <div><label for="rlLo">Or use a saved loadout</label><select id="rlLo"><option value="">None</option></select></div>
-        <div><label for="rlNote">Note (optional)</label><input type="text" id="rlNote" maxlength="60" autocomplete="off" placeholder="Like: Matriarch, duo"></div>
-      </div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn" type="button" data-action="rlAdd">Log raid</button><span class="muted" id="rlMsg" role="status"></span></div>
-      <div id="rlStats"></div>
-      <div id="rlList"></div>
-    </div>
-
-    <div class="tool" id="worthTool">
-      <h3>Stash worth</h3>
-      <p class="muted">What the items in your tracker would sell for, and which spare ones to sell first. Spare means more than your active quests, projects, workshop upgrades and goals need (the same needs as the Shopping list). Items you tagged Keep are never listed.</p>
-      <div class="stashgrid">
-        <div><label for="swSort">Sell first</label><select id="swSort"><option value="slots">What frees the most slots</option><option value="coins">What brings in the most coins</option></select></div>
-      </div>
-      <div id="swOut" aria-live="polite"></div>
-    </div>
-
-    <div class="tool" id="upTool">
-      <h3>Weapon upgrade path</h3>
-      <p class="muted">Pick a weapon, the tier you have and the tier you want. You get every Gunsmith step, the total materials and what your tracker still needs.</p>
-      <div class="stashgrid">
-        <div><label for="upW">Weapon</label><select id="upW"></select></div>
-        <div><label for="upFrom">I have</label><select id="upFrom"></select></div>
-        <div><label for="upTo">Upgrade to</label><select id="upTo"></select></div>
-      </div>
-      <label class="crdeep"><input type="checkbox" id="upDeep"> Break components down to basic materials (uses components your tracker already has)</label>
-      <div id="upOut" aria-live="polite"></div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="upProj">Add the materials to my projects</button><span class="muted" id="upMsg" role="status"></span></div>
-    </div>
-
-    <div class="tool" id="routeTool">
-      <h3>Quest route planner</h3>
-      <p class="muted">Groups your active quests into raids, busiest map first, so you finish several per trip. Quests that work on any map fill the spare room. Tick a quest when it is done and the plan updates.</p>
-      <div class="stashgrid">
-        <div><label for="qrPer">Quests per raid</label><select id="qrPer"><option value="2">Up to 2</option><option value="3">Up to 3</option><option value="4" selected>Up to 4</option><option value="6">Up to 6</option><option value="99">No limit</option></select></div>
-      </div>
-      <div id="qrOut" aria-live="polite"></div>
-    </div>
-
-    <div class="tool" id="killTool">
-      <h3>Shots to kill</h3>
+    <details class="card tool" id="killTool"><summary>Shots to kill</summary>
       <p class="muted">Pick an ARC enemy to rank every weapon by how fast it deals that enemy&rsquo;s health, or pick one weapon to see the shots and magazines it needs.</p>
       <div class="stashgrid">
         <div><label for="kEn">Enemy</label><select id="kEn"></select></div>
@@ -1496,30 +1320,10 @@ footer .wrap { display: grid; gap: 2px; }
         <div><label for="kT">Weapon tier</label><select id="kT"><option value="0">I</option><option value="1">II</option><option value="2">III</option><option value="3">IV</option></select></div>
       </div>
       <div id="kOut" aria-live="polite"></div>
-    </div>
-
-    <div class="tool" id="shopTool">
-      <h3>Shopping list</h3>
-      <div id="sharedList"></div>
-      <p class="muted">Built automatically from your active quests, saved projects, workshop upgrades and tracker goals, compared with what you track. Type how many you have in each box to update your stash counts.</p>
-      <div class="chips" role="group" aria-label="What to include">
-        <label class="tog"><input type="checkbox" data-shopsrc="quest" checked> Quests</label>
-        <label class="tog"><input type="checkbox" data-shopsrc="project" checked> Projects</label>
-        <label class="tog"><input type="checkbox" data-shopsrc="workshop" checked> Workshop</label>
-        <label class="tog"><input type="checkbox" data-shopsrc="goal" checked> Goals</label>
-      </div>
-      <div id="shopOut"></div>
-      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="cueOn"> Play a small sound and vibration when a material is covered or a goal is met</label>
-      <label class="tog" style="display:block;margin-top:8px;"><input type="checkbox" id="autoSpend"> Subtract items from my tracker when I complete a quest or workshop level</label>
-      <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="shopCopy">Copy list</button><button class="btn ghost" type="button" data-action="shopLink">Copy list as link</button><span class="muted" id="shopMsg" role="status"></span></div>
-    </div>
-
-    <div class="tool" id="wsTool">
-      <h3>Workshop planner</h3>
-      <p class="muted">Tick how many levels of each station you have finished. Pick how far to plan ahead: those levels go on the shopping list (untick &ldquo;Include&rdquo; to leave a station out), and the upgrade path below lists them in order with everything they need and where to find it.</p>
-      <div id="wsPlanner"></div>
-    </div>
+    </details>
   </section>
+
+  <!-- TOOLS -->
 
   <!-- MAPS -->
   <section class="panel" id="panel-maps" role="tabpanel" aria-labelledby="tab-maps" hidden>
@@ -1922,7 +1726,7 @@ footer .wrap { display: grid; gap: 2px; }
     var tot = raids.length, ext = raids.filter(function (r) { return r.o === "x"; }).length, fav = Object.keys(runs).sort(function (a, b) { return runs[b].n - runs[a].n; })[0];
     function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
     document.getElementById("mapTiles").innerHTML = tile("", "Maps", MAPS.length, MAPS.filter(function (x) { return x.diff >= 4; }).length + " rated hard") +
-      tile("sell", "Your raids", tot, tot ? Math.round(ext * 100 / tot) + "% extracted" : "Log raids in Tools") +
+      tile("sell", "Your raids", tot, tot ? Math.round(ext * 100 / tot) + "% extracted" : "Log raids on the Raids tab") +
       tile("keep", "Most raided", fav ? esc(fav) : "None yet", fav ? runs[fav].n + " raid" + (runs[fav].n === 1 ? "" : "s") : "from your raid log");
   }
 
@@ -2309,7 +2113,6 @@ footer .wrap { display: grid; gap: 2px; }
     renderTracker();
     renderDatalist();
     updateGoalToggle();
-    renderProjects();
     renderCart();
     if (Object.keys(goals).length) { renderResults(); }
     if (typeof renderWeek === "function") { renderWeek(); }
@@ -2768,7 +2571,7 @@ footer .wrap { display: grid; gap: 2px; }
   }
   /* The Tracker tab is gone: counts and Want amounts live on the Stash cards. This refreshes everything built from them. */
   function renderTracker() {
-    try { renderShop(); renderPlanner(); renderWorth(); } catch (e0) {}
+    try { renderPlanner(); } catch (e0) {}
     histSoon();
     if (!invTyping && curTab === "stash") { renderStash(); }
   }
@@ -3169,26 +2972,6 @@ footer .wrap { display: grid; gap: 2px; }
     bn.innerHTML = qPending ? '<div class="note"><div>Shared progress link: ' + qPending.n + ' completed quests. Loading it replaces your current quest progress.</div><div style="display:flex;gap:8px;margin-top:8px;"><button class="btn" type="button" data-action="qLoadShared">Load it</button><button class="btn ghost" type="button" data-action="qIgnoreShared">Ignore</button></div></div>' : "";
   }
   var presetIdx = 0;
-  function renderPresets() {
-    var sel = document.getElementById("presetSel");
-    if (!sel.options.length) {
-      sel.innerHTML = PRESETS.map(function (p, i) { return '<option value="' + i + '">' + esc(p.name) + (p.ended ? " (ended)" : "") + "</option>"; }).join("");
-    }
-    var p = PRESETS[presetIdx];
-    document.getElementById("presetNote").textContent = p.note;
-    document.getElementById("presetStages").innerHTML = p.stages.map(function (st, i) {
-      return '<button type="button" class="chip" data-action="presetAdd" data-s="' + i + '">Add stage ' + (i + 1) + ": " + esc(st.n) + "</button>";
-    }).join("") + '<button type="button" class="chip" data-action="presetAdd" data-s="-1">Add all stages combined</button>';
-  }
-  function presetAdd(si) {
-    var p = PRESETS[presetIdx], tot = {};
-    (si < 0 ? p.stages : [p.stages[si]]).forEach(function (st) { st.needs.forEach(function (n) { tot[n[0]] = (tot[n[0]] || 0) + n[1]; }); });
-    var name = si < 0 ? p.name + " (all listed stages)" : p.name + ", stage " + (si + 1) + ": " + p.stages[si].n;
-    projects.push({ name: name, needs: Object.keys(tot).map(function (k) { return [k, tot[k]]; }) });
-    save("arcHubProjects", projects);
-    document.getElementById("projMsg").textContent = "Saved " + name + ".";
-    renderProjects();
-  }
   var ENEMIES = ARC.ENEMIES;
   var TRADERS = ARC.TRADERS;
   var WORKSHOP = ARC.WORKSHOP;
@@ -3347,8 +3130,7 @@ footer .wrap { display: grid; gap: 2px; }
         n++;
         out += '<div class="qcard"><div class="qh"><b>' + esc(w[0]) + " level " + esc(w[1]) + '</b></div>' +
           '<div class="qrow"><span class="lbl">Needs</span>' + qItems(w[2]).map(function (r) { return qChip(r, mats); }).join("") + "</div>" +
-          '<div class="refgrid"><div><span class="k">Unlocks: </span>' + esc(w[3]) + "</div></div>" +
-          '<div class="acts"><button class="btn" type="button" data-action="wsAdd" data-i="' + i + '">Add to project helper</button></div></div>';
+          '<div class="refgrid"><div><span class="k">Unlocks: </span>' + esc(w[3]) + "</div></div></div>";
       });
       if (ok("Stash upgrade slots coins")) {
         n++;
@@ -3386,7 +3168,7 @@ footer .wrap { display: grid; gap: 2px; }
             '<div class="refgrid"><div>' + esc(k[4]) + "</div>" + (k[3] !== "-" ? '<div><span class="k">Unlock: </span>' + esc(k[3]) + "</div>" : "") + "</div></div>";
         }).join("");
       });
-      if (n) { out += '<p class="muted">Max points and paths come from the wiki and community guides (the wiki does not map each connection). Plan a build with the Skill build planner in the Tools tab.</p>'; }
+      if (n) { out += '<p class="muted">Max points and paths come from the wiki and community guides (the wiki does not map each connection).</p>'; }
     } else if (refSec === "amplification") {
       total = AMPS.length;
       AMPS.forEach(function (u) {
@@ -3694,45 +3476,6 @@ footer .wrap { display: grid; gap: 2px; }
   }
   /* Loot value: sell price per kg or per slot (price x stack size), from ITEMINFO. */
   var GEAR_NAMES = null;
-  function renderLoot() {
-    var out = document.getElementById("lvOut");
-    if (!out) { return; }
-    if (!GEAR_NAMES) {
-      GEAR_NAMES = {};
-      var G = ARC.GEARDATA || {};
-      ["weapons", "augments", "shields"].forEach(function (k) { (G[k] || []).forEach(function (g) { GEAR_NAMES[g[0]] = 1; }); });
-    }
-    var q = document.getElementById("lvQ").value.trim().toLowerCase(), by = document.getElementById("lvSort").value, gear = document.getElementById("lvGear").checked;
-    var kmap = keepMap(), byName = {};
-    items.forEach(function (it) { byName[it.name] = it; });
-    var rows = Object.keys(ITEMINFO).filter(function (n) {
-      var f = ITEMINFO[n];
-      if (f[0] == null || !(f[0] > 0) || !(f[1] > 0)) { return false; }
-      if (!gear && GEAR_NAMES[n.replace(/ (I|II|III|IV)$/, "")]) { return false; }
-      return !q || n.toLowerCase().indexOf(q) !== -1;
-    }).map(function (n) {
-      var f = ITEMINFO[n], st = f[2] || 1, it = byName[n], pv = it ? partsValue(it) : null;
-      return { n: n, p: f[0], price: f[0], w: f[1], st: st, kg: f[0] / f[1], slot: f[0] * st, pv: pv };
-    });
-    rows.sort(function (a, b) { return (b[by] - a[by]) || (a.n < b.n ? -1 : 1); });
-    var shown = rows.slice(0, 60);
-    out.innerHTML = rows.length ? '<div class="muted" style="margin-top:10px;">' + rows.length + " items" + (rows.length > shown.length ? ", top " + shown.length + " shown. Type in the filter to find others." : ".") + "</div>" +
-      shown.map(function (r, i) {
-        var k = kmap[r.n];
-        return '<div class="krow"><b>' + (i + 1) + ". " + esc(r.n) + "</b>" + (k ? '<span class="ktag keep" title="' + esc(k.join("; ")) + '">Keep</span>' : "") +
-          '<span class="muted">' + coins(r.p) + " coins" + priceWas(r.n) + " &middot; " + r.w + " kg &middot; <b>" + coins(Math.round(r.kg)) + "</b>/kg &middot; stacks to " + r.st + " &middot; <b>" + coins(r.slot) + "</b>/slot" +
-          (r.pv !== null && r.pv > r.p ? ' &middot; <span class="good">recycled parts sell for ' + coins(r.pv) + "</span>" : "") + (k ? " &middot; needed for " + k.map(esc).join("; ") : "") + "</span></div>";
-      }).join("") : '<div class="empty-line">No item matches that.</div>';
-    var ch = [];
-    Object.keys(PRICE_LOG).forEach(function (n) { PRICE_LOG[n].forEach(function (c) { if (!q || n.toLowerCase().indexOf(q) !== -1) { ch.push([c[0], n, c[1], c[2]]); } }); });
-    ch.sort(function (a, b) { return a[0] < b[0] ? 1 : a[0] > b[0] ? -1 : (a[1] < b[1] ? -1 : 1); });
-    document.getElementById("lvChCount").textContent = ch.length ? "(" + ch.length + ")" : "";
-    document.getElementById("lvChOut").innerHTML = '<p class="muted">Sell price changes the daily data sync has picked up, newest first. Recording started Oct 11, 2026, so older changes are not listed.</p>' +
-      (ch.length ? ch.slice(0, 100).map(function (c) {
-        var up = c[3] > c[2];
-        return '<div class="krow"><b>' + esc(c[1]) + '</b><span class="muted">' + isoDay(c[0]) + ' &middot; ' + coins(c[2]) + ' to <b>' + coins(c[3]) + '</b> <span class="' + (up ? "good" : "bad") + '">' + (up ? "+" : "") + coins(c[3] - c[2]) + "</span></span></div>";
-      }).join("") : '<div class="empty-line">' + (q ? "No recorded price changes match that." : "No price changes recorded yet.") + "</div>");
-  }
   /* Skill build planner. SKILLS rows: [name, tree, max points, unlock note, effect]; SKILL_LAYOUT gives each tree's paths.
      Rules from the wiki: a skill needs a point in the one before it; large node 1 (pick 1 of 2) needs 10 points in the tree
      and a point in the end of an early path; large node 2 (pick up to 2 of 3) needs 30 points for the first pick and 40 for
@@ -3800,28 +3543,6 @@ footer .wrap { display: grid; gap: 2px; }
     return '<button type="button" class="sknode ' + (cls || "") + (v ? " on" : "") + (v >= mx ? " max" : "") + (lock ? " lock" : "") + (n === skSel ? " sel" : "") + '"' + (style ? ' style="' + style + '"' : "") +
       ' data-action="skTap" data-sk="' + esc(n) + '" aria-label="' + esc(n) + ", " + v + " of " + mx + (lock ? ", locked" : "") + '"><span>' + esc(n) + '</span><span class="rk">' + v + "/" + mx + "</span></button>";
   }
-  function renderSkills() {
-    var out = document.getElementById("skOut");
-    if (!out) { return; }
-    var spent = skSpent(), avail = skAvail();
-    document.getElementById("skSum").innerHTML = "<b>" + spent + " of " + avail + "</b> points spent" + (spent > avail ? ' <span class="bad">(' + (spent - avail) + " over)</span>" : ", " + (avail - spent) + " left");
-    document.getElementById("skTabs").innerHTML = SKT.map(function (t) {
-      return '<button type="button" class="chip" data-action="skTree" data-t="' + t + '" aria-pressed="' + (t === skTree ? "true" : "false") + '">' + t + " (" + skSum(skBuild, skTreeNames(t)) + ")</button>";
-    }).join("");
-    var P = skParts(skTree), h = "";
-    h += skNode(P.start, "root", "grid-column:3 / span 2");
-    [0, 1].forEach(function (r) { P.early.forEach(function (c, i) { h += skNode(c[r], "", "grid-column:" + (i ? 4 : 1) + " / span 3"); }); });
-    h += '<div class="skdia"><span class="lbl">10 points &middot; pick 1</span>' + P.ln1.map(function (n) { return skNode(n, "big"); }).join("") + "</div>";
-    [0, 1].forEach(function (r) { P.mid.forEach(function (c, i) { h += skNode(c[r], "", "grid-column:" + (i * 2 + 1) + " / span 2"); }); });
-    h += '<div class="skdia"><span class="lbl">30 and 40 points &middot; pick up to 2</span>' + P.ln2.map(function (n) { return skNode(n, "big"); }).join("") + "</div>";
-    out.innerHTML = '<div class="sktree">' + h + "</div>";
-    var info = document.getElementById("skInfo"), k = SKBY[skSel];
-    if (!k || k[1] !== skTree) { info.innerHTML = skMsgTxt ? '<span class="bad">' + esc(skMsgTxt) + "</span>" : '<span class="muted">Tap a skill to add a point and see what it does.</span>'; return; }
-    var v = skPts(skBuild, skSel), lock = skLock(skBuild, skSel);
-    info.innerHTML = '<div class="ph"><b>' + esc(k[0]) + ' <span class="muted">' + v + " / " + skMax(skSel) + "</span></b>" +
-      '<span style="display:flex;gap:6px;"><button class="btn ghost" type="button" data-action="skMinus" aria-label="Remove a point from ' + esc(k[0]) + '">&minus;</button><button class="btn" type="button" data-action="skPlus" aria-label="Add a point to ' + esc(k[0]) + '">+</button></span></div>' +
-      "<div>" + esc(k[4]) + "</div>" + (lock && v < skMax(skSel) && lock !== skMsgTxt ? '<div class="muted">' + esc(lock) + "</div>" : "") + (skMsgTxt ? '<div class="bad">' + esc(skMsgTxt) + "</div>" : "");
-  }
   function skAdd(n) {
     var lock = skLock(skBuild, n);
     if (lock) { return lock; }
@@ -3834,14 +3555,6 @@ footer .wrap { display: grid; gap: 2px; }
     b[n]--; if (!b[n]) { delete b[n]; }
     if (!skSame(skRebuild(b), b)) { return "Take points out of the skills after " + n + " first, or the tree drops below a large node's points."; }
     skBuild = b; save("arcHubSkills", skBuild); return "";
-  }
-  function skApply(arg) {
-    var want = {};
-    arg.split("~").forEach(function (x) { var i = x.lastIndexOf("*"); if (i > 0 && SKBY[x.slice(0, i)]) { want[x.slice(0, i)] = parseInt(x.slice(i + 1), 10) || 0; } });
-    skBuild = skRebuild(want); save("arcHubSkills", skBuild);
-    var first = SKT.filter(function (t) { return skSum(skBuild, skTreeNames(t)); })[0]; if (first) { skTree = first; }
-    toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("skillTool")));
-    renderSkills();
   }
   if (!skSame(skRebuild(skBuild), skBuild)) { skBuild = skRebuild(skBuild); save("arcHubSkills", skBuild); }
   /* Raid log: [{ t: time ms, m: map, o: "x" extracted or "d" died, v: haul coins or null, n: note }], newest last. */
@@ -3909,26 +3622,6 @@ footer .wrap { display: grid; gap: 2px; }
       '<div class="muted">Bars are haul value; red marks are deaths' + (avg !== null ? "; the dashed line is your average haul (" + coins(Math.round(avg)) + ")" : "") + ". " +
       (raids.length > recent.length ? "Last " + recent.length + " raids: " + rate + "% extracted, " + (rate > allRate ? "up from" : rate < allRate ? "down from" : "same as") + " " + allRate + "% overall." : "") + "</div>";
   }
-  function renderKeep() {
-    var box = document.getElementById("keepOut");
-    if (!box) { return; }
-    var keepL = [], goL = [], safe = [], kmap = keepMap(), seen = {};
-    Object.keys(kmap).sort().forEach(function (n) { keepL.push([{ name: n }, kmap[n]]); seen[n] = true; });
-    items.forEach(function (it) {
-      if (seen[it.name]) { return; }
-      var h = goalHelp(it);
-      if (h.length) { goL.push([it, h]); } else { safe.push(it); }
-    });
-    var html = '<div class="kgrid">';
-    html += "<div><b>Keep (" + keepL.length + ")</b>" + (keepL.length ? keepL.slice(0, 40).map(function (k) {
-      return '<div class="krow"><b>' + esc(k[0].name) + '</b><span class="ktag keep">Keep</span><span class="muted">' + k[1].map(esc).join("; ") + "</span></div>";
-    }).join("") : '<div class="empty-line">Nothing is blocking you. Add quests, projects or goals and this fills in.</div>') + (keepL.length > 40 ? '<div class="muted">And ' + (keepL.length - 40) + " more.</div>" : "") + "</div>";
-    html += "<div><b>Recycle for your goals (" + goL.length + ")</b>" + (goL.length ? goL.slice(0, 40).map(function (k) {
-      return '<div class="krow"><b>' + esc(k[0].name) + '</b><span class="ktag go">Recycle</span><span class="muted">' + k[1].map(function (x) { return "+" + x[1] + " " + esc(x[0]); }).join(", ") + "</span></div>";
-    }).join("") : '<div class="empty-line">Set Want amounts on your Stash cards to see which items help.</div>') + (goL.length > 40 ? '<div class="muted">And ' + (goL.length - 40) + " more.</div>" : "") + "</div>";
-    html += '<div><b>Safe to recycle (' + safe.length + ')</b><div class="muted">No active quest, project or goal needs these. Sell value and personal use still matter.</div></div>';
-    box.innerHTML = html + "</div>";
-  }
 
   /* ---------- global search ---------- */
   var gTargets = [];
@@ -3971,10 +3664,9 @@ footer .wrap { display: grid; gap: 2px; }
     var groups = [];
     function grp(title, arr) { if (arr.length) { groups.push([title, arr]); } }
     var toolHits = [];
-    Array.prototype.forEach.call(document.querySelectorAll("#panel-tools > .tool"), function (t, ti) {
-      var h = t.querySelector("h3"), n = t.getAttribute("data-en") || (h ? h.textContent.trim() : "");
-      var g = TOOL_GROUPS.filter(function (x) { return x[1].indexOf(n) !== -1; })[0];
-      if (n && (m(n) || (g && m(g[0])))) { toolHits.push({ l: n, s: g ? g[0] : "Tool", go: ["tool", ti], w: n.toLowerCase().indexOf(q) === 0 ? 0 : 1 }); }
+    Array.prototype.forEach.call(document.querySelectorAll("details.tool"), function (t) {
+      var h = t.querySelector("summary"), n = h ? h.textContent.trim() : "";
+      if (n && m(n)) { toolHits.push({ l: n, s: "Tool", go: ["tool", t.id], w: n.toLowerCase().indexOf(q) === 0 ? 0 : 1 }); }
     });
     toolHits.sort(function (a, b) { return a.w - b.w; });
     /* A tool whose name starts with what you typed goes first, so Enter opens it. */
@@ -4086,7 +3778,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (k === "back") { gSearch(); return; }
     if (k === "tool" || k === "map") {
       document.getElementById("gres").hidden = true; document.getElementById("gq").value = "";
-      if (k === "tool") { showTab("tools"); toolShow(v); } else { curMap = v; showTab("maps"); renderMaps(); writeHash(); }
+      if (k === "tool") { openTool(v); return; } else { curMap = v; showTab("maps"); renderMaps(); writeHash(); }
       window.scrollTo(0, 0);
       return;
     }
@@ -4189,29 +3881,6 @@ footer .wrap { display: grid; gap: 2px; }
     shareImage("Quest progress", done + " of " + total + " quests complete", rows, "arc-raiders-quests.png");
   }
 
-  /* ---------- loadout link ---------- */
-  function loCode() {
-    var parts = [document.getElementById("loAug").value, document.getElementById("loShield").value, document.getElementById("loW1").value, document.getElementById("loW2").value];
-    var its = [];
-    Array.prototype.forEach.call(document.querySelectorAll("#loItems .loitem"), function (r) {
-      var nm = r.querySelector("select").value, q = parseInt(r.querySelector("input").value, 10) || 1;
-      if (nm) { its.push(nm + "*" + q); }
-    });
-    return "lo=" + parts.concat([its.join("~")]).join("~~");
-  }
-  function loApply(code) {
-    var f = code.slice(3).split("~~");
-    if (f.length < 5) { return; }
-    function setSel(id, v) { var el = document.getElementById(id); for (var i = 0; i < el.options.length; i++) { if (el.options[i].value === v || el.options[i].text === v) { el.selectedIndex = i; return; } } }
-    setSel("loAug", f[0]); setSel("loShield", f[1]); setSel("loW1", f[2]); setSel("loW2", f[3]);
-    var rows = document.querySelectorAll("#loItems .loitem"), its = f[4] ? f[4].split("~") : [];
-    Array.prototype.forEach.call(rows, function (r, i) {
-      var sel = r.querySelector("select"), inp = r.querySelector("input"), parts = (its[i] || "").split("*");
-      sel.selectedIndex = 0; inp.value = 1;
-      if (parts[0]) { for (var k = 0; k < sel.options.length; k++) { if (sel.options[k].text === parts[0]) { sel.selectedIndex = k; } } inp.value = parseInt(parts[1], 10) || 1; }
-    });
-    renderLoadout();
-  }
 
 
   /* ---------- repeating tasks ---------- */
@@ -4224,19 +3893,6 @@ footer .wrap { display: grid; gap: 2px; }
     var ch = false;
     rchk.forEach(function (c) { var k = pKey(c.p); if (c.k !== k) { c.k = k; c.d = false; ch = true; } });
     if (ch) { save("arcHubRepeat", rchk); }
-  }
-  function renderRepeat() {
-    rchkRoll();
-    var box = document.getElementById("repeatList");
-    if (!box) { return; }
-    var html = "";
-    [["daily", "Daily"], ["weekly", "Weekly"]].forEach(function (g) {
-      var rows = rchk.map(function (c, i) { return [c, i]; }).filter(function (x) { return x[0].p === g[0]; });
-      html += '<div class="rcgrp">' + g[1] + "</div>" + (rows.length ? rows.map(function (x) {
-        return '<div class="rcrow' + (x[0].d ? " done" : "") + '"><input type="checkbox" id="rc' + x[1] + '" data-rchk="' + x[1] + '"' + (x[0].d ? " checked" : "") + '><label for="rc' + x[1] + '">' + esc(x[0].t) + '</label><button type="button" class="btn ghost" style="padding:3px 8px;" data-action="rchkDel" data-i="' + x[1] + '" aria-label="Remove ' + esc(x[0].t) + '">&times;</button></div>';
-      }).join("") : '<div class="empty-line">None yet.</div>');
-    });
-    box.innerHTML = html;
   }
 
   /* ---------- workshop planner and shopping list ---------- */
@@ -4346,17 +4002,6 @@ footer .wrap { display: grid; gap: 2px; }
       '<div class="acts"><button class="btn ghost" type="button" data-action="shopBump" data-m="' + esc(r.n) + '" data-n="1">+1</button><button class="btn ghost" type="button" data-action="shopBump" data-m="' + esc(r.n) + '" data-n="5">+5</button><button class="btn ghost" type="button" data-action="shopBump" data-m="' + esc(r.n) + '" data-n="10">+10</button><button class="btn ghost" type="button" data-action="shopWhere" data-m="' + esc(r.n) + '" aria-expanded="' + (shopWhereOpen[r.n] ? "true" : "false") + '">' + (shopWhereOpen[r.n] ? "Hide where to farm" : "Where to farm this") + "</button></div>" +
       (shopWhereOpen[r.n] ? farmWhere(r.n) + '<div class="acts"><button class="btn ghost" type="button" data-action="shopFind" data-m="' + esc(r.n) + '">Find items that give this</button></div>' : "") + "</div>";
   }
-  function renderShop() {
-    var box = document.getElementById("shopOut");
-    if (!box || shopTyping) { return; }
-    Array.prototype.forEach.call(document.querySelectorAll("[data-shopsrc]"), function (el) { el.checked = shopSrc[el.getAttribute("data-shopsrc")] !== false; });
-    var as = document.getElementById("autoSpend"); if (as) { as.checked = !!autoSpend; }
-    var rows = shopData(true);
-    if (!rows.length) { box.innerHTML = '<div class="empty-line">Your shopping list is empty. Add a material goal, tick a quest or save a project and it fills itself in.</div><div class="acts"><button class="btn ghost" type="button" data-action="emptyGoal">Add a material</button></div>'; return; }
-    var missing = rows.filter(function (r) { return r.miss > 0; }).length;
-    box.innerHTML = '<div class="muted" id="shopCount" aria-live="polite">' + missing + " of " + rows.length + " materials still needed. Type how many you have.</div>" + rows.slice(0, 80).map(shopRowHtml).join("") + (rows.length > 80 ? '<div class="muted">And ' + (rows.length - 80) + " more.</div>" : "");
-    if (typeof renderPlan === "function") { renderPlan(); }
-  }
   function shopTypeUpdate(name, val) {
     var n = parseInt(val, 10); if (!(n >= 0)) { n = 0; }
     pushUndo("Changed " + name);
@@ -4422,25 +4067,6 @@ footer .wrap { display: grid; gap: 2px; }
     add(f[0], 1); add(f[1], 1); add(f[2], 1); add(f[3], 1);
     (f[4] ? f[4].split("~") : []).forEach(function (x) { var pr = x.split("*"); add(pr[0], parseInt(pr[1], 10) || 1); });
     return { tot: tot, miss: miss };
-  }
-  function renderLoSaved() {
-    var box = document.getElementById("loSaved");
-    if (!box) { return; }
-    if (!loadouts.length) { box.innerHTML = ""; return; }
-    var opts = loadouts.map(function (l, i) { return '<option value="' + i + '">' + esc(l.name) + "</option>"; }).join("");
-    var keepA = (document.getElementById("loCA") || {}).value, keepB = (document.getElementById("loCB") || {}).value;
-    var html = '<div class="group-title">Saved loadouts</div>' + loadouts.map(function (l, i) {
-      return '<div class="rcrow"><label>' + esc(l.name) + ' <span class="muted">kit worth about ' + coins(loValue(l.code).tot) + '</span></label><button class="btn ghost" type="button" data-action="loLoad" data-i="' + i + '">Load</button><button class="btn ghost" type="button" data-action="loLink" data-i="' + i + '">Link</button><button class="btn danger" type="button" data-action="loDel" data-i="' + i + '">Delete</button></div>';
-    }).join("");
-    if (loadouts.length > 1) {
-      html += '<div class="rcadd" style="grid-template-columns:1fr 1fr;"><select id="loCA" aria-label="Compare loadout A">' + opts + '</select><select id="loCB" aria-label="Compare loadout B">' + opts + '</select></div><div id="loCmpOut"></div>';
-    }
-    box.innerHTML = html;
-    if (loadouts.length > 1) {
-      document.getElementById("loCA").value = keepA && loadouts[keepA] ? keepA : "0";
-      document.getElementById("loCB").value = keepB && loadouts[keepB] ? keepB : "1";
-      renderLoCmp();
-    }
   }
   function renderLoCmp() {
     var a = loadouts[parseInt(document.getElementById("loCA").value, 10)], b = loadouts[parseInt(document.getElementById("loCB").value, 10)];
@@ -4577,7 +4203,6 @@ footer .wrap { display: grid; gap: 2px; }
     ["#tab-stash", "Stash: everything you have, what to keep and what is safe to sell. Set a Want amount on any card to mark a material you are looking for.", "stash"],
     ["#resetEverythingBtn", "Reset everything to default (on Home, under Back up or move your data) clears your missions, counts and saved data back to zero. It asks you to press twice.", "home"],
     ["#tab-quests", "Quests: tick them off to unlock the next ones and see what to hand in.", "quests"],
-    ["#toolNav", "Tools: each tool has its own tab, such as checklists, loadouts, saved projects and Keep or recycle. Squad checklists can be shared by link.", "tools"],
     ["#mapFind", "Maps: find a room on any map by name, then tap a map to open it enlarged. The enlarged map has much more detail.", "maps"],
     ["#mapCard", "In the enlarged map you can drag, pinch or scroll to zoom, search rooms, add your own pins and copy a link to the spot.", "maps"],
     ["#tab-site", "Site changes: every update to the site, newest first.", "site"],
@@ -4646,12 +4271,6 @@ footer .wrap { display: grid; gap: 2px; }
       '<div class="muted">' + esc(m) + ": " + pts[0][1] + " on " + esc(pts[0][0]) + ", " + pts[pts.length - 1][1] + " on " + esc(pts[pts.length - 1][0]) + ".</div>";
   }
 
-  /* ---------- shared shopping list ---------- */
-  function renderShared() {
-    var box = document.getElementById("sharedList"); if (!box) { return; }
-    if (!sharedList) { box.innerHTML = ""; return; }
-    box.innerHTML = '<div class="sharedbox"><b>Shared shopping list</b> (' + sharedList.length + ' materials)<div class="chips" style="margin-top:6px;">' + sharedList.map(function (r) { return '<span class="y"><b>' + r[1] + "&times;</b> " + esc(r[0]) + "</span>"; }).join("") + '</div><div class="acts" style="margin-top:8px;"><button class="btn ghost" type="button" data-action="sharedClose">Dismiss</button></div></div>';
-  }
 
   /* ---------- raid prep + trials ---------- */
   /* Items your quests ask for, added up, shown with a tick when your stash already has enough. */
@@ -4721,35 +4340,8 @@ footer .wrap { display: grid; gap: 2px; }
   function trTier(p) { return p >= 3000 ? "Epic tier" : p >= 2000 ? "Rare tier" : p >= 1000 ? "Uncommon tier" : p > 0 ? "Keep going" : ""; }
   function trSummary() { var n = 0; for (var i = 0; i < 5; i++) { if (trials[trKey(i)] && trials[trKey(i)].d) { n++; } } return n + " of 5 done"; }
 
-  /* ---------- tools tab ---------- */
+  /* ---------- tools ---------- */
   var ckShared = null;
-  function renderCkShared() {
-    var box = document.getElementById("ckShared"); if (!box) { return; }
-    if (!ckShared || !ckShared.length) { box.innerHTML = ""; return; }
-    box.innerHTML = '<div class="sharedbox"><b>Checklist shared with you</b> (' + ckShared.length + " items)<ul style=\"margin:6px 0;padding-left:18px;\">" + ckShared.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") +
-      '</ul><div class="acts"><button class="btn" type="button" data-action="ckAddShared">Add to my checklist</button><button class="btn ghost" type="button" data-action="ckSharedClose">Dismiss</button></div></div>';
-  }
-  function renderChecklist() {
-    var box = document.getElementById("checklist");
-    if (!checklist.length) { box.innerHTML = '<div class="empty-line">Your checklist is empty. Add an item below.</div>'; return; }
-    box.innerHTML = checklist.map(function (c, i) {
-      return '<div class="chk' + (c.d ? " done" : "") + '"><input type="checkbox" id="chk' + i + '" data-chk="' + i + '"' + (c.d ? " checked" : "") + '><label for="chk' + i + '">' + esc(c.t) + '</label>' +
-        '<button type="button" class="btn ghost" style="padding:3px 8px;" data-action="chkDel" data-i="' + i + '" aria-label="Remove ' + esc(c.t) + '">&times;</button></div>';
-    }).join("");
-  }
-  function renderProjects() {
-    var box = document.getElementById("projList");
-    if (!projects.length) { box.innerHTML = ""; return; }
-    box.innerHTML = projects.map(function (p, i) {
-      var done = 0, rows = p.needs.map(function (n) {
-        var have = tracker[n[0]] || 0, ok = have >= n[1];
-        if (ok) { done++; }
-        return '<div class="need"><div>' + esc(n[0]) + ": <b>" + Math.min(have, n[1]) + " / " + n[1] + "</b>" + (ok ? " &#10003;" : " (" + (n[1] - have) + " to go)") + '</div><div class="bar' + (ok ? " done" : "") + '"><i style="width:' + Math.min(100, Math.round(have * 100 / n[1])) + '%"></i></div></div>';
-      }).join("");
-      return '<div class="proj"><div class="ph"><b>' + esc(p.name) + ' <span class="muted">' + done + " of " + p.needs.length + ' ready</span></b>' +
-        '<button class="btn danger" type="button" data-action="projDel" data-i="' + i + '">Delete</button></div>' + rows + "</div>";
-    }).join("");
-  }
   /* Crafting planner: recipes come from ITEMINFO (each craft is counted as making one). */
   var craftNames = Object.keys(ITEMINFO).concat(Object.keys(UPGRADES)).filter(function (n, i, a) { return a.indexOf(n) === i && recipeOf(n); }).sort();
   function craftFind(v) {
@@ -4801,7 +4393,7 @@ footer .wrap { display: grid; gap: 2px; }
       (made.length ? '<div class="muted">You will also craft: ' + made.map(function (m) { return c.made[m] + "&times; " + esc(m); }).join(", ") + "</div>" : "") +
       (cr ? '<div class="muted">Craft or sell: one sells for ' + coins(cr.sell) + " and its materials for " + coins(cr.cost) + ", so " + (cr.gain > 0 ? '<span class="good">crafting gains ' + coins(cr.gain) + "</span>" : cr.gain < 0 ? "selling the materials is worth " + coins(-cr.gain) + " more" : "it is the same either way") + ".</div>" : "") +
       rows +
-      '<div class="acts" style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn" type="button" data-action="crProj">Save as project</button><button class="btn ghost" type="button" data-action="crLink">Copy link</button><span class="muted" id="crMsg" role="status"></span></div></div>' +
+      '<div class="acts" style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="crLink">Copy link</button><span class="muted" id="crMsg" role="status"></span></div></div>' +
       '<details style="margin-top:10px;"><summary>Recipe tree</summary><ul class="crtree" style="margin-top:6px;">' + craftTree(name, qty, 0, deep) + "</ul></details>";
   }
   /* Craft or sell: one craft (counted as making one item) against selling its materials, one level deep, at ITEMINFO sell prices. */
@@ -4815,53 +4407,14 @@ footer .wrap { display: grid; gap: 2px; }
     }
     return { n: n, st: r[0], mats: r[1], sell: ITEMINFO[n][0], cost: mats, gain: ITEMINFO[n][0] - mats, can: can === Infinity ? 0 : can };
   }
-  function renderCos() {
-    var out = document.getElementById("cosOut");
-    if (!out) { return; }
-    var q = document.getElementById("cosQ").value.trim().toLowerCase(), show = document.getElementById("cosShow").value, kmap = keepMap();
-    var all = Object.keys(ITEMINFO).map(cosRow).filter(Boolean);
-    var rows = all.filter(function (x) {
-      if (show === "now" && !x.can) { return false; }
-      if (show === "gain" && x.gain <= 0) { return false; }
-      return !q || x.n.toLowerCase().indexOf(q) !== -1 || x.mats.some(function (m) { return m[0].toLowerCase().indexOf(q) !== -1; });
-    });
-    rows.sort(function (a, b) { return show === "now" ? (b.gain * b.can - a.gain * a.can) || (b.gain - a.gain) : (b.gain - a.gain) || (a.n < b.n ? -1 : 1); });
-    var up = all.filter(function (x) { return x.gain > 0; }).length;
-    out.innerHTML = '<div class="muted" style="margin-top:10px;">' + up + " of " + all.length + " recipes sell for more than their materials. " + rows.length + " shown, best first." +
-      " Each craft is counted as making one item, and the materials are valued at their sell price.</div>" +
-      (rows.length ? rows.map(function (x) {
-        var k = kmap[x.n], mk = x.mats.filter(function (m) { return kmap[m[0]]; }).map(function (m) { return m[0]; });
-        var verdict = x.gain > 0 ? '<span class="good">Craft it: +' + coins(x.gain) + "</span>" : x.gain < 0 ? '<span class="bad">Sell the materials: ' + coins(x.gain) + "</span>" : "Same either way";
-        return '<div class="krow"><b>' + esc(x.n) + "</b>" + (k ? '<span class="ktag keep" title="' + esc(k.join("; ")) + '">Keep</span>' : "") +
-          '<span class="muted">' + verdict + " &middot; sells for " + coins(x.sell) + ", materials " + coins(x.cost) + " &middot; " + esc(x.st) +
-          "<br>" + x.mats.map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") +
-          (x.can ? " &middot; <b>you can craft " + x.can + "</b>" + (x.gain > 0 ? ' (<span class="good">+' + coins(x.gain * x.can) + "</span>)" : "") : "") +
-          (mk.length ? " &middot; your quests, projects or goals need " + mk.map(esc).join(", ") : "") + "</span></div>";
-      }).join("") : '<div class="empty-line">' + (show === "now" ? "Your Stash does not have the materials for any of these yet." : "No recipe matches that.") + "</div>");
-  }
   function craftApply(arg) {
     var i = arg.lastIndexOf("*"), n = craftFind(i < 0 ? arg : arg.slice(0, i)), q = i < 0 ? 1 : parseInt(arg.slice(i + 1), 10) || 1;
     if (!n) { return; }
     document.getElementById("crItem").value = n; document.getElementById("crQty").value = Math.max(1, Math.min(99, q));
-    toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("craftTool")));
+    openTool("craftTool");
     renderCraft();
   }
 
-  function renderCompare() {
-    var a = findItemCI(document.getElementById("cmpA").value), b = findItemCI(document.getElementById("cmpB").value);
-    var out = document.getElementById("cmpOut");
-    if (!a || !b) { out.innerHTML = '<p class="muted" style="margin-top:10px;">Choose two items from the lists to compare them.</p>'; return; }
-    var ya = yieldsOf(a), yb = yieldsOf(b);
-    function col(it, y, other) {
-      var p = pairs(y);
-      return '<div class="card"><h3>' + esc(it.name) + "</h3>" + (p.length ? '<div class="detail" style="display:flex;flex-wrap:wrap;gap:4px 6px;">' + p.map(function (x) {
-        return '<span class="y' + (other[x[0]] ? " hl" : "") + '"><b>' + x[1] + "&times;</b> " + esc(x[0]) + "</span>";
-      }).join("") + "</div>" : '<span class="empty-line">No data for this setting.</span>') + "</div>";
-    }
-    var shared = Object.keys(ya).filter(function (m) { return yb[m]; });
-    out.innerHTML = '<div class="cmp">' + col(a, ya, yb) + col(b, yb, ya) + "</div>" +
-      '<p class="muted" style="margin-top:8px;">' + (shared.length ? "Both give: " + shared.map(esc).join(", ") + " (outlined)." : "They share no materials.") + "</p>";
-  }
   function findItemCI(n) {
     n = (n || "").trim().toLowerCase();
     for (var i = 0; i < items.length; i++) { if (items[i].name.toLowerCase() === n) { return items[i]; } }
@@ -4875,54 +4428,6 @@ footer .wrap { display: grid; gap: 2px; }
       if (r[2] && x >= 0 && y >= 0 && x !== y) { var aw = r[2] > 0 ? x > y : x < y; ca = aw ? ' class="win"' : ""; cb = aw ? "" : ' class="win"'; }
       return "<tr><th>" + r[0] + "</th><td" + ca + ">" + dash(a[r[1]]) + "</td><td" + cb + ">" + dash(b[r[1]]) + "</td></tr>";
     }).join("");
-  }
-  function renderWeaponCompare() {
-    var A = GEARDATA.weapons.map(wObj), a = A[document.getElementById("wcA").selectedIndex], b = A[document.getElementById("wcB").selectedIndex];
-    if (!a || !b) { return; }
-    document.getElementById("wcOut").innerHTML = '<div class="tablewrap"><table class="wcmp"><thead><tr><th></th><th>' + esc(a.name) + "</th><th>" + esc(b.name) + "</th></tr></thead><tbody>" + wcRows(a, b) + "</tbody></table></div>" +
-      '<p class="muted">Highlighted: higher damage, fire rate, range, magazine, headshot multiplier, stability and agility, and lower reload time and weight. Values are as listed on the wiki.</p>';
-  }
-  function renderLoadout() {
-    var W = GEARDATA.weapons.map(wObj), aug = GEARDATA.augments[document.getElementById("loAug").selectedIndex];
-    var shName = document.getElementById("loShield").value, lines = [], total = 0;
-    function addLine(label, wt) { if (wt >= 0) { total += wt; lines.push([label, wt]); } else { lines.push([label + " (weight not listed)", 0]); } }
-    ["loW1", "loW2"].forEach(function (id) {
-      var i = document.getElementById(id).selectedIndex;
-      if (i > 0) { addLine(W[i - 1].name, numOf(W[i - 1].wt)); }
-    });
-    if (shName) { addLine(shName, numOf((GPROPS[shName] || [])[1])); }
-    var rows = document.querySelectorAll("#loItems .loitem");
-    Array.prototype.forEach.call(rows, function (r) {
-      var nm = r.querySelector("select").value, q = parseInt(r.querySelector("input").value, 10) || 0;
-      if (nm && q > 0) { var w = numOf((GPROPS[nm] || [])[1]); if (w >= 0) { total += w * q; lines.push([q + " x " + nm, w * q]); } }
-    });
-    var limit = aug[1], over = total > limit, msg = "";
-    loLast = { aug: aug[0], shield: shName, lines: lines, total: total, limit: limit };
-    var shClass = shName ? shName.split(" ")[0] : "";
-    if (shClass && aug[2].indexOf(shClass) === -1) { msg += '<div class="qwarn">The ' + esc(shName) + " is not compatible with the " + esc(aug[0]) + " (it works with: " + esc(aug[2]) + ").</div>"; }
-    document.getElementById("loOut").innerHTML = '<div class="refgrid" style="margin-top:10px;">' + lines.map(function (l) { return "<div>" + esc(l[0]) + ": <b>" + (Math.round(l[1] * 100) / 100) + "</b></div>"; }).join("") + "</div>" +
-      '<div class="qstat' + (over ? "" : " ok") + '" style="margin-top:8px;">Carried weight: ' + (Math.round(total * 100) / 100) + " of " + limit + " (" + esc(aug[0]) + " weight limit)" + (over ? ": over by " + (Math.round((total - limit) * 100) / 100) : ": " + (Math.round((limit - total) * 100) / 100) + " to spare") + "</div>" + msg +
-      '<p class="muted">The augment&rsquo;s own weight and any ammo are not counted. It has ' + aug[5] + " quick use slots and " + aug[6] + " safe pocket slots.</p>" +
-      (function () { var kv = loValue(loCode()); return '<p class="muted">Kit worth about <b>' + coins(kv.tot) + "</b> coins at sell prices (weapons as tier I)" + (kv.miss.length ? "; no price for " + esc(kv.miss.join(", ")) : "") + ". Save it, then pick it when you log a raid to see your profit.</p>"; })();
-  }
-  function initLoadout() {
-    var wopts = GEARDATA.weapons.map(function (w) { return '<option>' + esc(w[0]) + "</option>"; }).join("");
-    document.getElementById("wcA").innerHTML = wopts; document.getElementById("wcB").innerHTML = wopts;
-    document.getElementById("wcB").selectedIndex = 1;
-    document.getElementById("loAug").innerHTML = GEARDATA.augments.map(function (a) { return "<option>" + esc(a[0]) + "</option>"; }).join("");
-    document.getElementById("loShield").innerHTML = '<option value="">No shield</option>' + GEARDATA.shields.map(function (a) { return "<option>" + esc(a[0]) + "</option>"; }).join("");
-    document.getElementById("loW1").innerHTML = '<option value="">No weapon</option>' + wopts;
-    document.getElementById("loW2").innerHTML = '<option value="">No weapon</option>' + wopts;
-    document.getElementById("loW1").selectedIndex = 1;
-    var iopts = '<option value="">Add an item</option>' + Object.keys(GPROPS).filter(function (k) { return GEARDATA.shields.every(function (x) { return x[0] !== k; }); }).sort().map(function (k) { return "<option>" + esc(k) + "</option>"; }).join("");
-    var h = "";
-    for (var i = 0; i < 4; i++) { h += '<div class="loitem" style="display:grid;grid-template-columns:1fr 70px;gap:6px;"><select aria-label="Item ' + (i + 1) + '">' + iopts + '</select><input type="number" min="1" max="99" value="1" aria-label="Quantity ' + (i + 1) + '"></div>'; }
-    document.getElementById("loItems").innerHTML = h;
-    ["wcA", "wcB"].forEach(function (id) { document.getElementById(id).addEventListener("change", renderWeaponCompare); });
-    ["loAug", "loShield", "loW1", "loW2"].forEach(function (id) { document.getElementById(id).addEventListener("change", renderLoadout); });
-    document.getElementById("loItems").addEventListener("change", renderLoadout);
-    document.getElementById("loItems").addEventListener("input", renderLoadout);
-    renderWeaponCompare(); renderLoadout();
   }
   /* Weapon upgrade path: tier I is crafted (ITEMINFO), II to IV are Gunsmith upgrades (UPGRADES, from the FARM2/FARM3 lines). */
   var UP_T = ["I", "II", "III", "IV"], upSet = load("arcHubUp", {});
@@ -4946,38 +4451,6 @@ footer .wrap { display: grid; gap: 2px; }
       tot = leaf;
     }
     return { steps: steps, tot: tot };
-  }
-  function upFill() {
-    var ws = document.getElementById("upW"), fs = document.getElementById("upFrom"), ts = document.getElementById("upTo");
-    if (!ws.options.length) {
-      ws.innerHTML = UP_W.map(function (w) { return "<option>" + esc(w) + "</option>"; }).join("");
-      if (upSet.w && UP_W.indexOf(upSet.w) !== -1) { ws.value = upSet.w; }
-      document.getElementById("upDeep").checked = !!upSet.d;
-    }
-    var tiers = upTiers(ws.value), f = Math.min(parseInt(upSet.f, 10) || 0, tiers.length - 1), t = Math.min(Math.max(parseInt(upSet.t, 10) || tiers.length, f + 1), tiers.length);
-    fs.innerHTML = '<option value="0">Nothing yet</option>' + tiers.slice(0, -1).map(function (x, i) { return '<option value="' + (i + 1) + '">' + esc(ws.value + " " + x) + "</option>"; }).join("");
-    fs.value = String(f);
-    ts.innerHTML = tiers.map(function (x, i) { return i + 1 > f ? '<option value="' + (i + 1) + '">' + esc(ws.value + " " + x) + "</option>" : ""; }).join("");
-    ts.value = String(t);
-  }
-  function renderUpgrade() {
-    var out = document.getElementById("upOut");
-    if (!out) { return; }
-    if (!UP_W.length) { out.innerHTML = '<div class="empty-line">No weapon upgrade data.</div>'; return; }
-    upFill();
-    var w = document.getElementById("upW").value, f = parseInt(document.getElementById("upFrom").value, 10) || 0, t = parseInt(document.getElementById("upTo").value, 10) || 1;
-    var deep = document.getElementById("upDeep").checked, c = upCalc(w, f, t - 1, deep), mats = Object.keys(c.tot).sort(function (a, b) { return c.tot[b] - c.tot[a] || a.localeCompare(b); });
-    var worth = 0, priced = true, miss = 0, last = ITEMINFO[w + " " + upTiers(w)[t - 1]];
-    mats.forEach(function (m) { var f2 = ITEMINFO[m]; if (f2 && f2[0] != null) { worth += f2[0] * c.tot[m]; } else { priced = false; } if ((tracker[m] || 0) < c.tot[m]) { miss++; } });
-    out.innerHTML = '<ol class="mapnotes" style="margin-top:10px;">' + c.steps.map(function (st) {
-      return "<li><b>" + (st.up ? "Upgrade to " : "Craft ") + esc(st.n) + "</b>" + (st.at ? ' <span class="muted">at ' + esc(st.at) + "</span>" : "") + ": " +
-        (st.parts ? st.parts.map(function (g) { return g[1] + "&times; " + esc(g[0]); }).join(", ") : '<span class="muted">no crafting recipe listed; find it or use a blueprint</span>') + "</li>";
-    }).join("") + "</ol>" +
-      (mats.length ? '<div class="tablewrap"><table class="rltab"><thead><tr><th>' + (deep ? "Basic material" : "Material") + '</th><th class="n">Need</th><th class="n">Have</th><th class="n">Missing</th></tr></thead><tbody>' +
-        mats.map(function (m) { var h = tracker[m] || 0, mi = Math.max(0, c.tot[m] - h); return "<tr><td>" + esc(m) + '</td><td class="n">' + c.tot[m] + '</td><td class="n">' + h + '</td><td class="n">' + (mi ? "<b>" + mi + "</b>" : "&#10003;") + "</td></tr>"; }).join("") +
-        "</tbody></table></div>" : "") +
-      '<p class="muted">' + (mats.length ? (miss ? miss + " of " + mats.length + " materials still short. " : "Your tracker covers everything. ") + "The materials sell for " + (priced ? "" : "at least ") + coins(worth) + " coins. " : "") +
-      (last && last[0] != null ? esc(w + " " + upTiers(w)[t - 1]) + " sells for " + coins(last[0]) + " coins." : "") + "</p>";
   }
   /* Quest route planner: greedy, each raid goes to the map with the most remaining map-specific quests; "Any" quests fill spare room. */
   var qrSet = load("arcHubRoute", {});
@@ -5237,12 +4710,7 @@ footer .wrap { display: grid; gap: 2px; }
     out.innerHTML += '<p class="muted">Hits are the enemy&rsquo;s health divided by body damage, so weak points and explosives kill faster. Time assumes every shot lands, uses the Fire Rate stat as rounds per minute &times;15 (the wiki lists Kettle at 450 RPM) and adds about ' + K_RELOAD + ' s per reload, since the wiki lists no reload times. The wiki gives no exact armor numbers, so armor is a rough guide: low penetration against heavy armor is listed last. Burst and charged weapons are approximate.</p>';
   }
   function renderTools() {
-    renderRepeat(); renderLoSaved(); renderUpgrade(); renderRoute(); renderKill();
-    renderKeep();
-    renderChecklist();
-    renderPresets();
-    renderProjects();
-    renderCompare();
+    renderRoute(); renderKill();
     document.getElementById("craftList").innerHTML = craftNames.map(function (n) { return '<option value="' + esc(n) + '"></option>'; }).join("");
     renderCraft(); renderRaids();
     document.getElementById("itemList").innerHTML = items.map(function (it) { return '<option value="' + esc(it.name) + '"></option>'; }).join("");
@@ -5394,8 +4862,8 @@ footer .wrap { display: grid; gap: 2px; }
     /* Map pins, weekly targets, squad board and skill build (added to backups later; older backups leave them as they are). */
     oo = objOf(d.pins); if (oo) { pins = {}; Object.keys(oo).forEach(function (k) { if (k.length < 60 && Array.isArray(oo[k])) { var L = oo[k].filter(function (p) { return p && p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1; }).slice(0, 60).map(function (p) { return { x: +p.x, y: +p.y, t: typeof p.t === "string" ? p.t.slice(0, 40) : "" }; }); if (L.length) { pins[k] = L; } } }); save("arcHubPins", pins); }
     if (Array.isArray(d.weekly)) { weekly = d.weekly.filter(function (w) { return w && typeof w.m === "string" && w.m.length < 80 && w.t > 0; }).slice(0, 30).map(function (w) { return { m: w.m, t: parseInt(w.t, 10) || 1, b: Math.max(0, parseInt(w.b, 10) || 0), s: +w.s || Date.now() }; }); save("arcHubWeekly", weekly); renderWeek(); }
-    if (Array.isArray(d.board)) { board = d.board.filter(function (x) { return x && typeof x.t === "string"; }).slice(-60).map(function (x) { return { w: typeof x.w === "string" ? x.w.slice(0, 40) : "", t: x.t.slice(0, 120), d: !!x.d }; }); save("arcHubBoard", board); renderSb(); }
-    oo = objOf(d.skills); if (oo) { skBuild = {}; Object.keys(oo).forEach(function (k) { var v = parseInt(oo[k], 10); if (k.length < 80 && v > 0 && v < 100) { skBuild[k] = v; } }); save("arcHubSkills", skBuild); renderSkills(); }
+    if (Array.isArray(d.board)) { board = d.board.filter(function (x) { return x && typeof x.t === "string"; }).slice(-60).map(function (x) { return { w: typeof x.w === "string" ? x.w.slice(0, 40) : "", t: x.t.slice(0, 120), d: !!x.d }; }); save("arcHubBoard", board); }
+    oo = objOf(d.skills); if (oo) { skBuild = {}; Object.keys(oo).forEach(function (k) { var v = parseInt(oo[k], 10); if (k.length < 80 && v > 0 && v < 100) { skBuild[k] = v; } }); save("arcHubSkills", skBuild); }
     if (d.skExp !== undefined) { skExp = Math.max(0, parseInt(d.skExp, 10) || 0); save("arcHubSkillExp", skExp); }
     msg.textContent = newer ? "Imported. This backup is from a newer version of the site, so only what this version understands was loaded." : "Imported. Your data has been replaced with the backup.";
   }
@@ -5417,32 +4885,19 @@ footer .wrap { display: grid; gap: 2px; }
   }
   function applyHash() {
     var r = readHash();
-    if (r.tab === "tracker" && !/^list=/.test(r.arg)) { r.tab = "stash"; }
-    if (["home", "recycle", "tracker", "stash", "raids", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].indexOf(r.tab) === -1) { return; }
+    /* Old links: the Tools tab is gone, so a crafting link opens the planner in the item lookup and the rest open Home. */
+    if (r.tab === "tools") { if (/^craft=/.test(r.arg)) { showTab("recycle", true); craftApply(r.arg.slice(6)); return; } r.tab = "home"; r.arg = ""; }
+    if (r.tab === "tracker") { r.tab = "stash"; }
+    if (["home", "recycle", "stash", "raids", "gear", "quests", "ref", "maps", "frozen", "updates", "site"].indexOf(r.tab) === -1) { return; }
     showTab(r.tab, true);
     if (r.tab === "recycle") { document.getElementById("searchBox").value = r.arg; renderResults(); }
     if (r.tab === "quests" && /^p=/.test(r.arg)) {
       var dec = qDecode(r.arg.slice(2));
       if (dec && dec.n) { qPending = dec; renderQuests(); }
     }
-    if (r.tab === "tracker" && /^list=/.test(r.arg)) {
-      sharedList = r.arg.slice(5).split("~").map(function (x) { var i = x.lastIndexOf("*"); return [x.slice(0, i), parseInt(x.slice(i + 1), 10) || 0]; }).filter(function (x) { return x[0] && x[1] > 0 && x[0].length < 80; }).slice(0, 80);
-      renderShared(); r.tab = "tools"; showTab("tools", true); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("shopTool")));
-    }
-    if (r.tab === "tools" && /^(ck|lo)=/.test(r.arg)) { toolShow(r.arg.slice(0, 2) === "ck" ? 0 : 4); }
-    if (r.tab === "tools" && /^ck=/.test(r.arg)) {
-      ckShared = r.arg.slice(3).split("~").map(function (x) { return x.trim().slice(0, 80); }).filter(Boolean).slice(0, 40); renderCkShared();
-    }
-    if (r.tab === "tools" && /^lo=/.test(r.arg)) { try { loApply(r.arg); } catch (e3) {} }
     if (r.tab === "maps" && r.arg) {
       var mparts = r.arg.split("~");
       for (var i = 0; i < MAPS.length; i++) { if (MAPS[i].name === mparts[0]) { curMap = i; renderMaps(); if (mparts.length > 1 && ROOMS[mapSlug(MAPS[i])]) { lb.pend = lbParseShared(mparts); lbOpen(mapDetailSrc(MAPS[i]), MAPS[i].name); } } }
-    }
-    if (r.tab === "tools" && /^sk=/.test(r.arg)) { skApply(r.arg.slice(3)); }
-    if (r.tab === "tools" && /^craft=/.test(r.arg)) { craftApply(r.arg.slice(6)); }
-    if (r.tab === "tools" && /^sb=/.test(r.arg)) {
-      toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("sbTool")));
-      sbShared = r.arg.slice(3).split("~").map(function (x) { var g = x.split("|"); return { w: (g[0] || "").slice(0, 20), t: (g[1] || "").slice(0, 40), d: g[2] === "1" }; }).filter(function (x) { return x.t; }).slice(0, 40); renderSb();
     }
   }
 
@@ -5460,7 +4915,6 @@ footer .wrap { display: grid; gap: 2px; }
     gear: "<b>Weapons and gear.</b> Pick a category, then filter by name, class, ammo or rarity. Weapons and grenades can be sorted by damage, and augments by weight limit. Open &ldquo;All stats&rdquo; on a weapon for reload, durability, sell prices (in Coins) and mod slots; weapons list upgrade levels I to IV.",
     quests: "<b>Quests.</b> Search or tap a trader to filter. Tick &ldquo;Mark as completed&rdquo; to unlock the next quests, or turn on &ldquo;Show locked&rdquo; to see everything. Items you track show how many you have.",
     ref: "<b>Reference.</b> Pick a section, then search inside it. Enemy drops you track are highlighted, workshop costs can be added to the Project helper, and you can tick the blueprints you own.",
-    tools: "<b>Tools.</b> A raid checklist, project presets that fill from your tracker, weapon compare, a loadout builder and item compare. The shopping list and workshop planner are here too. Back up your data from Home.",
     maps: "<b>Maps.</b> Pick a map to see its difficulty, unlock requirement, conditions and what changed there, plus the overview image. <b>Tip:</b> tap or click the map image to enlarge it, because the enlarged map has much more detail, including room names and a key. Copy the address bar to share a specific map.",
     frozen: "<b>Frozen Trail 2.0.</b> A quick summary of the latest update: the new map, enemies, weapons, gear and balance changes.",
     updates: "<b>Update history.</b> Every major update from launch to now, newest first, with the main highlights. Weekly store updates and small hotfixes are left out.",
@@ -5695,7 +5149,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (name === "tracker") { name = "stash"; }
     curTab = name;
     renderHint();
-    ["home", "recycle", "stash", "raids", "gear", "quests", "ref", "tools", "maps", "frozen", "updates", "site"].forEach(function (t) {
+    ["home", "recycle", "stash", "raids", "gear", "quests", "ref", "maps", "frozen", "updates", "site"].forEach(function (t) {
       var on = t === name;
       document.getElementById("panel-" + t).hidden = !on;
       document.getElementById("tab-" + t).setAttribute("aria-selected", on ? "true" : "false");
@@ -5704,10 +5158,8 @@ footer .wrap { display: grid; gap: 2px; }
     if (name === "stash") { renderTracker(); }
     if (name === "gear") { renderGear(); }
     if (name === "raids") { renderRaidsTab(); }
-    if (name === "tools") { toolCount("tool-open", document.querySelectorAll("#panel-tools > .tool")[toolIdx]); }
     if (name === "quests") { renderQuests(); }
     if (name === "ref") { renderRef(); }
-    if (name === "tools") { renderRepeat(); renderKeep(); renderFarm(); updateCd(); renderCraft(); renderCos(); renderLoot(); renderSkills(); renderRaids(); }
     if (name === "maps") { renderMaps(); }
     if (name === "updates") { renderTimeline(); markUpdatesSeen(); }
     if (name === "site") { try { renderAudit(); } catch (eA) {} }
@@ -5727,7 +5179,7 @@ footer .wrap { display: grid; gap: 2px; }
   function syncMore(open) {
     var menu = document.getElementById("moreMenu"), btn = document.getElementById("moreBtn");
     if (!menu || !btn) { return; }
-    var names = { raids: "Raids", gear: "Gear", ref: "Reference", tools: "Tools", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
+    var names = { raids: "Raids", gear: "Gear", ref: "Reference", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
     menu.innerHTML = Object.keys(names).map(function (name) {
       var tb = document.getElementById("tab-" + name), on = tb.getAttribute("aria-selected") === "true", nd = tb.querySelector(".newdot");
       if (on) { cur = name; }
@@ -5747,7 +5199,6 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("modeSal").setAttribute("aria-pressed", m === "sal" ? "true" : "false");
     renderResults();
     renderCart();
-    renderCompare();
   }
 
   document.addEventListener("click", function (e) {
@@ -5804,24 +5255,6 @@ footer .wrap { display: grid; gap: 2px; }
       cartTotals().forEach(function (p) { bump(p[0], p[1]); });
       var ol = t.textContent; t.textContent = "Added";
       setTimeout(function () { t.textContent = ol; }, 1200);
-    } else if (a === "chkAdd") {
-      var ci = document.getElementById("chkNew"), ct = ci.value.trim();
-      if (ct) { checklist.push({ t: ct, d: false }); ci.value = ""; save("arcHubCheck", checklist); renderChecklist(); }
-    } else if (a === "chkDel") {
-      checklist.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubCheck", checklist); renderChecklist();
-    } else if (a === "chkUntick") {
-      checklist.forEach(function (c) { c.d = false; }); save("arcHubCheck", checklist); renderChecklist();
-    } else if (a === "chkDefaults") {
-      checklist = DEFAULT_CHECK.map(function (x) { return { t: x, d: false }; }); save("arcHubCheck", checklist); renderChecklist();
-    } else if (a === "projAdd") {
-      var pn = document.getElementById("pName").value.trim(), py = parseYields(document.getElementById("pNeeds").value), pm = document.getElementById("projMsg");
-      if (!pn) { pm.textContent = "Enter a project name."; }
-      else if (!py) { pm.textContent = 'Use the format "200 Metal Parts, 50 Wires".'; }
-      else {
-        projects.push({ name: pn, needs: py }); save("arcHubProjects", projects);
-        document.getElementById("pName").value = ""; document.getElementById("pNeeds").value = "";
-        pm.textContent = "Saved " + pn + "."; renderProjects();
-      }
     } else if (a === "qGoal") {
       var gq = QUESTS.filter(function (x) { return x.name === t.getAttribute("data-q"); })[0], gm = matSet();
       if (gq) { gq.req.forEach(function (r) { if (gm[r.n]) { goals[r.n] = Math.max(goals[r.n] || 0, r.q); } }); save("arcHubGoals", goals); refresh(); }
@@ -5847,11 +5280,6 @@ footer .wrap { display: grid; gap: 2px; }
       qPending = null; renderQuests();
     } else if (a === "refSec") {
       refSec = t.getAttribute("data-s"); document.getElementById("refQ").value = ""; renderRef();
-    } else if (a === "wsAdd") {
-      var wi = WORKSHOP[parseInt(t.getAttribute("data-i"), 10)];
-      projects.push({ name: wi[0] + " level " + wi[1], needs: qItems(wi[2]).map(function (r) { return [r.n, r.q]; }) });
-      save("arcHubProjects", projects); renderProjects();
-      var wol = t.textContent; t.textContent = "Added to Tools"; setTimeout(function () { t.textContent = wol; }, 1500);
     } else if (a === "keyShow") {
       keyOpen(parseInt(t.getAttribute("data-k"), 10));
     } else if (a === "condWatch") {
@@ -5880,11 +5308,6 @@ footer .wrap { display: grid; gap: 2px; }
       try { document.getElementById("qOut").scrollIntoView({ block: "start" }); } catch (eF) {}
     } else if (a === "qTrader") {
       qTrader = t.getAttribute("data-t") || ""; renderQuests();
-    } else if (a === "presetAdd") {
-      presetAdd(parseInt(t.getAttribute("data-s"), 10));
-    } else if (a === "projDel") {
-      pushUndo("Deleted a project");
-      projects.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubProjects", projects); renderProjects();
     } else if (a === "exportData") {
       exportData();
     } else if (a === "importData") {
@@ -5948,24 +5371,6 @@ footer .wrap { display: grid; gap: 2px; }
       weekly.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubWeekly", weekly); renderWeek();
     } else if (a === "wkRestart") {
       var wr = weekly[parseInt(t.getAttribute("data-i"), 10)]; if (wr) { wr.b = tracker[wr.m] || 0; wr.s = Date.now(); save("arcHubWeekly", weekly); renderWeek(); }
-    } else if (a === "sbAdd") {
-      var sw = document.getElementById("sbWho").value.trim().replace(/[~|]/g, " "), st2 = document.getElementById("sbWhat").value.trim().replace(/[~|]/g, " ");
-      if (st2) { board.push({ w: sw, t: st2, d: false }); save("arcHubBoard", board); document.getElementById("sbWhat").value = ""; renderSb(); }
-    } else if (a === "sbTog") {
-      var sb1 = board[parseInt(t.getAttribute("data-i"), 10)]; if (sb1) { sb1.d = !sb1.d; save("arcHubBoard", board); renderSb(); }
-    } else if (a === "sbDel") {
-      board.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubBoard", board); renderSb();
-    } else if (a === "sbClear") {
-      board = []; save("arcHubBoard", board); renderSb();
-    } else if (a === "sbCopy") {
-      var link = window.location.href.split("#")[0] + "#tools/sb=" + encodeURIComponent(board.map(function (x) { return (x.w || "") + "|" + x.t + "|" + (x.d ? 1 : 0); }).join("~"));
-      copyText(link, function (ok) { t.textContent = ok ? "Link copied" : "Copy failed"; });
-    } else if (a === "sbLoad") {
-      sbShared.forEach(function (x) { board.push(x); }); board = board.slice(-60); save("arcHubBoard", board); sbShared = []; renderSb();
-    } else if (a === "sbDismiss") {
-      sbShared = []; renderSb();
-    } else if (a === "shopWhere") {
-      var swm = t.getAttribute("data-m"); shopWhereOpen[swm] = !shopWhereOpen[swm]; renderShop(); renderTracker();
     } else if (a === "resetEverything") {
       if (t.getAttribute("data-armed") === "1") {
         var keep = { arcHubTheme: 1, arcHubLang: 1, arcHubContrast: 1, arcHubHint: 1, arcHubTour: 1, arcHubSeenUpd: 1, arcHubDisplay: 1, arcHubChgSeen: 1 };
@@ -5979,8 +5384,6 @@ footer .wrap { display: grid; gap: 2px; }
         t.textContent = "Press again: this clears everything";
         clearTimeout(window.__rst); window.__rst = setTimeout(function () { t.setAttribute("data-armed", "0"); t.textContent = "Reset everything to default"; }, 5000);
       }
-    } else if (a === "toolTab") { toolShow(t.getAttribute("data-ti"));
-    } else if (a === "toolPick") { toolPickOpen(!document.getElementById("toolTabs").classList.contains("open"));
     } else if (a === "rlAdd") {
       var rlm = document.getElementById("rlMap").value, rlv = document.getElementById("rlVal").value.trim();
       var rlo = document.getElementById("rlOut").value === "d" ? "d" : "x", rlval = rlv === "" ? null : Math.max(0, Math.min(1e7, parseInt(rlv, 10) || 0));
@@ -6002,25 +5405,10 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "rlClear") {
       if (t.getAttribute("data-armed") === "1") { raids = []; save("arcHubRaids", raids); renderRaids(); }
       else { t.setAttribute("data-armed", "1"); t.textContent = "Press again to clear every raid"; }
-    } else if (a === "skTap") {
-      skSel = t.getAttribute("data-sk"); skMsgTxt = skPts(skBuild, skSel) >= skMax(skSel) ? "" : skAdd(skSel); renderSkills();
-    } else if (a === "skPlus") {
-      skMsgTxt = skAdd(skSel); renderSkills();
-    } else if (a === "skMinus") {
-      skMsgTxt = skRemove(skSel); renderSkills();
-    } else if (a === "skTree") {
-      skTree = t.getAttribute("data-t"); skSel = ""; skMsgTxt = ""; renderSkills();
-    } else if (a === "skLink") {
-      var skm = document.getElementById("skMsg");
-      copyText(window.location.href.split("#")[0] + "#tools/sk=" + encodeURIComponent(Object.keys(skBuild).map(function (n) { return n + "*" + skBuild[n]; }).join("~")), function (ok) { skm.textContent = ok ? "Link copied" : "Copy failed"; });
-    } else if (a === "skReset") {
-      if (t.getAttribute("data-armed") === "1") { skBuild = {}; save("arcHubSkills", skBuild); renderSkills(); t.setAttribute("data-armed", "0"); t.textContent = "Clear build"; }
-      else { t.setAttribute("data-armed", "1"); t.textContent = "Press again to clear"; }
     } else if (a === "crOpen") {
-      e.preventDefault(); showTab("tools", true); craftApply(t.getAttribute("data-n") + "*1"); writeHash();
-      var crt = document.getElementById("craftTool"); if (crt && crt.scrollIntoView) { crt.scrollIntoView({ block: "start" }); }
+      e.preventDefault(); craftApply(t.getAttribute("data-n") + "*1");
     } else if (a === "homeTool") {
-      showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById(t.getAttribute("data-tool")))); window.scrollTo(0, 0);
+      openTool(t.getAttribute("data-tool"));
     } else if (a === "stSync" || a === "arctResync") {
       arctResync();
     } else if (a === "arctRawCopy") {
@@ -6029,7 +5417,7 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "arctPanel") {
       arctPanel(document.getElementById("arctCard").hidden);
     } else if (a === "homeWs") {
-      showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("wsTool"))); window.scrollTo(0, 0);
+      openTool("wsTool");
     } else if (a === "enSeen") {
       var esn = t.getAttribute("data-n"), ess = document.querySelector('[data-ensel="' + CSS.escape(esn) + '"]'), esm = ess ? ess.value : "";
       if (esm) {
@@ -6041,28 +5429,15 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "killOpen") {
       kSet.e = t.getAttribute("data-n"); kSet.w = ""; save("arcHubKill", kSet);
       var ke = document.getElementById("kEn"); if (ke.options.length) { ke.value = kSet.e; document.getElementById("kW").value = ""; }
-      showTab("tools"); toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("killTool"))); renderKill(); window.scrollTo(0, 0);
+      openTool("killTool"); renderKill();
     } else if (a === "enOpen") {
       refSec = "enemies"; document.getElementById("refQ").value = t.getAttribute("data-n"); document.getElementById("enType").value = "all"; document.getElementById("enMap").value = ""; document.getElementById("enNeed").checked = false;
       showTab("ref"); renderRef(); window.scrollTo(0, 0);
     } else if (a === "qrMap") {
       curMap = parseInt(t.getAttribute("data-i"), 10) || 0; showTab("maps"); renderMaps(); writeHash(); window.scrollTo(0, 0);
-    } else if (a === "upProj") {
-      var uw = document.getElementById("upW").value, uf = parseInt(document.getElementById("upFrom").value, 10) || 0, ut = parseInt(document.getElementById("upTo").value, 10) || 1;
-      var uc = upCalc(uw, uf, ut - 1, false), un = Object.keys(uc.tot);
-      if (un.length) {
-        projects.push({ name: "Upgrade to " + uw + " " + upTiers(uw)[ut - 1], needs: un.map(function (m) { return [m, uc.tot[m]]; }) });
-        save("arcHubProjects", projects); renderProjects();
-        document.getElementById("upMsg").textContent = "Saved. It now feeds the shopping list in Tools.";
-      }
-    } else if (a === "crProj" || a === "crLink") {
+    } else if (a === "crLink") {
       var crn = craftFind(document.getElementById("crItem").value), crq = Math.max(1, Math.min(99, parseInt(document.getElementById("crQty").value, 10) || 1)), crm = document.getElementById("crMsg");
-      if (crn && a === "crProj") {
-        var crc = craftCalc(crn, crq, document.getElementById("crDeep").checked);
-        projects.push({ name: "Craft " + crq + "\u00d7 " + crn, needs: Object.keys(crc.leaf).map(function (m) { return [m, crc.leaf[m]]; }) });
-        save("arcHubProjects", projects); renderProjects();
-        crm.textContent = "Saved. It now feeds the shopping list in Tools.";
-      } else if (crn) {
+      if (crn) {
         copyText(window.location.href.split("#")[0] + "#tools/craft=" + encodeURIComponent(crn + "*" + crq), function (ok) { crm.textContent = ok ? "Link copied" : "Copy failed"; });
       }
     } else if (a === "lbIn") { var lc = lbCenter(); lbZoomAt(lc[0], lc[1], 1.6);
@@ -6112,13 +5487,6 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "shareItem") {
       var sit = t.getAttribute("data-item"), sib = t;
       copyText(window.location.href.split("#")[0] + "#recycle/" + encodeURIComponent(sit), function (ok) { var o = sib.textContent; sib.textContent = ok ? "Copied" : "Copy failed"; setTimeout(function () { sib.textContent = o; }, 1500); });
-    } else if (a === "ckLink") {
-      var ckl = window.location.href.split("#")[0] + "#tools/" + encodeURIComponent("ck=" + checklist.map(function (c) { return c.t.replace(/[~*]/g, " "); }).join("~"));
-      copyText(ckl, function (ok) { var el = document.getElementById("ckMsg"); if (el) { el.textContent = ok ? "Link copied. Anyone who opens it can add this checklist to theirs." : "Copy failed."; } });
-    } else if (a === "ckAddShared") {
-      (ckShared || []).forEach(function (x) { if (!checklist.some(function (c) { return c.t === x; })) { checklist.push({ t: x, d: false }); } });
-      save("arcHubCheck", checklist); ckShared = null; renderChecklist(); renderCkShared();
-    } else if (a === "ckSharedClose") { ckShared = null; renderCkShared();
     } else if (a === "closeMap") {
       lbClose();
     } else if (a === "theme") {
@@ -6149,43 +5517,12 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "noteDone") { noteEdit = ""; renderResults();
     } else if (a === "shopFind") {
       var sfm = t.getAttribute("data-m"); showTab("recycle"); document.getElementById("searchBox").value = sfm; renderResults(); writeHash(); window.scrollTo(0, 0);
-    } else if (a === "shopLink") {
-      var sl = shopData(false).map(function (r) { return r.n + "*" + r.miss; }).join("~"), sm2 = document.getElementById("shopMsg");
-      var slink = window.location.href.split("#")[0] + "#tracker/" + encodeURIComponent("list=" + sl);
-      try { window.navigator.clipboard.writeText(slink).then(function () { sm2.textContent = "Link copied."; }, function () { sm2.textContent = "Copy failed."; }); } catch (e10) { sm2.textContent = "Copy failed."; }
-    } else if (a === "sharedClose") { sharedList = null; renderShared();
-    } else if (a === "loLink") {
-      var ll = loadouts[parseInt(t.getAttribute("data-i"), 10)];
-      if (ll) { var llk = window.location.href.split("#")[0] + "#tools/" + encodeURIComponent(ll.code), lm2 = document.getElementById("loMsg"); try { window.navigator.clipboard.writeText(llk).then(function () { lm2.textContent = "Link copied."; }, function () { lm2.textContent = "Copy failed."; }); } catch (e11) { lm2.textContent = "Copy failed."; } }
     } else if (a === "tag") {
       pushUndo("Changed tag");
       var tn = t.getAttribute("data-item"), order = ["", "sell", "keep", "craft"], cur2 = itemTags[tn] || "";
       var nx = order[(order.indexOf(cur2) + 1) % order.length];
       if (nx) { itemTags[tn] = nx; } else { delete itemTags[tn]; }
-      save("arcHubTags", itemTags); renderResults(); renderWorth();
-    } else if (a === "rchkAdd") {
-      var rt = document.getElementById("rcNew").value.trim();
-      if (rt) { rchk.push({ t: rt.slice(0, 80), p: document.getElementById("rcPer").value === "weekly" ? "weekly" : "daily", d: false, k: pKey(document.getElementById("rcPer").value) }); document.getElementById("rcNew").value = ""; save("arcHubRepeat", rchk); renderRepeat(); }
-    } else if (a === "rchkDel") {
-      pushUndo("Removed a task");
-      rchk.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubRepeat", rchk); renderRepeat();
-    } else if (a === "printChecks") {
-      document.body.classList.add("print-chk"); try { window.print(); } catch (e7) {} document.body.classList.remove("print-chk");
-    } else if (a === "shopCopy") {
-      var sm = document.getElementById("shopMsg");
-      try { window.navigator.clipboard.writeText(shopText()).then(function () { sm.textContent = "List copied."; }, function () { sm.textContent = "Copy failed."; }); } catch (e8) { sm.textContent = "Copy failed."; }
-    } else if (a === "loSave") {
-      var ln = document.getElementById("loName").value.trim().slice(0, 40);
-      if (ln) {
-        loadouts = loadouts.filter(function (l) { return l.name.toLowerCase() !== ln.toLowerCase(); });
-        loadouts.push({ name: ln, code: loCode() }); loadouts = loadouts.slice(-20);
-        save("arcHubLoadouts", loadouts); document.getElementById("loName").value = ""; renderLoSaved(); renderRaids();
-      }
-    } else if (a === "loLoad") {
-      var lo = loadouts[parseInt(t.getAttribute("data-i"), 10)]; if (lo) { loApply(lo.code); }
-    } else if (a === "loDel") {
-      pushUndo("Deleted a loadout");
-      loadouts.splice(parseInt(t.getAttribute("data-i"), 10), 1); save("arcHubLoadouts", loadouts); renderLoSaved(); renderRaids();
+      save("arcHubTags", itemTags); renderResults();
     } else if (a === "contrast") {
       var cn = !load("arcHubContrast", false); save("arcHubContrast", cn); applyContrast(cn);
     } else if (a === "qCode") {
@@ -6197,13 +5534,7 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "gGo") { gGo(parseInt(t.getAttribute("data-i"), 10));
     } else if (a === "shareTracker") { shareTracker();
     } else if (a === "shareQuests") { shareQuests();
-    } else if (a === "shareSkills") { shareSkills();
-    } else if (a === "shareLoadout") { shareLoadout();
     } else if (a === "shareRaids") { shareRaids();
-    } else if (a === "loShare") {
-      var lk = window.location.href.split("#")[0] + "#tools/" + encodeURIComponent(loCode()), lm = document.getElementById("loMsg");
-      try { window.navigator.clipboard.writeText(lk).then(function () { lm.textContent = "Link copied."; }, function () { lm.textContent = "Copy failed. Use the address bar."; }); } catch (e4) { lm.textContent = "Copy failed."; }
-      try { window.history.replaceState(null, "", "#tools/" + encodeURIComponent(loCode())); } catch (e5) {}
     } else if (a === "saveItem") {
       saveItem();
     } else if (a === "delItem") {
@@ -6293,32 +5624,13 @@ footer .wrap { display: grid; gap: 2px; }
     if (e.target.checked && autoSpend) { var qq = QUESTS.filter(function (x) { return x.name === n; })[0]; if (qq && qq.req.length) { spend(qq.req, n); } }
     renderQuests(); renderTracker(); renderRoute();
   });
-  document.getElementById("presetSel").addEventListener("change", function () { presetIdx = parseInt(this.value, 10) || 0; renderPresets(); });
   document.getElementById("gearSort").addEventListener("change", renderGear);
-  document.getElementById("cmpA").addEventListener("input", renderCompare);
-  document.getElementById("cmpB").addEventListener("input", renderCompare);
   (function () {
     var cs = load("arcHubCraft", null);
     if (cs && cs.n) { document.getElementById("crItem").value = cs.n; document.getElementById("crQty").value = cs.q || 1; document.getElementById("crDeep").checked = cs.d !== false; }
     ["crItem", "crQty"].forEach(function (id) { document.getElementById(id).addEventListener("input", renderCraft); });
     document.getElementById("crDeep").addEventListener("change", renderCraft);
-    document.getElementById("lvQ").addEventListener("input", renderLoot);
-    document.getElementById("cosQ").addEventListener("input", renderCos);
-    document.getElementById("cosShow").addEventListener("change", function () { save("arcHubCos", document.getElementById("cosShow").value); renderCos(); });
-    document.getElementById("cosShow").value = ["all", "now", "gain"].indexOf(load("arcHubCos", "all")) >= 0 ? load("arcHubCos", "all") : "all";
-    ["lvSort", "lvGear"].forEach(function (id) { document.getElementById(id).addEventListener("change", function () { save("arcHubLoot", { s: document.getElementById("lvSort").value, g: document.getElementById("lvGear").checked }); renderLoot(); }); });
-    document.getElementById("skExp").value = skExp;
-    document.getElementById("skExp").addEventListener("input", function () { skExp = Math.max(0, parseInt(this.value, 10) || 0); save("arcHubSkillExp", skExp); renderSkills(); });
-    var lv = load("arcHubLoot", null);
-    if (lv) { if (/^(kg|slot|price)$/.test(lv.s)) { document.getElementById("lvSort").value = lv.s; } document.getElementById("lvGear").checked = !!lv.g; }
   })();
-  document.getElementById("chkNew").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); document.querySelector('[data-action="chkAdd"]').click(); } });
-  document.addEventListener("change", function (e) {
-    var ci = e.target && e.target.getAttribute && e.target.getAttribute("data-chk");
-    if (ci === null || ci === undefined || ci === false) { return; }
-    var c = checklist[parseInt(ci, 10)];
-    if (c) { c.d = e.target.checked; save("arcHubCheck", checklist); renderChecklist(); }
-  });
   document.addEventListener("change", function (e) {
     var g = e.target && e.target.getAttribute && e.target.getAttribute("data-goal");
     if (!g) { return; }
@@ -6328,7 +5640,7 @@ footer .wrap { display: grid; gap: 2px; }
     save("arcHubGoals", goals);
     invTyping = true; shopTyping = true;
     try { renderTracker(); updateGoalToggle(); renderResults(); } finally { invTyping = false; shopTyping = false; }
-    renderShop(); if (curTab === "stash") { renderStash(); }
+    if (curTab === "stash") { renderStash(); }
   });
   document.addEventListener("keydown", function (e) {
     if (!document.getElementById("lightbox").hidden) {
@@ -6364,7 +5676,6 @@ footer .wrap { display: grid; gap: 2px; }
   document.addEventListener("change", function (e) {
     var el = e.target; if (!el || !el.getAttribute) { return; }
     var v;
-    if ((v = el.getAttribute("data-rchk")) !== null) { var c = rchk[parseInt(v, 10)]; if (c) { c.d = el.checked; save("arcHubRepeat", rchk); renderRepeat(); } return; }
     if ((v = el.getAttribute("data-wsdone")) !== null) {
       pushUndo("Workshop: " + v);
       var oldL = wsDone[v] || 0, newL = parseInt(el.value, 10) || 0;
@@ -6378,7 +5689,6 @@ footer .wrap { display: grid; gap: 2px; }
     if ((v = el.getAttribute("data-shopsrc")) !== null) { shopSrc[v] = el.checked; save("arcHubShopSrc", shopSrc); renderTracker(); return; }
     if (el.getAttribute("data-invhave") !== null) { return; }
     if ((v = el.getAttribute("data-trial")) !== null) { pushUndo("Trials"); var tk = trKey(v); trials[tk] = trials[tk] || {}; trials[tk].d = el.checked; save("arcHubTrials", trials); var row = el.closest(".trrow"); if (row) { row.className = "trrow" + (el.checked ? " done" : ""); } var ts = document.getElementById("trSum"); if (ts) { ts.textContent = trSummary() + ". Tick challenges off and note your points. Rewards come at 1,000, 2,000 and 3,000."; } return; }
-    if (el.id === "cueOn") { cueOn = el.checked; save("arcHubCue", cueOn); if (cueOn) { cue(); } return; }
     if (el.id === "qMap") { renderQuests(); return; }
     if (el.id === "histMat") { renderHist(); return; }
     if (el.id === "autoSpend") { autoSpend = el.checked; save("arcHubAutoSpend", autoSpend); return; }
@@ -6405,7 +5715,6 @@ footer .wrap { display: grid; gap: 2px; }
   (function () {
     var mp = document.getElementById("qMap");
     mp.innerHTML = '<option value="">All maps</option>' + MAPS.filter(function (m) { return m.diff > 0; }).map(function (m) { return "<option>" + esc(m.name) + "</option>"; }).join("") + "<option>Frigate</option>";
-    document.getElementById("cueOn").checked = !!cueOn;
     document.getElementById("histCard").addEventListener("toggle", function () { if (this.open) { renderHist(); } });
     recordHist();
     var auto = !load("arcHubTour", false) && !load("arcHubHint", false) && !window.location.hash && !window.navigator.webdriver;
@@ -6476,7 +5785,6 @@ footer .wrap { display: grid; gap: 2px; }
   renderCart();
   renderTools();
   renderQuests();
-  initLoadout();
   takeSnapshot();
   renderSnaps();
   /* ---------- farm finder ---------- */
@@ -6620,7 +5928,7 @@ footer .wrap { display: grid; gap: 2px; }
     if (e.key === "Escape") { document.getElementById("kbBox").hidden = true; return; }
     if (e.key === "?") { var kb = document.getElementById("kbBox"); kb.hidden = !kb.hidden; return; }
     if (gWait && Date.now() - gWait < 1500) {
-      var go = { r: "recycle", t: "stash", k: "stash", a: "gear", q: "quests", e: "ref", o: "tools", m: "maps", f: "frozen", u: "updates", s: "site" };
+      var go = { r: "recycle", t: "stash", k: "stash", a: "gear", q: "quests", e: "ref", m: "maps", f: "frozen", u: "updates", s: "site" };
       gWait = 0;
       if (go[e.key]) { showTab(go[e.key]); writeHash(); window.scrollTo(0, 0); e.preventDefault(); }
       return;
@@ -6646,28 +5954,6 @@ footer .wrap { display: grid; gap: 2px; }
   var weekly = load("arcHubWeekly", []);
   var board = load("arcHubBoard", []);
   var sbShared = [];
-  function renderPlan() {
-    var sel = document.getElementById("planMap"), out = document.getElementById("planOut");
-    if (!sel || !out) { return; }
-    if (!sel.options.length) { sel.innerHTML = MAPS.map(function (m, i) { return '<option value="' + i + '">' + esc(m.name) + "</option>"; }).join(""); sel.value = String(curMap); }
-    var mi = parseInt(sel.value, 10) || 0, mp = MAPS[mi];
-    var rows = shopData(false).sort(function (a, b) { return b.miss - a.miss; }).slice(0, 8);
-    if (!rows.length) { out.innerHTML = '<div class="empty-line">You need nothing right now. Set Want amounts in Stash or tick quests and this fills in.</div>'; return; }
-    var R = ROOMS[mapSlug(mp)], sc = {}, en = {};
-    rows.forEach(function (r) {
-      var F = FARM[r.n] || {}, G = FARM2[r.n] || {}, T = F.t || G.t || [];
-      if (R) { R.r.forEach(function (rm, ri) { if (!rm[3]) { return; } var k = rm[3].filter(function (x) { return T.indexOf(x) !== -1; }).length; if (k) { sc[ri] = (sc[ri] || 0) + k; } }); }
-      (G.a || []).forEach(function (a) { en[a] = (en[a] || 0) + 1; });
-    });
-    var rooms = Object.keys(sc).sort(function (a, b) { return sc[b] - sc[a] || R.r[a][0].localeCompare(R.r[b][0]); }).slice(0, 6);
-    var enemies = Object.keys(en).sort(function (a, b) { return en[b] - en[a] || a.localeCompare(b); }).slice(0, 6);
-    var qs = qActive().filter(function (q) { return q.loc.indexOf("Any") !== -1 || q.loc.indexOf(mp.name) !== -1; }).slice(0, 6);
-    var html = '<div class="plangrp"><div class="muted">Still needed</div><div class="ffchips">' + rows.map(function (r) { return '<span class="y"><b>' + r.miss + "&times;</b> " + esc(r.n) + "</span>"; }).join("") + "</div></div>";
-    html += '<div class="plangrp"><div class="muted">Rooms to visit on ' + esc(mp.name) + '</div>' + (rooms.length ? rooms.map(function (ri) { return '<button type="button" class="chip" data-action="openRoom" data-mapi="' + mi + '" data-room="' + ri + '">' + esc(R.r[ri][0]) + "</button>"; }).join("") : '<div class="empty-line">No room data for this map matches yet.</div>') + "</div>";
-    if (enemies.length) { html += '<div class="plangrp"><div class="muted">ARC enemies that drop what you need</div><div class="ffchips">' + enemies.map(function (x) { return '<span class="y">' + esc(x) + "</span>"; }).join("") + "</div></div>"; }
-    html += '<div class="plangrp"><div class="muted">Active quests you can do on this map</div>' + (qs.length ? '<div class="ffchips">' + qs.map(function (q) { return '<span class="y">' + esc(q.name) + "</span>"; }).join("") + "</div>" : '<div class="empty-line">None right now.</div>') + "</div>";
-    out.innerHTML = html;
-  }
   function renderWeek() {
     var out = document.getElementById("wkOut"); if (!out) { return; }
     if (!weekly.length) { out.innerHTML = '<div class="empty-line">No weekly goals yet. Pick a material and a target above.</div>'; return; }
@@ -6676,13 +5962,6 @@ footer .wrap { display: grid; gap: 2px; }
       return '<div class="wkrow"><div><b>' + esc(w.m) + "</b> " + got + " of " + w.t + (left > 0 ? " &middot; " + left + " day" + (left === 1 ? "" : "s") + " left" : ' &middot; Week ended') + '</div><div class="wkbar"><i style="width:' + pct + '%"></i></div><div class="acts">' +
         (left <= 0 ? '<button class="btn ghost" type="button" data-action="wkRestart" data-i="' + i + '">Start a new week</button>' : "") + '<button class="btn ghost" type="button" data-action="wkDel" data-i="' + i + '">Remove</button></div></div>';
     }).join("");
-  }
-  function renderSb() {
-    var out = document.getElementById("sbOut"), sh = document.getElementById("sbShared"); if (!out) { return; }
-    sh.innerHTML = sbShared.length ? '<div class="farmbox"><div class="muted">A squad board came in through a link (' + sbShared.length + ' tasks):</div>' + sbShared.map(function (x) { return "<div>" + esc((x.w ? x.w + ": " : "") + x.t) + "</div>"; }).join("") + '<div class="acts"><button class="btn" type="button" data-action="sbLoad">Add to my board</button><button class="btn ghost" type="button" data-action="sbDismiss">Dismiss</button></div></div>' : "";
-    out.innerHTML = board.length ? board.map(function (x, i) {
-      return '<div class="sbrow' + (x.d ? " done" : "") + '"><input type="checkbox" data-action="sbTog" data-i="' + i + '"' + (x.d ? " checked" : "") + ' aria-label="Done"><span><b>' + esc(x.w || "Anyone") + "</b>: " + esc(x.t) + '</span><button class="btn ghost" type="button" data-action="sbDel" data-i="' + i + '" aria-label="Remove">&times;</button></div>';
-    }).join("") : '<div class="empty-line">The board is empty. Add who is bringing or farming what.</div>';
   }
 
   /* ---------- Raids tab: the raid log as cards, with what you brought out and profit. ---------- */
@@ -6772,7 +6051,7 @@ footer .wrap { display: grid; gap: 2px; }
     });
     document.getElementById("rdMore").hidden = list.length <= rdShow;
     if (!raids.length) {
-      out.innerHTML = '<div class="empty-line">No raids yet. Connect ARC Tracker with the bar at the top to copy your raids in, or log one by hand in Tools.</div>'; return;
+      out.innerHTML = '<div class="empty-line">No raids yet. Connect ARC Tracker with the bar at the top to copy your raids in, or log one by hand below.</div>'; return;
     }
     out.innerHTML = list.length ? list.slice(0, rdShow).map(function (r) {
       var dt = new Date(r.t), dur = rdDur(r.d);
@@ -6961,48 +6240,13 @@ footer .wrap { display: grid; gap: 2px; }
     });
     return { rows: rows, tot: tot };
   }
-  function renderWorth() {
-    var out = document.getElementById("swOut");
-    if (!out) { return; }
-    var sel = document.getElementById("swSort");
-    if (stash && stash.wsort && sel.value !== stash.wsort) { sel.value = stash.wsort; }
-    var by = sel.value === "coins" ? "coins" : "slots", d = worthData(), t = d.tot;
-    if (!Object.keys(tracker).some(function (n) { return tracker[n] > 0; })) {
-      out.innerHTML = '<div class="empty-line">Nothing in your tracker yet. Add what you have in the Stash tab to see what it is worth.</div>';
-      return;
-    }
-    d.rows.sort(function (a, b) { return (b[by] - a[by]) || (by === "slots" ? b.coins - a.coins : b.slots - a.slots) || a.n.localeCompare(b.n); });
-    var shown = d.rows.slice(0, 40);
-    out.innerHTML = '<p style="margin:10px 0 4px;">Everything you track sells for <b>' + coins(t.coins) + "</b> coins and fills about <b>" + t.slots + "</b> slots" +
-      (t.unpriced ? ' <span class="muted">(' + t.unpriced + " item" + (t.unpriced === 1 ? " has" : "s have") + " no known sell price)</span>" : "") + ".</p>" +
-      (d.rows.length ? '<p style="margin:0 0 8px;">Spare items: <b>' + coins(t.spareCoins) + "</b> coins, freeing about <b>" + t.spareSlots + "</b> slots. " +
-        "</p>" +
-        shown.map(function (r) {
-          return '<div class="krow"><b>' + esc(r.n) + "</b>" + (r.sell ? '<span class="ktag">Sell</span>' : "") + '<span class="muted">sell ' + r.spare + " of " + r.have +
-            " &middot; " + (r.price === null ? "no known price" : "<b>" + coins(r.coins) + "</b> coins") + " &middot; frees " + r.slots + " slot" + (r.slots === 1 ? "" : "s") + "</span></div>";
-        }).join("") + (d.rows.length > shown.length ? '<div class="muted">and ' + (d.rows.length - shown.length) + " more.</div>" : "")
-        : '<div class="empty-line">Nothing spare: your quests, projects, workshop upgrades and goals need everything you track.</div>');
-  }
   function stashInit() {
-    var sw = document.getElementById("swSort");
-    if (sw) { sw.addEventListener("change", function () { stash.wsort = sw.value; save("arcHubStash", stash); renderWorth(); }); }
     ["kEn", "kW", "kT"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) { el.addEventListener("change", function () { kSet = { e: document.getElementById("kEn").value, w: document.getElementById("kW").value, t: parseInt(document.getElementById("kT").value, 10) || 0 }; save("arcHubKill", kSet); renderKill(); }); }
     });
     var qrp = document.getElementById("qrPer");
     if (qrp) { qrp.addEventListener("change", function () { qrSet.per = parseInt(qrp.value, 10) || 4; save("arcHubRoute", qrSet); renderRoute(); }); }
-    ["upW", "upFrom", "upTo", "upDeep"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) { el.addEventListener("change", function () {
-        if (id === "upW") { upSet.f = 0; upSet.t = 0; }
-        upSet.w = document.getElementById("upW").value; upSet.d = document.getElementById("upDeep").checked;
-        if (id === "upFrom") { upSet.f = parseInt(el.value, 10) || 0; }
-        if (id === "upTo") { upSet.t = parseInt(el.value, 10) || 0; }
-        save("arcHubUp", upSet); document.getElementById("upMsg").textContent = ""; renderUpgrade();
-      }); }
-    });
-    renderWorth();
   }
 
   /* ---------- reset countdowns ---------- */
@@ -7061,80 +6305,16 @@ footer .wrap { display: grid; gap: 2px; }
       out.innerHTML = html;
     });
   }
-  var toolIdx = load("arcHubToolTab", 0);
-  /* Anonymous tool counts for deciding which tools to retire: one GoatCounter event per tool per visit when it is
-     opened ("tool-open/<name>") and when someone clicks or types in it ("tool-use/<name>"). No cookies, no personal data. */
-  var toolSent = {};
-  function toolCount(kind, t) {
-    var h = t && t.querySelector("h3"), name = t && (t.getAttribute("data-en") || (h ? h.textContent.trim() : ""));
-    if (!name) { return; }
-    var key = kind + "/" + name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    if (toolSent[key]) { return; }
-    toolSent[key] = true;
-    try { if (window.goatcounter && window.goatcounter.count) { window.goatcounter.count({ path: key, title: "Tool " + kind.replace("tool-", "") + ": " + name, event: true }); } } catch (e) {}
-  }
-  /* Tools that answer the same question share one entry in the tool picker and show together. */
-  var TOOL_GROUPS = [["What's it worth?", ["Keep or recycle?", "Loot value", "Stash worth"]],
-    ["Weapons", ["Compare weapons", "Shots to kill", "Weapon upgrade path"]],
-    ["Crafting and shopping", ["Crafting planner", "Shopping list", "Workshop planner"]]];
-  var toolEntries = [];
-  function toolEntryOf(i) {
-    for (var e = 0; e < toolEntries.length; e++) { if (toolEntries[e].tools.indexOf(i) !== -1) { return e; } }
-    return 0;
-  }
-  function toolShow(i, quiet) {
-    var tools = document.querySelectorAll("#panel-tools > .tool");
-    if (!tools.length) { return; }
-    i = parseInt(i, 10); if (!(i >= 0 && i < tools.length)) { i = 0; }
-    var prev = toolIdx;
-    toolIdx = i; save("arcHubToolTab", i);
-    var en = toolEntryOf(i), members = toolEntries.length ? toolEntries[en].tools : [i];
-    Array.prototype.forEach.call(tools, function (t, k) { t.hidden = members.indexOf(k) === -1; });
-    Array.prototype.forEach.call(document.querySelectorAll("#toolTabs .chip"), function (b, k) { b.setAttribute("aria-pressed", k === en ? "true" : "false"); });
-    toolPickOpen(false);
-    if (curTab === "tools") {
-      toolCount("tool-open", tools[i]);
-      /* Deferred so it runs after callers that scroll the page to the top. */
-      if (members[0] !== i && !quiet) { setTimeout(function () { try { tools[i].scrollIntoView({ block: "start" }); } catch (e) {} }, 0); }
-    }
-  }
-  function toolPickOpen(on) {
-    var pick = document.getElementById("toolPick"), nav = document.getElementById("toolTabs");
-    if (!pick || !nav) { return; }
-    var tools = document.querySelectorAll("#panel-tools > .tool"), en = toolEntries[toolEntryOf(toolIdx)];
-    var h = tools[toolIdx] && tools[toolIdx].querySelector("h3"), label = en && en.label ? en.label : (h ? h.textContent : "Tool");
-    nav.classList.toggle("open", on);
-    pick.setAttribute("aria-expanded", on ? "true" : "false");
-    pick.innerHTML = "<b>" + esc(label) + "</b><span>" + (on ? "&#9650;" : "All " + (toolEntries.length || tools.length) + " &#9660;") + "</span>";
-  }
-  function toolsSubInit() {
-    var tools = document.querySelectorAll("#panel-tools > .tool");
-    if (!tools.length || document.getElementById("toolTabs")) { return; }
-    var names = Array.prototype.map.call(tools, function (t) { var h = t.querySelector("h3"); return h ? h.textContent.trim() : ""; });
-    toolEntries = [];
-    var done = {};
-    names.forEach(function (n, i) {
-      if (done[i]) { return; }
-      var g = TOOL_GROUPS.filter(function (x) { return x[1].indexOf(n) !== -1; })[0];
-      var idx = g ? g[1].map(function (m) { return names.indexOf(m); }).filter(function (k) { return k !== -1; }).sort(function (a, b) { return a - b; }) : [i];
-      idx.forEach(function (k) { done[k] = true; });
-      toolEntries.push({ label: g ? g[0] : "", tools: idx });
-    });
-    var nav = document.createElement("div");
-    nav.className = "chips subtabs"; nav.id = "toolTabs"; nav.setAttribute("role", "group"); nav.setAttribute("aria-label", "Tools");
-    nav.innerHTML = toolEntries.map(function (e) {
-      return '<button type="button" class="chip" data-action="toolTab" data-ti="' + e.tools[0] + '" aria-pressed="false">' + esc(e.label || names[e.tools[0]] || "Tool") + "</button>";
-    }).join("");
-    var pick = document.createElement("button");
-    pick.type = "button"; pick.className = "btn ghost"; pick.id = "toolPick"; pick.setAttribute("data-action", "toolPick"); pick.setAttribute("aria-controls", "toolTabs");
-    var box = document.createElement("div");
-    box.id = "toolNav"; box.appendChild(pick); box.appendChild(nav);
-    Array.prototype.forEach.call(tools, function (t, i) {
-      if (names[i]) { t.setAttribute("data-en", names[i]); }
-      ["click", "input", "change"].forEach(function (ev) { t.addEventListener(ev, function () { toolCount("tool-use", t); }); });
-    });
-    tools[0].parentNode.insertBefore(box, tools[0]);
-    toolShow(toolIdx, true);
+  /* The few tools that are left live in the tab that links to them, folded up in a card. */
+  var TOOL_RENDER = { routeTool: renderRoute, weekTool: renderWeek, wsTool: renderPlanner, craftTool: renderCraft, raidTool: renderRaids, killTool: renderKill };
+  function toolRender(id) { try { TOOL_RENDER[id](); } catch (e) {} }
+  document.querySelectorAll("details.tool").forEach(function (t) { t.addEventListener("toggle", function () { if (t.open) { toolRender(t.id); } }); });
+  function openTool(id) {
+    var t = document.getElementById(id), p = t && t.closest("section.panel");
+    if (!t || !p) { return; }
+    showTab(p.id.replace("panel-", ""));
+    t.open = true; toolRender(id);
+    setTimeout(function () { try { t.scrollIntoView({ block: "start" }); } catch (e) {} }, 0);
   }
   /* phones: filter button rows scroll sideways; fade the edge and show an arrow while more buttons are off screen */
   function chipHintInit() {
@@ -7159,7 +6339,7 @@ footer .wrap { display: grid; gap: 2px; }
       if (td.length === 2) { dates.push(td[1].textContent.replace(/\s*\(.*?\)/, "").trim()); }
     });
     /* match each tab to its footer row by the row's label (rows follow ARC.FRESHNESS order) */
-    var map = { recycle: "Sell prices", gear: "Weapons", quests: "Quests", ref: "Reference", tools: "Project presets", maps: "Maps", updates: "Maps" };
+    var map = { recycle: "Sell prices", gear: "Weapons", quests: "Quests", ref: "Reference", maps: "Maps", updates: "Maps" };
     var rows = ARC.FRESHNESS || [];
     Object.keys(map).forEach(function (t) {
       var n = -1;
@@ -7325,10 +6505,9 @@ footer .wrap { display: grid; gap: 2px; }
     if (q) { save("arcHubLang", q[1]); }
   }
   /*I18N-END*/
-  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condAlert(); condFetch(); setInterval(condFetch, 1800000); installInit(); farmListInit(); chipHintInit(); verifiedInit(); mapFindInit(); toolsSubInit(); introInit();
+  renderFarm(); stashInit(); stashTabInit(); raidsTabInit(); updateCd(); setInterval(updateCd, 30000); setInterval(condTick, 30000); condAlert(); condFetch(); setInterval(condFetch, 1800000); installInit(); farmListInit(); chipHintInit(); verifiedInit(); mapFindInit(); introInit();
   initLang();
-  renderPlan(); renderWeek(); renderSb();
-  document.getElementById("planMap").addEventListener("change", renderPlan);
+  renderWeek();
   applyHash();
   if (!readHash().tab && homeStart && homeHasData()) { showTab("home", true); }
   document.getElementById("homeStart").checked = homeStart;

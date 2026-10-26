@@ -786,6 +786,11 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
   .moremenu:not([hidden]) { display: grid; position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 240px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.3); padding: 6px; gap: 0; }
   .moremenu button { appearance: none; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; color: var(--fg); font: 600 16px var(--font-body); text-align: left; padding: 14px 16px; min-height: 52px; cursor: pointer; }
   .moremenu button:last-child { border-bottom: 0; }
+  .moremenu .baredit, .moremenu .bardone { color: var(--accent); font-size: 15px; }
+  .moremenu .barhead { padding: 10px 16px 6px; color: var(--muted); font-size: 14px; }
+  .moremenu .barpick::before { content: ""; display: inline-block; width: 18px; height: 18px; margin-right: 10px; vertical-align: -3px; border: 2px solid var(--line); border-radius: 4px; }
+  .moremenu .barpick[aria-pressed="true"]::before { background: var(--accent); border-color: var(--accent); }
+  .moremenu .barpick[disabled] { opacity: .45; cursor: default; }
   /* Long tab intros fold to two lines on phones; More opens the rest. */
   .panel > p.intro:not(.open) { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 2px; }
   .introMore { display: inline-block !important; margin: 0 0 8px; padding: 8px 0; font-size: 15px; }
@@ -5181,29 +5186,48 @@ footer .wrap { display: grid; gap: 2px; }
 
   document.addEventListener("click", function (e) {
     var m = document.getElementById("moreMenu");
-    if (m && !m.hidden && !e.target.closest("#moreMenu, #moreBtn")) { syncMore(); }
+    if (m && !m.hidden && e.target.isConnected && !e.target.closest("#moreMenu, #moreBtn")) { syncMore(); }
   });
   document.addEventListener("keydown", function (e) {
     var m = document.getElementById("moreMenu");
     if (e.key === "Escape" && m && !m.hidden) { syncMore(); document.getElementById("moreBtn").focus(); }
   });
-  // Phone bottom bar: tabs marked "sec" live in the More menu.
+  // Phone bottom bar: up to 5 tabs you pick; the rest (marked "sec") live in the More menu.
+  var BAR_ALL = ["home", "recycle", "stash", "raids", "gear", "quests", "ref", "maps", "frozen", "updates", "site"], BAR_MAX = 5;
+  var barTabs = load("arcHubBar", null), barEditing = false;
+  if (!Array.isArray(barTabs) || !barTabs.length || barTabs.length > BAR_MAX || barTabs.some(function (n) { return BAR_ALL.indexOf(n) === -1; })) { barTabs = ["home", "recycle", "stash", "quests", "maps"]; }
+  function applyBar() {
+    BAR_ALL.forEach(function (n) { var b = document.getElementById("tab-" + n); if (b) { b.classList.toggle("sec", barTabs.indexOf(n) === -1); } });
+  }
+  function tabName(n) { var b = document.getElementById("tab-" + n); return b ? b.firstChild.textContent.trim() : n; }
   function syncMore(open) {
     var menu = document.getElementById("moreMenu"), btn = document.getElementById("moreBtn");
     if (!menu || !btn) { return; }
-    var names = { raids: "Raids", gear: "Gear", ref: "Reference", frozen: "Frozen Trail", updates: "Updates", site: "Site changes" }, cur = null, dot = false;
-    menu.innerHTML = Object.keys(names).map(function (name) {
+    if (!open) { barEditing = false; }
+    var cur = null, dot = false;
+    var rest = BAR_ALL.filter(function (n) { return barTabs.indexOf(n) === -1; });
+    var list = rest.map(function (name) {
       var tb = document.getElementById("tab-" + name), on = tb.getAttribute("aria-selected") === "true", nd = tb.querySelector(".newdot");
       if (on) { cur = name; }
       if (nd && !nd.hidden) { dot = true; }
-      return '<button type="button" data-tab="' + name + '"' + (on ? ' aria-current="true"' : "") + ">" + names[name] + (nd && !nd.hidden ? ' <span class="newdot"></span>' : "") + "</button>";
+      return '<button type="button" data-tab="' + name + '"' + (on ? ' aria-current="true"' : "") + ">" + esc(tabName(name)) + (nd && !nd.hidden ? ' <span class="newdot"></span>' : "") + "</button>";
     }).join("");
+    if (barEditing) {
+      var full = barTabs.length >= BAR_MAX;
+      menu.innerHTML = '<div class="barhead">Pick up to ' + BAR_MAX + " tabs for the bar</div>" + BAR_ALL.map(function (n) {
+        var inBar = barTabs.indexOf(n) !== -1;
+        return '<button type="button" class="barpick" data-action="barTog" data-bt="' + n + '" aria-pressed="' + inBar + '"' + (!inBar && full ? " disabled" : "") + ">" + esc(tabName(n)) + "</button>";
+      }).join("") + '<button type="button" class="bardone" data-action="barDone">Done</button>';
+    } else {
+      menu.innerHTML = list + '<button type="button" class="baredit" data-action="barEdit">Choose bar tabs</button>';
+    }
     menu.hidden = !open;
     btn.setAttribute("aria-expanded", open ? "true" : "false");
     btn.setAttribute("aria-current", cur ? "true" : "false");
-    document.getElementById("moreLbl").textContent = cur ? names[cur] : "More";
+    document.getElementById("moreLbl").textContent = cur ? tabName(cur) : "More";
     document.getElementById("moreDot").hidden = !dot;
   }
+  applyBar();
 
   function setMode(m) {
     mode = m;
@@ -5385,7 +5409,7 @@ footer .wrap { display: grid; gap: 2px; }
       var wr = weekly[parseInt(t.getAttribute("data-i"), 10)]; if (wr) { wr.b = tracker[wr.m] || 0; wr.s = Date.now(); save("arcHubWeekly", weekly); renderWeek(); }
     } else if (a === "resetEverything") {
       if (t.getAttribute("data-armed") === "1") {
-        var keep = { arcHubTheme: 1, arcHubLang: 1, arcHubContrast: 1, arcHubHint: 1, arcHubTour: 1, arcHubSeenUpd: 1, arcHubDisplay: 1, arcHubChgSeen: 1 };
+        var keep = { arcHubTheme: 1, arcHubBar: 1, arcHubLang: 1, arcHubContrast: 1, arcHubHint: 1, arcHubTour: 1, arcHubSeenUpd: 1, arcHubDisplay: 1, arcHubChgSeen: 1 };
         try {
           var ks = []; for (var ki = 0; ki < window.localStorage.length; ki++) { ks.push(window.localStorage.key(ki)); }
           ks.forEach(function (k) { if (/^arcHub/.test(k) && !keep[k]) { window.localStorage.removeItem(k); } });
@@ -5511,6 +5535,13 @@ footer .wrap { display: grid; gap: 2px; }
       setHint(false);
     } else if (a === "moreTabs") {
       syncMore(document.getElementById("moreMenu").hidden);
+    } else if (a === "barEdit") { barEditing = true; syncMore(true);
+    } else if (a === "barDone") { barEditing = false; syncMore(true);
+    } else if (a === "barTog") {
+      var bn = t.getAttribute("data-bt"), bi = barTabs.indexOf(bn);
+      if (bi !== -1) { if (barTabs.length > 1) { barTabs.splice(bi, 1); } } else if (barTabs.length < BAR_MAX) { barTabs.push(bn); }
+      barTabs.sort(function (x, y) { return BAR_ALL.indexOf(x) - BAR_ALL.indexOf(y); });
+      save("arcHubBar", barTabs); applyBar(); syncMore(true);
     } else if (a === "hintToggle") {
       renderHint();
       setHint(document.getElementById("hint").hidden);

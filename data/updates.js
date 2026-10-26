@@ -18,14 +18,14 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 25, 2026";
+ARC.DATA_UPDATED = "October 26, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
    Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
-    ["Sell prices, weights, recipes and where to find items", "October 25, 2026", "daily"],
+    ["Sell prices, weights, recipes and where to find items", "October 26, 2026", "daily"],
     ["Quests, objectives and quest chain", "October 20, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
@@ -42,6 +42,8 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 26, 2026", "Filled in data gaps: where to find 202 items (blueprints, trinkets and quest items from the item data, weapon upgrade steps for Canto II to IV, and Amplified Fragments, which come from recycling an Amplified weapon). Keys now count their source from the Keys list. The wiki has no sell price yet for ARC Plated Coupler, Banjo, Bantam III and IV, Propellant Valve Assembly or Stiletto III.", "wiki"],
+    ["Oct 26, 2026", "ARC Tracker sync now counts weapons. ARC Tracker puts the attached mod in a weapon's name (like Bettina IV · Extended Mag), so they were skipped before. Weapon versions this site does not list yet, like Amplified Bettina, show under their own name."],
     ["Oct 26, 2026", "The Tools tab is gone. The tools other pages linked to moved there: Quest route planner, Weekly goals and Workshop planner on Home, Crafting planner in the item lookup, Raid log on Raids and Shots to kill in Reference. The rest were removed."],
     ["Oct 25, 2026", "Stash tab: a new Looking for tile shows how many more slots you need to reach your Want amounts. The Stash space planner tool was removed."],
     ["Oct 25, 2026", "Stash: the Looking for filter now only shows items you still need more of, and hides the ones that already reached your Want amount."],

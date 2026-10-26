@@ -40,6 +40,7 @@ var SANDBOX = { window: {} };
 vm.createContext(SANDBOX);
 var src = fs.readFileSync(ITEMS_JS, "utf8");
 vm.runInContext(src, SANDBOX, { filename: "data/items.js" });
+vm.runInContext(fs.readFileSync(path.join(ROOT, "data", "maps.js"), "utf8"), SANDBOX, { filename: "data/maps.js" });
 var ARC = SANDBOX.window.ARC_DATA;
 var OLD = ARC.ITEMINFO;
 /* FARM2 as written in the file: the loaded copy already has FARM3 merged into it. */
@@ -92,8 +93,19 @@ function cost(c) {
 var upFrom = {};
 /* upgradeCost sits on the tier it upgrades INTO (rattler_ii holds the I to II cost). */
 Object.keys(D).forEach(function (id) { var d = D[id]; if (d.upgradesTo) { upFrom[d.upgradesTo] = [d.name.en, (D[d.upgradesTo] && D[d.upgradesTo].upgradeCost) || {}]; } });
+/* Some tiers miss the upgradesTo link (Canto I), so a tier II to IV with an upgrade cost upgrades from the tier before it. */
+var ROMAN = ["I", "II", "III", "IV"];
+Object.keys(D).forEach(function (id) {
+  var d = D[id], m = /^(.+) (II|III|IV)$/.exec(d.name.en);
+  if (upFrom[id] || !m || !d.upgradeCost) { return; }
+  var prev = m[1] + " " + ROMAN[ROMAN.indexOf(m[2]) - 1];
+  if (byName[prev]) { upFrom[id] = [prev, d.upgradeCost]; }
+});
 var F3 = {};
-ours.forEach(function (n) {
+/* Every item with data, not only the ones with a site page, so the Stash and the Data gaps list know where they come from. */
+var KEYSRC = {};
+(ARC.KEYS || []).forEach(function (k) { if (k[4] || k[5]) { KEYSRC[k[0]] = 1; } });
+Object.keys(NEW).forEach(function (n) {
   var d = byName[n];
   if (!d) { return; }
   var g = FARM2[n] || {}, x = {};
@@ -116,6 +128,10 @@ ours.forEach(function (n) {
   if (d.recipe && Object.keys(d.recipe).length && !hasAny) {
     o.push("Craft it (" + benches(d).map(function (i) { return BENCH_LC[i] || i; }).join(" or ") + "; recipe shown with the item)");
   }
+  /* Loot with no other source in the data: quest pickups, and blueprints, trinkets and keys that drop in raids. */
+  var known = ["s", "a", "v", "q", "o", "t"].some(function (k) { return (g[k] && g[k].length) || (x[k] && x[k].length); }) || o.length || KEYSRC[n];
+  if (!known && d.questItem) { o.push("Quest item: you pick it up during the quest that asks for it"); }
+  else if (!known && /^(Blueprint|Trinket|Key|Recyclable|Nature|Misc)$/.test(d.type)) { o.push("Found as loot in raids"); }
   if (o.length && !(g.o && g.o.length)) { x.o = o; }
   if (Object.keys(x).length) { F3[n] = x; }
 });

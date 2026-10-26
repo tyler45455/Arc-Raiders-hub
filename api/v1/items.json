@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 25, 2026",
+ "dataDate": "October 26, 2026",
  "count": 402,
  "items": [
   {
@@ -1584,6 +1584,9 @@
    "salvage": [],
    "areaTypes": [],
    "sources": {},
+   "sellPrice": null,
+   "weightKg": 1,
+   "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/banjo/"
   },
   {

@@ -4102,9 +4102,10 @@ footer .wrap { display: grid; gap: 2px; }
     var names = {};
     items.forEach(function (it) { names[it.name] = 1; });
     Object.keys(ITEMINFO).forEach(function (n) { names[n] = 1; });
-    var all = Object.keys(names).sort();
+    var all = Object.keys(names).sort(), keySrc = {};
+    KEYS.forEach(function (k) { if (k[4] || k[5]) { keySrc[k[0]] = 1; } });
     return [
-      ["Items with no known source", "Not listed as found anywhere, sold by a trader, given by a quest or craftable.", all.filter(function (n) { return !FARM[n] && !FARM2[n] && !recipeOf(n); })],
+      ["Items with no known source", "Not listed as found anywhere, sold by a trader, given by a quest or craftable.", all.filter(function (n) { return !FARM[n] && !FARM2[n] && !recipeOf(n) && !keySrc[n]; })],
       ["Items with no sell price", "No sell price in the item data, so value tools skip them.", all.filter(function (n) { return !ITEMINFO[n] || ITEMINFO[n][0] == null; })],
       ["Quests with no objectives", "The quest list has no steps for these.", QUESTS.filter(function (q) { return !q.obj.length; }).map(function (q) { return q.name; })],
       ["Quests with no rewards", "No reward items are listed.", QUESTS.filter(function (q) { return !q.rew.length; }).map(function (q) { return q.name; })],

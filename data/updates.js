@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 26, 2026", "Search everything now finds blueprints when you type the word: \"anvil blueprint\" goes straight to the Anvil blueprint, and \"blueprint\" on its own lists them."],
     ["Oct 26, 2026", "Added the 15 Amplified weapons (Amplified Hairpin to Amplified Jupiter) with how to make each one and its amplification paths, so ARC Tracker sync matches them. No sell price is published for them yet, on the wiki or anywhere else."],
     ["Oct 26, 2026", "New on phones: choose which tabs sit in the bottom bar. Open More, tap Choose bar tabs and pick up to 5. The rest stay under More."],
     ["Oct 26, 2026", "Stash tab: the Looking for tile now shows how many slots the items you are still looking for take at their Want amounts. Items you already have enough of are left out of it, the same as in the Looking for filter."],

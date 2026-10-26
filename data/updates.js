@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 26, 2026", "New on phones: choose which tabs sit in the bottom bar. Open More, tap Choose bar tabs and pick up to 5. The rest stay under More."],
     ["Oct 26, 2026", "Stash tab: the Looking for tile now shows how many slots the items you are still looking for take at their Want amounts. Items you already have enough of are left out of it, the same as in the Looking for filter."],
     ["Oct 26, 2026", "Filled in data gaps: where to find 202 items (blueprints, trinkets and quest items from the item data, weapon upgrade steps for Canto II to IV, and Amplified Fragments, which come from recycling an Amplified weapon). Keys now count their source from the Keys list. The wiki has no sell price yet for ARC Plated Coupler, Banjo, Bantam III and IV, Propellant Valve Assembly or Stiletto III.", "wiki"],
     ["Oct 26, 2026", "ARC Tracker sync now counts weapons. ARC Tracker puts the attached mod in a weapon's name (like Bettina IV · Extended Mag), so they were skipped before. Weapon versions this site does not list yet, like Amplified Bettina, show under their own name."],

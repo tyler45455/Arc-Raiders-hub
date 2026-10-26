@@ -3702,7 +3702,9 @@ footer .wrap { display: grid; gap: 2px; }
     grp("Map conditions", condHits.slice(0, 8));
     if (toolHits.length && toolHits[0].w !== 0) { grp("Tools", toolHits.slice(0, 4)); }
     grp("Enemies", ENEMIES.filter(function (e) { return m(e[0]); }).slice(0, 4).map(function (e) { return { l: e[0], s: e[1], go: ["enemies", e[0]] }; }));
-    grp("Blueprints", BPS.filter(function (b) { return m(b[0]); }).slice(0, 5).map(function (b) { return { l: b[0], s: b[1], go: ["blueprints", b[0]] }; }));
+    /* "anvil blueprint" finds the Anvil blueprint, and "blueprint" on its own lists them. */
+    var bq = q.replace(/\bblue(p(r(i(n(ts?)?)?)?)?)?\b/g, " ").replace(/\s+/g, " ").trim(), bpAll = bq !== q && !bq;
+    grp("Blueprints", BPS.filter(function (b) { return bpAll || m(b[0]) || (bq !== q && bq.length >= 2 && nameMatch(b[0], bq)); }).slice(0, bpAll ? 8 : 5).map(function (b) { return { l: b[0] + " Blueprint", s: b[1], go: ["blueprints", bpAll ? "" : b[0]] }; }));
     var ampAll = q.length >= 4 && ("amplification".indexOf(q) === 0 || "amplify".indexOf(q) === 0 || "upgrade".indexOf(q) === 0);
     grp("Amplification", AMPS.filter(function (u) { return ampAll || m(u[0]) || m(u[3]); }).slice(0, ampAll ? 6 : 4).map(function (u) { return { l: u[0], s: u[3], go: ["amplification", ampAll ? "" : u[0]] }; }));
     grp("Weapons", GEARDATA.weapons.filter(function (w) { return m(w[0]); }).slice(0, 4).map(function (w) { return { l: w[0], s: w[1], go: ["gear", w[0]] }; }));

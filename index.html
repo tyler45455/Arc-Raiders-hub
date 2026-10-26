@@ -6181,10 +6181,10 @@ footer .wrap { display: grid; gap: 2px; }
       T.value += r.value; T.slots += r.slots; T.free += r.free;
       if (r.sell) { T.sellN++; T.sellV += r.sellValue; }
       if (r.keep) { T.keepN++; T.keepV += r.value - r.sellValue; }
-      if (r.want) {
-        T.wantN++; T.wantLeft += Math.max(0, r.want - r.have);
-        var wst = (ITEMINFO[r.n] && ITEMINFO[r.n][2]) || 1;
-        if (r.want > r.have) { T.wantSlots += swSlots(r.want, wst) - swSlots(r.have, wst); }
+      /* Looking for counts only items still short of their Want amount, and the slots their full Want amount takes. */
+      if (r.want && r.have < r.want) {
+        T.wantN++; T.wantLeft += r.want - r.have;
+        T.wantSlots += swSlots(r.want, (ITEMINFO[r.n] && ITEMINFO[r.n][2]) || 1);
       }
     });
     /* Right after a sync, ARC Tracker's own slot count beats the estimate from stack sizes (the game splits stacks). */
@@ -6194,8 +6194,7 @@ footer .wrap { display: grid; gap: 2px; }
     tiles.innerHTML = tile("", "Stash value", coins(T.value), held + " item" + (held === 1 ? "" : "s") + " &middot; " + T.slots + (cap ? " of " + cap : "") + " slots") +
       tile("sell", "Safe to sell", coins(T.sellV), T.sellN + " item" + (T.sellN === 1 ? "" : "s") + " &middot; frees " + T.free + " slot" + (T.free === 1 ? "" : "s")) +
       tile("keep", "Keep", coins(T.keepV), T.keepN + " item" + (T.keepN === 1 ? "" : "s") + " needed") +
-      (T.wantN ? tile("", "Looking for", T.wantSlots ? "+" + T.wantSlots + " slot" + (T.wantSlots === 1 ? "" : "s") : "All set",
-        T.wantSlots ? "more to reach your Want amounts" + (cap ? " &middot; " + Math.max(0, cap - T.slots) + " free now" : "") : "you have every Want amount") : "");
+      (T.wantN ? tile("", "Looking for", T.wantSlots + " slot" + (T.wantSlots === 1 ? "" : "s"), "needed for " + T.wantN + " item" + (T.wantN === 1 ? "" : "s") + " you are looking for") : "");
     tiles.classList.toggle("four", !!T.wantN);
     var q = (document.getElementById("stQ").value || "").trim().toLowerCase();
     var list = rows.filter(function (r) {

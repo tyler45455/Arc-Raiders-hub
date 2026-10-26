@@ -2322,8 +2322,19 @@ footer .wrap { display: grid; gap: 2px; }
       /* Stash */
       var stash = r[3].j || [], counts = {};
       var iix = arctIndex(allMaterials().concat(items.map(function (it) { return it.name; }), Object.keys(ITEMINFO)));
+      /* Weapons come with their mod in the name ("Bettina IV · Extended Mag"), so try the part before the dot.
+         A weapon variant this site does not list yet (like "Amplified Bettina") is kept under its own name. */
+      var wbase = {};
+      Object.keys(ITEMINFO).forEach(function (k) { var m = /^(.+) (I|II|III|IV)$/.exec(k); if (m) { wbase[qNormA(m[1])] = 1; } });
+      function stashFind(e) {
+        var n = arctFind(iix, e); if (n) { return n; }
+        var base = arctName(e).split(/\s+[\u00b7\u2022|]\s+/)[0].trim();
+        if (!base) { return ""; }
+        if (iix[qNormA(base)]) { return iix[qNormA(base)]; }
+        return qNormA(base).split(" ").some(function (w, i, a) { return wbase[w] || wbase[a.slice(i, i + 2).join(" ")]; }) ? base : "";
+      }
       stash.forEach(function (e) {
-        var n = arctFind(iix, e);
+        var n = stashFind(e);
         if (n) { counts[n] = (counts[n] || 0) + arctQty(e); } else { plan.unknownI.push(arctName(e) || arctId(e)); }
       });
       plan.haveS = stash.length > 0;

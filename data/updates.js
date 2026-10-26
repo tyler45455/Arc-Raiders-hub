@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 26, 2026", "ARC Tracker sync now counts weapons. ARC Tracker puts the attached mod in a weapon's name (like Bettina IV · Extended Mag), so they were skipped before. Weapon versions this site does not list yet, like Amplified Bettina, show under their own name."],
     ["Oct 26, 2026", "The Tools tab is gone. The tools other pages linked to moved there: Quest route planner, Weekly goals and Workshop planner on Home, Crafting planner in the item lookup, Raid log on Raids and Shots to kill in Reference. The rest were removed."],
     ["Oct 25, 2026", "Stash tab: a new Looking for tile shows how many more slots you need to reach your Want amounts. The Stash space planner tool was removed."],
     ["Oct 25, 2026", "Stash: the Looking for filter now only shows items you still need more of, and hides the ones that already reached your Want amount."],

@@ -42,7 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
-    ["Oct 25, 2026", "Stash space planner now fills itself in from your Stash and says how many slots your Looking for list needs. New button on the Stash tab opens it."],
+    ["Oct 25, 2026", "Stash tab: a new Looking for tile shows how many more slots you need to reach your Want amounts. The Stash space planner tool was removed."],
     ["Oct 25, 2026", "Stash: the Looking for filter now only shows items you still need more of, and hides the ones that already reached your Want amount."],
     ["Oct 25, 2026", "ARC Tracker sync now brings in ammo and every other item the game data lists (trinkets, quest items and more), with prices and stack sizes, so your Stash matches ARC Tracker."],
     ["Oct 25, 2026", "Added 4 Emperor drops used to craft amplified weapons: Fluted Rotor Core, Pneumatic Actuator, Pressure Regulator and Propellant Valve Assembly."],

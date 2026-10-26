@@ -1083,7 +1083,6 @@ footer .wrap { display: grid; gap: 2px; }
     <h2>Stash</h2>
     <p class="muted">Everything you have, split into what to keep and what is safe to sell. Change Have or Want on any card.</p>
     <div class="sttiles" id="stTiles"></div>
-    <div id="stPlanRow" hidden style="margin:-4px 0 12px;"><button class="btn ghost" type="button" data-action="stPlan">Check stash space for what I want to keep</button></div>
     <div class="sttools">
       <div class="seg" role="group" aria-label="Show">
         <button type="button" data-stf="all" aria-pressed="true">All</button>
@@ -1345,21 +1344,6 @@ footer .wrap { display: grid; gap: 2px; }
       <div class="acts" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn ghost" type="button" data-action="loShare">Copy loadout link</button><button class="btn ghost" type="button" data-action="shareLoadout">Share as image</button><span class="muted" id="loMsg" role="status"></span></div>
       <div class="rcadd" style="grid-template-columns:1fr auto;"><input type="text" id="loName" placeholder="Name this loadout" aria-label="Loadout name" maxlength="40"><button class="btn" type="button" data-action="loSave">Save loadout</button></div>
       <div id="loSaved"></div>
-    </div>
-
-    <div class="tool" id="stashTool">
-      <h3>Stash space planner</h3>
-      <p class="muted">Fills in from your Stash tab and shows how many slots your Looking for list needs. Type your stash size from the game&rsquo;s stash screen.</p>
-      <div class="stashgrid">
-        <div><label for="stashCap">Stash size (slots)</label><input type="number" min="0" inputmode="numeric" id="stashCap"></div>
-        <div><label for="stashUsed">Slots in use</label><input type="number" min="0" inputmode="numeric" id="stashUsed"></div>
-        <div><label for="stashPlan">Slots to sell or recycle</label><input type="number" min="0" inputmode="numeric" id="stashPlan"></div>
-        <div><label for="stashAdd">Slots for items you are looking for</label><input type="number" min="0" inputmode="numeric" id="stashAdd"></div>
-      </div>
-      <div class="acts" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn ghost" type="button" data-action="stashTags">Use my Sell tags</button></div>
-      <p id="stashWant" style="margin:8px 0;font-weight:600;" aria-live="polite"></p>
-      <div class="stashbar"><i id="stashFill" style="width:0%"></i></div>
-      <div class="muted" id="stashOut" aria-live="polite"></div>
     </div>
 
     <div class="tool">
@@ -5805,19 +5789,6 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "install") {
       if (deferredInstall) { deferredInstall.prompt(); } else { document.getElementById("installNote").hidden = false; window.scrollTo(0, 0); }
     } else if (a === "installClose") { document.getElementById("installNote").hidden = true;
-    } else if (a === "swPlan") {
-      var sp = parseInt(t.getAttribute("data-n"), 10) || 0;
-      stash.plan = sp; save("arcHubStash", stash); document.getElementById("stashPlan").value = sp; stashUpdate();
-      toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("stashTool")));
-      document.getElementById("stashTool").scrollIntoView({ behavior: "smooth", block: "start" });
-    } else if (a === "stPlan") {
-      stashUpdate();
-      document.getElementById("tab-tools").click();
-      toolShow(Array.prototype.indexOf.call(document.querySelectorAll("#panel-tools > .tool"), document.getElementById("stashTool")));
-      document.getElementById("stashTool").scrollIntoView({ behavior: "smooth", block: "start" });
-    } else if (a === "stashTags") {
-      var sc = Object.keys(itemTags).filter(function (n) { return itemTags[n] === "sell"; }).length;
-      stash.plan = sc; save("arcHubStash", stash); document.getElementById("stashPlan").value = sc; stashUpdate();
     } else if (a === "trReport") {
       window.open(trReportUrl(), "_blank", "noopener");
     } else if (a === "cartAdd") {
@@ -6910,26 +6881,31 @@ footer .wrap { display: grid; gap: 2px; }
     var sel = document.getElementById("stSort"); if (sel.value !== stView.s) { sel.value = stView.s; }
     var rows = stashRows(), tiles = document.getElementById("stTiles");
     if (!rows.length) {
-      tiles.innerHTML = ""; document.getElementById("stPlanRow").hidden = true;
+      tiles.innerHTML = "";
       out.innerHTML = '<div class="empty-line">Your stash is empty here. Add what you have below, or connect ARC Tracker with the bar at the top of the page.</div>';
       return;
     }
-    var T = { value: 0, slots: 0, sellV: 0, sellN: 0, free: 0, keepV: 0, keepN: 0, wantN: 0, wantLeft: 0 };
+    var T = { value: 0, slots: 0, sellV: 0, sellN: 0, free: 0, keepV: 0, keepN: 0, wantN: 0, wantLeft: 0, wantSlots: 0 };
     rows.forEach(function (r) {
       T.value += r.value; T.slots += r.slots; T.free += r.free;
       if (r.sell) { T.sellN++; T.sellV += r.sellValue; }
       if (r.keep) { T.keepN++; T.keepV += r.value - r.sellValue; }
-      if (r.want) { T.wantN++; T.wantLeft += Math.max(0, r.want - r.have); }
+      if (r.want) {
+        T.wantN++; T.wantLeft += Math.max(0, r.want - r.have);
+        var wst = (ITEMINFO[r.n] && ITEMINFO[r.n][2]) || 1;
+        if (r.want > r.have) { T.wantSlots += swSlots(r.want, wst) - swSlots(r.have, wst); }
+      }
     });
     /* Right after a sync, ARC Tracker's own slot count beats the estimate from stack sizes (the game splits stacks). */
     if (arctSet.slots && arctSet.slotsSig === trackerSig()) { T.slots = arctSet.slots; }
-    document.getElementById("stPlanRow").hidden = !T.wantN;
-    stashUpdate();
     var cap = parseInt(stash.cap, 10) || 0, held = rows.filter(function (r) { return r.have > 0; }).length;
     function tile(cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; }
     tiles.innerHTML = tile("", "Stash value", coins(T.value), held + " item" + (held === 1 ? "" : "s") + " &middot; " + T.slots + (cap ? " of " + cap : "") + " slots") +
       tile("sell", "Safe to sell", coins(T.sellV), T.sellN + " item" + (T.sellN === 1 ? "" : "s") + " &middot; frees " + T.free + " slot" + (T.free === 1 ? "" : "s")) +
-      tile("keep", "Keep", coins(T.keepV), T.keepN + " item" + (T.keepN === 1 ? "" : "s") + " needed");
+      tile("keep", "Keep", coins(T.keepV), T.keepN + " item" + (T.keepN === 1 ? "" : "s") + " needed") +
+      (T.wantN ? tile("", "Looking for", T.wantSlots ? "+" + T.wantSlots + " slot" + (T.wantSlots === 1 ? "" : "s") : "All set",
+        T.wantSlots ? "more to reach your Want amounts" + (cap ? " &middot; " + Math.max(0, cap - T.slots) + " free now" : "") : "you have every Want amount") : "");
+    tiles.classList.toggle("four", !!T.wantN);
     var q = (document.getElementById("stQ").value || "").trim().toLowerCase();
     var list = rows.filter(function (r) {
       if (stView.f === "sell" && !r.sell) { return false; }
@@ -6966,17 +6942,6 @@ footer .wrap { display: grid; gap: 2px; }
   /* ---------- stash planner ---------- */
   var stash = load("arcHubStash", {});
   /* Stash worth: tracker counts x sell price, and the spare items (beyond Shopping list needs) to sell first. */
-  /* Live numbers for the Stash space planner: slots in use, slots freed by selling, and what the Looking for list needs. */
-  function stPlanData() {
-    var rows = stashRows(), d = { has: rows.length > 0, used: 0, sell: 0, add: 0, full: 0, wantN: 0 };
-    rows.forEach(function (r) {
-      var st = (ITEMINFO[r.n] && ITEMINFO[r.n][2]) || 1;
-      d.used += r.slots; d.sell += r.free;
-      if (r.want) { d.wantN++; d.full += swSlots(r.want, st); if (r.want > r.have) { d.add += swSlots(r.want, st) - swSlots(r.have, st); } }
-    });
-    if (arctSet.slots && arctSet.slotsSig === trackerSig()) { d.used = arctSet.slots; }
-    return d;
-  }
   function swSlots(n, st) { return n > 0 ? Math.ceil(n / st) : 0; }
   function worthData() {
     var needs = {}, rows = [], tot = { coins: 0, slots: 0, unpriced: 0, spareCoins: 0, spareSlots: 0 };
@@ -7011,42 +6976,14 @@ footer .wrap { display: grid; gap: 2px; }
     out.innerHTML = '<p style="margin:10px 0 4px;">Everything you track sells for <b>' + coins(t.coins) + "</b> coins and fills about <b>" + t.slots + "</b> slots" +
       (t.unpriced ? ' <span class="muted">(' + t.unpriced + " item" + (t.unpriced === 1 ? " has" : "s have") + " no known sell price)</span>" : "") + ".</p>" +
       (d.rows.length ? '<p style="margin:0 0 8px;">Spare items: <b>' + coins(t.spareCoins) + "</b> coins, freeing about <b>" + t.spareSlots + "</b> slots. " +
-        '<button class="btn ghost" type="button" data-action="swPlan" data-n="' + t.spareSlots + '">Use ' + t.spareSlots + " slots in the Stash space planner</button></p>" +
+        "</p>" +
         shown.map(function (r) {
           return '<div class="krow"><b>' + esc(r.n) + "</b>" + (r.sell ? '<span class="ktag">Sell</span>' : "") + '<span class="muted">sell ' + r.spare + " of " + r.have +
             " &middot; " + (r.price === null ? "no known price" : "<b>" + coins(r.coins) + "</b> coins") + " &middot; frees " + r.slots + " slot" + (r.slots === 1 ? "" : "s") + "</span></div>";
         }).join("") + (d.rows.length > shown.length ? '<div class="muted">and ' + (d.rows.length - shown.length) + " more.</div>" : "")
         : '<div class="empty-line">Nothing spare: your quests, projects, workshop upgrades and goals need everything you track.</div>');
   }
-  function stashUpdate() {
-    var o = document.getElementById("stashOut"), f = document.getElementById("stashFill");
-    if (!o) { return; }
-    var d = stPlanData(), wl = document.getElementById("stashWant");
-    /* With items in the Stash tab, the planner fills itself in; the boxes still take typed numbers otherwise. */
-    if (d.has) {
-      stash.used = d.used; stash.plan = d.sell; stash.add = d.add;
-      document.getElementById("stashUsed").value = d.used; document.getElementById("stashPlan").value = d.sell; document.getElementById("stashAdd").value = d.add;
-    }
-    wl.textContent = d.wantN ? "Your Looking for list (" + d.wantN + " item" + (d.wantN === 1 ? "" : "s") + ") takes " + d.full + " slot" + (d.full === 1 ? "" : "s") + " at the amounts you want, " + d.add + " more than it uses now." : "Set a Want amount on a Stash card to see how many slots your Looking for list needs.";
-    var cap = parseInt(stash.cap, 10) || 0, used = parseInt(stash.used, 10) || 0, plan = parseInt(stash.plan, 10) || 0, add = parseInt(stash.add, 10) || 0;
-    if (!cap) { o.textContent = "Enter your stash size to see free space."; f.style.width = "0%"; return; }
-    var after = Math.max(0, used - plan);
-    f.style.width = Math.min(100, Math.round(used / cap * 100)) + "%";
-    o.textContent = "Free now: " + Math.max(0, cap - used) + " of " + cap + ". After selling or recycling " + plan + ": " + Math.max(0, cap - after) + " free.";
-    if (add) {
-      var left = cap - after - add;
-      o.textContent += " After also adding " + add + " for items you are looking for: " + (left >= 0 ? left + " free." : Math.abs(left) + " slots short.");
-    }
-  }
   function stashInit() {
-    var map = { stashCap: "cap", stashUsed: "used", stashPlan: "plan", stashAdd: "add" };
-    Object.keys(map).forEach(function (id) {
-      var el = document.getElementById(id);
-      if (!el) { return; }
-      if (stash[map[id]] !== undefined) { el.value = stash[map[id]]; }
-      el.addEventListener("input", function () { stash[map[id]] = el.value; save("arcHubStash", stash); stashUpdate(); });
-    });
-    stashUpdate();
     var sw = document.getElementById("swSort");
     if (sw) { sw.addEventListener("change", function () { stash.wsort = sw.value; save("arcHubStash", stash); renderWorth(); }); }
     ["kEn", "kW", "kT"].forEach(function (id) {

@@ -42,6 +42,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 27, 2026", "Translated the newest parts of the site into all 7 other languages: the Stash cards and tiles (Want, Keep, Sell, Looking for, slots, Sell it anyway), Your best gun on enemy cards, the QR transfer and its messages, and the phone tab bar picker."],
     ["Oct 26, 2026", "Move your settings between phone and PC with a QR code: Home > Back up or move your data > Show QR code. Scan it with the other device and your Wants, tags, notes, favourites, starred conditions and keys are added there, without replacing what is already on it."],
     ["Oct 26, 2026", "Daily check: the Bully card now lists its full loot from the wiki (12 drops, including ARC Coolant, ARC Motion Core and Launcher Ammo), its 2,000 to 4,000 health and all four Pendola Pass spots. The Hydra card now lists its drops: Light Ammo, ARC Powercell and ARC Alloy.", "wiki"],
     ["Oct 26, 2026", "Enemy cards in Reference now show \"Your best gun\": the weapon in your Stash that kills that enemy fastest, with body hits, time and how it handles the armor. It uses the same numbers as Shots to kill."],

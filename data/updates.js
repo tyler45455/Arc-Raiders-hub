@@ -51,6 +51,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 27, 2026", "Translated the rest of the older English text into all 7 other languages: Home card help, the Raids log, Crafting planner, enemy notes, weak points and attacks, map descriptions and notes, the Frozen Trail summary and the Data gaps list. Item, quest and key names stay in English as in the game data."],
     ["Oct 27, 2026", "Updates tab: a new All patches since 2.0 button also shows the smaller store updates and hotfixes (2.0.2, 2.1.0, 2.1.1 and 2.2.0) from the wiki.", "wiki"],
     ["Oct 27, 2026", "Translated the newest parts of the site into all 7 other languages: the Stash cards and tiles (Want, Keep, Sell, Looking for, slots, Sell it anyway), Your best gun on enemy cards, the QR transfer and its messages, and the phone tab bar picker."],
     ["Oct 26, 2026", "Move your settings between phone and PC with a QR code: Home > Back up or move your data > Show QR code. Scan it with the other device and your Wants, tags, notes, favourites, starred conditions and keys are added there, without replacing what is already on it."],

@@ -1357,8 +1357,9 @@ footer .wrap { display: grid; gap: 2px; }
   <!-- UPDATES -->
   <section class="panel" id="panel-updates" role="tabpanel" aria-labelledby="tab-updates" hidden>
     <h2>Update history</h2>
-    <p class="muted">Major content updates, newest first. Weekly store updates and hotfixes are left out.</p>
+    <p class="muted">Major content updates, newest first. Turn on All patches since 2.0 to also see the smaller store updates and hotfixes.</p>
     <div class="sttiles" id="updTiles"></div>
+    <div class="chips" id="updView" role="group" aria-label="Show"><button type="button" class="chip" data-updv="major" aria-pressed="true">Major updates</button><button type="button" class="chip" data-updv="all" aria-pressed="false">All patches since 2.0</button></div>
     <p class="muted" id="updYou"></p>
     <div class="tl" id="timeline"></div>
   </section>
@@ -1741,7 +1742,7 @@ footer .wrap { display: grid; gap: 2px; }
       tile("keep", "Most raided", fav ? esc(fav) : "None yet", fav ? runs[fav].n + " raid" + (runs[fav].n === 1 ? "" : "s") : "from your raid log");
   }
 
-  var UPDATES = ARC.UPDATES;
+  var UPDATES = ARC.UPDATES, PATCHES = ARC.PATCHES || [];
 
   /* ---------- build the item database ---------- */
   var items = [];
@@ -2653,23 +2654,26 @@ footer .wrap { display: grid; gap: 2px; }
     return h;
   }
   function renderTimeline() {
-    var you = updYou(), anyHit = 0;
-    var html = UPDATES.map(function (u, i) {
-      var hits = updHits(u, you), isNew = i < updNew;
+    var you = updYou(), anyHit = 0, allP = updView === "all";
+    Array.prototype.forEach.call(document.querySelectorAll("#updView [data-updv]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-updv") === updView)); });
+    var list = UPDATES.map(function (u, i) { return { u: u, i: i }; });
+    if (allP) { list = PATCHES.map(function (u) { return { u: u, i: -1 }; }).concat(list).sort(function (a, b) { return Date.parse(b.u.date) - Date.parse(a.u.date); }); }
+    var html = list.map(function (x) {
+      var u = x.u, i = x.i, hits = updHits(u, you), isNew = i !== -1 && i < updNew;
       if (hits.length) { anyHit++; }
       return '<div class="tl-item' + (u.latest ? " latest" : hits.length ? " mine" : "") + '"><div class="tl-date">' + esc(u.date) +
-        (u.ver ? ' <span class="ktag">v' + esc(u.ver) + "</span>" : "") + (u.latest ? ' <span class="ktag want">Latest</span>' : "") + (isNew ? ' <span class="tl-new">New since your last visit</span>' : "") + "</div>" +
+        (u.ver ? ' <span class="ktag">v' + esc(u.ver) + "</span>" : "") + (u.latest ? ' <span class="ktag want">Latest</span>' : "") + (u.kind ? ' <span class="ktag">' + esc(u.kind) + "</span>" : "") + (isNew ? ' <span class="tl-new">New since your last visit</span>' : "") + "</div>" +
         '<div class="tl-title">' + esc(u.title) + '</div><div class="tl-body">' + esc(u.body) + "</div>" +
         (hits.length ? '<div class="tl-you"><span class="muted">Mentions your:</span> ' + hits.map(function (n) { return '<span class="y hl">' + esc(n) + ' <span class="muted">(' + esc(you[n]) + ")</span></span>"; }).join(" ") + "</div>" : "") +
         '<ul class="tl-points">' + u.points.map(function (p) { var ph = hits.filter(function (n) { return p.indexOf(n) !== -1; }); return "<li" + (ph.length ? ' class="tl-mine"' : "") + ">" + updMark(p, ph) + "</li>"; }).join("") + "</ul>" +
-        '<a class="tl-share" href="update/' + u.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") + '/">Summary page to share</a></div>';
+        (u.kind ? "" : '<a class="tl-share" href="update/' + u.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") + '/">Summary page to share</a>') + "</div>";
     }).join("");
     document.getElementById("timeline").innerHTML = html;
     var ut = document.getElementById("updTiles"), lu = UPDATES[0];
     if (ut && lu) {
       var tl = function (cls, k, v, sub) { return '<div class="sttile ' + cls + '"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="s">' + sub + "</div></div>"; };
       ut.innerHTML = tl("", "Latest", esc(lu.title), esc(lu.date) + (lu.ver ? " &middot; v" + esc(lu.ver) : "")) +
-        tl("keep", "Updates", UPDATES.length, "since " + esc(UPDATES[UPDATES.length - 1].date)) +
+        tl("keep", "Updates", UPDATES.length + (allP ? PATCHES.length : 0), "since " + esc(UPDATES[UPDATES.length - 1].date)) +
         tl("sell", "Mention your stuff", anyHit, anyHit === 1 ? "update" : "updates");
     }
     var sum = document.getElementById("updYou");
@@ -4162,6 +4166,7 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("auditCount").textContent = "(" + tot + " open)";
   }
   var chgView = load("arcHubChgView", "all") === "wiki" ? "wiki" : "all";
+  var updView = load("arcHubUpdView", "major") === "all" ? "all" : "major";
   /* Only the newest few changes show at first, so the page stays short; Show more adds the next batch. */
   var CHG_FIRST = 5, CHG_STEP = 10, chgShown = CHG_FIRST;
   function renderChanges() {
@@ -5862,6 +5867,10 @@ footer .wrap { display: grid; gap: 2px; }
     if (auto) { setTimeout(function () { setHint(false); tourShow(0); }, 700); }
   })();
   renderChanges();
+  document.getElementById("updView").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-updv]"); if (!b) { return; }
+    updView = b.getAttribute("data-updv"); save("arcHubUpdView", updView); renderTimeline();
+  });
   document.getElementById("chgView").addEventListener("click", function (e) {
     var b = e.target.closest("[data-chgv]"); if (!b) { return; }
     chgView = b.getAttribute("data-chgv"); save("arcHubChgView", chgView); chgShown = CHG_FIRST; renderChanges();

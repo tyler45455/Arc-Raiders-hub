@@ -18,7 +18,16 @@ ARC.UPDATES = [
     {"date": "Oct 30, 2025", "title": "Launch", "ver": "", "latest": false, "body": "ARC Raiders releases on PC, PS5 and Xbox.", "points": ["Welcome to Speranza: the base game goes live, followed by two launch hotfixes on Oct 31."]}
   ];
 
-ARC.DATA_UPDATED = "October 26, 2026";
+/* Smaller patches since Frozen Trail 2.0 (store updates and hotfixes), newest first, from the wiki's Update:2.x pages.
+   Shown in the Updates tab only when "All patches since 2.0" is on. Same shape as ARC.UPDATES plus kind. */
+ARC.PATCHES = [
+    {"date": "Oct 20, 2026", "title": "Store Update 2.2.0", "ver": "2.2.0", "kind": "Store update", "body": "The Wreck Set, a Hydra rework and Reward Pass Feats rebalanced.", "points": ["Wreck Set added to the store; the Expedition Vault tab and its offer were removed.", "Reward Pass Feats rebalanced: some added, some removed, others adjusted.", "Hydra weapons now spread across targets more often, with higher base damage and better aim at close range.", "Some ARC no longer aim better than intended at sliding targets.", "ARC Turbine spawns are more consistent in Buried City, Riven Tides, Blue Gate and Spaceport, and removed from standard Dam Battlegrounds sessions and most minor conditions.", "Slightly more enemies in Pendola Pass.", "Wall Run jump-off now needs you to hold backward.", "To the Skies can be done on any map; the Belly of the Beast optional objective now needs the right item.", "Tether Launchers can be repaired in-round; the Grappling Hook rappels, auto-vaults and climbs more smoothly.", "Frigate and Emperor fixes, Pendola Pass collision and Gondola pathing fixes, and lower memory use.", "Skill Tree: Add Skill Point is now Spend Point. Weapon Bench: Ascend is now Amplify."]},
+    {"date": "Oct 16, 2026", "title": "Hotfix 2.1.1", "ver": "2.1.1", "kind": "Hotfix", "body": "Closes exploits.", "points": ["Fixed several ways players could get into locked rooms.", "Fixed several ways players could duplicate items."]},
+    {"date": "Oct 13, 2026", "title": "Store Update 2.1.0", "ver": "2.1.0", "kind": "Store update", "body": "The Carrion Set, a PvE toggle beta and a long list of fixes.", "points": ["Carrion Set added to the store. A PvE toggle beta test ran October 13 to 20.", "Players who finished their fifth Expedition get the missing Zenith Outfit toggles.", "Stamina consumables can't be used during the Sprinting on Fumes cooldown, and Fight or Flight no longer skips that penalty.", "Mobile-Fire Grip Fittings now need Skulker Targeters, not Skulker Drivers, to research.", "Broad Shoulders works on spawn, Field Repair works right after unlocking, and carry weight is right after loading in.", "Grappling Hook: easier vaulting onto ledges and roofs, and fixes for light and fast-moving objects like the Ballistic Gondola.", "Frigate hatches now burn you over time when opened.", "Gondola markers show from 175 m instead of 120 m; Skulker and Bully pings land better from long range.", "Visiting loot-icon areas in Pendola Pass now counts for Picking Up the Pieces.", "Hairpin's Semi-Auto Amplification now correctly lowers headshot damage.", "Darker Pendola Pass nights, Reward Pass progress fixes, and lower memory use on Spaceport, Buried City and Dam Battlegrounds."]},
+    {"date": "Oct 9, 2026", "title": "Hotfix 2.0.2", "ver": "2.0.2", "kind": "Hotfix", "body": "Crash and model fixes after Frozen Trail.", "points": ["Fixed weapon models partly disappearing with attachments and missing in the inventory.", "Fixed several causes of server crashes.", "Fixed falling through a grate on Pendola Pass and getting stuck.", "Fixed an error when buying DLC bundles.", "Known issue at the time: the Reward Pass was not progressing for some players."]}
+  ];
+
+ARC.DATA_UPDATED = "October 27, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
@@ -35,13 +44,14 @@ ARC.FRESHNESS = [
     ["Reference: enemies, traders, workshop, blueprints", "October 26, 2026", "daily"],
     ["Project presets", "October 10, 2026", "daily"],
     ["Trials (Season 6, Week 3)", "October 25, 2026", "daily"],
-    ["Maps and update history", "October 16, 2026", "daily"],
+    ["Maps and update history", "October 27, 2026", "daily"],
     ["Map condition schedule (official, by server region)", "October 16, 2026", "hourly"]
   ];
 
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 27, 2026", "Updates tab: a new All patches since 2.0 button also shows the smaller store updates and hotfixes (2.0.2, 2.1.0, 2.1.1 and 2.2.0) from the wiki.", "wiki"],
     ["Oct 27, 2026", "Translated the newest parts of the site into all 7 other languages: the Stash cards and tiles (Want, Keep, Sell, Looking for, slots, Sell it anyway), Your best gun on enemy cards, the QR transfer and its messages, and the phone tab bar picker."],
     ["Oct 26, 2026", "Move your settings between phone and PC with a QR code: Home > Back up or move your data > Show QR code. Scan it with the other device and your Wants, tags, notes, favourites, starred conditions and keys are added there, without replacing what is already on it."],
     ["Oct 26, 2026", "Daily check: the Bully card now lists its full loot from the wiki (12 drops, including ARC Coolant, ARC Motion Core and Launcher Ammo), its 2,000 to 4,000 health and all four Pendola Pass spots. The Hydra card now lists its drops: Light Ammo, ARC Powercell and ARC Alloy.", "wiki"],

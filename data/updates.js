@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 27, 2026", "Everything else on the site is now translated too: ARC Tracker sync messages, skill tree hints, raid log text, backup and import messages, map condition alerts and the first-visit tour. Names of items, quests, maps and enemies stay in English."],
     ["Oct 27, 2026", "Quest steps are now translated word for word in all 7 other languages, on the Quests tab and the Home quest route. Item source notes (where to find it, Gunsmith upgrades, crafting, trader stock, key sources and Amplification steps) are translated too."],
     ["Oct 27, 2026", "Added today's Live Update 2.3.0 to the Updates tab (All patches since 2.0): Souls Offering, the Noxious Set, the Expedition Vault closing and the item changes. The Heavy Shield now shows its new 90 charge.", "wiki"],
     ["Oct 27, 2026", "Translated the rest of the older English text into all 7 other languages: Home card help, the Raids log, Crafting planner, enemy notes, weak points and attacks, map descriptions and notes, the Frozen Trail summary and the Data gaps list. Item, quest and key names stay in English as in the game data."],

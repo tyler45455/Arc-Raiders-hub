@@ -1634,7 +1634,7 @@ footer .wrap { display: grid; gap: 2px; }
       condNow(pr[0], n).act.forEach(function (x) {
         if (x.n !== pr[1] || condNotified[k + "|" + x.s]) { return; }
         condNotified[k + "|" + x.s] = x.e; ch = true;
-        condShow(x.n + " is on", x.n + " on " + pr[0] + " has started. It ends in " + condLeft(x.e - t) + ".");
+        condShow(trSay(x.n + " is on"), trSay(x.n + " on " + pr[0] + " has started. It ends in " + condLeft(x.e - t) + "."));
       });
     });
     if (ch) { save("arcHubCondNotified", condNotified); }
@@ -1836,8 +1836,8 @@ footer .wrap { display: grid; gap: 2px; }
       if (Object.keys(it.sal).length) { return '<span class="empty-line">Not recycled. Salvage only (switch to Salvage above).</span>'; }
       if (NO_RECYCLE.indexOf(it.name) !== -1) {
         var fz = ARC.FARM2[it.name], extra = "";
-        if (fz) { extra = (fz.a ? " Dropped by ARC: " + fz.a.map(esc).join(", ") + "." : "") + (fz.o ? " " + fz.o.map(esc).join(" ") : ""); }
-        return '<span class="empty-line">Cannot be recycled.' + extra + "</span>";
+        if (fz) { extra = (fz.a ? " <span>Dropped by ARC:</span> " + fz.a.map(esc).join(", ") + "." : "") + (fz.o ? fz.o.map(function (o) { return " <span>" + esc(o) + "</span>"; }).join("") : ""); }
+        return '<span class="empty-line"><span>Cannot be recycled.</span>' + extra + "</span>";
       }
       return '<span class="empty-line">No recycle data yet.</span>';
     }
@@ -3636,7 +3636,7 @@ footer .wrap { display: grid; gap: 2px; }
       '<div class="tablewrap"><table class="rltab"><thead><tr><th>Map</th><th class="n">Raids</th><th class="n">Extract</th><th class="n">Avg</th><th class="n">Best</th>' + (all.pn ? '<th class="n">Profit</th>' : "") + '</tr></thead><tbody>' +
       Object.keys(maps).sort(function (a, b) { return maps[b].length - maps[a].length; }).map(function (m) {
         var g = agg(maps[m]); return "<tr><td>" + esc(m) + '</td><td class="n">' + g.n + '</td><td class="n">' + g.rate + '%<span class="rlmeter" aria-hidden="true"><i style="width:' + g.rate + '%"></i></span></td><td class="n">' + cell(g.avg) + '</td><td class="n">' + cell(g.best) + "</td>" + (all.pn ? '<td class="n">' + (g.pavg === null ? "&ndash;" : rdSigned(g.pavg)) + "</td>" : "") + "</tr>";
-      }).join("") + "</tbody></table></div><div class=\"muted\">Average and best count extracted raids with a haul value." + (all.pn ? " Profit is the average per raid where you gave a kit value: the haul minus the kit, or minus the whole kit on a death." : "") + "</div></div>" + rlChart();
+      }).join("") + "</tbody></table></div><div class=\"muted\">Average and best count extracted raids with a haul value." + (all.pn ? " <span>Profit is the average per raid where you gave a kit value: the haul minus the kit, or minus the whole kit on a death.</span>" : "") + "</div></div>" + rlChart();
     li.innerHTML = "<h4 style=\"margin:12px 0 4px;\">Recent raids</h4>" + raids.slice(-15).reverse().map(function (r) {
       var d = new Date(r.t), idx = raids.indexOf(r);
       return '<div class="rlrow"><div><b>' + esc(r.m) + "</b> &middot; " + (r.o === "x" ? "Extracted" : "Died") + (r.v !== null ? " &middot; " + coins(r.v) + " coins" : "") + (r.p != null ? ' &middot; <span class="' + (r.p >= 0 ? "pos" : "neg") + '">' + rdSigned(r.p) + "</span>" : "") +
@@ -3666,8 +3666,8 @@ footer .wrap { display: grid; gap: 2px; }
       (ay !== null ? '<line class="rlavg" x1="' + pl + '" y1="' + ay + '" x2="' + W + '" y2="' + ay + '"/>' : "") +
       '<text class="htxt" x="2" y="' + (top + 6) + '">' + (max >= 1000 ? Math.round(max / 1000) + "k" : max) + '</text><text class="htxt" x="2" y="' + (H - pb) + '">0</text>' +
       '<text class="htxt" x="' + pl + '" y="' + (H - 4) + '">older</text><text class="htxt" x="' + (W - 3) + '" y="' + (H - 4) + '" text-anchor="end">newest</text></svg>' +
-      '<div class="muted">Bars are haul value; red marks are deaths' + (avg !== null ? "; the dashed line is your average haul (" + coins(Math.round(avg)) + ")" : "") + ". " +
-      (raids.length > recent.length ? "Last " + recent.length + " raids: " + rate + "% extracted, " + (rate > allRate ? "up from" : rate < allRate ? "down from" : "same as") + " " + allRate + "% overall." : "") + "</div>";
+      '<div class="muted"><span>Bars are haul value; red marks are deaths.</span>' + (avg !== null ? " <span>The dashed line is your average haul (" + coins(Math.round(avg)) + ").</span>" : "") +
+      (raids.length > recent.length ? " <span>Last " + recent.length + " raids: " + rate + "% extracted, " + (rate > allRate ? "up from" : rate < allRate ? "down from" : "same as") + " " + allRate + "% overall.</span>" : "") + "</div>";
   }
 
   /* ---------- global search ---------- */
@@ -4669,7 +4669,7 @@ footer .wrap { display: grid; gap: 2px; }
     else if (CSCHED.rows.length) { html += homeCard("Map conditions right now", (cl.length ? '<ul class="homelist">' + cl.join("") + "</ul>" : '<p class="muted">No scheduled conditions on any map right now.</p>') +
       (wNext.length ? '<p class="muted" style="margin-bottom:2px;">Your starred conditions next:</p><ul class="homelist">' + wNext.slice(0, 3).map(function (x) { return x.h; }).join("") + "</ul>" : '<p class="muted">Star a condition on a map card and Home will flag it when it starts.</p>'), '<button class="btn ghost" type="button" data-tab="maps">Open Maps</button>', "cond"); }
     var w = homeWs();
-    html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> level " + esc(w.lvl) + ": <b>" + w.pct + "%</b> of the materials</p>" + homeBar(w.pct) +
+    html += homeCard("Closest workshop upgrade", w ? "<p><b>" + esc(w.n) + "</b> <span>level " + esc(w.lvl) + ":</span> <b>" + w.pct + "%</b> <span>of the materials</span></p>" + homeBar(w.pct) +
       (w.miss.length ? '<p class="muted">Still need ' + w.miss.slice(0, 4).map(function (m) { return m[1] + "&times; " + esc(m[0]); }).join(", ") + (w.miss.length > 4 ? " and " + (w.miss.length - 4) + " more" : "") + ".</p>" : '<p class="muted">You have everything. Upgrade it in game, then raise the level in the planner.</p>')
       : '<p class="muted">Every workshop station in your plan is done.</p>', '<button class="btn ghost" type="button" data-action="homeWs">Workshop planner</button>', "ws");
     var gk = Object.keys(goals).filter(function (k) { return goals[k] > 0; }), gmet = gk.filter(function (k) { return (tracker[k] || 0) >= goals[k]; }).length;
@@ -5975,7 +5975,7 @@ footer .wrap { display: grid; gap: 2px; }
     }
     var rows = [["Found in:", G.s], ["Dropped by ARC:", G.a], ["Sold by:", G.v], ["Quests:", G.q], ["Other:", G.o]];
     rows.forEach(function (r) {
-      if (r[1] && r[1].length) { html += '<div style="margin-top:8px;"><b>' + r[0] + "</b> " + r[1].map(esc).join(", ") + "</div>"; }
+      if (r[1] && r[1].length) { html += '<div style="margin-top:8px;"><b>' + r[0] + "</b> " + r[1].map(function (x) { return "<span>" + esc(x) + "</span>"; }).join(", ") + "</div>"; }
     });
     if (F.s) { html += '<div class="muted" style="margin-top:8px;">Also from the wiki: ' + esc(F.s) + ".</div>"; }
     if (T.length && !any) { html += '<div class="muted" style="margin-top:8px;">No labelled room on the maps matches this type.</div>'; }

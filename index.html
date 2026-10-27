@@ -3120,7 +3120,7 @@ footer .wrap { display: grid; gap: 2px; }
         ((enSeen[e[0]] || []).length ? '<span class="muted">You reported: ' + enSeen[e[0]].map(esc).join(", ") + "</span>" : "") + "</div>" : "") +
       (function () {
         var b = e[1] !== "Container" && f.hp > 0 ? enBest(f) : null;
-        return b ? '<div class="qrow"><span class="lbl">Your best gun</span><span class="y hl">' + esc(b.n) + "</span>" + '<span class="muted">' + b.c.shots + " body hit" + (b.c.shots === 1 ? "" : "s") + (b.c.total !== null && b.c.shots > 1 ? ", about " + b.c.total.toFixed(1) + " s" : "") + (b.pn ? ". " + K_PEN_TXT[b.pn] : "") + ". Aim for weak points to kill faster.</span></div>" : "";
+        return b ? '<div class="qrow"><span class="lbl">Your best gun</span><span class="y hl">' + esc(b.n) + "</span>" + '<span class="muted"><span>' + b.c.shots + " body hit" + (b.c.shots === 1 ? "" : "s") + "</span>" + (b.c.total !== null && b.c.shots > 1 ? " &middot; <span>about " + b.c.total.toFixed(1) + " s</span>" : "") + (b.pn ? " &middot; <span>" + K_PEN_TXT[b.pn] + "</span>" : "") + " &middot; <span>Aim for weak points to kill faster.</span></span></div>" : "";
       })() +
       (drops.length ? '<div class="qrow"><span class="lbl">Drops</span>' + drops.map(function (d) { return '<span class="y' + (miss[d] ? " hl" : "") + '">' + esc(d) + (miss[d] ? " <b>(need " + miss[d] + ")</b>" : "") + "</span>"; }).join("") + "</div>" : "") +
       (qs.length ? '<div class="qrow"><span class="lbl">Quests</span>' + qs.map(function (q) { return '<span class="y' + (act[q.name] ? " hl" : "") + '">' + esc(q.name) + (qDone[q.name] ? " &#10003;" : act[q.name] ? " (active)" : "") + "</span>"; }).join("") + "</div>" : "") +
@@ -4849,7 +4849,7 @@ footer .wrap { display: grid; gap: 2px; }
       function obj(o) { return o && typeof o === "object" && !Array.isArray(o) ? o : {}; }
       var g = numMap(d.goals), tg = obj(d.tags), inn = obj(d.inotes), mn = obj(d.notes), tr = d.tracker && !arctSet.last ? numMap(d.tracker) : null;
       var n = Object.keys(g).length + Object.keys(tg).length + Object.keys(inn).length + Object.keys(mn).length;
-      if (!window.confirm("Bring in your settings from the other device? " + Object.keys(g).length + " Wants, " + Object.keys(tg).length + " tags and " + (Object.keys(inn).length + Object.keys(mn).length) + " notes" + (tr ? ", plus " + Object.keys(tr).length + " stash counts" : "") + ". They are added to what is here; matching items take the other device's values.")) { return; }
+      if (!window.confirm(trSay("Bring in your settings from the other device? " + Object.keys(g).length + " Wants, " + Object.keys(tg).length + " tags and " + (Object.keys(inn).length + Object.keys(mn).length) + " notes" + (tr ? ", plus " + Object.keys(tr).length + " stash counts" : "") + ". They are added to what is here; matching items take the other device's values."))) { return; }
       pushUndo("Brought in settings from another device");
       Object.keys(g).forEach(function (k) { goals[k] = g[k]; look[k] = 1; });
       Object.keys(tg).forEach(function (k) { if (["sell", "keep", "craft"].indexOf(tg[k]) !== -1 && k.length < 80) { itemTags[k] = tg[k]; } });
@@ -4864,7 +4864,7 @@ footer .wrap { display: grid; gap: 2px; }
       refresh(); renderQuests(); renderRef(); renderStash(); updateFavToggle(); updateGoalToggle();
       showTab("stash");
       sbSay(n ? "Settings brought in from your other device." : "Nothing to bring in from that code.");
-    }).catch(function () { window.alert("That move code could not be read. Make a new QR code on the other device and try again."); });
+    }).catch(function () { window.alert(trSay("That move code could not be read. Make a new QR code on the other device and try again.")); });
   }
   function importAny() {
     var ta = document.getElementById("backup"), v = ta.value.trim(), msg = document.getElementById("backupMsg");
@@ -6525,6 +6525,8 @@ footer .wrap { display: grid; gap: 2px; }
     }
     return null;
   }
+  /* For text that never reaches the page, like confirm and alert dialogs. */
+  function trSay(s) { var t = lang === "en" ? null : trWrap(s); return t === null ? s : t; }
   function trWrap(s) {
     var core = s.replace(/\s+/g, " ").trim();
     if (!core) { return null; }

@@ -28,7 +28,7 @@ ARC.PATCHES = [
     {"date": "Oct 9, 2026", "title": "Hotfix 2.0.2", "ver": "2.0.2", "kind": "Hotfix", "body": "Crash and model fixes after Frozen Trail.", "points": ["Fixed weapon models partly disappearing with attachments and missing in the inventory.", "Fixed several causes of server crashes.", "Fixed falling through a grate on Pendola Pass and getting stuck.", "Fixed an error when buying DLC bundles.", "Known issue at the time: the Reward Pass was not progressing for some players."]}
   ];
 
-ARC.DATA_UPDATED = "October 27, 2026";
+ARC.DATA_UPDATED = "October 28, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
@@ -36,15 +36,15 @@ ARC.DATA_UPDATED = "October 27, 2026";
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
     ["Sell prices, weights, recipes and where to find items", "October 26, 2026", "daily"],
-    ["Quests, objectives and quest chain", "October 20, 2026", "daily"],
+    ["Quests, objectives and quest chain", "October 28, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
-    ["Recycling and salvage data", "October 22, 2026", "daily"],
+    ["Recycling and salvage data", "October 28, 2026", "daily"],
     ["Weapons & gear", "October 27, 2026", "daily"],
-    ["Reference: enemies, traders, workshop, blueprints", "October 26, 2026", "daily"],
-    ["Project presets", "October 10, 2026", "daily"],
-    ["Trials (Season 6, Week 3)", "October 25, 2026", "daily"],
+    ["Reference: enemies, traders, workshop, blueprints", "October 28, 2026", "daily"],
+    ["Project presets", "October 28, 2026", "daily"],
+    ["Trials (Season 6, Week 4)", "October 28, 2026", "daily"],
     ["Maps and update history", "October 27, 2026", "daily"],
     ["Map condition schedule (official, by server region)", "October 16, 2026", "hourly"]
   ];
@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 28, 2026", "Daily check: added the new quests Home To Roost, Someone Else's Shoes and Empathetic Prototypes, the Soul's Offering project (October 27 to November 16), this week's Trials (week 4) and the Stiletto blueprint, which is crafted from 15 Wasp Drivers at the Research Station. The Snap Hook now recycles into 3 Rope instead of Steel Cable.", "wiki"],
     ["Oct 27, 2026", "Everything else on the site is now translated too: ARC Tracker sync messages, skill tree hints, raid log text, backup and import messages, map condition alerts and the first-visit tour. Names of items, quests, maps and enemies stay in English."],
     ["Oct 27, 2026", "Quest steps are now translated word for word in all 7 other languages, on the Quests tab and the Home quest route. Item source notes (where to find it, Gunsmith upgrades, crafting, trader stock, key sources and Amplification steps) are translated too."],
     ["Oct 27, 2026", "Added today's Live Update 2.3.0 to the Updates tab (All patches since 2.0): Souls Offering, the Noxious Set, the Expedition Vault closing and the item changes. The Heavy Shield now shows its new 90 charge.", "wiki"],

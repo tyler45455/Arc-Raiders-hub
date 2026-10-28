@@ -551,8 +551,6 @@ Ripped Safety Vest|1|-
 Ruined Tactical Vest|1|-
 Snap Blast Grenade|1|-
 Tactical Mk. 2|1|-`,
-"Steel Cable": `
-Snap Hook|2|-`,
 "Steel Spring": `
 Advanced Mechanical Components|1|-
 Cooling Coil|2|2
@@ -590,6 +588,7 @@ Vertical Grip II|1|-
 Vertical Grip III|2|-`,
 "Rope": `
 Grappling Hook|1|1
+Snap Hook|3|-
 Yank Grenade|1|-`,
 "Speaker Component": `
 Differential Microphone|1|-

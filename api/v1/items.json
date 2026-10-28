@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 27, 2026",
+ "dataDate": "October 28, 2026",
  "count": 402,
  "items": [
   {
@@ -12731,9 +12731,9 @@
      "qty": 1
     },
     {
-     "id": "steel-cable",
-     "name": "Steel Cable",
-     "qty": 2
+     "id": "rope",
+     "name": "Rope",
+     "qty": 3
     }
    ],
    "salvage": [

@@ -1,142 +1,9 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 27, 2026",
- "count": 116,
+ "dataDate": "October 28, 2026",
+ "count": 119,
  "quests": [
-  {
-   "id": "picking-up-the-pieces",
-   "name": "Picking Up The Pieces",
-   "trader": "Shani",
-   "locations": [
-    "Any"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "rattler-iii",
-     "name": "Rattler III",
-     "qty": 1
-    },
-    {
-     "id": "medium-ammo",
-     "name": "Medium Ammo",
-     "qty": 80
-    }
-   ],
-   "objectives": [
-    "Visit any map area with a loot category icon",
-    "Loot 3 containers"
-   ],
-   "after": []
-  },
-  {
-   "id": "clearer-skies",
-   "name": "Clearer Skies",
-   "trader": "Shani",
-   "locations": [
-    "Any"
-   ],
-   "requires": [
-    {
-     "id": "arc-alloy",
-     "name": "ARC Alloy",
-     "qty": 3
-    }
-   ],
-   "rewards": [
-    {
-     "id": "black-hiker-color-backpack",
-     "name": "Black (Hiker Color) Backpack",
-     "qty": 1
-    },
-    {
-     "id": "light-shield",
-     "name": "Light Shield",
-     "qty": 1
-    },
-    {
-     "id": "sterilized-bandage",
-     "name": "Sterilized Bandage",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Destroy 3 ARC enemies",
-    "Get 3 ARC Alloy for Shani"
-   ],
-   "after": [
-    "picking-up-the-pieces"
-   ]
-  },
-  {
-   "id": "trash-into-treasure",
-   "name": "Trash Into Treasure",
-   "trader": "Shani",
-   "locations": [
-    "Any"
-   ],
-   "requires": [
-    {
-     "id": "battery",
-     "name": "Battery",
-     "qty": 1
-    },
-    {
-     "id": "wires",
-     "name": "Wires",
-     "qty": 6
-    }
-   ],
-   "rewards": [
-    {
-     "id": "tactical-mk-1",
-     "name": "Tactical Mk. 1",
-     "qty": 1
-    },
-    {
-     "id": "adrenaline-shot",
-     "name": "Adrenaline Shot",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Obtain 6 Wires",
-    "Obtain 1 Battery"
-   ],
-   "after": [
-    "picking-up-the-pieces"
-   ]
-  },
-  {
-   "id": "off-the-radar",
-   "name": "Off The Radar",
-   "trader": "Shani",
-   "locations": [
-    "Any"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "black-white-origin-color-outfit",
-     "name": "Black White (Origin Color) Outfit",
-     "qty": 1
-    },
-    {
-     "id": "defibrillator",
-     "name": "Defibrillator",
-     "qty": 2
-    }
-   ],
-   "objectives": [
-    "Visit a Field Depot in one round",
-    "Repair the antenna on the Field Depot's roof"
-   ],
-   "after": [
-    "clearer-skies",
-    "trash-into-treasure"
-   ]
-  },
   {
    "id": "a-bad-feeling",
    "name": "A Bad Feeling",
@@ -170,94 +37,37 @@
    ]
   },
   {
-   "id": "hatch-repairs",
-   "name": "Hatch Repairs",
-   "trader": "Shani",
+   "id": "a-balanced-harvest",
+   "name": "A Balanced Harvest",
+   "trader": "Celeste",
    "locations": [
-    "Any"
+    "Dam Battlegrounds"
    ],
    "requires": [],
    "rewards": [
     {
-     "id": "binoculars",
-     "name": "Binoculars",
-     "qty": 1
+     "id": "advanced-mechanical-components",
+     "name": "Advanced Mechanical Components",
+     "qty": 3
     },
     {
-     "id": "raider-hatch-key",
-     "name": "Raider Hatch Key",
-     "qty": 1
+     "id": "medium-gun-parts",
+     "name": "Medium Gun Parts",
+     "qty": 3
+    },
+    {
+     "id": "steel-spring",
+     "name": "Steel Spring",
+     "qty": 10
     }
    ],
    "objectives": [
-    "Repair the leaking hydraulic pipes near a Raider Hatch",
-    "Search for a Hatch Key near the Raider Hatch"
+    "Go to the Research & Administration building",
+    "Find Lab 1 on the upper floor above reception",
+    "Search for traces of the agricultural research project"
    ],
    "after": [
-    "a-bad-feeling"
-   ]
-  },
-  {
-   "id": "the-right-tool",
-   "name": "The Right Tool",
-   "trader": "Tian Wen",
-   "locations": [
-    "Any"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "cheer-emote",
-     "name": "Cheer Emote",
-     "qty": 1
-    },
-    {
-     "id": "extended-light-mag-i",
-     "name": "Extended Light Mag I",
-     "qty": 1
-    },
-    {
-     "id": "stitcher-ii",
-     "name": "Stitcher II",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Destroy a Fireball",
-    "Destroy a Hornet",
-    "Destroy a Turret"
-   ],
-   "after": [
-    "a-bad-feeling"
-   ]
-  },
-  {
-   "id": "down-to-earth",
-   "name": "Down to Earth",
-   "trader": "Shani",
-   "locations": [
-    "Any"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "combat-mk-1",
-     "name": "Combat Mk. 1",
-     "qty": 1
-    },
-    {
-     "id": "medium-shield",
-     "name": "Medium Shield",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Visit a Field Depot",
-    "Deliver a Field Crate to Supply Station",
-    "Collect the reward"
-   ],
-   "after": [
-    "hatch-repairs"
+    "eyes-in-the-sky"
    ]
   },
   {
@@ -297,471 +107,74 @@
    ]
   },
   {
-   "id": "the-trifecta",
-   "name": "The Trifecta",
+   "id": "a-dead-end",
+   "name": "A Dead End",
    "trader": "Shani",
    "locations": [
-    "Any"
+    "The Blue Gate"
    ],
    "requires": [
     {
-     "id": "hornet-driver",
-     "name": "Hornet Driver",
-     "qty": 2
-    },
-    {
-     "id": "snitch-scanner",
-     "name": "Snitch Scanner",
-     "qty": 2
-    },
-    {
-     "id": "wasp-driver",
-     "name": "Wasp Driver",
-     "qty": 2
+     "id": "dusty-film-reel",
+     "name": "Dusty Film Reel",
+     "qty": 1
     }
    ],
    "rewards": [
     {
-     "id": "dam-control-tower-key",
-     "name": "Dam Control Tower Key",
+     "id": "patchwork-warden-color",
+     "name": "Patchwork (Warden Color)",
      "qty": 1
     },
     {
-     "id": "origin-outfit-orange-camo-color",
-     "name": "Origin Outfit (Orange Camo Color)",
-     "qty": 1
-    },
-    {
-     "id": "raider-hatch-key",
-     "name": "Raider Hatch Key",
-     "qty": 1
-    },
-    {
-     "id": "defibrillator",
-     "name": "Defibrillator",
-     "qty": 2
+     "id": "coins",
+     "name": "Coins",
+     "qty": 2000
     }
    ],
    "objectives": [
-    "Destroy a Wasp",
-    "Get a Wasp Driver for Shani",
-    "Destroy a Hornet",
-    "Get a Hornet Driver for Shani",
-    "Destroy a Snitch",
-    "Get a Snitch Scanner for Shani"
+    "Locate MANTIKOR's underground base",
+    "Check the locked room for Project Heartwood records",
+    "Obtain the Dusty Film Reel",
+    "Bring the Dusty Film Reel to Shani"
    ],
    "after": [
-    "down-to-earth"
+    "groundbreaking"
    ]
   },
   {
-   "id": "greasing-her-palms",
-   "name": "Greasing Her Palms",
-   "trader": "Celeste",
+   "id": "a-first-foothold",
+   "name": "A First Foothold",
+   "trader": "Apollo",
    "locations": [
-    "Dam Battlegrounds",
-    "Buried City",
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "lure-grenade-blueprint",
-     "name": "Lure Grenade Blueprint",
-     "qty": 1
-    },
-    {
-     "id": "electrical-components",
-     "name": "Electrical Components",
-     "qty": 3
-    },
-    {
-     "id": "speaker-component",
-     "name": "Speaker Component",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Dam Battlegrounds: Check the Locked Room in the Water Treatment Control building",
-    "Spaceport: Scope out the rocket thrusters outside the Rocket Assembly",
-    "Buried City: Visit the barricaded area on floor 6 of the Space Travel Building"
-   ],
-   "after": [
-    "a-better-use"
-   ]
-  },
-  {
-   "id": "dormant-barons",
-   "name": "Dormant Barons",
-   "trader": "Shani",
-   "locations": [
-    "Dam Battlegrounds",
-    "Spaceport",
     "The Blue Gate"
    ],
    "requires": [],
    "rewards": [
     {
-     "id": "door-blocker",
-     "name": "Door Blocker",
+     "id": "shrapnel-grenade",
+     "name": "Shrapnel Grenade",
      "qty": 3
     },
     {
-     "id": "li-l-smoke-grenade",
-     "name": "Li'l Smoke Grenade",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Loot a Baron Husk"
-   ],
-   "after": [
-    "greasing-her-palms",
-    "the-trifecta"
-   ]
-  },
-  {
-   "id": "what-we-left-behind",
-   "name": "What We Left Behind",
-   "trader": "Tian Wen",
-   "locations": [
-    "Dam Battlegrounds",
-    "Buried City",
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "muzzle-brake-ii",
-     "name": "Muzzle Brake II",
-     "qty": 1
-    },
-    {
-     "id": "stable-stock-ii",
-     "name": "Stable Stock II",
-     "qty": 1
-    },
-    {
-     "id": "vertical-grip-ii",
-     "name": "Vertical Grip II",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Buried City: Search 2 containers in the Raider Camp beneath the Parking Garage",
-    "Dam Battlegrounds: Search South Swamp Outpost for anything significant",
-    "Spaceport: Search Bilguun's Hideout, next to Container Storage, for anything significant"
-   ],
-   "after": [
-    "dormant-barons"
-   ]
-  },
-  {
-   "id": "doctor-s-orders",
-   "name": "Doctor's Orders",
-   "trader": "Lance",
-   "locations": [
-    "Any"
-   ],
-   "requires": [
-    {
-     "id": "durable-cloth",
-     "name": "Durable Cloth",
-     "qty": 1
-    },
-    {
-     "id": "great-mullein",
-     "name": "Great Mullein",
-     "qty": 1
-    },
-    {
-     "id": "syringe",
-     "name": "Syringe",
-     "qty": 1
-    },
-    {
-     "id": "antiseptic",
-     "name": "Antiseptic",
-     "qty": 2
-    }
-   ],
-   "rewards": [
-    {
-     "id": "surge-shield-recharger",
-     "name": "Surge Shield Recharger",
-     "qty": 1
-    },
-    {
-     "id": "adrenaline-shot",
-     "name": "Adrenaline Shot",
+     "id": "snap-blast-grenade",
+     "name": "Snap Blast Grenade",
      "qty": 3
     },
     {
-     "id": "sterilized-bandage",
-     "name": "Sterilized Bandage",
+     "id": "heavy-fuze-grenade",
+     "name": "Heavy Fuze Grenade",
      "qty": 3
     }
    ],
    "objectives": [
-    "Obtain 1 Syringe",
-    "Obtain 2 Antiseptic",
-    "Obtain 1 Durable Cloth",
-    "Obtain 1 Great Mullein"
+    "Stabilize the observation deck near Ridgeline",
+    "Enable the comms terminal near Olive Grove",
+    "Rotate the satellite dishes on the church roof north of the Data Vault",
+    "Fix the roof plates on the Raider structure near Trapper's Glade"
    ],
    "after": [
-    "greasing-her-palms"
-   ]
-  },
-  {
-   "id": "broken-monument",
-   "name": "Broken Monument",
-   "trader": "Tian Wen",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [
-    {
-     "id": "first-wave-compass",
-     "name": "First Wave Compass",
-     "qty": 1
-    },
-    {
-     "id": "first-wave-rations",
-     "name": "First Wave Rations",
-     "qty": 1
-    },
-    {
-     "id": "first-wave-tape",
-     "name": "First Wave Tape",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "arpeggio-i",
-     "name": "Arpeggio I",
-     "qty": 1
-    },
-    {
-     "id": "compensator-ii",
-     "name": "Compensator II",
-     "qty": 1
-    },
-    {
-     "id": "medium-ammo",
-     "name": "Medium Ammo",
-     "qty": 80
-    }
-   ],
-   "objectives": [
-    "Reach the hallowed grounds by the Scrap Yard",
-    "Find a compass near the broken-down vehicles",
-    "Find the video tape near the cylindrical containers",
-    "Find the old field rations in the Raider camp",
-    "Deliver the First Wave Tape to Tian Wen",
-    "Deliver the First Wave Compass to Tian Wen",
-    "Deliver the First Wave Rations to Tian Wen"
-   ],
-   "after": [
-    "what-we-left-behind"
-   ]
-  },
-  {
-   "id": "medical-merchandise",
-   "name": "Medical Merchandise",
-   "trader": "Lance",
-   "locations": [
-    "Dam Battlegrounds",
-    "Buried City",
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "backpack-charm-banana",
-     "name": "Backpack Charm (Banana)",
-     "qty": 1
-    },
-    {
-     "id": "defibrillator",
-     "name": "Defibrillator",
-     "qty": 3
-    },
-    {
-     "id": "vita-shot",
-     "name": "Vita Shot",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Search 2 containers in the Departure Building's exam rooms on Spaceport",
-    "Search 3 containers in the Hospital on Buried City",
-    "Search 2 containers in the Research & Administration building's medical room on Dam Battlegrounds"
-   ],
-   "after": [
-    "doctor-s-orders"
-   ]
-  },
-  {
-   "id": "marked-for-death",
-   "name": "Marked For Death",
-   "trader": "Tian Wen",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "angled-grip-ii",
-     "name": "Angled Grip II",
-     "qty": 1
-    },
-    {
-     "id": "shotgun-choke-ii",
-     "name": "Shotgun Choke II",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Reach the Su Durante Warehouses in the Buried City Outskirts",
-    "Search for Tian Wen's cache near the Warehouses",
-    "Follow the clues"
-   ],
-   "after": [
-    "broken-monument"
-   ]
-  },
-  {
-   "id": "straight-record",
-   "name": "Straight Record",
-   "trader": "Celeste",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "advanced-mechanical-components",
-     "name": "Advanced Mechanical Components",
-     "qty": 3
-    },
-    {
-     "id": "medium-gun-parts",
-     "name": "Medium Gun Parts",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Reach Victory Ridge",
-    "Find the old EMP trap",
-    "Disable the first power switch",
-    "Disable the second power switch",
-    "Disable the third power switch",
-    "Shut down the EMP trap"
-   ],
-   "after": [
-    "broken-monument"
-   ]
-  },
-  {
-   "id": "a-reveal-in-ruins",
-   "name": "A Reveal in Ruins",
-   "trader": "Lance",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [
-    {
-     "id": "esr-analyzer",
-     "name": "ESR Analyzer",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "surge-shield-recharger",
-     "name": "Surge Shield Recharger",
-     "qty": 1
-    },
-    {
-     "id": "tactical-mk-3-healing",
-     "name": "Tactical Mk. 3 (Healing)",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Search for an ESR Analyzer inside any pharmacy in Buried City",
-    "Deliver the ESR Analyzer to Lance"
-   ],
-   "after": [
-    "medical-merchandise"
-   ]
-  },
-  {
-   "id": "market-correction",
-   "name": "Market Correction",
-   "trader": "Tian Wen",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "compensator-i",
-     "name": "Compensator I",
-     "qty": 1
-    },
-    {
-     "id": "extended-light-mag-ii",
-     "name": "Extended Light Mag II",
-     "qty": 1
-    },
-    {
-     "id": "silencer-ii",
-     "name": "Silencer II",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Locate the cache near Marano Station",
-    "Sabotage the cache"
-   ],
-   "after": [
-    "marked-for-death"
-   ]
-  },
-  {
-   "id": "keeping-the-memory",
-   "name": "Keeping The Memory",
-   "trader": "Celeste",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "duct-tape",
-     "name": "Duct Tape",
-     "qty": 5
-    },
-    {
-     "id": "magnet",
-     "name": "Magnet",
-     "qty": 5
-    },
-    {
-     "id": "simple-gun-parts",
-     "name": "Simple Gun Parts",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Reach the wreckage in the Formicai Hills",
-    "Search for the missing helmet",
-    "Return the helmet to the memorial"
-   ],
-   "after": [
-    "straight-record"
+    "off-the-radar"
    ]
   },
   {
@@ -806,264 +219,190 @@
    ]
   },
   {
-   "id": "eyes-on-the-prize",
-   "name": "Eyes On The Prize",
-   "trader": "Tian Wen",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [
-    {
-     "id": "wires",
-     "name": "Wires",
-     "qty": 3
-    }
-   ],
-   "rewards": [
-    {
-     "id": "extended-medium-mag-ii",
-     "name": "Extended Medium Mag II",
-     "qty": 1
-    },
-    {
-     "id": "extended-shotgun-mag-ii",
-     "name": "Extended Shotgun Mag II",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Find the secluded roof terrace south-west of the Southern Station, look for blue tarps",
-    "Rewire the solar panel using 3 Wires"
-   ],
-   "after": [
-    "market-correction"
-   ]
-  },
-  {
-   "id": "echoes-of-victory-ridge",
-   "name": "Echoes Of Victory Ridge",
-   "trader": "Celeste",
+   "id": "a-new-type-of-plant",
+   "name": "A New Type Of Plant",
+   "trader": "Lance",
    "locations": [
     "Dam Battlegrounds"
    ],
    "requires": [
     {
-     "id": "major-aiva-s-patch",
-     "name": "Major Aiva's Patch",
+     "id": "possibly-toxic-plant",
+     "name": "Possibly Toxic Plant",
      "qty": 1
     }
    ],
    "rewards": [
     {
-     "id": "music-box",
-     "name": "Music Box",
+     "id": "vita-shot",
+     "name": "Vita Shot",
      "qty": 1
     },
     {
-     "id": "processor",
-     "name": "Processor",
-     "qty": 2
-    },
-    {
-     "id": "crude-explosives",
-     "name": "Crude Explosives",
-     "qty": 6
-    }
-   ],
-   "objectives": [
-    "Reach Victory Ridge",
-    "Retrieve the battle plans from the hideout under the broken highway",
-    "Deliver Major Aiva's Patch to Celeste"
-   ],
-   "after": [
-    "keeping-the-memory"
-   ]
-  },
-  {
-   "id": "eyes-in-the-sky",
-   "name": "Eyes in the Sky",
-   "trader": "Shani",
-   "locations": [
-    "Dam Battlegrounds",
-    "Buried City",
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "vita-spray",
-     "name": "Vita Spray",
-     "qty": 1
-    },
-    {
-     "id": "tagging-grenade",
-     "name": "Tagging Grenade",
-     "qty": 3
-    },
-    {
-     "id": "yellow-light-stick",
-     "name": "Yellow Light Stick",
+     "id": "antiseptic",
+     "name": "Antiseptic",
      "qty": 5
     }
    ],
    "objectives": [
-    "Install a LiDAR Scanner at the top of the Control Tower on Dam Battlegrounds",
-    "Install a LiDAR Scanner at the Communications Tower on Spaceport",
-    "Install a LiDAR Scanner on top of the Galleria sign in Buried City"
+    "Find the new plant near the Baron Husk in Old Battleground",
+    "Deliver the Possibly Toxic Plant to Lance"
    ],
    "after": [
-    "a-lay-of-the-land"
+    "building-a-library"
    ]
   },
   {
-   "id": "industrial-espionage",
-   "name": "Industrial Espionage",
-   "trader": "Tian Wen",
+   "id": "a-path-not-yours",
+   "name": "A Path Not Yours",
+   "trader": "Nomadic Envoys",
    "locations": [
-    "Buried City"
+    "The Blue Gate"
    ],
    "requires": [],
    "rewards": [
     {
-     "id": "burletta-blueprint",
-     "name": "Burletta Blueprint",
+     "id": "tellurion",
+     "name": "Tellurion",
      "qty": 1
     },
     {
-     "id": "mechanical-components",
-     "name": "Mechanical Components",
-     "qty": 3
+     "id": "magnet",
+     "name": "Magnet",
+     "qty": 2
     },
     {
-     "id": "simple-gun-parts",
-     "name": "Simple Gun Parts",
-     "qty": 3
+     "id": "battery",
+     "name": "Battery",
+     "qty": 2
+    },
+    {
+     "id": "power-cable",
+     "name": "Power Cable",
+     "qty": 2
     }
    ],
    "objectives": [
-    "Find Tian Wen's weapon cache near the Gas Station in the Outskirts",
-    "Deliver the Burletta to the rival weapon cache",
-    "Plant a bug on the weapon cache"
+    "Find the start of the Nomad trail under the Highway Collapse",
+    "Follow the trail markers to the Nomad hideout",
+    "Retrieve Bilguun's gift from the buried cache beneath the hideout",
+    "(Optional) Loot the secret stash in Bilguun's hideout",
+    "Deliver the Broken Compass to the Nomadic Envoy",
+    "Done in one round; you are given 2 Ziplines for it"
    ],
    "after": [
-    "eyes-on-the-prize"
+    "taking-stock"
    ]
   },
   {
-   "id": "a-balanced-harvest",
-   "name": "A Balanced Harvest",
-   "trader": "Celeste",
+   "id": "a-prime-specimen",
+   "name": "A Prime Specimen",
+   "trader": "Shani",
    "locations": [
-    "Dam Battlegrounds"
+    "The Blue Gate"
    ],
-   "requires": [],
+   "requires": [
+    {
+     "id": "arc-powercell",
+     "name": "ARC Powercell",
+     "qty": 2
+    }
+   ],
    "rewards": [
     {
-     "id": "advanced-mechanical-components",
-     "name": "Advanced Mechanical Components",
-     "qty": 3
+     "id": "patrol-car-key",
+     "name": "Patrol Car Key",
+     "qty": 1
     },
     {
-     "id": "medium-gun-parts",
-     "name": "Medium Gun Parts",
+     "id": "door-blocker",
+     "name": "Door Blocker",
      "qty": 3
-    },
-    {
-     "id": "steel-spring",
-     "name": "Steel Spring",
-     "qty": 10
     }
    ],
    "objectives": [
-    "Go to the Research & Administration building",
-    "Find Lab 1 on the upper floor above reception",
-    "Search for traces of the agricultural research project"
+    "Obtain 2 ARC Powercells",
+    "Interact with an ARC Deforester",
+    "Loot an ARC Deforester"
    ],
    "after": [
-    "eyes-in-the-sky"
+    "the-clean-dream"
    ]
   },
   {
-   "id": "unexpected-initiative",
-   "name": "Unexpected Initiative",
-   "trader": "Tian Wen",
+   "id": "a-reveal-in-ruins",
+   "name": "A Reveal in Ruins",
+   "trader": "Lance",
    "locations": [
     "Buried City"
    ],
    "requires": [
     {
-     "id": "moisture-meter",
-     "name": "Moisture Meter",
-     "qty": 1
-    },
-    {
-     "id": "nutrient-meter",
-     "name": "Nutrient Meter",
+     "id": "esr-analyzer",
+     "name": "ESR Analyzer",
      "qty": 1
     }
    ],
    "rewards": [
     {
-     "id": "il-toro-i",
-     "name": "Il Toro I",
+     "id": "surge-shield-recharger",
+     "name": "Surge Shield Recharger",
      "qty": 1
     },
     {
-     "id": "shotgun-choke-ii",
-     "name": "Shotgun Choke II",
+     "id": "tactical-mk-3-healing",
+     "name": "Tactical Mk. 3 (Healing)",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Search for an ESR Analyzer inside any pharmacy in Buried City",
+    "Deliver the ESR Analyzer to Lance"
+   ],
+   "after": [
+    "medical-merchandise"
+   ]
+  },
+  {
+   "id": "a-rising-tide",
+   "name": "A Rising Tide",
+   "trader": "Celeste",
+   "locations": [
+    "Buried City",
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "anvil-ii",
+     "name": "Anvil II",
      "qty": 1
     },
     {
-     "id": "shotgun-ammo",
-     "name": "Shotgun Ammo",
+     "id": "anvil-splitter",
+     "name": "Anvil Splitter",
+     "qty": 1
+    },
+    {
+     "id": "extended-barrel-iii",
+     "name": "Extended Barrel III",
+     "qty": 1
+    },
+    {
+     "id": "heavy-ammo",
+     "name": "Heavy Ammo",
      "qty": 40
     }
    ],
    "objectives": [
-    "Reach the Grandioso Apartments in Buried City",
-    "Search the Grandioso Apartments rooftop for a Moisture Meter",
-    "Reach Piazza Roma in Buried City",
-    "Search the broken rooftop gardens at Piazza Roma for a Nutrient Meter",
-    "Deliver the Nutrient Meter to Tian Wen",
-    "Deliver the Moisture Meter to Tian Wen"
+    "Buried City: find the foreman's barricaded apartment south of Piazza Roma",
+    "Access the foreman's digital logbook",
+    "Dam Battlegrounds: reach the Power Generation Complex",
+    "Find a way into the Controlled Access Zone",
+    "Search the Controlled Access Zone for clues about the foreman's reconstruction project"
    ],
    "after": [
-    "echoes-of-victory-ridge",
-    "industrial-espionage"
-   ]
-  },
-  {
-   "id": "untended-garden",
-   "name": "Untended Garden",
-   "trader": "Celeste",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "advanced-mechanical-components",
-     "name": "Advanced Mechanical Components",
-     "qty": 3
-    },
-    {
-     "id": "heavy-gun-parts",
-     "name": "Heavy Gun Parts",
-     "qty": 3
-    },
-    {
-     "id": "canister",
-     "name": "Canister",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Go to the Hydroponic Dome Complex",
-    "Access the data archive in one of the domes",
-    "Upload the data to a computer terminal at any Field Depot"
-   ],
-   "after": [
-    "a-balanced-harvest"
+    "a-dead-end"
    ]
   },
   {
@@ -1104,6 +443,119 @@
    ],
    "after": [
     "unexpected-initiative"
+   ]
+  },
+  {
+   "id": "a-toxic-trail",
+   "name": "A Toxic Trail",
+   "trader": "Shani",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "tactical-mk-2",
+     "name": "Tactical Mk. 2",
+     "qty": 1
+    },
+    {
+     "id": "zipline",
+     "name": "Zipline",
+     "qty": 3
+    },
+    {
+     "id": "pulse-mine",
+     "name": "Pulse Mine",
+     "qty": 3
+    },
+    {
+     "id": "gas-mine",
+     "name": "Gas Mine",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Return to the water intake below Water Treatment Control",
+    "Search the swamp for traces of the barrel's origin",
+    "Take a photo of the barrel truck",
+    "Search the truck's trunk for clues about the saboteur"
+   ],
+   "after": [
+    "life-of-a-pharmacist"
+   ]
+  },
+  {
+   "id": "a-warm-place-to-rest",
+   "name": "A Warm Place To Rest",
+   "trader": "Apollo",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "radio-renegade-outfit-goggles-variant",
+     "name": "Radio Renegade Outfit (Goggles Variant)",
+     "qty": 1
+    },
+    {
+     "id": "rosary",
+     "name": "Rosary",
+     "qty": 1
+    },
+    {
+     "id": "noisemaker",
+     "name": "Noisemaker",
+     "qty": 3
+    },
+    {
+     "id": "blue-light-stick",
+     "name": "Blue Light Stick",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Locate the Abandoned Highway Camp",
+    "Search for any signs of survivors",
+    "Follow the red markers",
+    "Inspect the grave"
+   ],
+   "after": [
+    "switching-the-supply"
+   ]
+  },
+  {
+   "id": "a-wrench-in-the-works",
+   "name": "A Wrench in the Works",
+   "trader": "Celeste",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "radio-renegade-outfit-yellow",
+     "name": "Radio Renegade Outfit (Yellow)",
+     "qty": 1
+    },
+    {
+     "id": "mechanical-components",
+     "name": "Mechanical Components",
+     "qty": 5
+    },
+    {
+     "id": "mod-components",
+     "name": "Mod Components",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Search the buses near the western gate",
+    "Locate the stash of sabotage supplies at the Water Towers"
+   ],
+   "after": [
+    "safe-harbor"
    ]
   },
   {
@@ -1151,142 +603,45 @@
    ]
   },
   {
-   "id": "the-root-of-the-matter",
-   "name": "The Root of the Matter",
-   "trader": "Celeste",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [
-    {
-     "id": "experimental-seed-sample",
-     "name": "Experimental Seed Sample",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "backpack-charm-succulent",
-     "name": "Backpack Charm (Succulent)",
-     "qty": 1
-    },
-    {
-     "id": "coins",
-     "name": "Coins",
-     "qty": 1000
-    }
-   ],
-   "objectives": [
-    "Go to the Research Building",
-    "Search the seed vault in the room with a great view",
-    "Deliver the Experimental Seed Sample to Celeste"
-   ],
-   "after": [
-    "untended-garden"
-   ]
-  },
-  {
-   "id": "celeste-s-journals",
-   "name": "Celeste's Journals",
-   "trader": "Celeste",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [
-    {
-     "id": "celeste-s-journal",
-     "name": "Celeste's Journal",
-     "qty": 2
-    }
-   ],
-   "rewards": [
-    {
-     "id": "exodus-modules",
-     "name": "Exodus Modules",
-     "qty": 1
-    },
-    {
-     "id": "magnetic-accelerator",
-     "name": "Magnetic Accelerator",
-     "qty": 1
-    },
-    {
-     "id": "heavy-gun-parts",
-     "name": "Heavy Gun Parts",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Retrieve Celeste's Journal from the South Swamp Outpost",
-    "Retrieve Celeste's Journal from the northern outpost above the Red Lakes",
-    "Deliver both Journals to Celeste"
-   ],
-   "after": [
-    "a-symbol-of-unification"
-   ]
-  },
-  {
-   "id": "the-major-s-footlocker",
-   "name": "The Major's Footlocker",
+   "id": "armored-transports",
+   "name": "Armored Transports",
    "trader": "Tian Wen",
    "locations": [
-    "Dam Battlegrounds"
+    "The Blue Gate"
    ],
    "requires": [
     {
-     "id": "major-aiva-s-mementos",
-     "name": "Major Aiva's Mementos",
+     "id": "armored-patrol-key-card",
+     "name": "Armored Patrol Key Card",
      "qty": 1
     }
    ],
    "rewards": [
     {
-     "id": "hullcracker-blueprint",
-     "name": "Hullcracker Blueprint",
+     "id": "aviator-outfit-blue-yellow",
+     "name": "Aviator Outfit (Blue Yellow)",
      "qty": 1
-    }
-   ],
-   "objectives": [
-    "Search for Major Aiva's mementos in the apartments northwest of The Dam (in one round)",
-    "Deliver Major Aiva's Mementos to Tian Wen"
-   ],
-   "after": [
-    "a-symbol-of-unification"
-   ]
-  },
-  {
-   "id": "water-troubles",
-   "name": "Water Troubles",
-   "trader": "Celeste",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
+    },
     {
-     "id": "mechanical-components",
-     "name": "Mechanical Components",
+     "id": "smoke-grenade",
+     "name": "Smoke Grenade",
      "qty": 3
     },
     {
-     "id": "simple-gun-parts",
-     "name": "Simple Gun Parts",
-     "qty": 3
-    },
-    {
-     "id": "steel-spring",
-     "name": "Steel Spring",
+     "id": "defibrillator",
+     "name": "Defibrillator",
      "qty": 3
     }
    ],
    "objectives": [
-    "Locate the Flood Access Tunnel under the Red Lake Balcony",
-    "Find the intake to the District's Water Supply",
-    "Sample the water"
+    "Reach the Checkpoint",
+    "Search the guard huts for an Armored Patrol Key Card",
+    "Reach the Traffic Tunnel near the Blue Gate Checkpoint",
+    "Find and unlock the rear door of an armored patrol car"
    ],
    "after": [
-    "after-rain-comes",
-    "the-root-of-the-matter"
+    "a-new-type-of-plant",
+    "with-a-trace"
    ]
   },
   {
@@ -1330,424 +685,66 @@
    ]
   },
   {
-   "id": "source-of-the-contamination",
-   "name": "Source Of The Contamination",
-   "trader": "Celeste",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "mod-components",
-     "name": "Mod Components",
-     "qty": 1
-    },
-    {
-     "id": "duct-tape",
-     "name": "Duct Tape",
-     "qty": 5
-    },
-    {
-     "id": "steel-spring",
-     "name": "Steel Spring",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Reach the Water Treatment Building in the Dam",
-    "Find the Flood Spill Intake near the Swamp",
-    "Investigate suspicious objects"
-   ],
-   "after": [
-    "water-troubles"
-   ]
-  },
-  {
-   "id": "our-presence-up-there",
-   "name": "Our Presence up There",
-   "trader": "Shani",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "buried-city-town-hall-key",
-     "name": "Buried City Town Hall Key",
-     "qty": 1
-    },
-    {
-     "id": "raider-hatch-key",
-     "name": "Raider Hatch Key",
-     "qty": 1
-    },
-    {
-     "id": "jolt-mine",
-     "name": "Jolt Mine",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Visit the Pattern House in The Dam",
-    "Find and flip the power switch",
-    "Complete the antenna installation on the roof"
-   ],
-   "after": [
-    "back-on-top"
-   ]
-  },
-  {
-   "id": "switching-the-supply",
-   "name": "Switching The Supply",
-   "trader": "Celeste",
-   "locations": [
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "radio-renegade-outfit-blue-color",
-     "name": "Radio Renegade Outfit (Blue Color)",
-     "qty": 1
-    },
-    {
-     "id": "spaceport-trench-tower-key",
-     "name": "Spaceport Trench Tower Key",
-     "qty": 1
-    },
-    {
-     "id": "synthesized-fuel",
-     "name": "Synthesized Fuel",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Locate the tunnels beneath the Spaceport",
-    "Find and turn the valve inside those tunnels"
-   ],
-   "after": [
-    "source-of-the-contamination"
-   ]
-  },
-  {
-   "id": "lost-in-transmission",
-   "name": "Lost In Transmission",
-   "trader": "Shani",
-   "locations": [
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "snap-hook",
-     "name": "Snap Hook",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Go to Control Tower A6",
-    "Climb to the top of the tower",
-    "Establish a connection at the terminal"
-   ],
-   "after": [
-    "our-presence-up-there"
-   ]
-  },
-  {
-   "id": "a-warm-place-to-rest",
-   "name": "A Warm Place To Rest",
+   "id": "bait-fetch-blast",
+   "name": "Bait, Fetch, Blast",
    "trader": "Apollo",
    "locations": [
-    "Buried City"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "radio-renegade-outfit-goggles-variant",
-     "name": "Radio Renegade Outfit (Goggles Variant)",
-     "qty": 1
-    },
-    {
-     "id": "rosary",
-     "name": "Rosary",
-     "qty": 1
-    },
-    {
-     "id": "noisemaker",
-     "name": "Noisemaker",
-     "qty": 3
-    },
-    {
-     "id": "blue-light-stick",
-     "name": "Blue Light Stick",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Locate the Abandoned Highway Camp",
-    "Search for any signs of survivors",
-    "Follow the red markers",
-    "Inspect the grave"
-   ],
-   "after": [
-    "switching-the-supply"
-   ]
-  },
-  {
-   "id": "communication-hideout",
-   "name": "Communication Hideout",
-   "trader": "Shani",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "anvil-iii",
-     "name": "Anvil III",
-     "qty": 1
-    },
-    {
-     "id": "aviator-outfit-crimson-racer-color",
-     "name": "Aviator Outfit (Crimson Racer Color)",
-     "qty": 1
-    },
-    {
-     "id": "heavy-ammo",
-     "name": "Heavy Ammo",
-     "qty": 40
-    }
-   ],
-   "objectives": [
-    "Get to the Red Tower in Old Town",
-    "Locate the missing battery cell",
-    "Put the battery cell into the Generator",
-    "Turn on the Generator's power",
-    "Start up the antenna terminal near the Red Tower"
-   ],
-   "after": [
-    "lost-in-transmission"
-   ]
-  },
-  {
-   "id": "prescriptions-of-the-past",
-   "name": "Prescriptions of the Past",
-   "trader": "Lance",
-   "locations": [
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "heavy-shield",
-     "name": "Heavy Shield",
-     "qty": 1
-    },
-    {
-     "id": "tactical-mk-3-healing",
-     "name": "Tactical Mk. 3 (Healing)",
-     "qty": 1
-    },
-    {
-     "id": "adrenaline-shot",
-     "name": "Adrenaline Shot",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Visit the Departure Building in the Spaceport",
-    "Find the Medical Exam Room inside the Departure Building",
-    "Search for the records"
-   ],
-   "after": [
-    "a-warm-place-to-rest"
-   ]
-  },
-  {
-   "id": "into-the-fray",
-   "name": "Into The Fray",
-   "trader": "Shani",
-   "locations": [
-    "Any"
+    "Pendola Pass"
    ],
    "requires": [
     {
-     "id": "leaper-pulse-unit",
-     "name": "Leaper Pulse Unit",
+     "id": "bully-fragmenter",
+     "name": "Bully Fragmenter",
      "qty": 1
     }
    ],
    "rewards": [
     {
-     "id": "backpack-charm-burger-boy",
-     "name": "Backpack Charm (Burger Boy)",
+     "id": "bully-fragmenter",
+     "name": "Bully Fragmenter",
      "qty": 1
     },
     {
-     "id": "radio-renegade-outfit-grey-color",
-     "name": "Radio Renegade Outfit (Grey Color)",
+     "id": "wolfpack",
+     "name": "Wolfpack",
      "qty": 1
-    },
-    {
-     "id": "vulcano-iii",
-     "name": "Vulcano III",
-     "qty": 1
-    },
-    {
-     "id": "shotgun-ammo",
-     "name": "Shotgun Ammo",
-     "qty": 40
     }
    ],
    "objectives": [
-    "Defeat one Leaper",
-    "Collect a Leaper Pulse Unit"
+    "Either destroy a Bully, destroy the head of a Bully and destroy 4 Bully legs",
+    "Or deliver a Bully Fragmenter to Apollo"
    ],
    "after": [
-    "communication-hideout",
-    "water-troubles"
+    "tracks-of-the-beast"
    ]
   },
   {
-   "id": "power-out",
-   "name": "Power Out",
-   "trader": "Celeste",
-   "locations": [
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "radio-renegade-outfit-bag-variant",
-     "name": "Radio Renegade Outfit (Bag Variant)",
-     "qty": 1
-    },
-    {
-     "id": "explosive-compound",
-     "name": "Explosive Compound",
-     "qty": 5
-    },
-    {
-     "id": "oil",
-     "name": "Oil",
-     "qty": 5
-    },
-    {
-     "id": "wires",
-     "name": "Wires",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Find the Electrical Substation south of the Spaceport",
-    "Find any sign of the missing engineer",
-    "Install the fuse",
-    "Restore the power"
-   ],
-   "after": [
-    "prescriptions-of-the-past"
-   ]
-  },
-  {
-   "id": "paving-the-way",
-   "name": "Paving The Way",
+   "id": "battening-down",
+   "name": "Battening Down",
    "trader": "Apollo",
    "locations": [
-    "Dam Battlegrounds",
-    "Buried City",
-    "The Blue Gate"
+    "Riven Tides"
    ],
    "requires": [],
    "rewards": [
     {
-     "id": "advanced-electrical-components",
-     "name": "Advanced Electrical Components",
+     "id": "riven-tides-hotel-keycard-no-107",
+     "name": "Riven Tides Hotel Keycard No. 107",
      "qty": 1
     },
     {
-     "id": "raider-hatch-key",
-     "name": "Raider Hatch Key",
-     "qty": 1
-    },
-    {
-     "id": "seeker-grenade",
-     "name": "Seeker Grenade",
+     "id": "smoke-grenade-trap",
+     "name": "Smoke Grenade Trap",
      "qty": 3
     }
    ],
    "objectives": [
-    "Visit any ENELICA building",
-    "Find the notice board with the researcher's note",
-    "On Buried City, reach the top floor above the Convinio in Piazza Roma",
-    "Find the researcher's flat and search it for research data"
+    "Photograph seawall cracks",
+    "Collect a sample from the shoreline near the hotel beach",
+    "Repair the leaking oil pipe in the northeast"
    ],
    "after": [
-    "into-the-fray"
-   ]
-  },
-  {
-   "id": "flickering-threat",
-   "name": "Flickering Threat",
-   "trader": "Celeste",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "radio-renegade-outfit-helmet-variant",
-     "name": "Radio Renegade Outfit (Helmet Variant)",
-     "qty": 1
-    },
-    {
-     "id": "advanced-mechanical-components",
-     "name": "Advanced Mechanical Components",
-     "qty": 3
-    },
-    {
-     "id": "medium-gun-parts",
-     "name": "Medium Gun Parts",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Locate the Generator Room",
-    "Fix the generator",
-    "Locate the Ventilation Shaft",
-    "Switch on power at the switch under the stairs"
-   ],
-   "after": [
-    "power-out"
-   ]
-  },
-  {
-   "id": "deciphering-the-data",
-   "name": "Deciphering The Data",
-   "trader": "Shani",
-   "locations": [
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "defibrillator",
-     "name": "Defibrillator",
-     "qty": 3
-    },
-    {
-     "id": "trailblazer",
-     "name": "Trailblazer",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Decrypt the data at the decryptor in the Fuel Control Building",
-    "Travel to the Arrival Building in Spaceport",
-    "Use the decryptor on the Arrival Building's top floor"
-   ],
-   "after": [
-    "paving-the-way"
+    "off-the-radar"
    ]
   },
   {
@@ -1779,189 +776,28 @@
    ]
   },
   {
-   "id": "groundbreaking",
-   "name": "Groundbreaking",
-   "trader": "Apollo",
-   "locations": [
-    "The Blue Gate"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "power-rod",
-     "name": "Power Rod",
-     "qty": 1
-    },
-    {
-     "id": "warden-outfit-tangerine-color",
-     "name": "Warden Outfit (Tangerine Color)",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Find a spare Blue Gate Communication Tower Key",
-    "Enter the locked room at Pilgrim's Peak",
-    "Search the room for construction research",
-    "Find the building pictured on the whiteboard",
-    "Photograph the abandoned housing project"
-   ],
-   "after": [
-    "deciphering-the-data"
-   ]
-  },
-  {
-   "id": "dust-on-the-wires",
-   "name": "Dust on the Wires",
+   "id": "belly-of-the-beast",
+   "name": "Belly Of The Beast",
    "trader": "Shani",
    "locations": [
-    "Spaceport"
-   ],
-   "requires": [
-    {
-     "id": "scout-patrol-note",
-     "name": "Scout Patrol Note",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "backpack-charm-fax-machine",
-     "name": "Backpack Charm (Fax Machine)",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Visit any Field Depot on the eastern side of the Spaceport",
-    "Use the Field Radio to transmit the scout group's last log to Shani",
-    "Interact with the terminal in the old Raider Tower north of the Maintenance Hangar",
-    "Find traces of the scout patrol near the Maintenance Hangar",
-    "Search the remains left by the scouts",
-    "Deliver the Scout Patrol Note to Shani"
-   ],
-   "after": [
-    "the-trifecta"
-   ]
-  },
-  {
-   "id": "espresso",
-   "name": "Espresso",
-   "trader": "Apollo",
-   "locations": [
-    "Any"
-   ],
-   "requires": [
-    {
-     "id": "espresso-machine-parts",
-     "name": "Espresso Machine Parts",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "coffee-pot",
-     "name": "Coffee Pot",
-     "qty": 1
-    },
-    {
-     "id": "adrenaline-shot",
-     "name": "Adrenaline Shot",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Find an Espresso Machine and salvage it for spare parts",
-    "Collect the Espresso Machine Parts and give them to Apollo (both within one round)"
-   ],
-   "after": [
-    "bees"
-   ]
-  },
-  {
-   "id": "a-dead-end",
-   "name": "A Dead End",
-   "trader": "Shani",
-   "locations": [
-    "The Blue Gate"
-   ],
-   "requires": [
-    {
-     "id": "dusty-film-reel",
-     "name": "Dusty Film Reel",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "patchwork-warden-color",
-     "name": "Patchwork (Warden Color)",
-     "qty": 1
-    },
-    {
-     "id": "coins",
-     "name": "Coins",
-     "qty": 2000
-    }
-   ],
-   "objectives": [
-    "Locate MANTIKOR's underground base",
-    "Check the locked room for Project Heartwood records",
-    "Obtain the Dusty Film Reel",
-    "Bring the Dusty Film Reel to Shani"
-   ],
-   "after": [
-    "groundbreaking"
-   ]
-  },
-  {
-   "id": "safe-passage",
-   "name": "Safe Passage",
-   "trader": "Apollo",
-   "locations": [
-    "Any"
+    "Pendola Pass"
    ],
    "requires": [],
    "rewards": [
     {
-     "id": "barricade-kit",
-     "name": "Barricade Kit",
-     "qty": 3
-    },
-    {
-     "id": "shrapnel-grenade",
-     "name": "Shrapnel Grenade",
-     "qty": 3
-    },
-    {
-     "id": "li-l-smoke-grenade",
-     "name": "Li'l Smoke Grenade",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Eliminate two ARC enemies with any explosive grenade"
-   ],
-   "after": [
-    "a-bad-feeling"
-   ]
-  },
-  {
-   "id": "life-of-a-pharmacist",
-   "name": "Life Of A Pharmacist",
-   "trader": "Lance",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "defibrillator",
-     "name": "Defibrillator",
+     "id": "snap-hook",
+     "name": "Snap Hook",
      "qty": 1
     },
     {
-     "id": "surge-shield-recharger",
-     "name": "Surge Shield Recharger",
+     "id": "pendola-pass-observatory-key",
+     "name": "Pendola Pass Observatory Key",
      "qty": 1
+    },
+    {
+     "id": "shield-recharger",
+     "name": "Shield Recharger",
+     "qty": 3
     },
     {
      "id": "sterilized-bandage",
@@ -1970,697 +806,17 @@
     }
    ],
    "objectives": [
-    "Find Arbusto Farmacia by the collapsed highway",
-    "Document the pharmacist's hobbies",
-    "Document the pharmacist's family",
-    "Document the pharmacist's taste",
-    "Document the pharmacist's skills"
+    "(Optional) Acquire an Emperor Gateway Conduit",
+    "Enter the Emperor",
+    "Find where the power inside the Emperor comes from",
+    "Find out what happens to the Harvester Payloads that enter the Emperor",
+    "Find where the Harvester Payloads sent to the Emperor are stored",
+    "Search 5 containers inside the Emperor",
+    "Obtain a unique piece of Emperor loot"
    ],
    "after": [
-    "espresso"
-   ]
-  },
-  {
-   "id": "fragmented-logs",
-   "name": "Fragmented Logs",
-   "trader": "Shani",
-   "locations": [
-    "Stella Montis"
-   ],
-   "requires": [
-    {
-     "id": "electrical-components",
-     "name": "Electrical Components",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "showstopper",
-     "name": "Showstopper",
-     "qty": 3
-    },
-    {
-     "id": "trailblazer",
-     "name": "Trailblazer",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Repair the out-of-service terminal in a Robotic Sandbox control room with 1 Electrical Component",
-    "Enable power in a conduit backroom near the Robotic Sandboxes",
-    "Boot the main frame data terminal in the Cultural Archives service backrooms"
-   ],
-   "after": [
-    "a-dead-end",
-    "dust-on-the-wires"
-   ]
-  },
-  {
-   "id": "reduced-to-rubble",
-   "name": "Reduced to Rubble",
-   "trader": "Shani",
-   "locations": [
-    "The Blue Gate"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "zipline",
-     "name": "Zipline",
-     "qty": 1
-    },
-    {
-     "id": "barricade-kit",
-     "name": "Barricade Kit",
-     "qty": 3
-    },
-    {
-     "id": "door-blocker",
-     "name": "Door Blocker",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Take a photo of the Collapsed Highway",
-    "Go to the Broken Earth",
-    "Follow the trail of destruction through the Broken Earth",
-    "Investigate the unknown ARC machines"
-   ],
-   "after": [
-    "a-first-foothold"
-   ]
-  },
-  {
-   "id": "in-my-image",
-   "name": "In My Image",
-   "trader": "Lance",
-   "locations": [
-    "Stella Montis"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "looting-mk-2",
-     "name": "Looting Mk. 2",
-     "qty": 2
-    },
-    {
-     "id": "green-light-stick",
-     "name": "Green Light Stick",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Deploy into Stella Montis",
-    "Find and search 3 Androids"
-   ],
-   "after": [
-    "a-bad-feeling"
-   ]
-  },
-  {
-   "id": "what-goes-around",
-   "name": "What Goes Around",
-   "trader": "Apollo",
-   "locations": [
-    "Any"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "backpack-charm-cans",
-     "name": "Backpack Charm (Cans)",
-     "qty": 1
-    },
-    {
-     "id": "noisemaker",
-     "name": "Noisemaker",
-     "qty": 2
-    },
-    {
-     "id": "blaze-grenade",
-     "name": "Blaze Grenade",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Destroy any ARC using a Fireball Burner"
-   ],
-   "after": [
-    "safe-passage"
-   ]
-  },
-  {
-   "id": "tribute-to-toledo",
-   "name": "Tribute To Toledo",
-   "trader": "Celeste",
-   "locations": [
-    "Any"
-   ],
-   "requires": [
-    {
-     "id": "power-rod",
-     "name": "Power Rod",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "advanced-mechanical-components",
-     "name": "Advanced Mechanical Components",
-     "qty": 2
-    },
-    {
-     "id": "synthesized-fuel",
-     "name": "Synthesized Fuel",
-     "qty": 3
-    },
-    {
-     "id": "magnet",
-     "name": "Magnet",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Get a Power Rod for Celeste"
-   ],
-   "after": [
-    "life-of-a-pharmacist"
-   ]
-  },
-  {
-   "id": "furtive-meetings",
-   "name": "Furtive Meetings",
-   "trader": "Shani",
-   "locations": [
-    "Stella Montis"
-   ],
-   "requires": [
-    {
-     "id": "secret-meeting-info",
-     "name": "Secret Meeting Info",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "aphelion",
-     "name": "Aphelion",
-     "qty": 1
-    },
-    {
-     "id": "energy-clip",
-     "name": "Energy Clip",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Search the Medical Research Area staircase for the meeting spot",
-    "Find the meeting spot near the ventilation shaft between Robotic Sandbox B and Seed Vault",
-    "Find the meeting spot at the bottom of the staircase connecting Cultural Archives and Seed Vault",
-    "Search the meeting area",
-    "Bring the Secret Meeting Info to Shani"
-   ],
-   "after": [
-    "fragmented-logs"
-   ]
-  },
-  {
-   "id": "with-a-trace",
-   "name": "With A Trace",
-   "trader": "Shani",
-   "locations": [
-    "The Blue Gate"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "looting-mk-2",
-     "name": "Looting Mk. 2",
-     "qty": 1
-    },
-    {
-     "id": "medium-shield",
-     "name": "Medium Shield",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Reach the Barren Clearing",
-    "Find signs of who brought down the ARC machines",
-    "Inspect the Adorned Wreckage",
-    "Inspect the communications device"
-   ],
-   "after": [
-    "reduced-to-rubble"
-   ]
-  },
-  {
-   "id": "cold-storage",
-   "name": "Cold Storage",
-   "trader": "Shani",
-   "locations": [
-    "Stella Montis"
-   ],
-   "requires": [
-    {
-     "id": "old-world-books",
-     "name": "Old World Books",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "raider-hatch-key",
-     "name": "Raider Hatch Key",
-     "qty": 1
-    },
-    {
-     "id": "gas-mine",
-     "name": "Gas Mine",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Search any J Kozma Ventures container in one round",
-    "Deliver the Old World Books to Shani"
-   ],
-   "after": [
-    "in-my-image"
-   ]
-  },
-  {
-   "id": "sparks-fly",
-   "name": "Sparks Fly",
-   "trader": "Apollo",
-   "locations": [
-    "Any"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "trigger-nade-blueprint",
-     "name": "Trigger 'Nade Blueprint",
-     "qty": 1
-    },
-    {
-     "id": "processor",
-     "name": "Processor",
-     "qty": 2
-    },
-    {
-     "id": "crude-explosives",
-     "name": "Crude Explosives",
-     "qty": 4
-    }
-   ],
-   "objectives": [
-    "Destroy a Hornet with a Trigger 'Nade or Snap Blast Grenade"
-   ],
-   "after": [
-    "what-goes-around"
-   ]
-  },
-  {
-   "id": "digging-up-dirt",
-   "name": "Digging Up Dirt",
-   "trader": "Celeste",
-   "locations": [
-    "Buried City"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "advanced-electrical-components",
-     "name": "Advanced Electrical Components",
-     "qty": 2
-    },
-    {
-     "id": "speaker-component",
-     "name": "Speaker Component",
-     "qty": 2
-    }
-   ],
-   "objectives": [
-    "Reach the Santa Maria Houses in Old Town",
-    "Find the Dead Drop in the courtyard"
-   ],
-   "after": [
-    "tribute-to-toledo"
-   ]
-  },
-  {
-   "id": "last-entry",
-   "name": "Last Entry",
-   "trader": "Shani",
-   "locations": [
-    "Stella Montis"
-   ],
-   "requires": [
-    {
-     "id": "official-shutdown-documentation",
-     "name": "Official Shutdown Documentation",
-     "qty": 1
-    },
-    {
-     "id": "seed-vault-box-key",
-     "name": "Seed Vault Box Key",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "yellow-light-stick-blueprint",
-     "name": "Yellow Light Stick Blueprint",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Access the correct work station in the Seed Vault for clues",
-    "Find the hidden key in the adjacent room",
-    "Unlock the seed deposit box in the Seed Vault",
-    "Search the seed deposit box",
-    "Bring the Official Shutdown Documentation to Shani"
-   ],
-   "after": [
-    "furtive-meetings"
-   ]
-  },
-  {
-   "id": "worth-your-salt",
-   "name": "Worth Your Salt",
-   "trader": "Celeste",
-   "locations": [
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "vita-spray-blueprint",
-     "name": "Vita Spray Blueprint",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Go to the Rocket Assembly",
-    "Search for the hidden Battery Prototype in a high place",
-    "Bring the Battery Prototype to the Industrial Recharger",
-    "Use the machinery to charge the battery",
-    "Deliver the Charged Battery to the drop-off point in the corner"
-   ],
-   "after": [
-    "groundbreaking"
-   ]
-  },
-  {
-   "id": "a-first-foothold",
-   "name": "A First Foothold",
-   "trader": "Apollo",
-   "locations": [
-    "The Blue Gate"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "shrapnel-grenade",
-     "name": "Shrapnel Grenade",
-     "qty": 3
-    },
-    {
-     "id": "snap-blast-grenade",
-     "name": "Snap Blast Grenade",
-     "qty": 3
-    },
-    {
-     "id": "heavy-fuze-grenade",
-     "name": "Heavy Fuze Grenade",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Stabilize the observation deck near Ridgeline",
-    "Enable the comms terminal near Olive Grove",
-    "Rotate the satellite dishes on the church roof north of the Data Vault",
-    "Fix the roof plates on the Raider structure near Trapper's Glade"
-   ],
-   "after": [
-    "off-the-radar"
-   ]
-  },
-  {
-   "id": "a-new-type-of-plant",
-   "name": "A New Type Of Plant",
-   "trader": "Lance",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [
-    {
-     "id": "possibly-toxic-plant",
-     "name": "Possibly Toxic Plant",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "vita-shot",
-     "name": "Vita Shot",
-     "qty": 1
-    },
-    {
-     "id": "antiseptic",
-     "name": "Antiseptic",
-     "qty": 5
-    }
-   ],
-   "objectives": [
-    "Find the new plant near the Baron Husk in Old Battleground",
-    "Deliver the Possibly Toxic Plant to Lance"
-   ],
-   "after": [
-    "building-a-library"
-   ]
-  },
-  {
-   "id": "a-prime-specimen",
-   "name": "A Prime Specimen",
-   "trader": "Shani",
-   "locations": [
-    "The Blue Gate"
-   ],
-   "requires": [
-    {
-     "id": "arc-powercell",
-     "name": "ARC Powercell",
-     "qty": 2
-    }
-   ],
-   "rewards": [
-    {
-     "id": "patrol-car-key",
-     "name": "Patrol Car Key",
-     "qty": 1
-    },
-    {
-     "id": "door-blocker",
-     "name": "Door Blocker",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Obtain 2 ARC Powercells",
-    "Interact with an ARC Deforester",
-    "Loot an ARC Deforester"
-   ],
-   "after": [
-    "the-clean-dream"
-   ]
-  },
-  {
-   "id": "a-rising-tide",
-   "name": "A Rising Tide",
-   "trader": "Celeste",
-   "locations": [
-    "Buried City",
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "anvil-ii",
-     "name": "Anvil II",
-     "qty": 1
-    },
-    {
-     "id": "anvil-splitter",
-     "name": "Anvil Splitter",
-     "qty": 1
-    },
-    {
-     "id": "extended-barrel-iii",
-     "name": "Extended Barrel III",
-     "qty": 1
-    },
-    {
-     "id": "heavy-ammo",
-     "name": "Heavy Ammo",
-     "qty": 40
-    }
-   ],
-   "objectives": [
-    "Buried City: find the foreman's barricaded apartment south of Piazza Roma",
-    "Access the foreman's digital logbook",
-    "Dam Battlegrounds: reach the Power Generation Complex",
-    "Find a way into the Controlled Access Zone",
-    "Search the Controlled Access Zone for clues about the foreman's reconstruction project"
-   ],
-   "after": [
-    "a-dead-end"
-   ]
-  },
-  {
-   "id": "a-toxic-trail",
-   "name": "A Toxic Trail",
-   "trader": "Shani",
-   "locations": [
-    "Dam Battlegrounds"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "tactical-mk-2",
-     "name": "Tactical Mk. 2",
-     "qty": 1
-    },
-    {
-     "id": "zipline",
-     "name": "Zipline",
-     "qty": 3
-    },
-    {
-     "id": "pulse-mine",
-     "name": "Pulse Mine",
-     "qty": 3
-    },
-    {
-     "id": "gas-mine",
-     "name": "Gas Mine",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Return to the water intake below Water Treatment Control",
-    "Search the swamp for traces of the barrel's origin",
-    "Take a photo of the barrel truck",
-    "Search the truck's trunk for clues about the saboteur"
-   ],
-   "after": [
-    "life-of-a-pharmacist"
-   ]
-  },
-  {
-   "id": "a-wrench-in-the-works",
-   "name": "A Wrench in the Works",
-   "trader": "Celeste",
-   "locations": [
-    "Spaceport"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "radio-renegade-outfit-yellow",
-     "name": "Radio Renegade Outfit (Yellow)",
-     "qty": 1
-    },
-    {
-     "id": "mechanical-components",
-     "name": "Mechanical Components",
-     "qty": 5
-    },
-    {
-     "id": "mod-components",
-     "name": "Mod Components",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Search the buses near the western gate",
-    "Locate the stash of sabotage supplies at the Water Towers"
-   ],
-   "after": [
-    "safe-harbor"
-   ]
-  },
-  {
-   "id": "armored-transports",
-   "name": "Armored Transports",
-   "trader": "Tian Wen",
-   "locations": [
-    "The Blue Gate"
-   ],
-   "requires": [
-    {
-     "id": "armored-patrol-key-card",
-     "name": "Armored Patrol Key Card",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "aviator-outfit-blue-yellow",
-     "name": "Aviator Outfit (Blue Yellow)",
-     "qty": 1
-    },
-    {
-     "id": "smoke-grenade",
-     "name": "Smoke Grenade",
-     "qty": 3
-    },
-    {
-     "id": "defibrillator",
-     "name": "Defibrillator",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Reach the Checkpoint",
-    "Search the guard huts for an Armored Patrol Key Card",
-    "Reach the Traffic Tunnel near the Blue Gate Checkpoint",
-    "Find and unlock the rear door of an armored patrol car"
-   ],
-   "after": [
-    "a-new-type-of-plant",
-    "with-a-trace"
-   ]
-  },
-  {
-   "id": "battening-down",
-   "name": "Battening Down",
-   "trader": "Apollo",
-   "locations": [
-    "Riven Tides"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "riven-tides-hotel-keycard-no-107",
-     "name": "Riven Tides Hotel Keycard No. 107",
-     "qty": 1
-    },
-    {
-     "id": "smoke-grenade-trap",
-     "name": "Smoke Grenade Trap",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "Photograph seawall cracks",
-    "Collect a sample from the shoreline near the hotel beach",
-    "Repair the leaking oil pipe in the northeast"
-   ],
-   "after": [
-    "off-the-radar"
+    "sizing-things-up",
+    "tracks-of-the-beast"
    ]
   },
   {
@@ -2728,6 +884,60 @@
    ],
    "after": [
     "combat-recon"
+   ]
+  },
+  {
+   "id": "broken-monument",
+   "name": "Broken Monument",
+   "trader": "Tian Wen",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [
+    {
+     "id": "first-wave-compass",
+     "name": "First Wave Compass",
+     "qty": 1
+    },
+    {
+     "id": "first-wave-rations",
+     "name": "First Wave Rations",
+     "qty": 1
+    },
+    {
+     "id": "first-wave-tape",
+     "name": "First Wave Tape",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "arpeggio-i",
+     "name": "Arpeggio I",
+     "qty": 1
+    },
+    {
+     "id": "compensator-ii",
+     "name": "Compensator II",
+     "qty": 1
+    },
+    {
+     "id": "medium-ammo",
+     "name": "Medium Ammo",
+     "qty": 80
+    }
+   ],
+   "objectives": [
+    "Reach the hallowed grounds by the Scrap Yard",
+    "Find a compass near the broken-down vehicles",
+    "Find the video tape near the cylindrical containers",
+    "Find the old field rations in the Raider camp",
+    "Deliver the First Wave Tape to Tian Wen",
+    "Deliver the First Wave Compass to Tian Wen",
+    "Deliver the First Wave Rations to Tian Wen"
+   ],
+   "after": [
+    "what-we-left-behind"
    ]
   },
   {
@@ -2807,6 +1017,46 @@
    ],
    "after": [
     "shoring-up-defenses"
+   ]
+  },
+  {
+   "id": "celeste-s-journals",
+   "name": "Celeste's Journals",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [
+    {
+     "id": "celeste-s-journal",
+     "name": "Celeste's Journal",
+     "qty": 2
+    }
+   ],
+   "rewards": [
+    {
+     "id": "exodus-modules",
+     "name": "Exodus Modules",
+     "qty": 1
+    },
+    {
+     "id": "magnetic-accelerator",
+     "name": "Magnetic Accelerator",
+     "qty": 1
+    },
+    {
+     "id": "heavy-gun-parts",
+     "name": "Heavy Gun Parts",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Retrieve Celeste's Journal from the South Swamp Outpost",
+    "Retrieve Celeste's Journal from the northern outpost above the Red Lakes",
+    "Deliver both Journals to Celeste"
+   ],
+   "after": [
+    "a-symbol-of-unification"
    ]
   },
   {
@@ -2894,6 +1144,79 @@
    "after": []
   },
   {
+   "id": "clearer-skies",
+   "name": "Clearer Skies",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "arc-alloy",
+     "name": "ARC Alloy",
+     "qty": 3
+    }
+   ],
+   "rewards": [
+    {
+     "id": "black-hiker-color-backpack",
+     "name": "Black (Hiker Color) Backpack",
+     "qty": 1
+    },
+    {
+     "id": "light-shield",
+     "name": "Light Shield",
+     "qty": 1
+    },
+    {
+     "id": "sterilized-bandage",
+     "name": "Sterilized Bandage",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Destroy 3 ARC enemies",
+    "Get 3 ARC Alloy for Shani"
+   ],
+   "after": [
+    "picking-up-the-pieces"
+   ]
+  },
+  {
+   "id": "cold-storage",
+   "name": "Cold Storage",
+   "trader": "Shani",
+   "locations": [
+    "Stella Montis"
+   ],
+   "requires": [
+    {
+     "id": "old-world-books",
+     "name": "Old World Books",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "raider-hatch-key",
+     "name": "Raider Hatch Key",
+     "qty": 1
+    },
+    {
+     "id": "gas-mine",
+     "name": "Gas Mine",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Search any J Kozma Ventures container in one round",
+    "Deliver the Old World Books to Shani"
+   ],
+   "after": [
+    "in-my-image"
+   ]
+  },
+  {
    "id": "collision-course",
    "name": "Collision Course",
    "trader": "Tian Wen",
@@ -2970,6 +1293,397 @@
    ]
   },
   {
+   "id": "communication-hideout",
+   "name": "Communication Hideout",
+   "trader": "Shani",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "anvil-iii",
+     "name": "Anvil III",
+     "qty": 1
+    },
+    {
+     "id": "aviator-outfit-crimson-racer-color",
+     "name": "Aviator Outfit (Crimson Racer Color)",
+     "qty": 1
+    },
+    {
+     "id": "heavy-ammo",
+     "name": "Heavy Ammo",
+     "qty": 40
+    }
+   ],
+   "objectives": [
+    "Get to the Red Tower in Old Town",
+    "Locate the missing battery cell",
+    "Put the battery cell into the Generator",
+    "Turn on the Generator's power",
+    "Start up the antenna terminal near the Red Tower"
+   ],
+   "after": [
+    "lost-in-transmission"
+   ]
+  },
+  {
+   "id": "deciphering-the-data",
+   "name": "Deciphering The Data",
+   "trader": "Shani",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "defibrillator",
+     "name": "Defibrillator",
+     "qty": 3
+    },
+    {
+     "id": "trailblazer",
+     "name": "Trailblazer",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Decrypt the data at the decryptor in the Fuel Control Building",
+    "Travel to the Arrival Building in Spaceport",
+    "Use the decryptor on the Arrival Building's top floor"
+   ],
+   "after": [
+    "paving-the-way"
+   ]
+  },
+  {
+   "id": "digging-up-dirt",
+   "name": "Digging Up Dirt",
+   "trader": "Celeste",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "advanced-electrical-components",
+     "name": "Advanced Electrical Components",
+     "qty": 2
+    },
+    {
+     "id": "speaker-component",
+     "name": "Speaker Component",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Reach the Santa Maria Houses in Old Town",
+    "Find the Dead Drop in the courtyard"
+   ],
+   "after": [
+    "tribute-to-toledo"
+   ]
+  },
+  {
+   "id": "divided",
+   "name": "Divided",
+   "trader": "Nomadic Envoys",
+   "locations": [
+    "Pendola Pass"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "durable-cloth",
+     "name": "Durable Cloth",
+     "qty": 2
+    },
+    {
+     "id": "magnet",
+     "name": "Magnet",
+     "qty": 2
+    },
+    {
+     "id": "music-box",
+     "name": "Music Box",
+     "qty": 1
+    },
+    {
+     "id": "rusted-gear",
+     "name": "Rusted Gear",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Search for the Nomad recording at the Loading Platforms",
+    "Search for the Nomad recording at the Weather Station",
+    "Search for the Nomad recording at the Dispatch Tower",
+    "Search for the Nomad recording at Almatera Station"
+   ],
+   "after": [
+    "ruins-and-reverberations"
+   ]
+  },
+  {
+   "id": "doctor-s-orders",
+   "name": "Doctor's Orders",
+   "trader": "Lance",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "durable-cloth",
+     "name": "Durable Cloth",
+     "qty": 1
+    },
+    {
+     "id": "great-mullein",
+     "name": "Great Mullein",
+     "qty": 1
+    },
+    {
+     "id": "syringe",
+     "name": "Syringe",
+     "qty": 1
+    },
+    {
+     "id": "antiseptic",
+     "name": "Antiseptic",
+     "qty": 2
+    }
+   ],
+   "rewards": [
+    {
+     "id": "surge-shield-recharger",
+     "name": "Surge Shield Recharger",
+     "qty": 1
+    },
+    {
+     "id": "adrenaline-shot",
+     "name": "Adrenaline Shot",
+     "qty": 3
+    },
+    {
+     "id": "sterilized-bandage",
+     "name": "Sterilized Bandage",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Obtain 1 Syringe",
+    "Obtain 2 Antiseptic",
+    "Obtain 1 Durable Cloth",
+    "Obtain 1 Great Mullein"
+   ],
+   "after": [
+    "greasing-her-palms"
+   ]
+  },
+  {
+   "id": "dormant-barons",
+   "name": "Dormant Barons",
+   "trader": "Shani",
+   "locations": [
+    "Dam Battlegrounds",
+    "Spaceport",
+    "The Blue Gate"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "door-blocker",
+     "name": "Door Blocker",
+     "qty": 3
+    },
+    {
+     "id": "li-l-smoke-grenade",
+     "name": "Li'l Smoke Grenade",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Loot a Baron Husk"
+   ],
+   "after": [
+    "greasing-her-palms",
+    "the-trifecta"
+   ]
+  },
+  {
+   "id": "down-to-earth",
+   "name": "Down to Earth",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "combat-mk-1",
+     "name": "Combat Mk. 1",
+     "qty": 1
+    },
+    {
+     "id": "medium-shield",
+     "name": "Medium Shield",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Visit a Field Depot",
+    "Deliver a Field Crate to Supply Station",
+    "Collect the reward"
+   ],
+   "after": [
+    "hatch-repairs"
+   ]
+  },
+  {
+   "id": "dust-on-the-wires",
+   "name": "Dust on the Wires",
+   "trader": "Shani",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [
+    {
+     "id": "scout-patrol-note",
+     "name": "Scout Patrol Note",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "backpack-charm-fax-machine",
+     "name": "Backpack Charm (Fax Machine)",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Visit any Field Depot on the eastern side of the Spaceport",
+    "Use the Field Radio to transmit the scout group's last log to Shani",
+    "Interact with the terminal in the old Raider Tower north of the Maintenance Hangar",
+    "Find traces of the scout patrol near the Maintenance Hangar",
+    "Search the remains left by the scouts",
+    "Deliver the Scout Patrol Note to Shani"
+   ],
+   "after": [
+    "the-trifecta"
+   ]
+  },
+  {
+   "id": "echoes-of-victory-ridge",
+   "name": "Echoes Of Victory Ridge",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [
+    {
+     "id": "major-aiva-s-patch",
+     "name": "Major Aiva's Patch",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "music-box",
+     "name": "Music Box",
+     "qty": 1
+    },
+    {
+     "id": "processor",
+     "name": "Processor",
+     "qty": 2
+    },
+    {
+     "id": "crude-explosives",
+     "name": "Crude Explosives",
+     "qty": 6
+    }
+   ],
+   "objectives": [
+    "Reach Victory Ridge",
+    "Retrieve the battle plans from the hideout under the broken highway",
+    "Deliver Major Aiva's Patch to Celeste"
+   ],
+   "after": [
+    "keeping-the-memory"
+   ]
+  },
+  {
+   "id": "empathetic-prototypes",
+   "name": "Empathetic Prototypes",
+   "trader": "Lance",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [
+    {
+     "id": "project-pathos-empathy-core",
+     "name": "Project Pathos Empathy Core",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "canto-i",
+     "name": "Canto I",
+     "qty": 1
+    },
+    {
+     "id": "vita-shot",
+     "name": "Vita Shot",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "In one round, reach the Trench Towers in the Spaceport Trench",
+    "In one round, find the Terminal and disable the Magnetic Lock, or find the Magnetic Lock on the Crate and disable it by hand",
+    "In one round, search the Cargo Crate",
+    "Deliver the Project Pathos Empathy Core to Lance"
+   ],
+   "after": [
+    "someone-else-s-shoes"
+   ]
+  },
+  {
+   "id": "espresso",
+   "name": "Espresso",
+   "trader": "Apollo",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "espresso-machine-parts",
+     "name": "Espresso Machine Parts",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "coffee-pot",
+     "name": "Coffee Pot",
+     "qty": 1
+    },
+    {
+     "id": "adrenaline-shot",
+     "name": "Adrenaline Shot",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Find an Espresso Machine and salvage it for spare parts",
+    "Collect the Espresso Machine Parts and give them to Apollo (both within one round)"
+   ],
+   "after": [
+    "bees"
+   ]
+  },
+  {
    "id": "exploring-pendola-pass",
    "name": "Exploring Pendola Pass",
    "trader": "Celeste",
@@ -3011,6 +1725,425 @@
    ]
   },
   {
+   "id": "eyes-in-the-sky",
+   "name": "Eyes in the Sky",
+   "trader": "Shani",
+   "locations": [
+    "Dam Battlegrounds",
+    "Buried City",
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "vita-spray",
+     "name": "Vita Spray",
+     "qty": 1
+    },
+    {
+     "id": "tagging-grenade",
+     "name": "Tagging Grenade",
+     "qty": 3
+    },
+    {
+     "id": "yellow-light-stick",
+     "name": "Yellow Light Stick",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Install a LiDAR Scanner at the top of the Control Tower on Dam Battlegrounds",
+    "Install a LiDAR Scanner at the Communications Tower on Spaceport",
+    "Install a LiDAR Scanner on top of the Galleria sign in Buried City"
+   ],
+   "after": [
+    "a-lay-of-the-land"
+   ]
+  },
+  {
+   "id": "eyes-on-the-prize",
+   "name": "Eyes On The Prize",
+   "trader": "Tian Wen",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [
+    {
+     "id": "wires",
+     "name": "Wires",
+     "qty": 3
+    }
+   ],
+   "rewards": [
+    {
+     "id": "extended-medium-mag-ii",
+     "name": "Extended Medium Mag II",
+     "qty": 1
+    },
+    {
+     "id": "extended-shotgun-mag-ii",
+     "name": "Extended Shotgun Mag II",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Find the secluded roof terrace south-west of the Southern Station, look for blue tarps",
+    "Rewire the solar panel using 3 Wires"
+   ],
+   "after": [
+    "market-correction"
+   ]
+  },
+  {
+   "id": "flickering-threat",
+   "name": "Flickering Threat",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "radio-renegade-outfit-helmet-variant",
+     "name": "Radio Renegade Outfit (Helmet Variant)",
+     "qty": 1
+    },
+    {
+     "id": "advanced-mechanical-components",
+     "name": "Advanced Mechanical Components",
+     "qty": 3
+    },
+    {
+     "id": "medium-gun-parts",
+     "name": "Medium Gun Parts",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Locate the Generator Room",
+    "Fix the generator",
+    "Locate the Ventilation Shaft",
+    "Switch on power at the switch under the stairs"
+   ],
+   "after": [
+    "power-out"
+   ]
+  },
+  {
+   "id": "fragmented-logs",
+   "name": "Fragmented Logs",
+   "trader": "Shani",
+   "locations": [
+    "Stella Montis"
+   ],
+   "requires": [
+    {
+     "id": "electrical-components",
+     "name": "Electrical Components",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "showstopper",
+     "name": "Showstopper",
+     "qty": 3
+    },
+    {
+     "id": "trailblazer",
+     "name": "Trailblazer",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Repair the out-of-service terminal in a Robotic Sandbox control room with 1 Electrical Component",
+    "Enable power in a conduit backroom near the Robotic Sandboxes",
+    "Boot the main frame data terminal in the Cultural Archives service backrooms"
+   ],
+   "after": [
+    "a-dead-end",
+    "dust-on-the-wires"
+   ]
+  },
+  {
+   "id": "furtive-meetings",
+   "name": "Furtive Meetings",
+   "trader": "Shani",
+   "locations": [
+    "Stella Montis"
+   ],
+   "requires": [
+    {
+     "id": "secret-meeting-info",
+     "name": "Secret Meeting Info",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "aphelion",
+     "name": "Aphelion",
+     "qty": 1
+    },
+    {
+     "id": "energy-clip",
+     "name": "Energy Clip",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Search the Medical Research Area staircase for the meeting spot",
+    "Find the meeting spot near the ventilation shaft between Robotic Sandbox B and Seed Vault",
+    "Find the meeting spot at the bottom of the staircase connecting Cultural Archives and Seed Vault",
+    "Search the meeting area",
+    "Bring the Secret Meeting Info to Shani"
+   ],
+   "after": [
+    "fragmented-logs"
+   ]
+  },
+  {
+   "id": "greasing-her-palms",
+   "name": "Greasing Her Palms",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds",
+    "Buried City",
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "lure-grenade-blueprint",
+     "name": "Lure Grenade Blueprint",
+     "qty": 1
+    },
+    {
+     "id": "electrical-components",
+     "name": "Electrical Components",
+     "qty": 3
+    },
+    {
+     "id": "speaker-component",
+     "name": "Speaker Component",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Dam Battlegrounds: Check the Locked Room in the Water Treatment Control building",
+    "Spaceport: Scope out the rocket thrusters outside the Rocket Assembly",
+    "Buried City: Visit the barricaded area on floor 6 of the Space Travel Building"
+   ],
+   "after": [
+    "a-better-use"
+   ]
+  },
+  {
+   "id": "groundbreaking",
+   "name": "Groundbreaking",
+   "trader": "Apollo",
+   "locations": [
+    "The Blue Gate"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "power-rod",
+     "name": "Power Rod",
+     "qty": 1
+    },
+    {
+     "id": "warden-outfit-tangerine-color",
+     "name": "Warden Outfit (Tangerine Color)",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Find a spare Blue Gate Communication Tower Key",
+    "Enter the locked room at Pilgrim's Peak",
+    "Search the room for construction research",
+    "Find the building pictured on the whiteboard",
+    "Photograph the abandoned housing project"
+   ],
+   "after": [
+    "deciphering-the-data"
+   ]
+  },
+  {
+   "id": "hatch-repairs",
+   "name": "Hatch Repairs",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "binoculars",
+     "name": "Binoculars",
+     "qty": 1
+    },
+    {
+     "id": "raider-hatch-key",
+     "name": "Raider Hatch Key",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Repair the leaking hydraulic pipes near a Raider Hatch",
+    "Search for a Hatch Key near the Raider Hatch"
+   ],
+   "after": [
+    "a-bad-feeling"
+   ]
+  },
+  {
+   "id": "home-to-roost",
+   "name": "Home To Roost",
+   "trader": "Shani",
+   "locations": [
+    "The Blue Gate"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "surge-shield-recharger",
+     "name": "Surge Shield Recharger",
+     "qty": 1
+    },
+    {
+     "id": "sterilized-bandage",
+     "name": "Sterilized Bandage",
+     "qty": 2
+    },
+    {
+     "id": "antiseptic",
+     "name": "Antiseptic",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Reach the back of the Blue Gate tunnels",
+    "Scan any Android in the back of the Traffic Tunnels",
+    "Head to the MANTIKOR locker room",
+    "Search the locker room for any clues",
+    "Read the last vehicle weighing logs",
+    "(Optional) Find the hidden key",
+    "Enter the Confiscation Room",
+    "Transmit MANTIKOR's security last recordings to Shani"
+   ],
+   "after": [
+    "a-wrench-in-the-works"
+   ]
+  },
+  {
+   "id": "in-my-image",
+   "name": "In My Image",
+   "trader": "Lance",
+   "locations": [
+    "Stella Montis"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "looting-mk-2",
+     "name": "Looting Mk. 2",
+     "qty": 2
+    },
+    {
+     "id": "green-light-stick",
+     "name": "Green Light Stick",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Deploy into Stella Montis",
+    "Find and search 3 Androids"
+   ],
+   "after": [
+    "a-bad-feeling"
+   ]
+  },
+  {
+   "id": "industrial-espionage",
+   "name": "Industrial Espionage",
+   "trader": "Tian Wen",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "burletta-blueprint",
+     "name": "Burletta Blueprint",
+     "qty": 1
+    },
+    {
+     "id": "mechanical-components",
+     "name": "Mechanical Components",
+     "qty": 3
+    },
+    {
+     "id": "simple-gun-parts",
+     "name": "Simple Gun Parts",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Find Tian Wen's weapon cache near the Gas Station in the Outskirts",
+    "Deliver the Burletta to the rival weapon cache",
+    "Plant a bug on the weapon cache"
+   ],
+   "after": [
+    "eyes-on-the-prize"
+   ]
+  },
+  {
+   "id": "into-the-fray",
+   "name": "Into The Fray",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "leaper-pulse-unit",
+     "name": "Leaper Pulse Unit",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "backpack-charm-burger-boy",
+     "name": "Backpack Charm (Burger Boy)",
+     "qty": 1
+    },
+    {
+     "id": "radio-renegade-outfit-grey-color",
+     "name": "Radio Renegade Outfit (Grey Color)",
+     "qty": 1
+    },
+    {
+     "id": "vulcano-iii",
+     "name": "Vulcano III",
+     "qty": 1
+    },
+    {
+     "id": "shotgun-ammo",
+     "name": "Shotgun Ammo",
+     "qty": 40
+    }
+   ],
+   "objectives": [
+    "Defeat one Leaper",
+    "Collect a Leaper Pulse Unit"
+   ],
+   "after": [
+    "communication-hideout",
+    "water-troubles"
+   ]
+  },
+  {
    "id": "keeping-an-eye-out",
    "name": "Keeping an Eye Out",
    "trader": "Celeste",
@@ -3036,6 +2169,113 @@
    ],
    "after": [
     "the-clean-dream"
+   ]
+  },
+  {
+   "id": "keeping-the-memory",
+   "name": "Keeping The Memory",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "duct-tape",
+     "name": "Duct Tape",
+     "qty": 5
+    },
+    {
+     "id": "magnet",
+     "name": "Magnet",
+     "qty": 5
+    },
+    {
+     "id": "simple-gun-parts",
+     "name": "Simple Gun Parts",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Reach the wreckage in the Formicai Hills",
+    "Search for the missing helmet",
+    "Return the helmet to the memorial"
+   ],
+   "after": [
+    "straight-record"
+   ]
+  },
+  {
+   "id": "last-entry",
+   "name": "Last Entry",
+   "trader": "Shani",
+   "locations": [
+    "Stella Montis"
+   ],
+   "requires": [
+    {
+     "id": "official-shutdown-documentation",
+     "name": "Official Shutdown Documentation",
+     "qty": 1
+    },
+    {
+     "id": "seed-vault-box-key",
+     "name": "Seed Vault Box Key",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "yellow-light-stick-blueprint",
+     "name": "Yellow Light Stick Blueprint",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Access the correct work station in the Seed Vault for clues",
+    "Find the hidden key in the adjacent room",
+    "Unlock the seed deposit box in the Seed Vault",
+    "Search the seed deposit box",
+    "Bring the Official Shutdown Documentation to Shani"
+   ],
+   "after": [
+    "furtive-meetings"
+   ]
+  },
+  {
+   "id": "life-of-a-pharmacist",
+   "name": "Life Of A Pharmacist",
+   "trader": "Lance",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "defibrillator",
+     "name": "Defibrillator",
+     "qty": 1
+    },
+    {
+     "id": "surge-shield-recharger",
+     "name": "Surge Shield Recharger",
+     "qty": 1
+    },
+    {
+     "id": "sterilized-bandage",
+     "name": "Sterilized Bandage",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Find Arbusto Farmacia by the collapsed highway",
+    "Document the pharmacist's hobbies",
+    "Document the pharmacist's family",
+    "Document the pharmacist's taste",
+    "Document the pharmacist's skills"
+   ],
+   "after": [
+    "espresso"
    ]
   },
   {
@@ -3071,6 +2311,128 @@
    ],
    "after": [
     "last-entry"
+   ]
+  },
+  {
+   "id": "lost-in-transmission",
+   "name": "Lost In Transmission",
+   "trader": "Shani",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "snap-hook",
+     "name": "Snap Hook",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Go to Control Tower A6",
+    "Climb to the top of the tower",
+    "Establish a connection at the terminal"
+   ],
+   "after": [
+    "our-presence-up-there"
+   ]
+  },
+  {
+   "id": "marked-for-death",
+   "name": "Marked For Death",
+   "trader": "Tian Wen",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "angled-grip-ii",
+     "name": "Angled Grip II",
+     "qty": 1
+    },
+    {
+     "id": "shotgun-choke-ii",
+     "name": "Shotgun Choke II",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Reach the Su Durante Warehouses in the Buried City Outskirts",
+    "Search for Tian Wen's cache near the Warehouses",
+    "Follow the clues"
+   ],
+   "after": [
+    "broken-monument"
+   ]
+  },
+  {
+   "id": "market-correction",
+   "name": "Market Correction",
+   "trader": "Tian Wen",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "compensator-i",
+     "name": "Compensator I",
+     "qty": 1
+    },
+    {
+     "id": "extended-light-mag-ii",
+     "name": "Extended Light Mag II",
+     "qty": 1
+    },
+    {
+     "id": "silencer-ii",
+     "name": "Silencer II",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Locate the cache near Marano Station",
+    "Sabotage the cache"
+   ],
+   "after": [
+    "marked-for-death"
+   ]
+  },
+  {
+   "id": "medical-merchandise",
+   "name": "Medical Merchandise",
+   "trader": "Lance",
+   "locations": [
+    "Dam Battlegrounds",
+    "Buried City",
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "backpack-charm-banana",
+     "name": "Backpack Charm (Banana)",
+     "qty": 1
+    },
+    {
+     "id": "defibrillator",
+     "name": "Defibrillator",
+     "qty": 3
+    },
+    {
+     "id": "vita-shot",
+     "name": "Vita Shot",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Search 2 containers in the Departure Building's exam rooms on Spaceport",
+    "Search 3 containers in the Hospital on Buried City",
+    "Search 2 containers in the Research & Administration building's medical room on Dam Battlegrounds"
+   ],
+   "after": [
+    "doctor-s-orders"
    ]
   },
   {
@@ -3153,6 +2515,149 @@
    ]
   },
   {
+   "id": "nothing-gained",
+   "name": "Nothing Gained",
+   "trader": "Apollo",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "queen-reactor",
+     "name": "Queen Reactor",
+     "qty": 1
+    },
+    {
+     "id": "matriarch-reactor",
+     "name": "Matriarch Reactor",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "queen-reactor",
+     "name": "Queen Reactor",
+     "qty": 1
+    },
+    {
+     "id": "matriarch-reactor",
+     "name": "Matriarch Reactor",
+     "qty": 1
+    },
+    {
+     "id": "bettina-iii",
+     "name": "Bettina III",
+     "qty": 1
+    },
+    {
+     "id": "bronze-statuette",
+     "name": "Bronze Statuette",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Destroy a Matriarch",
+    "Destroy a Queen",
+    "Deliver a Queen Reactor to Apollo",
+    "Deliver a Matriarch Reactor to Apollo",
+    "The Bronze Statuette is a bonus reward"
+   ],
+   "after": [
+    "nothing-ventured"
+   ]
+  },
+  {
+   "id": "nothing-ventured",
+   "name": "Nothing Ventured",
+   "trader": "Apollo",
+   "locations": [
+    "Any",
+    "Buried City",
+    "Stella Montis"
+   ],
+   "requires": [
+    {
+     "id": "comet-igniter",
+     "name": "Comet Igniter",
+     "qty": 3
+    },
+    {
+     "id": "rocketeer-driver",
+     "name": "Rocketeer Driver",
+     "qty": 3
+    },
+    {
+     "id": "arc-circuitry",
+     "name": "ARC Circuitry",
+     "qty": 6
+    },
+    {
+     "id": "arc-motion-core",
+     "name": "ARC Motion Core",
+     "qty": 6
+    }
+   ],
+   "rewards": [
+    {
+     "id": "deadline",
+     "name": "Deadline",
+     "qty": 1
+    },
+    {
+     "id": "wolfpack",
+     "name": "Wolfpack",
+     "qty": 1
+    },
+    {
+     "id": "deadline-blueprint",
+     "name": "Deadline Blueprint",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Destroy 3 Comets",
+    "Destroy 5 Rocketeers",
+    "Destroy 2 Sentinels",
+    "Deliver 3 Comet Igniters to Apollo",
+    "Deliver 3 Rocketeer Drivers to Apollo",
+    "Deliver 6 ARC Circuitry to Apollo",
+    "Deliver 6 ARC Motion Cores to Apollo",
+    "(Optional) Destroy a Bombardier on Buried City",
+    "(Optional) Destroy a Bastion on Stella Montis",
+    "Apollo hands you 1 Magnetic Accelerator, 3 Heavy Gun Parts and 1 Exodus Modules at the start; the Deadline Blueprint is a bonus reward"
+   ],
+   "after": []
+  },
+  {
+   "id": "off-the-radar",
+   "name": "Off The Radar",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "black-white-origin-color-outfit",
+     "name": "Black White (Origin Color) Outfit",
+     "qty": 1
+    },
+    {
+     "id": "defibrillator",
+     "name": "Defibrillator",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Visit a Field Depot in one round",
+    "Repair the antenna on the Field Depot's roof"
+   ],
+   "after": [
+    "clearer-skies",
+    "trash-into-treasure"
+   ]
+  },
+  {
    "id": "on-deaf-ears",
    "name": "On Deaf Ears",
    "trader": "Lance",
@@ -3227,6 +2732,40 @@
    ],
    "after": [
     "on-deaf-ears"
+   ]
+  },
+  {
+   "id": "our-presence-up-there",
+   "name": "Our Presence up There",
+   "trader": "Shani",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "buried-city-town-hall-key",
+     "name": "Buried City Town Hall Key",
+     "qty": 1
+    },
+    {
+     "id": "raider-hatch-key",
+     "name": "Raider Hatch Key",
+     "qty": 1
+    },
+    {
+     "id": "jolt-mine",
+     "name": "Jolt Mine",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Visit the Pattern House in The Dam",
+    "Find and flip the power switch",
+    "Complete the antenna installation on the roof"
+   ],
+   "after": [
+    "back-on-top"
    ]
   },
   {
@@ -3305,6 +2844,223 @@
    ]
   },
   {
+   "id": "paving-the-way",
+   "name": "Paving The Way",
+   "trader": "Apollo",
+   "locations": [
+    "Dam Battlegrounds",
+    "Buried City",
+    "The Blue Gate"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "advanced-electrical-components",
+     "name": "Advanced Electrical Components",
+     "qty": 1
+    },
+    {
+     "id": "raider-hatch-key",
+     "name": "Raider Hatch Key",
+     "qty": 1
+    },
+    {
+     "id": "seeker-grenade",
+     "name": "Seeker Grenade",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Visit any ENELICA building",
+    "Find the notice board with the researcher's note",
+    "On Buried City, reach the top floor above the Convinio in Piazza Roma",
+    "Find the researcher's flat and search it for research data"
+   ],
+   "after": [
+    "into-the-fray"
+   ]
+  },
+  {
+   "id": "picking-up-the-pieces",
+   "name": "Picking Up The Pieces",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "rattler-iii",
+     "name": "Rattler III",
+     "qty": 1
+    },
+    {
+     "id": "medium-ammo",
+     "name": "Medium Ammo",
+     "qty": 80
+    }
+   ],
+   "objectives": [
+    "Visit any map area with a loot category icon",
+    "Loot 3 containers"
+   ],
+   "after": []
+  },
+  {
+   "id": "power-out",
+   "name": "Power Out",
+   "trader": "Celeste",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "radio-renegade-outfit-bag-variant",
+     "name": "Radio Renegade Outfit (Bag Variant)",
+     "qty": 1
+    },
+    {
+     "id": "explosive-compound",
+     "name": "Explosive Compound",
+     "qty": 5
+    },
+    {
+     "id": "oil",
+     "name": "Oil",
+     "qty": 5
+    },
+    {
+     "id": "wires",
+     "name": "Wires",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Find the Electrical Substation south of the Spaceport",
+    "Find any sign of the missing engineer",
+    "Install the fuse",
+    "Restore the power"
+   ],
+   "after": [
+    "prescriptions-of-the-past"
+   ]
+  },
+  {
+   "id": "prescriptions-of-the-past",
+   "name": "Prescriptions of the Past",
+   "trader": "Lance",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "heavy-shield",
+     "name": "Heavy Shield",
+     "qty": 1
+    },
+    {
+     "id": "tactical-mk-3-healing",
+     "name": "Tactical Mk. 3 (Healing)",
+     "qty": 1
+    },
+    {
+     "id": "adrenaline-shot",
+     "name": "Adrenaline Shot",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Visit the Departure Building in the Spaceport",
+    "Find the Medical Exam Room inside the Departure Building",
+    "Search for the records"
+   ],
+   "after": [
+    "a-warm-place-to-rest"
+   ]
+  },
+  {
+   "id": "reduced-to-rubble",
+   "name": "Reduced to Rubble",
+   "trader": "Shani",
+   "locations": [
+    "The Blue Gate"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "zipline",
+     "name": "Zipline",
+     "qty": 1
+    },
+    {
+     "id": "barricade-kit",
+     "name": "Barricade Kit",
+     "qty": 3
+    },
+    {
+     "id": "door-blocker",
+     "name": "Door Blocker",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Take a photo of the Collapsed Highway",
+    "Go to the Broken Earth",
+    "Follow the trail of destruction through the Broken Earth",
+    "Investigate the unknown ARC machines"
+   ],
+   "after": [
+    "a-first-foothold"
+   ]
+  },
+  {
+   "id": "ruins-and-reverberations",
+   "name": "Ruins And Reverberations",
+   "trader": "Celeste",
+   "locations": [
+    "Pendola Pass"
+   ],
+   "requires": [
+    {
+     "id": "spotter-relay",
+     "name": "Spotter Relay",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "smoke-grenade",
+     "name": "Smoke Grenade",
+     "qty": 2
+    },
+    {
+     "id": "looting-mk-3-safekeeper",
+     "name": "Looting Mk. 3 (Safekeeper)",
+     "qty": 1
+    },
+    {
+     "id": "electrical-components",
+     "name": "Electrical Components",
+     "qty": 3
+    },
+    {
+     "id": "speaker-component",
+     "name": "Speaker Component",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Connect a Spotter Relay to the antenna on the roof of the Cielo Sereno Observatory",
+    "Weld the wires in the crawlspace under the control room to redirect power",
+    "Activate the Spotter Relay at the antenna again"
+   ],
+   "after": [
+    "wires-crossed"
+   ]
+  },
+  {
    "id": "safe-harbor",
    "name": "Safe Harbor",
    "trader": "Tian Wen",
@@ -3343,6 +3099,38 @@
    ],
    "after": [
     "line-in-the-sand"
+   ]
+  },
+  {
+   "id": "safe-passage",
+   "name": "Safe Passage",
+   "trader": "Apollo",
+   "locations": [
+    "Any"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "barricade-kit",
+     "name": "Barricade Kit",
+     "qty": 3
+    },
+    {
+     "id": "shrapnel-grenade",
+     "name": "Shrapnel Grenade",
+     "qty": 3
+    },
+    {
+     "id": "li-l-smoke-grenade",
+     "name": "Li'l Smoke Grenade",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Eliminate two ARC enemies with any explosive grenade"
+   ],
+   "after": [
+    "a-bad-feeling"
    ]
   },
   {
@@ -3505,6 +3293,106 @@
    ]
   },
   {
+   "id": "someone-else-s-shoes",
+   "name": "Someone Else's Shoes",
+   "trader": "Celeste",
+   "locations": [
+    "Stella Montis"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "stella-montis-medical-storage-key",
+     "name": "Stella Montis Medical Storage Key",
+     "qty": 1
+    },
+    {
+     "id": "herbal-bandage",
+     "name": "Herbal Bandage",
+     "qty": 3
+    },
+    {
+     "id": "shield-recharger",
+     "name": "Shield Recharger",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Scan any Android on Stella Montis",
+    "Find the Android in Research Lab 3 in the Medical Bay",
+    "Reach the Control Room in the Western Tunnels and search for clues"
+   ],
+   "after": [
+    "home-to-roost"
+   ]
+  },
+  {
+   "id": "source-of-the-contamination",
+   "name": "Source Of The Contamination",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "mod-components",
+     "name": "Mod Components",
+     "qty": 1
+    },
+    {
+     "id": "duct-tape",
+     "name": "Duct Tape",
+     "qty": 5
+    },
+    {
+     "id": "steel-spring",
+     "name": "Steel Spring",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Reach the Water Treatment Building in the Dam",
+    "Find the Flood Spill Intake near the Swamp",
+    "Investigate suspicious objects"
+   ],
+   "after": [
+    "water-troubles"
+   ]
+  },
+  {
+   "id": "sparks-fly",
+   "name": "Sparks Fly",
+   "trader": "Apollo",
+   "locations": [
+    "Any"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "trigger-nade-blueprint",
+     "name": "Trigger 'Nade Blueprint",
+     "qty": 1
+    },
+    {
+     "id": "processor",
+     "name": "Processor",
+     "qty": 2
+    },
+    {
+     "id": "crude-explosives",
+     "name": "Crude Explosives",
+     "qty": 4
+    }
+   ],
+   "objectives": [
+    "Destroy a Hornet with a Trigger 'Nade or Snap Blast Grenade"
+   ],
+   "after": [
+    "what-goes-around"
+   ]
+  },
+  {
    "id": "stable-housing",
    "name": "Stable Housing",
    "trader": "Tian Wen",
@@ -3546,6 +3434,71 @@
    ],
    "after": [
     "with-a-view"
+   ]
+  },
+  {
+   "id": "straight-record",
+   "name": "Straight Record",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "advanced-mechanical-components",
+     "name": "Advanced Mechanical Components",
+     "qty": 3
+    },
+    {
+     "id": "medium-gun-parts",
+     "name": "Medium Gun Parts",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Reach Victory Ridge",
+    "Find the old EMP trap",
+    "Disable the first power switch",
+    "Disable the second power switch",
+    "Disable the third power switch",
+    "Shut down the EMP trap"
+   ],
+   "after": [
+    "broken-monument"
+   ]
+  },
+  {
+   "id": "switching-the-supply",
+   "name": "Switching The Supply",
+   "trader": "Celeste",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "radio-renegade-outfit-blue-color",
+     "name": "Radio Renegade Outfit (Blue Color)",
+     "qty": 1
+    },
+    {
+     "id": "spaceport-trench-tower-key",
+     "name": "Spaceport Trench Tower Key",
+     "qty": 1
+    },
+    {
+     "id": "synthesized-fuel",
+     "name": "Synthesized Fuel",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Locate the tunnels beneath the Spaceport",
+    "Find and turn the valve inside those tunnels"
+   ],
+   "after": [
+    "source-of-the-contamination"
    ]
   },
   {
@@ -3725,6 +3678,104 @@
    ]
   },
   {
+   "id": "the-major-s-footlocker",
+   "name": "The Major's Footlocker",
+   "trader": "Tian Wen",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [
+    {
+     "id": "major-aiva-s-mementos",
+     "name": "Major Aiva's Mementos",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "hullcracker-blueprint",
+     "name": "Hullcracker Blueprint",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Search for Major Aiva's mementos in the apartments northwest of The Dam (in one round)",
+    "Deliver Major Aiva's Mementos to Tian Wen"
+   ],
+   "after": [
+    "a-symbol-of-unification"
+   ]
+  },
+  {
+   "id": "the-right-tool",
+   "name": "The Right Tool",
+   "trader": "Tian Wen",
+   "locations": [
+    "Any"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "cheer-emote",
+     "name": "Cheer Emote",
+     "qty": 1
+    },
+    {
+     "id": "extended-light-mag-i",
+     "name": "Extended Light Mag I",
+     "qty": 1
+    },
+    {
+     "id": "stitcher-ii",
+     "name": "Stitcher II",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Destroy a Fireball",
+    "Destroy a Hornet",
+    "Destroy a Turret"
+   ],
+   "after": [
+    "a-bad-feeling"
+   ]
+  },
+  {
+   "id": "the-root-of-the-matter",
+   "name": "The Root of the Matter",
+   "trader": "Celeste",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [
+    {
+     "id": "experimental-seed-sample",
+     "name": "Experimental Seed Sample",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "backpack-charm-succulent",
+     "name": "Backpack Charm (Succulent)",
+     "qty": 1
+    },
+    {
+     "id": "coins",
+     "name": "Coins",
+     "qty": 1000
+    }
+   ],
+   "objectives": [
+    "Go to the Research Building",
+    "Search the seed vault in the room with a great view",
+    "Deliver the Experimental Seed Sample to Celeste"
+   ],
+   "after": [
+    "untended-garden"
+   ]
+  },
+  {
    "id": "the-stench-of-corruption",
    "name": "The Stench Of Corruption",
    "trader": "Shani",
@@ -3769,6 +3820,64 @@
    ],
    "after": [
     "a-toxic-trail"
+   ]
+  },
+  {
+   "id": "the-trifecta",
+   "name": "The Trifecta",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "hornet-driver",
+     "name": "Hornet Driver",
+     "qty": 2
+    },
+    {
+     "id": "snitch-scanner",
+     "name": "Snitch Scanner",
+     "qty": 2
+    },
+    {
+     "id": "wasp-driver",
+     "name": "Wasp Driver",
+     "qty": 2
+    }
+   ],
+   "rewards": [
+    {
+     "id": "dam-control-tower-key",
+     "name": "Dam Control Tower Key",
+     "qty": 1
+    },
+    {
+     "id": "origin-outfit-orange-camo-color",
+     "name": "Origin Outfit (Orange Camo Color)",
+     "qty": 1
+    },
+    {
+     "id": "raider-hatch-key",
+     "name": "Raider Hatch Key",
+     "qty": 1
+    },
+    {
+     "id": "defibrillator",
+     "name": "Defibrillator",
+     "qty": 2
+    }
+   ],
+   "objectives": [
+    "Destroy a Wasp",
+    "Get a Wasp Driver for Shani",
+    "Destroy a Hornet",
+    "Get a Hornet Driver for Shani",
+    "Destroy a Snitch",
+    "Get a Snitch Scanner for Shani"
+   ],
+   "after": [
+    "down-to-earth"
    ]
   },
   {
@@ -3835,6 +3944,115 @@
    ]
   },
   {
+   "id": "tracks-of-the-beast",
+   "name": "Tracks Of The Beast",
+   "trader": "Shani",
+   "locations": [
+    "Pendola Pass"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "showstopper",
+     "name": "Showstopper",
+     "qty": 3
+    },
+    {
+     "id": "grappling-hook",
+     "name": "Grappling Hook",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "On Pendola Pass, head to the Northern Tracks",
+    "Find the destroyed station at the end of the tracks",
+    "Ping a Bully",
+    "Ping a Skulker",
+    "(Optional) Destroy 3 Skulkers",
+    "(Optional) Deliver a Skulker Targeter to Shani"
+   ],
+   "after": [
+    "exploring-pendola-pass"
+   ]
+  },
+  {
+   "id": "trash-into-treasure",
+   "name": "Trash Into Treasure",
+   "trader": "Shani",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "battery",
+     "name": "Battery",
+     "qty": 1
+    },
+    {
+     "id": "wires",
+     "name": "Wires",
+     "qty": 6
+    }
+   ],
+   "rewards": [
+    {
+     "id": "tactical-mk-1",
+     "name": "Tactical Mk. 1",
+     "qty": 1
+    },
+    {
+     "id": "adrenaline-shot",
+     "name": "Adrenaline Shot",
+     "qty": 3
+    }
+   ],
+   "objectives": [
+    "Obtain 6 Wires",
+    "Obtain 1 Battery"
+   ],
+   "after": [
+    "picking-up-the-pieces"
+   ]
+  },
+  {
+   "id": "tribute-to-toledo",
+   "name": "Tribute To Toledo",
+   "trader": "Celeste",
+   "locations": [
+    "Any"
+   ],
+   "requires": [
+    {
+     "id": "power-rod",
+     "name": "Power Rod",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "advanced-mechanical-components",
+     "name": "Advanced Mechanical Components",
+     "qty": 2
+    },
+    {
+     "id": "synthesized-fuel",
+     "name": "Synthesized Fuel",
+     "qty": 3
+    },
+    {
+     "id": "magnet",
+     "name": "Magnet",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Get a Power Rod for Celeste"
+   ],
+   "after": [
+    "life-of-a-pharmacist"
+   ]
+  },
+  {
    "id": "turnabout",
    "name": "Turnabout",
    "trader": "Celeste",
@@ -3860,6 +4078,89 @@
    ],
    "after": [
     "digging-up-dirt"
+   ]
+  },
+  {
+   "id": "unexpected-initiative",
+   "name": "Unexpected Initiative",
+   "trader": "Tian Wen",
+   "locations": [
+    "Buried City"
+   ],
+   "requires": [
+    {
+     "id": "moisture-meter",
+     "name": "Moisture Meter",
+     "qty": 1
+    },
+    {
+     "id": "nutrient-meter",
+     "name": "Nutrient Meter",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "il-toro-i",
+     "name": "Il Toro I",
+     "qty": 1
+    },
+    {
+     "id": "shotgun-choke-ii",
+     "name": "Shotgun Choke II",
+     "qty": 1
+    },
+    {
+     "id": "shotgun-ammo",
+     "name": "Shotgun Ammo",
+     "qty": 40
+    }
+   ],
+   "objectives": [
+    "Reach the Grandioso Apartments in Buried City",
+    "Search the Grandioso Apartments rooftop for a Moisture Meter",
+    "Reach Piazza Roma in Buried City",
+    "Search the broken rooftop gardens at Piazza Roma for a Nutrient Meter",
+    "Deliver the Nutrient Meter to Tian Wen",
+    "Deliver the Moisture Meter to Tian Wen"
+   ],
+   "after": [
+    "echoes-of-victory-ridge",
+    "industrial-espionage"
+   ]
+  },
+  {
+   "id": "untended-garden",
+   "name": "Untended Garden",
+   "trader": "Celeste",
+   "locations": [
+    "Dam Battlegrounds"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "advanced-mechanical-components",
+     "name": "Advanced Mechanical Components",
+     "qty": 3
+    },
+    {
+     "id": "heavy-gun-parts",
+     "name": "Heavy Gun Parts",
+     "qty": 3
+    },
+    {
+     "id": "canister",
+     "name": "Canister",
+     "qty": 5
+    }
+   ],
+   "objectives": [
+    "Go to the Hydroponic Dome Complex",
+    "Access the data archive in one of the domes",
+    "Upload the data to a computer terminal at any Field Depot"
+   ],
+   "after": [
+    "a-balanced-harvest"
    ]
   },
   {
@@ -3897,274 +4198,106 @@
    ]
   },
   {
-   "id": "with-a-view",
-   "name": "With a View",
-   "trader": "Shani",
+   "id": "water-troubles",
+   "name": "Water Troubles",
+   "trader": "Celeste",
    "locations": [
-    "Stella Montis"
+    "Dam Battlegrounds"
    ],
-   "requires": [
+   "requires": [],
+   "rewards": [
     {
-     "id": "rotary-encoder",
-     "name": "Rotary Encoder",
-     "qty": 1
+     "id": "mechanical-components",
+     "name": "Mechanical Components",
+     "qty": 3
     },
     {
-     "id": "ion-sputter",
-     "name": "Ion Sputter",
-     "qty": 1
-    }
-   ],
-   "rewards": [
+     "id": "simple-gun-parts",
+     "name": "Simple Gun Parts",
+     "qty": 3
+    },
     {
      "id": "steel-spring",
      "name": "Steel Spring",
-     "qty": 5
-    },
-    {
-     "id": "wires",
-     "name": "Wires",
-     "qty": 5
-    },
-    {
-     "id": "tactical-mk-2",
-     "name": "Tactical Mk. 2",
-     "qty": 1
+     "qty": 3
     }
    ],
    "objectives": [
-    "Obtain a Rotary Encoder",
-    "Visit any of the Control Rooms near the Assembly Line",
-    "Use the Rotary Encoder to activate the server switch",
-    "Interact with a nearby computer to help identify the correct paths",
-    "Deliver an Ion Sputter to Shani"
+    "Locate the Flood Access Tunnel under the Red Lake Balcony",
+    "Find the intake to the District's Water Supply",
+    "Sample the water"
    ],
    "after": [
-    "snap-and-salvage"
+    "after-rain-comes",
+    "the-root-of-the-matter"
    ]
   },
   {
-   "id": "belly-of-the-beast",
-   "name": "Belly Of The Beast",
-   "trader": "Shani",
-   "locations": [
-    "Pendola Pass"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "snap-hook",
-     "name": "Snap Hook",
-     "qty": 1
-    },
-    {
-     "id": "pendola-pass-observatory-key",
-     "name": "Pendola Pass Observatory Key",
-     "qty": 1
-    },
-    {
-     "id": "shield-recharger",
-     "name": "Shield Recharger",
-     "qty": 3
-    },
-    {
-     "id": "sterilized-bandage",
-     "name": "Sterilized Bandage",
-     "qty": 3
-    }
-   ],
-   "objectives": [
-    "(Optional) Acquire an Emperor Gateway Conduit",
-    "Enter the Emperor",
-    "Find where the power inside the Emperor comes from",
-    "Find out what happens to the Harvester Payloads that enter the Emperor",
-    "Find where the Harvester Payloads sent to the Emperor are stored",
-    "Search 5 containers inside the Emperor",
-    "Obtain a unique piece of Emperor loot"
-   ],
-   "after": [
-    "sizing-things-up",
-    "tracks-of-the-beast"
-   ]
-  },
-  {
-   "id": "tracks-of-the-beast",
-   "name": "Tracks Of The Beast",
-   "trader": "Shani",
-   "locations": [
-    "Pendola Pass"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "showstopper",
-     "name": "Showstopper",
-     "qty": 3
-    },
-    {
-     "id": "grappling-hook",
-     "name": "Grappling Hook",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "On Pendola Pass, head to the Northern Tracks",
-    "Find the destroyed station at the end of the tracks",
-    "Ping a Bully",
-    "Ping a Skulker",
-    "(Optional) Destroy 3 Skulkers",
-    "(Optional) Deliver a Skulker Targeter to Shani"
-   ],
-   "after": [
-    "exploring-pendola-pass"
-   ]
-  },
-  {
-   "id": "nothing-ventured",
-   "name": "Nothing Ventured",
-   "trader": "Apollo",
-   "locations": [
-    "Any",
-    "Buried City",
-    "Stella Montis"
-   ],
-   "requires": [
-    {
-     "id": "comet-igniter",
-     "name": "Comet Igniter",
-     "qty": 3
-    },
-    {
-     "id": "rocketeer-driver",
-     "name": "Rocketeer Driver",
-     "qty": 3
-    },
-    {
-     "id": "arc-circuitry",
-     "name": "ARC Circuitry",
-     "qty": 6
-    },
-    {
-     "id": "arc-motion-core",
-     "name": "ARC Motion Core",
-     "qty": 6
-    }
-   ],
-   "rewards": [
-    {
-     "id": "deadline",
-     "name": "Deadline",
-     "qty": 1
-    },
-    {
-     "id": "wolfpack",
-     "name": "Wolfpack",
-     "qty": 1
-    },
-    {
-     "id": "deadline-blueprint",
-     "name": "Deadline Blueprint",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Destroy 3 Comets",
-    "Destroy 5 Rocketeers",
-    "Destroy 2 Sentinels",
-    "Deliver 3 Comet Igniters to Apollo",
-    "Deliver 3 Rocketeer Drivers to Apollo",
-    "Deliver 6 ARC Circuitry to Apollo",
-    "Deliver 6 ARC Motion Cores to Apollo",
-    "(Optional) Destroy a Bombardier on Buried City",
-    "(Optional) Destroy a Bastion on Stella Montis",
-    "Apollo hands you 1 Magnetic Accelerator, 3 Heavy Gun Parts and 1 Exodus Modules at the start; the Deadline Blueprint is a bonus reward"
-   ],
-   "after": []
-  },
-  {
-   "id": "nothing-gained",
-   "name": "Nothing Gained",
+   "id": "what-goes-around",
+   "name": "What Goes Around",
    "trader": "Apollo",
    "locations": [
     "Any"
    ],
-   "requires": [
-    {
-     "id": "queen-reactor",
-     "name": "Queen Reactor",
-     "qty": 1
-    },
-    {
-     "id": "matriarch-reactor",
-     "name": "Matriarch Reactor",
-     "qty": 1
-    }
-   ],
+   "requires": [],
    "rewards": [
     {
-     "id": "queen-reactor",
-     "name": "Queen Reactor",
+     "id": "backpack-charm-cans",
+     "name": "Backpack Charm (Cans)",
      "qty": 1
     },
     {
-     "id": "matriarch-reactor",
-     "name": "Matriarch Reactor",
-     "qty": 1
+     "id": "noisemaker",
+     "name": "Noisemaker",
+     "qty": 2
     },
     {
-     "id": "bettina-iii",
-     "name": "Bettina III",
-     "qty": 1
-    },
-    {
-     "id": "bronze-statuette",
-     "name": "Bronze Statuette",
-     "qty": 1
+     "id": "blaze-grenade",
+     "name": "Blaze Grenade",
+     "qty": 3
     }
    ],
    "objectives": [
-    "Destroy a Matriarch",
-    "Destroy a Queen",
-    "Deliver a Queen Reactor to Apollo",
-    "Deliver a Matriarch Reactor to Apollo",
-    "The Bronze Statuette is a bonus reward"
+    "Destroy any ARC using a Fireball Burner"
    ],
    "after": [
-    "nothing-ventured"
+    "safe-passage"
    ]
   },
   {
-   "id": "bait-fetch-blast",
-   "name": "Bait, Fetch, Blast",
-   "trader": "Apollo",
+   "id": "what-we-left-behind",
+   "name": "What We Left Behind",
+   "trader": "Tian Wen",
    "locations": [
-    "Pendola Pass"
+    "Dam Battlegrounds",
+    "Buried City",
+    "Spaceport"
    ],
-   "requires": [
-    {
-     "id": "bully-fragmenter",
-     "name": "Bully Fragmenter",
-     "qty": 1
-    }
-   ],
+   "requires": [],
    "rewards": [
     {
-     "id": "bully-fragmenter",
-     "name": "Bully Fragmenter",
+     "id": "muzzle-brake-ii",
+     "name": "Muzzle Brake II",
      "qty": 1
     },
     {
-     "id": "wolfpack",
-     "name": "Wolfpack",
+     "id": "stable-stock-ii",
+     "name": "Stable Stock II",
+     "qty": 1
+    },
+    {
+     "id": "vertical-grip-ii",
+     "name": "Vertical Grip II",
      "qty": 1
     }
    ],
    "objectives": [
-    "Either destroy a Bully, destroy the head of a Bully and destroy 4 Bully legs",
-    "Or deliver a Bully Fragmenter to Apollo"
+    "Buried City: Search 2 containers in the Raider Camp beneath the Parking Garage",
+    "Dam Battlegrounds: Search South Swamp Outpost for anything significant",
+    "Spaceport: Search Bilguun's Hideout, next to Container Storage, for anything significant"
    ],
    "after": [
-    "tracks-of-the-beast"
+    "dormant-barons"
    ]
   },
   {
@@ -4225,130 +4358,106 @@
    ]
   },
   {
-   "id": "ruins-and-reverberations",
-   "name": "Ruins And Reverberations",
-   "trader": "Celeste",
-   "locations": [
-    "Pendola Pass"
-   ],
-   "requires": [
-    {
-     "id": "spotter-relay",
-     "name": "Spotter Relay",
-     "qty": 1
-    }
-   ],
-   "rewards": [
-    {
-     "id": "smoke-grenade",
-     "name": "Smoke Grenade",
-     "qty": 2
-    },
-    {
-     "id": "looting-mk-3-safekeeper",
-     "name": "Looting Mk. 3 (Safekeeper)",
-     "qty": 1
-    },
-    {
-     "id": "electrical-components",
-     "name": "Electrical Components",
-     "qty": 3
-    },
-    {
-     "id": "speaker-component",
-     "name": "Speaker Component",
-     "qty": 2
-    }
-   ],
-   "objectives": [
-    "Connect a Spotter Relay to the antenna on the roof of the Cielo Sereno Observatory",
-    "Weld the wires in the crawlspace under the control room to redirect power",
-    "Activate the Spotter Relay at the antenna again"
-   ],
-   "after": [
-    "wires-crossed"
-   ]
-  },
-  {
-   "id": "divided",
-   "name": "Divided",
-   "trader": "Nomadic Envoys",
-   "locations": [
-    "Pendola Pass"
-   ],
-   "requires": [],
-   "rewards": [
-    {
-     "id": "durable-cloth",
-     "name": "Durable Cloth",
-     "qty": 2
-    },
-    {
-     "id": "magnet",
-     "name": "Magnet",
-     "qty": 2
-    },
-    {
-     "id": "music-box",
-     "name": "Music Box",
-     "qty": 1
-    },
-    {
-     "id": "rusted-gear",
-     "name": "Rusted Gear",
-     "qty": 1
-    }
-   ],
-   "objectives": [
-    "Search for the Nomad recording at the Loading Platforms",
-    "Search for the Nomad recording at the Weather Station",
-    "Search for the Nomad recording at the Dispatch Tower",
-    "Search for the Nomad recording at Almatera Station"
-   ],
-   "after": [
-    "ruins-and-reverberations"
-   ]
-  },
-  {
-   "id": "a-path-not-yours",
-   "name": "A Path Not Yours",
-   "trader": "Nomadic Envoys",
+   "id": "with-a-trace",
+   "name": "With A Trace",
+   "trader": "Shani",
    "locations": [
     "The Blue Gate"
    ],
    "requires": [],
    "rewards": [
     {
-     "id": "tellurion",
-     "name": "Tellurion",
+     "id": "looting-mk-2",
+     "name": "Looting Mk. 2",
      "qty": 1
     },
     {
-     "id": "magnet",
-     "name": "Magnet",
-     "qty": 2
-    },
-    {
-     "id": "battery",
-     "name": "Battery",
-     "qty": 2
-    },
-    {
-     "id": "power-cable",
-     "name": "Power Cable",
-     "qty": 2
+     "id": "medium-shield",
+     "name": "Medium Shield",
+     "qty": 1
     }
    ],
    "objectives": [
-    "Find the start of the Nomad trail under the Highway Collapse",
-    "Follow the trail markers to the Nomad hideout",
-    "Retrieve Bilguun's gift from the buried cache beneath the hideout",
-    "(Optional) Loot the secret stash in Bilguun's hideout",
-    "Deliver the Broken Compass to the Nomadic Envoy",
-    "Done in one round; you are given 2 Ziplines for it"
+    "Reach the Barren Clearing",
+    "Find signs of who brought down the ARC machines",
+    "Inspect the Adorned Wreckage",
+    "Inspect the communications device"
    ],
    "after": [
-    "taking-stock"
+    "reduced-to-rubble"
+   ]
+  },
+  {
+   "id": "with-a-view",
+   "name": "With a View",
+   "trader": "Shani",
+   "locations": [
+    "Stella Montis"
+   ],
+   "requires": [
+    {
+     "id": "rotary-encoder",
+     "name": "Rotary Encoder",
+     "qty": 1
+    },
+    {
+     "id": "ion-sputter",
+     "name": "Ion Sputter",
+     "qty": 1
+    }
+   ],
+   "rewards": [
+    {
+     "id": "steel-spring",
+     "name": "Steel Spring",
+     "qty": 5
+    },
+    {
+     "id": "wires",
+     "name": "Wires",
+     "qty": 5
+    },
+    {
+     "id": "tactical-mk-2",
+     "name": "Tactical Mk. 2",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Obtain a Rotary Encoder",
+    "Visit any of the Control Rooms near the Assembly Line",
+    "Use the Rotary Encoder to activate the server switch",
+    "Interact with a nearby computer to help identify the correct paths",
+    "Deliver an Ion Sputter to Shani"
+   ],
+   "after": [
+    "snap-and-salvage"
+   ]
+  },
+  {
+   "id": "worth-your-salt",
+   "name": "Worth Your Salt",
+   "trader": "Celeste",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "vita-spray-blueprint",
+     "name": "Vita Spray Blueprint",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Go to the Rocket Assembly",
+    "Search for the hidden Battery Prototype in a high place",
+    "Bring the Battery Prototype to the Industrial Recharger",
+    "Use the machinery to charge the battery",
+    "Deliver the Charged Battery to the drop-off point in the corner"
+   ],
+   "after": [
+    "groundbreaking"
    ]
   }
  ]

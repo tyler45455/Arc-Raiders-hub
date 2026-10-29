@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 28, 2026",
- "count": 119,
+ "dataDate": "October 29, 2026",
+ "count": 121,
  "quests": [
   {
    "id": "a-bad-feeling",
@@ -3629,6 +3629,48 @@
    ]
   },
   {
+   "id": "the-first-nomads",
+   "name": "The First Nomads",
+   "trader": "Shani",
+   "locations": [
+    "Spaceport",
+    "The Blue Gate",
+    "Stella Montis"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "bobcat-i",
+     "name": "Bobcat I",
+     "qty": 1
+    },
+    {
+     "id": "surge-coil",
+     "name": "Surge Coil",
+     "qty": 3
+    },
+    {
+     "id": "tactical-mk-3-healing",
+     "name": "Tactical Mk. 3 (Healing)",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Reach the Security Wing in Blue Gate",
+    "Find the Control Room in the Security Wing",
+    "Use the frequency converter in the Control Room",
+    "Reach the Antenna at Pilgrim's Peak",
+    "Search the Antenna exterior for any tampered frequency boosters",
+    "On Stella Montis, head to the Communications wing",
+    "Turn on the power",
+    "(Optional) Search for any repair equipment",
+    "Repair the power transformer",
+    "Turn on the power again",
+    "Find and run the signal through the frequency converter"
+   ],
+   "after": []
+  },
+  {
    "id": "the-league",
    "name": "The League",
    "trader": "Apollo",
@@ -4298,6 +4340,50 @@
    ],
    "after": [
     "dormant-barons"
+   ]
+  },
+  {
+   "id": "where-everything-falls",
+   "name": "Where Everything Falls",
+   "trader": "Shani",
+   "locations": [
+    "Spaceport"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "stiletto-i",
+     "name": "Stiletto I",
+     "qty": 1
+    },
+    {
+     "id": "light-ammo",
+     "name": "Light Ammo",
+     "qty": 100
+    },
+    {
+     "id": "adrenaline-shot",
+     "name": "Adrenaline Shot",
+     "qty": 3
+    },
+    {
+     "id": "silencer-i",
+     "name": "Silencer I",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Go to the Water Towers",
+    "Photograph a Security Booth",
+    "Photograph a reinforced bus",
+    "Photograph the breach in the walls",
+    "Photograph the Arrival Building security room",
+    "Photograph Port A of the Launch Towers",
+    "Photograph the Launch Towers control room",
+    "Photograph the launch platform"
+   ],
+   "after": [
+    "empathetic-prototypes"
    ]
   },
   {

@@ -949,7 +949,7 @@ footer .wrap { display: grid; gap: 2px; }
 <a class="skip" href="#main">Skip to content</a>
 <header class="band">
   <div class="wrap">
-    <div class="toprow"><div class="brandblock"><p class="eyebrow">Fan-made ARC Raiders companion</p><h1 class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="48" height="48"><span>Speranza <em>Field Guide</em></span></h1></div><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSdX-ZYUpJkJobWMVIHq3_Qth8MjdLmfD4rr8nGyPiwRKhydtA/viewform">Feedback</a><button class="btn ghost" type="button" data-action="install" id="installBtn" hidden>Install app</button><details class="dispmenu" id="dispMenu"><summary class="btn ghost">Display</summary><div class="dispbox"><a class="btn ghost fbmob" target="_blank" rel="noopener" href="https://docs.google.com/forms/d/e/1FAIpQLSdX-ZYUpJkJobWMVIHq3_Qth8MjdLmfD4rr8nGyPiwRKhydtA/viewform">Feedback</a><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button><button class="btn ghost" type="button" data-action="contrast" id="contrastBtn">Contrast: Off</button><button class="btn ghost" type="button" data-action="raid" id="raidBtn" aria-pressed="false">Raid mode: Off</button><button class="btn ghost" type="button" data-action="textSize" id="textBtn">Text size: Normal</button><button class="btn ghost" type="button" data-action="motion" id="motionBtn">Motion: Normal</button></div></details><select class="btn ghost langsel" id="langSel" aria-label="Language"></select><button class="btn ghost" type="button" data-action="trReport" id="trReport" title="Highlight the text that looks wrong first, then press this to open a GitHub issue." hidden>Report a translation error</button></div></div>
+    <div class="toprow"><div class="brandblock"><p class="eyebrow">Fan-made ARC Raiders companion</p><h1 class="brand"><img class="logo" src="icons/icon-192.png" alt="" width="48" height="48"><span>Speranza <em>Field Guide</em></span></h1></div><div class="topbtns"><button class="btn ghost" type="button" data-action="hintToggle" id="helpBtn" aria-expanded="false">How to use</button><a class="btn ghost" target="_blank" rel="noopener" id="fbBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSdX-ZYUpJkJobWMVIHq3_Qth8MjdLmfD4rr8nGyPiwRKhydtA/viewform">Feedback</a><button class="btn ghost" type="button" data-action="install" id="installBtn" hidden>Install app</button><details class="dispmenu" id="dispMenu"><summary class="btn ghost">Display</summary><div class="dispbox"><a class="btn ghost fbmob" target="_blank" rel="noopener" href="https://docs.google.com/forms/d/e/1FAIpQLSdX-ZYUpJkJobWMVIHq3_Qth8MjdLmfD4rr8nGyPiwRKhydtA/viewform">Feedback</a><button class="btn ghost" type="button" data-action="theme" id="themeBtn">Theme: Auto</button><button class="btn ghost" type="button" data-action="contrast" id="contrastBtn">Contrast: Off</button><button class="btn ghost" type="button" data-action="raid" id="raidBtn" aria-pressed="false">Raid mode: Off</button><button class="btn ghost" type="button" data-action="textSize" id="textBtn">Text size: Normal</button><button class="btn ghost" type="button" data-action="motion" id="motionBtn">Motion: Normal</button></div></details><select class="btn ghost langsel" id="langSel" aria-label="Language"></select><button class="btn ghost" type="button" data-action="trReport" id="trReport" title="Highlight the text that looks wrong first, then press this to copy it and open the feedback form." hidden>Report a translation error</button></div></div>
     <p class="lede">Look up what any item recycles or salvages into, track your materials, and catch up on every update through Frozen Trail 2.0.</p>
     <p class="stamp"><span id="dataStamp"></span><span class="offstate" id="offState"></span></p>
     <div class="syncbar" id="syncBar"><span class="sbdot" aria-hidden="true"></span><span class="sbtext" id="sbText" role="status"></span><span class="sbbtns"><button class="btn sbgo" type="button" data-action="arctResync" id="sbGo">Resync</button><button class="btn ghost" type="button" data-action="arctPanel" id="sbSet" aria-expanded="false" aria-controls="arctCard">Settings</button></span></div>
@@ -1372,11 +1372,11 @@ footer .wrap { display: grid; gap: 2px; }
     <div class="chips" id="chgView" role="group" aria-label="Show"><button type="button" class="chip" data-chgv="all" aria-pressed="true">All changes</button><button type="button" class="chip" data-chgv="wiki" aria-pressed="false">Wiki updates</button></div>
     <p class="muted" id="chgWikiNote" hidden></p>
     <details class="card" id="auditBox" style="margin-bottom:12px;"><summary><b>Data gaps</b> <span class="muted" id="auditCount"></span></summary>
-      <p class="muted">What the site still does not know, worked out from its own data each time you open this. If you know an answer, the Report what you know button opens a pre-filled GitHub issue.</p>
+      <p class="muted">What the site still does not know, worked out from its own data each time you open this. If you know an answer, the Report what you know button copies the details and opens the feedback form.</p>
       <div id="auditOut"></div>
     </details>
     <div class="chglist" id="changesList"></div>
-    <div class="credits"><h3>Credits</h3><p class="muted">Item, recycle, quest and source data comes from the community-run ARC Raiders wiki and is checked by hand. Map detail images are stitched from in-game screenshots. Translations are first drafts that players correct, so please use Report a translation error when something reads wrong. Thank you to everyone who reports a mistake or suggests a feature.</p><p><a href="https://github.com/tyler45455/Arc-Raiders-hub/issues" target="_blank" rel="noopener">Report a mistake or suggest a feature on GitHub</a></p></div>
+    <div class="credits"><h3>Credits</h3><p class="muted">Item, recycle, quest and source data comes from the community-run ARC Raiders wiki and is checked by hand. Map detail images are stitched from in-game screenshots. Translations are first drafts that players correct, so please use Report a translation error when something reads wrong. Thank you to everyone who reports a mistake or suggests a feature.</p><p><a href="https://docs.google.com/forms/d/e/1FAIpQLSdX-ZYUpJkJobWMVIHq3_Qth8MjdLmfD4rr8nGyPiwRKhydtA/viewform" target="_blank" rel="noopener">Report a mistake or suggest a feature</a></p></div>
   </section>
 
 </main>
@@ -1416,7 +1416,7 @@ footer .wrap { display: grid; gap: 2px; }
     </details>
     <div>Item data from the <a href="https://arcraiders.wiki" target="_blank" rel="noopener">ARC Raiders Wiki</a> (CC BY-SA 4.0). <span id="dataStamp2"></span></div>
     <div>Found a bug or have an idea? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdX-ZYUpJkJobWMVIHq3_Qth8MjdLmfD4rr8nGyPiwRKhydtA/viewform" target="_blank" rel="noopener">Send feedback</a> (no sign-in needed)</div>
-    <div>Wrong number or missing item? Use the Report button on any row to open a GitHub issue.<span id="reportAddr" hidden></span></div>
+    <div>Wrong number or missing item? Use the Report button on any row to send it through the feedback form.<span id="reportAddr" hidden></span></div>
   </div>
 </footer>
 <div class="undobar" id="undoBar" role="status" aria-live="polite" hidden><span id="undoText"></span><button class="btn" type="button" data-action="undo">Undo</button></div>
@@ -1449,6 +1449,8 @@ footer .wrap { display: grid; gap: 2px; }
   /* ---- Report settings: edit these two lines before you publish ---- */
   var REPORT_EMAIL = "tyler45455@gmail.com";
   var REPORT_ISSUES_URL = "https://github.com/tyler45455/Arc-Raiders-hub/issues/new";
+  /* Report buttons open this form. The details ride in the link's #hash and are copied for pasting when it is clicked. */
+  var FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSdX-ZYUpJkJobWMVIHq3_Qth8MjdLmfD4rr8nGyPiwRKhydtA/viewform";
   /* ARC Tracker app key (arc_k1_...) from arctracker.io/developers/apps. It identifies this site and is public by design; each visitor supplies their own user key. */
   var ARCT_APP_KEY = "arc_k1_d-J-eyCKyBVcIVIbJAd9h3nmGVVk6IAF";
 
@@ -1816,13 +1818,25 @@ footer .wrap { display: grid; gap: 2px; }
   }
 
   /* ---------- report links ---------- */
+  function formLink(subject, body) { return FEEDBACK_FORM + "#" + encodeURIComponent(subject + "\n\n" + body); }
+  function openForm(href) {
+    var i = href.indexOf("#"), txt = i < 0 ? "" : decodeURIComponent(href.slice(i + 1));
+    window.open(FEEDBACK_FORM, "_blank", "noopener");
+    if (!txt) { return; }
+    try { window.navigator.clipboard.writeText(txt).then(function () {
+      var bar = document.getElementById("undoBar"); if (!bar) { return; }
+      document.getElementById("undoText").textContent = "Details copied. Paste them into the form under Did anything look wrong or broken?";
+      var ub = bar.querySelector(".btn"); if (ub) { ub.hidden = true; }
+      bar.hidden = false; clearTimeout(undoTimer); undoTimer = setTimeout(function () { bar.hidden = true; }, 9000);
+    }, function () {}); } catch (e) {}
+  }
+  document.addEventListener("click", function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest("a[href]") : null;
+    if (!a || a.getAttribute("href").indexOf(FEEDBACK_FORM + "#") !== 0) { return; }
+    ev.preventDefault(); openForm(a.getAttribute("href"));
+  });
   function reportUrl(name) {
-    var subject = "Wrong number: " + name;
-    var body = "Item: " + name + "\n\nWhat is wrong:\n\nWhat it should say (game version or screenshot helps):\n";
-    if (REPORT_ISSUES_URL) {
-      return REPORT_ISSUES_URL + "?title=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-    }
-    return "mailto:" + REPORT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    return formLink("Wrong number: " + name, "Item: " + name + "\n\nWhat is wrong:\n\nWhat it should say (game version or screenshot helps):\n");
   }
 
   /* ---------- rendering: lookup ---------- */
@@ -4162,7 +4176,7 @@ footer .wrap { display: grid; gap: 2px; }
       return '<details class="proj"><summary><b>' + esc(g[0]) + '</b> <span class="muted">(' + g[2].length + ")</span></summary>" +
         '<div class="muted">' + esc(g[1]) + "</div>" +
         (g[2].length ? '<div class="ffchips">' + g[2].map(function (n) { return '<span class="y">' + esc(n) + "</span>"; }).join("") + "</div>" : '<div class="empty-line">Nothing missing here.</div>') +
-        (g[2].length && REPORT_ISSUES_URL ? '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" data-audit="' + gi + '" href="' + esc(REPORT_ISSUES_URL + "?title=" + encodeURIComponent("Data gap: " + g[0]) + "&body=" + encodeURIComponent(body)) + '">Report what you know</a></div>' : "") + "</details>";
+        (g[2].length && REPORT_ISSUES_URL ? '<div class="acts"><a class="btn ghost" target="_blank" rel="noopener" data-audit="' + gi + '" href="' + esc(formLink("Data gap: " + g[0], body)) + '">Report what you know</a></div>' : "") + "</details>";
     }).join("");
     document.getElementById("auditCount").textContent = "(" + tot + " open)";
   }
@@ -5374,7 +5388,7 @@ footer .wrap { display: grid; gap: 2px; }
       if (deferredInstall) { deferredInstall.prompt(); } else { document.getElementById("installNote").hidden = false; window.scrollTo(0, 0); }
     } else if (a === "installClose") { document.getElementById("installNote").hidden = true;
     } else if (a === "trReport") {
-      window.open(trReportUrl(), "_blank", "noopener");
+      openForm(trReportUrl());
     } else if (a === "cartAdd") {
       var cn = t.getAttribute("data-item");
       if (cart.indexOf(cn) === -1) { cart.push(cn); }
@@ -6608,7 +6622,7 @@ footer .wrap { display: grid; gap: 2px; }
     var body = "Language: " + (LANG_NAMES[lang] || lang) + " (" + lang + ")\nPage: " + location.href.split("#")[0] + "#" + tab +
       "\n\nText that looks wrong (highlighted on the page):\n" + (lastSel ? "> " + lastSel + "\n" : "(none selected)\n") +
       "\nBetter wording:\n";
-    return REPORT_ISSUES_URL + "?title=" + encodeURIComponent("[" + lang + "] Translation error") + "&labels=translation&body=" + encodeURIComponent(body);
+    return formLink("[" + lang + "] Translation error", body);
   }
   function hasLang(l) { return LANGS.some(function (p) { return p[0] === l; }); }
   function applyLang(l, quiet) {

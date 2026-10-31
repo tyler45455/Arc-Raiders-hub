@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 29, 2026",
- "count": 402,
+ "dataDate": "October 31, 2026",
+ "count": 403,
  "items": [
   {
    "id": "arc-alloy",
@@ -828,7 +828,13 @@
    "name": "Amplification Module Mk. I",
    "rarity": null,
    "canRecycle": false,
-   "recycle": [],
+   "recycle": [
+    {
+     "id": "amplified-fragments",
+     "name": "Amplified Fragments",
+     "qty": 7
+    }
+   ],
    "salvage": [],
    "areaTypes": [],
    "sources": {
@@ -852,7 +858,13 @@
    "name": "Amplification Module Mk. II",
    "rarity": null,
    "canRecycle": false,
-   "recycle": [],
+   "recycle": [
+    {
+     "id": "amplified-fragments",
+     "name": "Amplified Fragments",
+     "qty": 7
+    }
+   ],
    "salvage": [],
    "areaTypes": [],
    "sources": {
@@ -875,7 +887,13 @@
    "name": "Amplification Module Mk. III",
    "rarity": null,
    "canRecycle": false,
-   "recycle": [],
+   "recycle": [
+    {
+     "id": "amplified-fragments",
+     "name": "Amplified Fragments",
+     "qty": 7
+    }
+   ],
    "salvage": [],
    "areaTypes": [],
    "sources": {
@@ -921,7 +939,13 @@
    "name": "Amplification Module Mk. V",
    "rarity": null,
    "canRecycle": false,
-   "recycle": [],
+   "recycle": [
+    {
+     "id": "amplified-fragments",
+     "name": "Amplified Fragments",
+     "qty": 7
+    }
+   ],
    "salvage": [],
    "areaTypes": [],
    "sources": {
@@ -6061,6 +6085,28 @@
    "weightKg": 3,
    "stackSize": 3,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/fried-motherboard/"
+  },
+  {
+   "id": "frigate-diagnostic-node",
+   "name": "Frigate Diagnostic Node",
+   "rarity": "Legendary",
+   "canRecycle": true,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [],
+   "sources": {
+    "foundIn": [
+     "Scavenging"
+    ],
+    "other": [
+     "Grants 1,000 Research Points",
+     "Cannot be recycled or salvaged"
+    ]
+   },
+   "sellPrice": 3000,
+   "weightKg": 1,
+   "stackSize": 1,
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/frigate-diagnostic-node/"
   },
   {
    "id": "frigate-inductor",

@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "quests",
- "dataDate": "October 29, 2026",
- "count": 121,
+ "dataDate": "October 31, 2026",
+ "count": 122,
  "quests": [
   {
    "id": "a-bad-feeling",
@@ -853,6 +853,34 @@
    "after": []
   },
   {
+   "id": "disrupting-the-frigate",
+   "name": "Disrupting The Frigate",
+   "trader": "Celeste",
+   "locations": [
+    "Frigate"
+   ],
+   "requires": [],
+   "rewards": [
+    {
+     "id": "hullcracker-i",
+     "name": "Hullcracker I",
+     "qty": 1
+    }
+   ],
+   "objectives": [
+    "Destroy the Power Cores on top of the Frigate",
+    "Find a way to access the Frigate's cargo",
+    "Loot the Frigate's cargo",
+    "Destroy a Hydra",
+    "Destroy 2 Rocketeers",
+    "Destroy 2 Vaporizers",
+    "Celeste hands you a Powered Descender and a Vita Spray at the start"
+   ],
+   "after": [
+    "boarding-the-frigate"
+   ]
+  },
+  {
    "id": "bombing-run",
    "name": "Bombing Run",
    "trader": "Shani",
@@ -1141,7 +1169,9 @@
     "Bring the Equatorial Sundial to the top of the Church in Old Town",
     "Deliver the Equatorial Sundial to the Nomadic Envoy"
    ],
-   "after": []
+   "after": [
+    "off-the-radar"
+   ]
   },
   {
    "id": "clearer-skies",
@@ -2560,7 +2590,7 @@
     "Destroy a Queen",
     "Deliver a Queen Reactor to Apollo",
     "Deliver a Matriarch Reactor to Apollo",
-    "The Bronze Statuette is a bonus reward"
+    "Apollo hands you 2 Deadlines at the start; the Bronze Statuette is a bonus reward"
    ],
    "after": [
     "nothing-ventured"
@@ -3386,7 +3416,8 @@
     }
    ],
    "objectives": [
-    "Destroy a Hornet with a Trigger 'Nade or Snap Blast Grenade"
+    "Destroy a Hornet with a Trigger 'Nade or Snap Blast Grenade",
+    "Light Impact Grenades also count; Apollo hands you 6 Trigger 'Nades and 2 Snap Blast Grenades at the start"
    ],
    "after": [
     "what-goes-around"

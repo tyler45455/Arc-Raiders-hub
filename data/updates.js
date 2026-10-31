@@ -28,21 +28,21 @@ ARC.PATCHES = [
     {"date": "Oct 9, 2026", "title": "Hotfix 2.0.2", "ver": "2.0.2", "kind": "Hotfix", "body": "Crash and model fixes after Frozen Trail.", "points": ["Fixed weapon models partly disappearing with attachments and missing in the inventory.", "Fixed several causes of server crashes.", "Fixed falling through a grate on Pendola Pass and getting stuck.", "Fixed an error when buying DLC bundles.", "Known issue at the time: the Reward Pass was not progressing for some players."]}
   ];
 
-ARC.DATA_UPDATED = "October 29, 2026";
+ARC.DATA_UPDATED = "October 31, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
    Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
-    ["Sell prices, weights, recipes and where to find items", "October 26, 2026", "daily"],
-    ["Quests, objectives and quest chain", "October 29, 2026", "daily"],
+    ["Sell prices, weights, recipes and where to find items", "October 31, 2026", "daily"],
+    ["Quests, objectives and quest chain", "October 31, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
     ["Enemy sightings from players", "October 12, 2026", "daily"],
-    ["Recycling and salvage data", "October 28, 2026", "daily"],
+    ["Recycling and salvage data", "October 31, 2026", "daily"],
     ["Weapons & gear", "October 27, 2026", "daily"],
-    ["Reference: enemies, traders, workshop, blueprints", "October 29, 2026", "daily"],
+    ["Reference: enemies, traders, workshop, blueprints", "October 31, 2026", "daily"],
     ["Project presets", "October 28, 2026", "daily"],
     ["Trials (Season 6, Week 4)", "October 28, 2026", "daily"],
     ["Maps and update history", "October 27, 2026", "daily"],
@@ -52,7 +52,8 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
-    ["Oct 31, 2026", "Every Report button (wrong numbers, data gaps, translation errors and the Credits link) now opens the feedback form instead of GitHub."],
+    ["Oct 31, 2026", "Daily check: added the new quest Disrupting The Frigate (after Boarding The Frigate, from Celeste) and the Frigate Diagnostic Node (legendary, sells for 3,000, grants 1,000 Research Points). Amplification Modules Mk. I, II, III and V now recycle into 7 Amplified Fragments. The Shredder also drops ARC Data Modules. Nothing Gained and Sparks Fly now list the items Apollo hands you at the start, and Clean Hands follows Off The Radar.", "wiki"],
+    ["Oct 31, 2026", "Every Report button (wrong numbers, data gaps, translation errors and the Credits link) now opens the feedback form instead of GitHub. The details are copied for you, so you can paste them into the form."],
     ["Oct 31, 2026", "Added a Send feedback link to the footer. The Feedback button at the top now opens the same short form, which anyone can fill in without signing in or making a GitHub account."],
     ["Oct 29, 2026", "Daily check: added the new quests Where Everything Falls (after Empathetic Prototypes) and The First Nomads, a hidden quest from Shani. The Research Station level 1 now lists the Stiletto Blueprint it can craft.", "wiki"],
     ["Oct 28, 2026", "Daily check: added the new quests Home To Roost, Someone Else's Shoes and Empathetic Prototypes, the Soul's Offering project (October 27 to November 16), this week's Trials (week 4) and the Stiletto blueprint, which is crafted from 15 Wasp Drivers at the Research Station. The Snap Hook now recycles into 3 Rope instead of Steel Cable.", "wiki"],

@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "name": "Speranza Field Guide data",
- "dataDate": "October 29, 2026",
+ "dataDate": "October 31, 2026",
  "site": "https://tyler45455.github.io/Arc-Raiders-hub/",
  "note": "Read-only static files from a fan-made site. Not affiliated with Embark Studios. IDs are lowercase slugs of the English names and match the item/ and map/ page paths.",
  "license": "Data comes from the ARC Raiders Wiki (https://arcraiders.wiki), CC BY-SA 4.0, so reuse of these files must credit the wiki and share alike.",
@@ -13,7 +13,7 @@
   {
    "file": "items.json",
    "url": "https://tyler45455.github.io/Arc-Raiders-hub/api/v1/items.json",
-   "count": 402
+   "count": 403
   },
   {
    "file": "keys.json",
@@ -28,7 +28,7 @@
   {
    "file": "quests.json",
    "url": "https://tyler45455.github.io/Arc-Raiders-hub/api/v1/quests.json",
-   "count": 121
+   "count": 122
   }
  ]
 }

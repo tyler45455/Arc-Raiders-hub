@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Oct 31, 2026", "Every Report button (wrong numbers, data gaps, translation errors and the Credits link) now opens the feedback form instead of GitHub. The details are copied for you, so you can paste them into the form."],
     ["Oct 31, 2026", "Added a Send feedback link to the footer. The Feedback button at the top now opens the same short form, which anyone can fill in without signing in or making a GitHub account."],
     ["Oct 29, 2026", "Daily check: added the new quests Where Everything Falls (after Empathetic Prototypes) and The First Nomads, a hidden quest from Shani. The Research Station level 1 now lists the Stiletto Blueprint it can craft.", "wiki"],
     ["Oct 28, 2026", "Daily check: added the new quests Home To Roost, Someone Else's Shoes and Empathetic Prototypes, the Soul's Offering project (October 27 to November 16), this week's Trials (week 4) and the Stiletto blueprint, which is crafted from 15 Wasp Drivers at the Research Station. The Snap Hook now recycles into 3 Rope instead of Steel Cable.", "wiki"],

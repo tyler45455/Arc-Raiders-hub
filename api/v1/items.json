@@ -1,8 +1,8 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "October 31, 2026",
- "count": 403,
+ "dataDate": "November 1, 2026",
+ "count": 404,
  "items": [
   {
    "id": "arc-alloy",
@@ -9983,6 +9983,30 @@
    "weightKg": 3,
    "stackSize": 1,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/portable-tv/"
+  },
+  {
+   "id": "potted-plant",
+   "name": "Potted Plant",
+   "rarity": "Uncommon",
+   "canRecycle": true,
+   "recycle": [],
+   "salvage": [],
+   "areaTypes": [
+    "Residential"
+   ],
+   "sources": {
+    "foundIn": [
+     "Scavenging"
+    ],
+    "other": [
+     "Used as a decoration on Furniture in the Outpost",
+     "Cannot be recycled or salvaged"
+    ]
+   },
+   "sellPrice": 1000,
+   "weightKg": 0.4,
+   "stackSize": null,
+   "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/potted-plant/"
   },
   {
    "id": "power-bank",

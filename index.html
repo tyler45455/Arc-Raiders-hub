@@ -619,6 +619,23 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .qclegend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 8px; }
 .qclegend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; border: 1px solid var(--line); }
 #qcPick { font-size: 16px; }
+.qspot { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+.qs-eye { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); margin: 0; }
+.qspot h3 { margin: 2px 0 2px; font-size: 20px; }
+.qs-prog { margin: 12px 0 4px; }
+.qs-pk { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.qs-pk > span:first-child { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.qs-pk b { font-variant-numeric: tabular-nums; }
+.qs-meter { height: 8px; margin-top: 6px; border-radius: 4px; background: var(--surface2, var(--bg)); border: 1px solid var(--line); overflow: hidden; }
+.qs-meter i { display: block; height: 100%; background: var(--good); border-radius: 4px; transition: width .7s cubic-bezier(.2,.7,.2,1); }
+.qs-obj { margin: 10px 0 0; font-size: 14px; }
+.qs-need { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
+.qs-need li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; font-size: 14px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.qs-need .qs-q { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--warm); }
+.qs-need .tag { font-size: 12px; }
+.qspot .acts { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.qspot .qs-ok { color: var(--good); margin-top: 10px; font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .qs-meter i { transition: none; } }
 .qnext .qnlist { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 8px; }
 .qnext .qnlist li { border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
 .qnext .qnlist .qstat { display: inline; }
@@ -1400,6 +1417,7 @@ footer .wrap { display: grid; gap: 2px; }
         <span class="muted qprog" id="qProg" role="status"></span>
       </div>
     </div>
+    <section class="qspot" id="qSpot" aria-labelledby="qsH" hidden></section>
     <div class="sttiles" id="qTiles"></div>
     <div id="qBanner"></div>
     <details class="card qnext" id="qNextCard" open><summary id="qNextSum">Next up</summary><div id="qNext"></div></details>
@@ -2942,7 +2960,7 @@ footer .wrap { display: grid; gap: 2px; }
     document.getElementById("qNextSum").textContent = "Next up: " + list.length + " quest" + (list.length === 1 ? "" : "s") + " you can do now";
     if (!list.length) {
       document.getElementById("qNext").innerHTML = '<p class="muted">' + (qActive().length ? "No unlocked quests match the trader or map filter." : "You have finished every quest. Nice work.") + "</p>";
-      return;
+      return list;
     }
     var shown = qNextAll ? list : list.slice(0, 6);
     document.getElementById("qNext").innerHTML = '<ul class="qnlist">' + shown.map(function (x) {
@@ -2960,6 +2978,40 @@ footer .wrap { display: grid; gap: 2px; }
     }).join("") + "</ul>" +
       (list.length > 6 ? '<button class="btn ghost" type="button" data-action="qNextMore">' + (qNextAll ? "Show fewer" : "Show all " + list.length) + "</button>" : "") +
       '<p class="muted">Counts come from your Tracker. Tap a quest to see its objectives and rewards.</p>';
+    return list;
+  }
+  /* Your next step: the closest-to-ready open quest, what is still missing to bring, and where each missing item is found. */
+  var qSpotSkip = 0;
+  function renderQSpot(list) {
+    var box = document.getElementById("qSpot");
+    if (!box) { return; }
+    if (!list || !list.length) { box.hidden = true; return; }
+    box.hidden = false;
+    var x = list[qSpotSkip % list.length], q = x.q, nm = esc(q.name);
+    var bring = q.req.filter(function (r) { return x.pick.indexOf(r) === -1; }), need = 0, got = 0;
+    bring.forEach(function (r) { need += r.q; got += Math.min(r.q, tracker[r.n] || 0); });
+    var sp = qSpots(q), html = '<p class="qs-eye">Your next step</p><h3 id="qsH">' + nm + '</h3><span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span>";
+    if (need) {
+      html += '<div class="qs-prog"><div class="qs-pk"><span>Items to bring</span><b>' + got + " / " + need + '</b></div><div class="qs-meter" role="img" aria-label="Items to bring ' + got + " / " + need + '"><i style="width:' + Math.round(got / need * 100) + '%"></i></div></div>';
+    }
+    if (q.obj.length) { html += '<p class="qs-obj"><span class="muted">First objective:</span> ' + esc(q.obj[0]) + "</p>"; }
+    if (x.miss.length) {
+      html += '<ul class="qs-need">' + x.miss.map(function (r) {
+        var have = tracker[r.n] || 0, G = FARM2[r.n] || {}, b = farmBest(r.n), tags = [];
+        if (b) { tags.push("Best map: " + b.m + " (" + b.c + " spots)"); }
+        if (G.a && G.a.length) { tags.push("ARC drop"); }
+        if (G.v && G.v.length) { tags.push("Trader"); }
+        if (!tags.length && G.s && G.s.length) { tags.push(G.s[0].length > 60 ? G.s[0].slice(0, 57) + "..." : G.s[0]); }
+        return '<li><span class="qs-q">' + have + "/" + r.q + '</span> <b>' + esc(r.n) + "</b> " + tags.map(function (g) { return '<span class="tag">' + esc(g) + "</span>"; }).join(" ") + "</li>";
+      }).join("") + "</ul>";
+    } else if (x.n) { html += '<div class="qs-ok">You have everything to bring</div>'; }
+    if (x.pick.length) { html += '<div class="muted" style="margin-top:6px;font-size:13.5px;"><span>Found during the quest:</span> ' + x.pick.map(function (r) { return "<span>" + esc(r.n) + "</span>"; }).join(", ") + "</div>"; }
+    if (QNEXT[q.name]) { html += '<div class="qstat">Unlocks: ' + QNEXT[q.name].map(esc).join(", ") + "</div>"; }
+    html += '<div class="acts">' + sp.maps.slice(0, 2).map(function (mn) { return '<button type="button" class="btn" data-action="qMap" data-q="' + nm + '" data-m="' + esc(mn) + '">Show on map</button>' + (sp.maps.length > 1 ? ' <span class="muted">' + esc(mn) + "</span>" : ""); }).join("") +
+      (x.miss.length ? '<button class="btn ghost" type="button" data-action="qGoal" data-q="' + nm + '">Set tracker goals</button>' : "") +
+      '<label class="qchk"><input type="checkbox" data-qdone="' + nm + '"> Mark as completed</label>' +
+      (list.length > 1 ? '<button class="btn ghost" type="button" data-action="qSpotSkip">Skip for now</button>' : "") + "</div>";
+    box.innerHTML = html;
   }
   /* Quest spots: map rooms (ROOMS) whose name appears as whole words in a quest objective. An objective that names a map only
      matches that map; otherwise the quest's own maps are searched ("Any" quests only when the objective names a map). */
@@ -3103,7 +3155,7 @@ footer .wrap { display: grid; gap: 2px; }
       var have = tracker[k] || 0;
       return "<div>" + esc(k) + ": <b>" + Math.min(have, tot[k]) + " / " + tot[k] + "</b>" + (have >= tot[k] ? " &#10003;" : " (" + (tot[k] - have) + " to go)") + "</div>";
     }).join("") + "</div>" : '<p class="muted" style="margin-top:8px;">No tracked materials are needed by your unlocked quests right now.</p>';
-    renderNextUp(mats);
+    renderQSpot(renderNextUp(mats));
     var nd = QUESTS.filter(function (q) { return qDone[q.name]; }).length;
     document.getElementById("qProg").textContent = nd + " of " + QUESTS.length + " completed, " + QUESTS.filter(qLocked).length + " locked";
     document.getElementById("qCount").textContent = list.length + " of " + QUESTS.length + " quests";
@@ -5652,6 +5704,8 @@ footer .wrap { display: grid; gap: 2px; }
       if (khk) { if (keyHave[khk[0]]) { delete keyHave[khk[0]]; } else { keyHave[khk[0]] = 1; } save("arcHubKeyHave", keyHave); renderMaps(); }
     } else if (a === "qNextMore") {
       qNextAll = !qNextAll; renderQuests();
+    } else if (a === "qSpotSkip") {
+      qSpotSkip++; renderQuests();
     } else if (a === "qFocus") {
       document.getElementById("qQ").value = t.getAttribute("data-q"); renderQuests();
       try { document.getElementById("qOut").scrollIntoView({ block: "start" }); } catch (eF) {}

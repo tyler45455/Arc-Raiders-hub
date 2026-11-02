@@ -785,6 +785,12 @@ code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surfa
 .hax { stroke: var(--line); stroke-width: 1; }
 .htxt { fill: var(--muted); font-size: 10px; font-family: var(--font-mono); }
 .prep h3 { margin: 14px 0 4px; }
+.rprep { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 2px 14px 12px; margin: 10px 0 14px; background: var(--surface); }
+.rp-glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 8px 0 6px; }
+.rp-c { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-width: 0; font-size: 14px; }
+.rp-k { display: block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 2px; }
+.rp-n { font-size: 22px; line-height: 1.2; }
+@media (max-width: 520px) { .rp-glance { grid-template-columns: 1fr 1fr; } .rp-glance .rp-c:first-child { grid-column: 1 / -1; } }
 .prep .y.ok { border-color: var(--good); }
 .sharedbox { border: 2px dashed var(--accent); border-radius: 10px; padding: 10px 12px; margin: 12px 0; }
 .shoprow .acts { margin-top: 4px; }
@@ -1852,14 +1858,13 @@ footer .wrap { display: grid; gap: 2px; }
     var nrLine = nr && nr.map === m.name ? '<p class="nextraid"><span class="ktag keep">Next raid</span> Your quest route sends you here next for ' + nr.qs.length + " quest" + (nr.qs.length === 1 ? "" : "s") + ": " + nr.qs.map(function (q) { return esc(q.name); }).join(", ") + ".</p>" : "";
     var dots = m.diff ? new Array(m.diff + 1).join("\u25CF") + new Array(6 - m.diff).join("\u25CB") : "n/a";
     var slug = m.wiki.toLowerCase().replace(/_/g, "-");
-    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + (m.detail ? "-detail" : "") + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3>" + nrLine + "<p>" + esc(m.desc) + "</p>" +
+    document.getElementById("mapCard").innerHTML = '<img class="mapimg" src="maps/' + slug + '.jpg" alt="' + esc(m.name) + ' map (tap to enlarge)" loading="lazy" tabindex="0" role="button" data-action="zoomMap" data-src="maps/' + slug + (m.detail ? "-detail" : "") + '.jpg" data-name="' + esc(m.name) + '" onerror="this.remove()">' + "<h3>" + esc(m.name) + "</h3>" + nrLine + prepHtml(m.name) + "<p>" + esc(m.desc) + "</p>" +
       '<div class="mapstats"><span>Difficulty <b class="dots">' + dots + "</b></span><span>Round <b>" + esc(m.len) + "</b></span><span>Unlock <b>" + esc(m.unlock) + "</b></span></div>" +
       '<ul class="mapnotes">' + m.notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul>" +
       condLive(m) + condsHtml(m) +
       '<div class="mapnote"><label for="mapNote" class="muted">Your notes for this map (saved in this browser)</label><textarea id="mapNote" rows="3" maxlength="2000" placeholder="Good loot rooms, spawns to avoid...">' + esc(mapNotes[m.name] || "") + "</textarea></div>" +
       roomsHtml(m) +
       keysHtml(m) +
-      prepHtml(m.name) +
       '<p><a href="https://arcraiders.wiki/wiki/' + m.wiki + '" target="_blank" rel="noopener">Open ' + esc(m.name) + " on the wiki</a></p>";
     document.getElementById("mapCard").className = "mapcard md" + (m.diff || 0);
     var cs = document.getElementById("condRegion");
@@ -4523,7 +4528,22 @@ footer .wrap { display: grid; gap: 2px; }
     var act = qActive(), here = act.filter(function (q) { return q.loc.indexOf(map) !== -1; });
     var anyN = act.filter(function (q) { return q.loc.indexOf("Any") !== -1 && q.loc.indexOf(map) === -1; }).length;
     var bring = bringFor(here), bk = Object.keys(bring);
-    var h = '<div class="prep"><h3>Raid prep for ' + esc(map) + "</h3>";
+    /* At a glance: the condition running now, quests tied here, and missing items whose best map is this one. */
+    var mo = MAPS.filter(function (x) { return x.name === map; })[0] || {}, cn = condNow(map, new Date()), cAct = mo.conds && mo.conds.length && !cn.stale ? cn.act : [];
+    /* A map counts as best when it matches the item's best score and spot count, so ties list every tied map, not just the first. */
+    var mR = ROOMS[mapSlug(mo)] || { r: [] };
+    var look = shopData(false).filter(function (r) {
+      var bb = farmBest(r.n); if (!bb) { return false; }
+      if (bb.m === map) { return true; }
+      var T = (FARM[r.n] && FARM[r.n].t) || (FARM2[r.n] && FARM2[r.n].t) || [], sc = 0, c = 0;
+      mR.r.forEach(function (x) { var k = x[3] ? x[3].filter(function (y) { return T.indexOf(y) !== -1; }).length : 0; if (k) { c++; sc = Math.max(sc, k); } });
+      return sc === bb.sc && c === bb.c;
+    });
+    var h = '<div class="prep rprep"><h3>Raid prep for ' + esc(map) + "</h3>" +
+      '<div class="rp-glance"><div class="rp-c"><span class="rp-k">Condition now</span>' + (cAct.length ? "<b>" + esc(cAct[0].n) + '</b> <span class="muted" data-cend="' + cAct[0].e + '">ends in ' + condLeft(cAct[0].e - Date.now()) + "</span>" : '<span class="muted">None right now</span>') + "</div>" +
+      '<div class="rp-c"><span class="rp-k">Your quests here</span><b class="rp-n">' + here.length + "</b></div>" +
+      '<div class="rp-c"><span class="rp-k">Items to look for</span><b class="rp-n">' + look.length + "</b></div></div>";
+    if (look.length) { h += '<p class="muted">Items you still need that are best found here:</p><div class="chips">' + look.slice(0, 12).map(function (r) { return '<span class="y">' + esc(r.n) + " &times;" + r.miss + "</span>"; }).join("") + (look.length > 12 ? ' <span class="muted">+' + (look.length - 12) + "</span>" : "") + "</div>"; }
     if (!here.length) { h += '<p class="muted">No active quests are tied to this map' + (anyN ? ", but " + anyN + " work on any map" : "") + ".</p>"; }
     else {
       h += '<p class="muted">' + here.length + " active quest" + (here.length === 1 ? "" : "s") + " here" + (anyN ? " (plus " + anyN + " that work on any map)" : "") + ":</p><ul class=\"mapnotes\">" + here.slice(0, 12).map(function (q) { return "<li>" + esc(q.name) + " <span class=\"muted\">(" + esc(q.trader) + ")</span></li>"; }).join("") + "</ul>";

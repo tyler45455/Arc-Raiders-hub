@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Nov 2, 2026", "Added a short welcome story at the top of Home for new visitors: as you scroll it sorts an example stash into Keep and Safe to sell with the reason for each, shows what an item recycles into, and ends at Connect ARC Tracker. It hides once ARC Tracker is connected or you press Hide this intro."],
     ["Nov 2, 2026", "Daily check: the Propellant Valve Assembly now has its sell price (5,000) and weight (0.5), and also comes from the ARC Frigate and the Fallen Emperor on Pendola Pass. Its wiki page finally loads, which closes that data gap.", "wiki"],
     ["Nov 1, 2026", "Daily check: added the Potted Plant, a new uncommon trinket found in residential spots. It sells for 1,000 and can be placed as a decoration on Outpost furniture.", "wiki"],
     ["Oct 31, 2026", "Daily check: added the new quest Disrupting The Frigate (after Boarding The Frigate, from Celeste) and the Frigate Diagnostic Node (legendary, sells for 3,000, grants 1,000 Research Points). Amplification Modules Mk. I, II, III and V now recycle into 7 Amplified Fragments. The Shredder also drops ARC Data Modules. Nothing Gained and Sparks Fly now list the items Apollo hands you at the start, and Clean Hands follows Off The Radar.", "wiki"],

@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Nov 2, 2026", "The Quests tab now opens with Your next step: the open quest closest to ready, how many of its hand-in items you have, its first objective, and the best map for each item you still need. Show it on the map, set tracker goals, mark it done or skip to the next one right from the card."],
     ["Nov 2, 2026", "The Stash tab now opens with a Sell run: the five items worth the most coins to sell, how many stash slots selling frees, and which items became safe to sell since your last visit. Show the sell list jumps straight to them."],
     ["Nov 2, 2026", "Added a short welcome story at the top of Home for new visitors: as you scroll it sorts an example stash into Keep and Safe to sell with the reason for each, shows what an item recycles into, and ends at Connect ARC Tracker. It hides once ARC Tracker is connected or you press Hide this intro."],
     ["Nov 2, 2026", "Daily check: the Propellant Valve Assembly now has its sell price (5,000) and weight (0.5), and also comes from the ARC Frigate and the Fallen Emperor on Pendola Pass. Its wiki page finally loads, which closes that data gap.", "wiki"],

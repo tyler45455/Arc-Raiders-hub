@@ -332,6 +332,48 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .stsort { display: flex; align-items: center; gap: 6px; margin: 0; }
 .stsort select { width: auto; }
 .stgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+/* Home welcome story: shown until ARC Tracker is connected or the intro is hidden. */
+.wstory { margin: 4px 0 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.wstory h3 { font-size: clamp(22px, 4.2vw, 34px); line-height: 1.1; margin: 0 0 8px; letter-spacing: -0.01em; }
+.ws-open { padding: 28px 0 8px; max-width: 34em; }
+.ws-pin { position: relative; height: 230vh; }
+.ws-stage { position: sticky; top: 8px; min-height: calc(100vh - 16px); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: center; }
+.ws-total { margin-top: 14px; font-family: var(--font-mono); }
+.ws-total .k { color: var(--good); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.ws-total b { font-size: clamp(26px, 5vw, 40px); color: var(--good); margin: 0 4px; }
+.ws-board { position: relative; height: min(66vh, 440px); }
+.ws-lbl { position: absolute; top: 0; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; opacity: var(--wl, 0); }
+.ws-lk { left: 0; color: var(--warm); } .ws-ls { left: 52%; color: var(--good); }
+.ws-it { position: absolute; left: 0; top: 0; width: 48%; height: 19%; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 8px; padding: 6px 10px; display: grid; align-content: center; gap: 2px; will-change: transform; }
+.ws-it b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-it .ws-v { font-family: var(--font-mono); font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-it.k.on { border-left-color: var(--warm); } .ws-it.s.on { border-left-color: var(--good); }
+.ws-it { transition: border-left-color .2s ease; }
+.ws-it .ws-v i { font-style: normal; opacity: var(--wv, 0); }
+.ws-it.k .ws-v i { color: var(--warm); } .ws-it.s .ws-v i { color: var(--good); }
+.ws-rec { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px; align-items: center; padding: 48px 0; }
+.ws-rcopy { grid-column: 2; grid-row: 1; text-align: right; }
+.ws-rrow { grid-column: 1; grid-row: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ws-rrow > * { opacity: 0; transform: translateX(-24px); transition: opacity .5s ease, transform .5s ease; }
+.ws-rrow.on > * { opacity: 1; transform: none; }
+.ws-rrow .ws-src { font-weight: 700; font-size: 18px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.ws-rrow .ws-arr { font-family: var(--font-mono); color: var(--muted); }
+.ws-rrow .ws-out { font-family: var(--font-mono); font-size: 14px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); }
+.ws-rrow .ws-row2 { flex-basis: 100%; height: 0; padding: 0; border: 0; }
+.ws-close { padding: 32px 0 36px; max-width: 34em; margin-left: auto; }
+.ws-close .acts { margin-top: 12px; }
+@media (max-width: 700px) {
+  .ws-pin { height: 260vh; }
+  .ws-stage { grid-template-columns: 1fr; gap: 10px; align-content: start; padding-top: 8px; }
+  .ws-board { height: min(52vh, 380px); }
+  .ws-rec { grid-template-columns: 1fr; padding: 32px 0; }
+  .ws-rcopy { grid-column: 1; text-align: left; }
+  .ws-rrow { grid-row: 2; }
+  .ws-close { margin-left: 0; }
+}
+.wstory.still .ws-pin { height: auto; }
+.wstory.still .ws-stage { position: static; min-height: 0; padding: 12px 0 24px; }
+.wstory.still .ws-rrow > * { opacity: 1; transform: none; transition: none; }
 .stcard { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--r-common); border-radius: 8px; padding: 10px 12px; display: grid; gap: 6px; align-content: start; min-width: 0; }
 .stcard.r-uncommon { border-left-color: var(--r-uncommon); } .stcard.r-rare { border-left-color: var(--r-rare); }
 .stcard.r-epic { border-left-color: var(--r-epic); } .stcard.r-legendary { border-left-color: var(--r-legendary); }
@@ -1004,6 +1046,37 @@ footer .wrap { display: grid; gap: 2px; }
   <section class="panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" hidden>
     <h2>Home</h2>
     <p class="muted">Your next raid, the closest workshop upgrade, goals and raid stats at a glance. Tap any card's button to see more.</p>
+    <section class="wstory" id="wStory" aria-labelledby="wsH1" hidden>
+      <div class="ws-open">
+        <p class="eyebrow">New here?</p>
+        <h3 id="wsH1">Your stash is full. Again.</h3>
+        <p>Before you sell anything, this site checks it against your quests, workshop upgrades and projects. Scroll to watch it sort an example stash.</p>
+      </div>
+      <div class="ws-pin" id="wsPin">
+        <div class="ws-stage">
+          <div class="ws-copy">
+            <h3>Keep what your quests need. Sell the rest.</h3>
+            <p class="muted">Every item gets a verdict and the reason behind it.</p>
+            <p class="ws-total"><span class="k">Safe to sell</span> <b id="wsTotal">0</b> <span class="muted">coins</span></p>
+          </div>
+          <div class="ws-board" id="wsBoard" role="img" aria-label="An example stash sorted into items to keep and items that are safe to sell">
+            <span class="ws-lbl ws-lk">Keep</span><span class="ws-lbl ws-ls">Safe to sell</span>
+          </div>
+        </div>
+      </div>
+      <div class="ws-rec">
+        <div class="ws-rcopy">
+          <h3>Know what it breaks down into</h3>
+          <p class="muted">Recycle at the workbench or salvage in a raid. The site shows both, for every item.</p>
+        </div>
+        <div class="ws-rrow" id="wsRec"></div>
+      </div>
+      <div class="ws-close">
+        <h3>Connect ARC Tracker and this becomes your real stash.</h3>
+        <p class="muted">It is free and read-only, and it checks your stash again every 10 minutes.</p>
+        <div class="acts"><button class="btn" type="button" data-action="arctPanel">Connect ARC Tracker</button><button class="btn ghost" type="button" data-action="wsHide">Hide this intro</button></div>
+      </div>
+    </section>
     <div class="sttiles" id="homeTiles"></div>
     <div class="homegrid" id="homeOut"></div>
     <details class="card tool" id="routeTool"><summary>Quest route planner</summary>
@@ -4640,7 +4713,93 @@ footer .wrap { display: grid; gap: 2px; }
         '<button class="btn ghost" type="button" data-hmv="' + k + '" data-d="1" aria-label="Move ' + esc(name[k]) + ' down"' + (i < L.o.length - 1 ? "" : " disabled") + ">&darr;</button></div>";
     }).join("");
   }
+  /* ---------- Home welcome story ----------
+     An example stash, built from real game data, sorts itself into Keep and Safe to sell as the visitor scrolls.
+     Keep items are ones a real quest asks for; sell items are trinkets nothing uses. Prices come from ITEMINFO. */
+  var wsHidden = load("arcHubStoryHide", false), wsBuilt = false, wsItems = [], wsRaf = 0;
+  function wsStill() { return disp.motion || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  function wsPick() {
+    var keep = [], sell = [], seenK = {};
+    QUESTS.forEach(function (q) {
+      q.req.forEach(function (r) {
+        var n = r.n, f = ITEMINFO[n];
+        if (keep.length < 4 && !seenK[n] && f && f[0] && !isGear(n)) { seenK[n] = 1; keep.push({ n: n, q: Math.max(1, r.q), why: q.name, k: 1 }); }
+      });
+    });
+    var used = {};
+    QUESTS.forEach(function (q) { q.req.forEach(function (r) { used[r.n] = 1; }); });
+    ["Breathtaking Snow Globe", "Acoustic Guitar", "Diving Goggles", "Dog Collar", "Frying Pan", "Garlic Press", "Headphones", "Toaster"].forEach(function (n) {
+      var f = ITEMINFO[n];
+      if (sell.length < 4 && f && f[0] && !used[n] && !(CRAFTS_INTO[n] || []).length) { sell.push({ n: n, q: 1 + (sell.length % 2), p: f[0], k: 0 }); }
+    });
+    var out = [];
+    for (var i = 0; i < 4; i++) { if (keep[i]) { out.push(keep[i]); } if (sell[i]) { out.push(sell[i]); } }
+    return out;
+  }
+  function wsBuild() {
+    var board = document.getElementById("wsBoard"); if (!board) { return; }
+    wsItems = wsPick();
+    /* Start slots are shuffled so keep and sell items begin mixed together in both columns. */
+    var ki = 0, si = 0, mix = [3, 6, 0, 5, 7, 1, 4, 2];
+    wsItems.forEach(function (it, i) {
+      var sl = mix[i] % wsItems.length; it.c0 = sl % 2; it.r0 = Math.floor(sl / 2);
+      if (it.k) { it.c1 = 0; it.r1 = ki++; } else { it.c1 = 1; it.r1 = si++; }
+      var d = document.createElement("div");
+      d.className = "ws-it " + (it.k ? "k" : "s");
+      d.innerHTML = "<b>" + esc(it.n) + " &times;" + it.q + '</b><span class="ws-v"><i>' + (it.k ? "Keep &middot; " + esc(it.why) : "Sell &middot; " + coins(it.p * it.q)) + "</i></span>";
+      board.appendChild(d); it.el = d;
+    });
+    var rec = document.getElementById("wsRec"), src = null;
+    ["Acoustic Guitar", "Toaster", "Headphones"].some(function (n) { var it = items.filter(function (x) { return x.name === n; })[0]; if (it && Object.keys(it.rec).length > 1) { src = it; } return !!src; });
+    if (rec && src) {
+      var h = '<span class="ws-src">' + esc(src.name) + '</span><span class="ws-arr">recycles into</span>';
+      Object.keys(src.rec).forEach(function (m) { h += '<span class="ws-out">' + src.rec[m] + "&times; " + esc(m) + "</span>"; });
+      if (Object.keys(src.sal).length) {
+        h += '<span class="ws-row2"></span><span class="ws-arr">salvage in a raid</span>';
+        Object.keys(src.sal).forEach(function (m) { h += '<span class="ws-out">' + src.sal[m] + "&times; " + esc(m) + "</span>"; });
+      }
+      rec.innerHTML = h;
+      Array.prototype.forEach.call(rec.children, function (c, i) { c.style.transitionDelay = (i * 0.08) + "s"; });
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (es, ob) { es.forEach(function (e) { if (e.isIntersecting) { rec.classList.add("on"); ob.disconnect(); } }); }, { threshold: 0.4 }).observe(rec);
+      } else { rec.classList.add("on"); }
+    }
+    wsBuilt = true;
+  }
+  function wsFrame() {
+    wsRaf = 0;
+    var st = document.getElementById("wStory"), pin = document.getElementById("wsPin"), board = document.getElementById("wsBoard");
+    if (!st || st.hidden || !board || !wsItems.length) { return; }
+    var still = wsStill(), p = 1;
+    st.classList.toggle("still", still);
+    if (!still) {
+      var r = pin.getBoundingClientRect(), span = r.height - window.innerHeight;
+      p = span > 0 ? Math.min(1, Math.max(0, (-r.top) / span)) : 1;
+    }
+    var W = board.clientWidth, H = board.clientHeight, rowH = H * 0.205, top0 = H * 0.08, total = 0;
+    wsItems.forEach(function (it, i) {
+      /* Each tile leaves at its own moment, so the stash sorts itself one item at a time. */
+      var t = Math.min(1, Math.max(0, (p - 0.08 - i * 0.06) / 0.4)), e = t * t * (3 - 2 * t);
+      var x = (it.c0 + (it.c1 - it.c0) * e) * W * 0.52, y = top0 + (it.r0 + (it.r1 - it.r0) * e) * rowH;
+      it.el.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px)";
+      it.el.style.setProperty("--wv", e.toFixed(3));
+      it.el.classList.toggle("on", e > 0.5);
+      if (!it.k) { total += it.p * it.q * e; }
+    });
+    board.style.setProperty("--wl", Math.min(1, p * 3).toFixed(3));
+    document.getElementById("wsTotal").textContent = coins(Math.round(total));
+  }
+  function wsTick() { if (!wsRaf) { wsRaf = window.requestAnimationFrame(wsFrame); } }
+  function renderStory() {
+    var st = document.getElementById("wStory"); if (!st) { return; }
+    var show = !wsHidden && !arctReady();
+    st.hidden = !show;
+    if (!show) { return; }
+    if (!wsBuilt) { wsBuild(); window.addEventListener("scroll", wsTick, { passive: true }); window.addEventListener("resize", wsTick); }
+    wsTick();
+  }
   function renderHome() {
+    renderStory();
     var out = document.getElementById("homeOut");
     if (!out) { return; }
     var html = "", per = parseInt(qrSet.per, 10) || 4, route = qrPlan(per), nq = qActive().length;
@@ -5563,6 +5722,8 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "arctRawCopy") {
       var rawT = document.getElementById("arctRawOut").textContent, rawM = document.getElementById("arctRawMsg");
       try { window.navigator.clipboard.writeText(rawT).then(function () { rawM.textContent = "Copied."; }, function () { rawM.textContent = "Copy failed."; }); } catch (eR) { rawM.textContent = "Copy failed."; }
+    } else if (a === "wsHide") {
+      wsHidden = true; save("arcHubStoryHide", true); renderStory();
     } else if (a === "arctPanel") {
       arctPanel(document.getElementById("arctCard").hidden);
     } else if (a === "homeWs") {

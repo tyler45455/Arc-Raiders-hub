@@ -324,6 +324,33 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .sttile .k { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .sttile .v { font-size: 22px; font-weight: 700; line-height: 1.25; }
 .sttile .s { font-size: 13px; color: var(--muted); }
+.strecap { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--good); border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+.sr-top { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+.sr-eye { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--good); margin: 0; }
+.strecap h3 { margin: 2px 0 4px; font-size: 20px; }
+.sr-sub { margin: 0; font-size: 13.5px; max-width: 60ch; }
+.sr-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
+.sr-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline; }
+.sr-row .sr-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sr-row .sr-name .muted { font-size: 13px; }
+.sr-row .sr-val { font-variant-numeric: tabular-nums; font-weight: 700; }
+.sr-row .sr-val .muted { font-weight: 400; font-size: 12px; margin-left: 6px; }
+.sr-bar { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--surface2, var(--bg)); overflow: hidden; }
+.sr-bar i { display: block; height: 100%; width: 0; background: var(--good); border-radius: 3px; transition: width .7s cubic-bezier(.2,.7,.2,1); }
+.sr-slots { margin-top: 14px; }
+.sr-sk { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.sr-sk > span:first-child { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.sr-nums { display: flex; gap: 14px; }
+.sr-nums b { font-variant-numeric: tabular-nums; }
+.sr-meter { display: flex; height: 10px; margin-top: 6px; border-radius: 5px; background: var(--surface2, var(--bg)); border: 1px solid var(--line); overflow: hidden; }
+.sr-meter i { display: block; height: 100%; width: 0; transition: width .8s cubic-bezier(.2,.7,.2,1); }
+.sr-meter .sr-keep { background: var(--warm); }
+.sr-meter .sr-free { background: repeating-linear-gradient(135deg, var(--good) 0 4px, transparent 4px 8px); transition-delay: .25s; }
+.sr-new { margin-top: 12px; display: flex; gap: 6px 8px; flex-wrap: wrap; align-items: center; font-size: 13.5px; }
+.sr-newk { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--warm); }
+.sr-chip { border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.strecap.still .sr-bar i, .strecap.still .sr-meter i { transition: none; }
+@media (max-width: 700px) { .strecap { padding: 12px; } .sr-top .btn { width: 100%; } }
 @media (max-width: 600px) { .sttiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .sttile { padding: 8px; } .sttile .v { font-size: 18px; } .sttile .k { font-size: 10px; letter-spacing: .02em; } }
 .sttile.sell .v { color: var(--good); } .sttile.keep .v { color: var(--warm); }
 .sttools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
@@ -1189,6 +1216,22 @@ footer .wrap { display: grid; gap: 2px; }
   <section class="panel" id="panel-stash" role="tabpanel" aria-labelledby="tab-stash" hidden>
     <h2>Stash</h2>
     <p class="muted">Everything you have, split into what to keep and what is safe to sell. Change Have or Want on any card.</p>
+    <section class="strecap" id="stRecap" aria-labelledby="srH" hidden>
+      <div class="sr-top">
+        <div>
+          <p class="sr-eye">Sell run</p>
+          <h3 id="srH">Sell these first</h3>
+          <p class="muted sr-sub">Sorted by the coins each one brings in. Nothing here is needed by your quests, upgrades, projects or Want amounts.</p>
+        </div>
+        <button class="btn" type="button" data-action="srShow">Show the sell list</button>
+      </div>
+      <ol class="sr-list" id="srList"></ol>
+      <div class="sr-slots">
+        <div class="sr-sk"><span>Stash slots</span><span class="sr-nums"><span class="sr-n"><span class="muted">Now</span> <b id="srNow">0</b></span><span class="sr-n"><span class="muted">After selling</span> <b id="srAfter">0</b></span></span></div>
+        <div class="sr-meter" role="img" id="srMeter"><i class="sr-keep"></i><i class="sr-free"></i></div>
+      </div>
+      <div class="sr-new" id="srNew" hidden><span class="sr-newk">New since your last visit</span><span id="srNewList"></span></div>
+    </section>
     <div class="sttiles" id="stTiles"></div>
     <div class="sttools">
       <div class="seg" role="group" aria-label="Show">
@@ -5722,6 +5765,10 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (a === "arctRawCopy") {
       var rawT = document.getElementById("arctRawOut").textContent, rawM = document.getElementById("arctRawMsg");
       try { window.navigator.clipboard.writeText(rawT).then(function () { rawM.textContent = "Copied."; }, function () { rawM.textContent = "Copy failed."; }); } catch (eR) { rawM.textContent = "Copy failed."; }
+    } else if (a === "srShow") {
+      stView.f = "sell"; save("arcHubStashView", stView); renderStash();
+      var srT = document.querySelector("#panel-stash .sttools");
+      if (srT) { srT.scrollIntoView({ behavior: wsStill() ? "auto" : "smooth", block: "start" }); }
     } else if (a === "wsHide") {
       wsHidden = true; save("arcHubStoryHide", true); renderStory();
     } else if (a === "arctPanel") {
@@ -6518,6 +6565,7 @@ footer .wrap { display: grid; gap: 2px; }
       tile("keep", "Keep", coins(T.keepV), T.keepN + " item" + (T.keepN === 1 ? "" : "s") + " needed") +
       (T.wantN ? tile("", "Looking for", T.wantSlots + " slot" + (T.wantSlots === 1 ? "" : "s"), "needed for " + T.wantN + " item" + (T.wantN === 1 ? "" : "s") + " you are looking for") : "");
     tiles.classList.toggle("four", !!T.wantN);
+    renderRecap(rows, T);
     var q = (document.getElementById("stQ").value || "").trim().toLowerCase();
     var list = rows.filter(function (r) {
       if (stView.f === "sell" && !r.sell) { return false; }
@@ -6533,6 +6581,49 @@ footer .wrap { display: grid; gap: 2px; }
       return (stView.f === "sell" ? b.sellValue - a.sellValue : b.value - a.value) || a.n.localeCompare(b.n);
     });
     out.innerHTML = list.length ? list.map(stashCard).join("") : '<div class="empty-line">' + (stView.f === "sell" ? "Nothing is safe to sell: everything you have is needed." : stView.f === "keep" ? "Nothing you have is needed right now." : stView.f === "want" ? (rows.some(function (r) { return r.want; }) ? "You have everything you are looking for." : "You are not looking for anything. Type a Want amount on any card, or add a material below with a Want amount.") : "No items match.") + "</div>";
+  }
+  /* Sell run: the top sells by coins, the slots they free, and what became sellable since the last visit. */
+  var srPrev = null, srSig = "";
+  function renderRecap(rows, T) {
+    var box = document.getElementById("stRecap");
+    if (!box) { return; }
+    if (srPrev === null) { srPrev = load("arcHubSellSnap", {}) || {}; }
+    var snap = {};
+    rows.forEach(function (r) { if (r.sell) { snap[r.n] = r.sell; } });
+    save("arcHubSellSnap", snap);
+    if (!T.sellN) { box.hidden = true; return; }
+    box.hidden = false;
+    var sells = rows.filter(function (r) { return r.sell; }).sort(function (a, b) { return b.sellValue - a.sellValue || b.free - a.free || a.n.localeCompare(b.n); });
+    var top = sells.slice(0, 5), max = top[0].sellValue || 1;
+    var sig = top.map(function (r) { return r.n + r.sell; }).join("|") + "/" + T.slots + "/" + T.free;
+    var still = wsStill(), fresh = sig !== srSig;
+    srSig = sig;
+    box.classList.toggle("still", !!still);
+    document.getElementById("srList").innerHTML = top.map(function (r) {
+      var pct = T.sellV ? Math.round(r.sellValue / T.sellV * 100) : 0;
+      return '<li class="sr-row"><span class="sr-name">' + esc(r.n) + ' <span class="muted">&times;' + r.sell + "</span></span>" +
+        '<span class="sr-val">' + (r.price === null ? '<span class="muted">?</span>' : coins(r.sellValue) + '<span class="muted">' + pct + "%</span>") + "</span>" +
+        '<span class="sr-bar"><i data-w="' + (r.sellValue / max * 100).toFixed(1) + '"></i></span></li>';
+    }).join("");
+    var cap = parseInt(stash.cap, 10) || 0, after = T.slots - T.free, base = Math.max(cap, T.slots, 1);
+    document.getElementById("srNow").textContent = T.slots + (cap ? " / " + cap : "");
+    document.getElementById("srAfter").textContent = after + (cap ? " / " + cap : "");
+    var m = document.getElementById("srMeter");
+    m.setAttribute("aria-label", "Stash slots now " + T.slots + ", after selling " + after);
+    m.children[0].setAttribute("data-w", (after / base * 100).toFixed(1));
+    m.children[1].setAttribute("data-w", (T.free / base * 100).toFixed(1));
+    var nw = sells.filter(function (r) { return r.sell > (srPrev[r.n] || 0); });
+    var hadSnap = Object.keys(srPrev).length > 0;
+    document.getElementById("srNew").hidden = !(hadSnap && nw.length);
+    document.getElementById("srNewList").innerHTML = nw.slice(0, 8).map(function (r) { return '<span class="sr-chip">' + esc(r.n) + " +" + (r.sell - (srPrev[r.n] || 0)) + "</span>"; }).join(" ") + (nw.length > 8 ? ' <span class="muted">+' + (nw.length - 8) + "</span>" : "");
+    var bars = box.querySelectorAll("[data-w]");
+    function grow() { Array.prototype.forEach.call(bars, function (b) { b.style.width = b.getAttribute("data-w") + "%"; }); }
+    if (still || !fresh) { grow(); return; }
+    /* Bars grow from empty the first time the recap is on screen, so the biggest sells read first. */
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); requestAnimationFrame(grow); } }, { threshold: 0.2 });
+      io.observe(box);
+    } else { grow(); }
   }
   function stashTabInit() {
     Array.prototype.forEach.call(document.querySelectorAll("[data-stf]"), function (b) {

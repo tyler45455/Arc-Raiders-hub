@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Nov 2, 2026", "On the Your next step card, the Show on map button now follows the objective you are on. After you tick a step it opens the map for the next one and marks only that step's spots. A step with no marked spot uses the map it names, or the map from the step before it."],
     ["Nov 2, 2026", "Quests with more than one objective now have a tick box for each step, saved in your browser. The Objectives count shows how many you have done, and the Your next step card shows the next unticked objective so you can tick it off right there."],
     ["Nov 2, 2026", "Raid prep now sits at the top of each map on the Maps tab, with an at-a-glance row: the condition running now and when it ends, how many of your quests are tied to the map, and how many items you still need that are best found there, listed right under it."],
     ["Nov 2, 2026", "The Quests tab now opens with Your next step: the open quest closest to ready, how many of its hand-in items you have, its first objective, and the best map for each item you still need. Show it on the map, set tracker goals, mark it done or skip to the next one right from the card."],

@@ -3001,12 +3001,23 @@ footer .wrap { display: grid; gap: 2px; }
     var x = list[qSpotSkip % list.length], q = x.q, nm = esc(q.name);
     var bring = q.req.filter(function (r) { return x.pick.indexOf(r) === -1; }), need = 0, got = 0;
     bring.forEach(function (r) { need += r.q; got += Math.min(r.q, tracker[r.n] || 0); });
-    var sp = qSpots(q), html = '<p class="qs-eye">Your next step</p><h3 id="qsH">' + nm + '</h3><span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span>";
+    /* The map buttons follow the next unticked objective: maps with spots for that step, else every map with spots. */
+    var oi = -1;
+    if (q.obj.length > 1) { q.obj.forEach(function (o, i) { if (oi === -1 && !qStepOn(q, i)) { oi = i; } }); }
+    /* Walk back from the next step: the first objective with marked spots, or that names a map, sets which map the button opens. */
+    var sp = qSpots(q), spMaps = [], spStep = false;
+    for (var oj = oi; oj >= 0 && !spMaps.length; oj--) {
+      spMaps = sp.maps.filter(function (mn) { return sp.by[mn].some(function (s) { return s.n === oj + 1; }); });
+      if (spMaps.length) { spStep = oj === oi; break; }
+      var ol = q.obj[oj].toLowerCase();
+      spMaps = sp.maps.filter(function (mn) { return ol.indexOf(mn.toLowerCase().replace(/^the /, "")) !== -1; });
+    }
+    if (!spMaps.length) { spMaps = sp.maps; }
+    var html = '<p class="qs-eye">Your next step</p><h3 id="qsH">' + nm + '</h3><span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span>";
     if (need) {
       html += '<div class="qs-prog"><div class="qs-pk"><span>Items to bring</span><b>' + got + " / " + need + '</b></div><div class="qs-meter" role="img" aria-label="Items to bring ' + got + " / " + need + '"><i style="width:' + Math.round(got / need * 100) + '%"></i></div></div>';
     }
     if (q.obj.length > 1) {
-      var oi = -1; q.obj.forEach(function (o, i) { if (oi === -1 && !qStepOn(q, i)) { oi = i; } });
       html += oi === -1 ? '<div class="qstat ok">All objectives ticked off</div>' :
         '<p class="qs-obj"><label><input type="checkbox" data-qstep="' + nm + '" data-i="' + oi + '"> <span><span class="muted">' + (oi ? "Next objective:" : "First objective:") + "</span> " + esc(q.obj[oi]) + "</span></label></p>";
     } else if (q.obj.length) { html += '<p class="qs-obj"><span class="muted">First objective:</span> ' + esc(q.obj[0]) + "</p>"; }
@@ -3022,7 +3033,7 @@ footer .wrap { display: grid; gap: 2px; }
     } else if (x.n) { html += '<div class="qs-ok">You have everything to bring</div>'; }
     if (x.pick.length) { html += '<div class="muted" style="margin-top:6px;font-size:13.5px;"><span>Found during the quest:</span> ' + x.pick.map(function (r) { return "<span>" + esc(r.n) + "</span>"; }).join(", ") + "</div>"; }
     if (QNEXT[q.name]) { html += '<div class="qstat">Unlocks: ' + QNEXT[q.name].map(esc).join(", ") + "</div>"; }
-    html += '<div class="acts">' + sp.maps.slice(0, 2).map(function (mn) { return '<button type="button" class="btn" data-action="qMap" data-q="' + nm + '" data-m="' + esc(mn) + '">Show on map</button>' + (sp.maps.length > 1 ? ' <span class="muted">' + esc(mn) + "</span>" : ""); }).join("") +
+    html += '<div class="acts">' + spMaps.slice(0, 2).map(function (mn) { return '<button type="button" class="btn" data-action="qMap" data-q="' + nm + '" data-m="' + esc(mn) + '"' + (spStep ? ' data-o="' + (oi + 1) + '"' : "") + '>Show on map</button>' + (spMaps.length > 1 || q.loc.length !== 1 ? ' <span class="muted">' + esc(mn) + "</span>" : ""); }).join("") +
       (x.miss.length ? '<button class="btn ghost" type="button" data-action="qGoal" data-q="' + nm + '">Set tracker goals</button>' : "") +
       '<label class="qchk"><input type="checkbox" data-qdone="' + nm + '"> Mark as completed</label>' +
       (list.length > 1 ? '<button class="btn ghost" type="button" data-action="qSpotSkip">Skip for now</button>' : "") + "</div>";
@@ -5926,7 +5937,8 @@ footer .wrap { display: grid; gap: 2px; }
       var qmq = QUESTS.filter(function (x) { return x.name === t.getAttribute("data-q"); })[0], qmn = t.getAttribute("data-m"), qmi = -1;
       MAPS.forEach(function (m, k) { if (m.name === qmn) { qmi = k; } });
       if (qmq && qmi >= 0) {
-        var qsp = qSpots(qmq).by[qmn] || [];
+        var qsp = qSpots(qmq).by[qmn] || [], qmo = parseInt(t.getAttribute("data-o"), 10);
+        if (qmo) { qsp = qsp.filter(function (s) { return s.n === qmo; }); }
         lb.questPend = { q: qmq.name, spots: qsp };
         lbOpen(mapDetailSrc(MAPS[qmi]), qmn, undefined, qmq.name + ": " + qsp.length + " spot" + (qsp.length === 1 ? "" : "s") + " marked. The number is the objective it belongs to.");
       }

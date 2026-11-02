@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "kind": "items",
- "dataDate": "November 1, 2026",
+ "dataDate": "November 2, 2026",
  "count": 404,
  "items": [
   {
@@ -10329,15 +10329,20 @@
     "ARC"
    ],
    "sources": {
+    "foundIn": [
+     "Fallen Emperor (Pendola Pass)"
+    ],
     "arcEnemies": [
-     "Emperor"
+     "Emperor",
+     "ARC Frigate"
     ],
     "other": [
-     "Used to craft amplified weapons"
+     "Used to craft amplified weapons",
+     "Cannot be recycled or salvaged"
     ]
    },
-   "sellPrice": null,
-   "weightKg": null,
+   "sellPrice": 5000,
+   "weightKg": 0.5,
    "stackSize": null,
    "page": "https://tyler45455.github.io/Arc-Raiders-hub/item/propellant-valve-assembly/"
   },

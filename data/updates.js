@@ -28,14 +28,14 @@ ARC.PATCHES = [
     {"date": "Oct 9, 2026", "title": "Hotfix 2.0.2", "ver": "2.0.2", "kind": "Hotfix", "body": "Crash and model fixes after Frozen Trail.", "points": ["Fixed weapon models partly disappearing with attachments and missing in the inventory.", "Fixed several causes of server crashes.", "Fixed falling through a grate on Pendola Pass and getting stuck.", "Fixed an error when buying DLC bundles.", "Known issue at the time: the Reward Pass was not progressing for some players."]}
   ];
 
-ARC.DATA_UPDATED = "November 1, 2026";
+ARC.DATA_UPDATED = "November 2, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
    Enemy sightings, and the daily Claude wiki check for the rest (it reads the wiki's recent changes for every page
    the site uses, and works through tools/check-recycle.js for recycling). The date is the last time a check changed something. */
 ARC.FRESHNESS = [
-    ["Sell prices, weights, recipes and where to find items", "November 1, 2026", "daily"],
+    ["Sell prices, weights, recipes and where to find items", "November 2, 2026", "daily"],
     ["Quests, objectives and quest chain", "October 31, 2026", "daily"],
     ["Keys and where to find them", "October 14, 2026", "daily"],
     ["Skills", "October 10, 2026", "daily"],
@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Nov 2, 2026", "Daily check: the Propellant Valve Assembly now has its sell price (5,000) and weight (0.5), and also comes from the ARC Frigate and the Fallen Emperor on Pendola Pass. Its wiki page finally loads, which closes that data gap.", "wiki"],
     ["Nov 1, 2026", "Daily check: added the Potted Plant, a new uncommon trinket found in residential spots. It sells for 1,000 and can be placed as a decoration on Outpost furniture.", "wiki"],
     ["Oct 31, 2026", "Daily check: added the new quest Disrupting The Frigate (after Boarding The Frigate, from Celeste) and the Frigate Diagnostic Node (legendary, sells for 3,000, grants 1,000 Research Points). Amplification Modules Mk. I, II, III and V now recycle into 7 Amplified Fragments. The Shredder also drops ARC Data Modules. Nothing Gained and Sparks Fly now list the items Apollo hands you at the start, and Clean Hands follows Off The Radar.", "wiki"],
     ["Oct 31, 2026", "Every Report button (wrong numbers, data gaps, translation errors and the Credits link) now opens the feedback form instead of GitHub. The details are copied for you, so you can paste them into the form."],

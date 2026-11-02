@@ -645,6 +645,12 @@ textarea { width: 100%; background: var(--surface); color: var(--fg); border: 1p
 .qchk { margin-right: auto; font-size: 13px; font-weight: 600; display: flex; gap: 6px; align-items: center; }
 .qobj summary { cursor: pointer; font-size: 13px; font-weight: 600; }
 .qobj ol { margin: 6px 0 0; padding-left: 20px; font-size: 13px; display: grid; gap: 3px; }
+.qobj ol.qsteps { list-style: none; padding-left: 0; gap: 2px; }
+.qsteps label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; padding: 3px 0; }
+.qsteps input { width: 18px; height: 18px; flex: none; margin: 0; accent-color: var(--good); }
+.qsteps li.on span { text-decoration: line-through; color: var(--muted); }
+.qspot .qs-obj label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.qspot .qs-obj input { width: 18px; height: 18px; flex: none; margin: 2px 0 0; accent-color: var(--good); }
 .qstat { font-size: 12.5px; font-weight: 600; color: var(--muted); }
 .qstat.ok { color: var(--good); }
 .presetbox { border: 1px dashed var(--line); border-radius: 8px; padding: 10px 12px; margin: 10px 0; display: grid; gap: 8px; }
@@ -2999,7 +3005,11 @@ footer .wrap { display: grid; gap: 2px; }
     if (need) {
       html += '<div class="qs-prog"><div class="qs-pk"><span>Items to bring</span><b>' + got + " / " + need + '</b></div><div class="qs-meter" role="img" aria-label="Items to bring ' + got + " / " + need + '"><i style="width:' + Math.round(got / need * 100) + '%"></i></div></div>';
     }
-    if (q.obj.length) { html += '<p class="qs-obj"><span class="muted">First objective:</span> ' + esc(q.obj[0]) + "</p>"; }
+    if (q.obj.length > 1) {
+      var oi = -1; q.obj.forEach(function (o, i) { if (oi === -1 && !qStepOn(q, i)) { oi = i; } });
+      html += oi === -1 ? '<div class="qstat ok">All objectives ticked off</div>' :
+        '<p class="qs-obj"><label><input type="checkbox" data-qstep="' + nm + '" data-i="' + oi + '"> <span><span class="muted">' + (oi ? "Next objective:" : "First objective:") + "</span> " + esc(q.obj[oi]) + "</span></label></p>";
+    } else if (q.obj.length) { html += '<p class="qs-obj"><span class="muted">First objective:</span> ' + esc(q.obj[0]) + "</p>"; }
     if (x.miss.length) {
       html += '<ul class="qs-need">' + x.miss.map(function (r) {
         var have = tracker[r.n] || 0, G = FARM2[r.n] || {}, b = farmBest(r.n), tags = [];
@@ -3110,6 +3120,17 @@ footer .wrap { display: grid; gap: 2px; }
   }
   var qcScroll = true, qcDragged = false;
   function qcSet(name, noScroll) { qcTarget = name || ""; save("arcHubQChain", qcTarget); qcScroll = !noScroll; renderQChain(); }
+  /* Objective tick boxes: quests with more than one objective get one box per step, saved per quest in this browser. */
+  var qSteps = load("arcHubQSteps", {}), qObjOpen = {};
+  function qStepOn(q, i) { return !!(qSteps[q.name] && qSteps[q.name][i]); }
+  function qStepN(q) { var n = 0; q.obj.forEach(function (o, i) { if (qStepOn(q, i)) { n++; } }); return n; }
+  function qObjList(q) {
+    if (q.obj.length < 2 || qDone[q.name]) { return "<ol>" + q.obj.map(function (o) { return "<li>" + esc(o) + "</li>"; }).join("") + "</ol>"; }
+    return '<ol class="qsteps">' + q.obj.map(function (o, i) {
+      var on = qStepOn(q, i);
+      return '<li' + (on ? ' class="on"' : "") + '><label><input type="checkbox" data-qstep="' + esc(q.name) + '" data-i="' + i + '"' + (on ? " checked" : "") + "> <span>" + esc(o) + "</span></label></li>";
+    }).join("") + "</ol>" + (qStepN(q) === q.obj.length ? '<div class="qstat ok">All objectives ticked off</div>' : "");
+  }
   function renderQuests() {
     renderQChain();
     var mats = {};
@@ -3169,7 +3190,7 @@ footer .wrap { display: grid; gap: 2px; }
       return '<div class="qcard' + (qDone[q.name] ? " qdone" : qLocked(q) ? " qlock" : " qopen") + '"><div class="qh"><a href="' + esc(qWiki(q.name)) + '" target="_blank" rel="noopener">' + esc(q.name) + '</a>' +
         '<span class="qmeta">' + esc(q.trader) + " &middot; " + esc(q.loc.join(", ")) + "</span></div>" +
         (qLocked(q) ? '<div class="qstat">Locked: finish ' + QPREV[q.name].filter(function (p) { return !qDone[p]; }).map(esc).join(" and ") + " first</div>" : "") +
-        (q.obj.length ? '<details class="qobj"' + (term ? " open" : "") + '><summary>Objectives (' + q.obj.length + ')</summary><ol>' + q.obj.map(function (o) { return "<li>" + esc(o) + "</li>"; }).join("") + "</ol></details>" : "") +
+        (q.obj.length ? '<details class="qobj" data-q="' + esc(q.name) + '"' + (term || qObjOpen[q.name] ? " open" : "") + '><summary>Objectives (' + (q.obj.length > 1 && !qDone[q.name] ? qStepN(q) + "/" : "") + q.obj.length + ')</summary>' + qObjList(q) + "</details>" : "") +
         (function () {
           var sp = qSpots(q);
           return sp.maps.length ? '<div class="qrow"><span class="lbl">Where</span>' + sp.maps.map(function (mn) {
@@ -6058,6 +6079,17 @@ footer .wrap { display: grid; gap: 2px; }
   document.getElementById("qStatus").addEventListener("change", renderQuests);
   document.getElementById("arctAdd").addEventListener("change", function (e) { arctSet.add = e.target.checked; save("arcHubArct", arctSet); });
   document.getElementById("arctAuto").addEventListener("change", function (e) { arctSet.auto = e.target.checked; save("arcHubArct", arctSet); if (e.target.checked) { arctSet.last = 0; arctAutoRun(); } });
+  document.addEventListener("change", function (e) {
+    var sn = e.target && e.target.getAttribute && e.target.getAttribute("data-qstep");
+    if (!sn) { return; }
+    var si = e.target.getAttribute("data-i"), sq = qSteps[sn] = qSteps[sn] || {};
+    if (e.target.checked) { sq[si] = 1; } else { delete sq[si]; }
+    if (!Object.keys(sq).length) { delete qSteps[sn]; }
+    save("arcHubQSteps", qSteps); qObjOpen[sn] = true; renderQuests();
+  });
+  document.addEventListener("toggle", function (e) {
+    var d = e.target; if (d && d.classList && d.classList.contains("qobj")) { qObjOpen[d.getAttribute("data-q")] = d.open; }
+  }, true);
   document.addEventListener("change", function (e) {
     var n = e.target && e.target.getAttribute && e.target.getAttribute("data-qdone");
     if (!n) { return; }

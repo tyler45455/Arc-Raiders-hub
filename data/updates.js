@@ -28,7 +28,7 @@ ARC.PATCHES = [
     {"date": "Oct 9, 2026", "title": "Hotfix 2.0.2", "ver": "2.0.2", "kind": "Hotfix", "body": "Crash and model fixes after Frozen Trail.", "points": ["Fixed weapon models partly disappearing with attachments and missing in the inventory.", "Fixed several causes of server crashes.", "Fixed falling through a grate on Pendola Pass and getting stuck.", "Fixed an error when buying DLC bundles.", "Known issue at the time: the Reward Pass was not progressing for some players."]}
   ];
 
-ARC.DATA_UPDATED = "November 3, 2026";
+ARC.DATA_UPDATED = "November 5, 2026";
 
 /* The Data freshness table at the bottom of the site: [section, date, how it is checked].
    Every row is re-checked every day ("daily"): tools/sync-item-data.js for the first row, tools/sync-sightings.js for
@@ -44,7 +44,7 @@ ARC.FRESHNESS = [
     ["Weapons & gear", "October 27, 2026", "daily"],
     ["Reference: enemies, traders, workshop, blueprints", "November 3, 2026", "daily"],
     ["Project presets", "October 28, 2026", "daily"],
-    ["Trials (Season 6, Week 4)", "October 28, 2026", "daily"],
+    ["Trials (Season 6, Week 5)", "November 5, 2026", "daily"],
     ["Maps and update history", "October 27, 2026", "daily"],
     ["Map condition schedule (official, by server region)", "October 16, 2026", "hourly"]
   ];
@@ -52,6 +52,7 @@ ARC.FRESHNESS = [
 /* Changelog, newest first: [date, text] or [date, text, "wiki"]. Tag game-data changes picked up from the wiki
    (the daily wiki check) with "wiki" so they show under Site changes > Wiki updates. */
 ARC.DATA_CHANGES = [
+    ["Nov 5, 2026", "Daily check: Trials now show Season 6 Week 5 (November 3 to 10): Damage ARC Turbines, Search ARC Couriers on Pendola Pass, Damage Comets, Damage Queens or Matriarchs and Search husks, with a where-to-go hint for each. The wiki had not posted the week yet, so the list comes from ARC Tracker's Trials page.", "wiki"],
     ["Nov 3, 2026", "Daily check: added the Emperor Gateway Conduit Blueprint to the blueprint list. It is found in the Harvester Payload and dropped by the ARC Surveyor, and teaches the conduit that opens the Fallen Emperor on Pendola Pass.", "wiki"],
     ["Nov 2, 2026", "On the Your next step card, the Show on map button now follows the objective you are on. After you tick a step it opens the map for the next one and marks only that step's spots. A step with no marked spot uses the map it names, or the map from the step before it."],
     ["Nov 2, 2026", "Quests with more than one objective now have a tick box for each step, saved in your browser. The Objectives count shows how many you have done, and the Your next step card shows the next unticked objective so you can tick it off right there."],
